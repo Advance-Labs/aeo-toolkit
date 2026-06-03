@@ -69,16 +69,18 @@ structural subset of the DOM `fetch`.
 
 | Export | Kind | Description |
 |---|---|---|
-| `Ga4Client` | class | `runReport(req)` → `Ga4Report` (live POST to `analyticsdata.googleapis.com/v1beta`); `listProperties()` (stub). |
+| `Ga4Client` | class | `runReport(req)` → `Ga4Report` (live POST to `analyticsdata.googleapis.com/v1beta`); `listProperties()` → `Ga4Property[]` (live GET to the Admin API `accountSummaries`, paginated). |
 | `Ga4ClientOptions` | type | `{ accessToken; fetcher? }`. |
-| `GscClient` | class | `query(req)` → `GscReport`, `listSites()` → `GscSite[]` (live calls to `searchconsole.googleapis.com/webmasters/v3`); `submitSitemap()` (stub). |
+| `GscClient` | class | `query(req)` → `GscReport`, `listSites()` → `GscSite[]`, `submitSitemap(siteUrl, feedpath)` → `void` (live calls to `searchconsole.googleapis.com/webmasters/v3`; submission needs the write scope). |
 | `GscClientOptions` | type | `{ accessToken; fetcher? }`. |
 | `GoogleOAuth` | class | `getAuthUrl(state)`, `exchangeCode(code)`, `refresh(refreshToken)`. Defaults to read-only scopes, offline access. |
 | `GoogleOAuthConfig` | type | `{ clientId; clientSecret; redirectUri; scopes?; fetcher? }`. |
 | `InMemoryTokenStore` | class | `TokenStore` implementation for tests/local dev; clones on read & write. |
 | `TokenStore` | type | Re-exported from `@aeo/types` — implement for an encrypted/durable adapter. |
 | `GA4_READONLY_SCOPE` | const | `analytics.readonly`. |
+| `GA4_ADMIN_READONLY_SCOPE` | const | `analytics.readonly` — the Admin `accountSummaries` surface is covered by the same scope. |
 | `GSC_READONLY_SCOPE` | const | `webmasters.readonly`. |
+| `GSC_SITEMAPS_SCOPE` | const | `webmasters` (read-WRITE) — required by `submitSitemap`; opt-in, not in the default set. |
 | `DEFAULT_READONLY_SCOPES` | const | `[GA4_READONLY_SCOPE, GSC_READONLY_SCOPE]`. |
 | `GoogleApiError` | class | Thrown on non-2xx responses; carries `status` and raw `body`. |
 | `Fetcher`, `FetchInit`, `FetchResponse` | types | The injectable HTTP seam. |
@@ -88,10 +90,15 @@ Shared data shapes (`Ga4ReportRequest`, `Ga4Report`, `Ga4Row`, `GscQueryRequest`
 
 ## Status
 
-**Implemented:** `Ga4Client.runReport`, `GscClient.query`, `GscClient.listSites`,
-`GoogleOAuth.getAuthUrl` / `exchangeCode` / `refresh`, `InMemoryTokenStore`, scope constants,
-`GoogleApiError`, and the injectable fetch seam — all unit-tested against mocked fetchers.
+**Implemented (all unit-tested against mocked fetchers):** `Ga4Client.runReport`,
+`Ga4Client.listProperties` (live GA4 Admin API `accountSummaries`, with `nextPageToken`
+pagination up to a safety cap), `GscClient.query`, `GscClient.listSites`,
+`GscClient.submitSitemap` (live `PUT …/sitemaps/{feedpath}` — requires the read-WRITE
+`webmasters` scope, which is opt-in via `GoogleOAuth`'s `scopes` option),
+`GoogleOAuth.getAuthUrl` / `exchangeCode` / `refresh`, `InMemoryTokenStore`, scope constants
+(including `GA4_ADMIN_READONLY_SCOPE` and `GSC_SITEMAPS_SCOPE`), `GoogleApiError`, and the
+injectable fetch seam.
 
-**Stubbed:** `Ga4Client.listProperties` (returns `[]` — needs the GA4 Admin API
-`accountSummaries` surface) and `GscClient.submitSitemap` (throws — needs the read-WRITE
-`webmasters` scope). Both are marked `// STUB:` with typed seams at the wiring point.
+**Stubbed:** none — every public method now performs its live call through the injectable
+`Fetcher`. To submit sitemaps, request `GSC_SITEMAPS_SCOPE` at consent time; the package still
+defaults to read-only scopes everywhere else.

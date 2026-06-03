@@ -16,7 +16,13 @@ export type { GoogleOAuthConfig } from './oauth.js';
 
 export { InMemoryTokenStore } from './token-store.js';
 
-export { DEFAULT_READONLY_SCOPES, GA4_READONLY_SCOPE, GSC_READONLY_SCOPE } from './scopes.js';
+export {
+  DEFAULT_READONLY_SCOPES,
+  GA4_ADMIN_READONLY_SCOPE,
+  GA4_READONLY_SCOPE,
+  GSC_READONLY_SCOPE,
+  GSC_SITEMAPS_SCOPE,
+} from './scopes.js';
 
 export { GoogleApiError } from './http.js';
 export type { Fetcher, FetchInit, FetchResponse } from './http.js';

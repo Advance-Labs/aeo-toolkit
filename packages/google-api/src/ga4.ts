@@ -16,6 +16,17 @@ import {
 } from './http.js';
 
 const GA4_DATA_BASE = 'https://analyticsdata.googleapis.com/v1beta';
+const GA4_ADMIN_BASE = 'https://analyticsadmin.googleapis.com/v1beta';
+
+/**
+ * Upper bound on `accountSummaries` pages fetched in a single {@link Ga4Client.listProperties}
+ * call. A guard against a server that never stops returning a `nextPageToken`; far above the
+ * number of accounts any real token can access.
+ */
+const MAX_ACCOUNT_SUMMARY_PAGES = 50;
+
+/** GA4 Admin caps `accountSummaries` page size at 200; request the max to minimize round-trips. */
+const ACCOUNT_SUMMARY_PAGE_SIZE = 200;
 
 export interface Ga4ClientOptions {
   /** OAuth 2.0 access token with the `analytics.readonly` scope. */
@@ -61,16 +72,48 @@ export class Ga4Client {
   }
 
   /**
-   * STUB: list GA4 properties accessible to the token.
+   * List the GA4 properties the token can access. LIVE HTTP: GETs
+   * `analyticsadmin.googleapis.com/v1beta/accountSummaries` (covered by the `analytics.readonly`
+   * scope) and flattens every account's `propertySummaries[]` into {@link Ga4Property} records.
    *
-   * The Admin API (analyticsadmin.googleapis.com v1beta accountSummaries) requires the
-   * `analytics.readonly` admin surface and account-summary pagination, which is out of scope for
-   * the 0.1.0 read-report path. The seam is typed so the wiring point is obvious: implement by
-   * GETting `/v1beta/accountSummaries`, flatten `propertySummaries`, and map to {@link Ga4Property}.
+   * Follows `nextPageToken` pagination up to {@link MAX_ACCOUNT_SUMMARY_PAGES} pages so a
+   * misbehaving server cannot loop forever. The `propertyId` is the bare numeric id with the
+   * `properties/` resource prefix stripped, matching {@link Ga4ReportRequest.propertyId}.
    */
-  // STUB: live Admin API call not wired — returns empty until implemented.
   async listProperties(): Promise<Ga4Property[]> {
-    return [];
+    const properties: Ga4Property[] = [];
+    let pageToken: string | undefined;
+
+    for (let page = 0; page < MAX_ACCOUNT_SUMMARY_PAGES; page += 1) {
+      const params = new URLSearchParams({ pageSize: String(ACCOUNT_SUMMARY_PAGE_SIZE) });
+      if (pageToken !== undefined && pageToken.length > 0) {
+        params.set('pageToken', pageToken);
+      }
+      const url = `${GA4_ADMIN_BASE}/accountSummaries?${params.toString()}`;
+
+      const json = await requestJson(this.fetcher, url, {
+        method: 'GET',
+        accessToken: this.accessToken,
+      });
+
+      const root = asRecord(json);
+      for (const summary of asRecordArray(root['accountSummaries'])) {
+        for (const property of asRecordArray(summary['propertySummaries'])) {
+          const resourceName = asString(property['property']);
+          if (resourceName.length === 0) continue;
+          properties.push({
+            propertyId: normalizePropertyId(resourceName),
+            displayName: asString(property['displayName']),
+          });
+        }
+      }
+
+      const next = asString(root['nextPageToken']);
+      if (next.length === 0) break;
+      pageToken = next;
+    }
+
+    return properties;
   }
 }
 

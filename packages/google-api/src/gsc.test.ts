@@ -105,12 +105,34 @@ describe('GscClient.listSites', () => {
   });
 });
 
-describe('GscClient.submitSitemap (stub)', () => {
-  it('throws because the read-write scope is required', async () => {
+describe('GscClient.submitSitemap', () => {
+  it('PUTs the encoded feedpath under the encoded siteUrl and resolves on success', async () => {
     const mock = jsonFetcher({});
-    const client = new GscClient({ accessToken: 'tok', fetcher: mock.fetcher });
+    const client = new GscClient({ accessToken: 'tok-w', fetcher: mock.fetcher });
+
     await expect(
       client.submitSitemap('https://example.com/', 'https://example.com/sitemap.xml'),
-    ).rejects.toThrow(/not implemented/);
+    ).resolves.toBeUndefined();
+
+    expect(mock.calls).toHaveLength(1);
+    const call = mock.calls[0];
+    expect(call).toBeDefined();
+    if (!call) throw new Error('expected a recorded call');
+    expect(call.url).toBe(
+      'https://searchconsole.googleapis.com/webmasters/v3/sites/' +
+        'https%3A%2F%2Fexample.com%2F/sitemaps/https%3A%2F%2Fexample.com%2Fsitemap.xml',
+    );
+    expect(call.init?.method).toBe('PUT');
+    expect(call.init?.headers?.['Authorization']).toBe('Bearer tok-w');
+    // Empty body — sitemap submission carries no payload.
+    expect(call.init?.body).toBeUndefined();
+  });
+
+  it('throws GoogleApiError on a non-2xx response (e.g. missing write scope)', async () => {
+    const mock = errorFetcher(403, 'insufficient permission');
+    const client = new GscClient({ accessToken: 'readonly-tok', fetcher: mock.fetcher });
+    await expect(
+      client.submitSitemap('sc-domain:example.com', '/sitemap.xml'),
+    ).rejects.toBeInstanceOf(GoogleApiError);
   });
 });

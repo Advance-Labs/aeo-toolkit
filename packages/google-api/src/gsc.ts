@@ -77,18 +77,23 @@ export class GscClient {
   }
 
   /**
-   * STUB: submit a sitemap for a property.
+   * Submit (or re-submit) a sitemap for a property. LIVE HTTP:
+   * `PUT webmasters/v3/sites/{encoded siteUrl}/sitemaps/{encoded feedpath}` with an empty body.
    *
-   * The live call is `PUT webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}` and requires the
-   * read-WRITE `webmasters` scope (not the read-only scope this package defaults to), so it is
-   * intentionally left unwired. The seam is typed so the wiring point is obvious: PUT the encoded
-   * feedpath under the encoded siteUrl with an empty body and treat a 2xx as success.
+   * Requires the read-WRITE `webmasters` scope ({@link GSC_SITEMAPS_SCOPE}) — the read-only scope
+   * this package defaults to cannot mutate sitemaps, so the token must have been granted that scope
+   * at consent time. A 2xx response (the API returns no body) resolves; any non-2xx throws
+   * {@link GoogleApiError} via {@link requestJson}.
    */
-  // STUB: live sitemap submission not wired — requires read-write scope.
-  async submitSitemap(_siteUrl: string, _feedpath: string): Promise<void> {
-    throw new Error(
-      'GscClient.submitSitemap is not implemented: requires the read-write `webmasters` scope',
-    );
+  async submitSitemap(siteUrl: string, feedpath: string): Promise<void> {
+    const url =
+      `${GSC_BASE}/sites/${encodeURIComponent(siteUrl)}` +
+      `/sitemaps/${encodeURIComponent(feedpath)}`;
+
+    await requestJson(this.fetcher, url, {
+      method: 'PUT',
+      accessToken: this.accessToken,
+    });
   }
 }
 
