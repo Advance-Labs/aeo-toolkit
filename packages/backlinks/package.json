@@ -1,32 +1,35 @@
 {
-  "name": "@aeo/backlink-mcp",
+  "name": "@aeo/backlinks",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Free-source backlink MCP server: brand mentions, prospects, contacts, link verification, and AI-assisted outreach.",
-  "bin": {
-    "backlink-mcp": "./dist/server.js"
+  "description": "Free-source backlink engine — DuckDuckGo / CommonCrawl / Wayback providers, contact extraction, a rate-limited HTTP seam, and a backlink graph builder.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "start": "node dist/server.js",
-    "start:http": "node dist/http.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/backlinks": "workspace:*",
     "@aeo/crawler": "workspace:*",
-    "@aeo/llm": "workspace:*",
-    "@aeo/mcp-core": "workspace:*",
     "@aeo/storage": "workspace:*",
     "@aeo/types": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.12.0",
-    "cheerio": "^1.0.0",
-    "zod": "^3.24.1"
+    "cheerio": "^1.0.0"
   },
   "devDependencies": {
     "@aeo/config": "workspace:*",

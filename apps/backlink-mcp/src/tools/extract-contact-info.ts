@@ -6,8 +6,8 @@
  */
 import { z } from 'zod';
 import type { McpToolDef } from '@aeo/mcp-core';
+import { extractContacts } from '@aeo/backlinks';
 import { jsonResult, type Json } from '../lib/result.js';
-import { extractContacts } from '../lib/contacts.js';
 import type { ToolDeps } from './deps.js';
 
 const inputSchema = {

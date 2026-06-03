@@ -1,4 +1,8 @@
+<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+
 # @aeo/eeat-scanner
+
+> Scan a website and score the four E-E-A-T pillars — Experience, Expertise, Authoritativeness, and Trust — across up to 12 crawled pages.
 
 E-E-A-T Website Scanner (Tool 2). A Next.js 15 App Router app that crawls up to
 **12 pages** of a site, parses each page, detects structured data, and scores the

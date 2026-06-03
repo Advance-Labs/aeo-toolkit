@@ -6,7 +6,7 @@
  * real entrypoints build one with the live clients. No tool reaches for `fetch`
  * or `@aeo/llm` directly.
  */
-import type { HttpClient } from '../lib/http.js';
+import type { HttpClient } from '@aeo/backlinks';
 import type { OutreachClient } from '../lib/outreach.js';
 
 export interface ToolDeps {

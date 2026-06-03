@@ -8,9 +8,8 @@
  */
 import { z } from 'zod';
 import type { McpToolDef } from '@aeo/mcp-core';
+import { search, queryIndex } from '@aeo/backlinks';
 import { jsonResult, type Json } from '../lib/result.js';
-import { search } from '../lib/duckduckgo.js';
-import { queryIndex } from '../lib/commoncrawl.js';
 import { hostMatchesDomain } from '../lib/links.js';
 import type { ToolDeps } from './deps.js';
 

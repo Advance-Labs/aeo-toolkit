@@ -7,8 +7,8 @@
  */
 import { z } from 'zod';
 import type { McpToolDef } from '@aeo/mcp-core';
+import { search } from '@aeo/backlinks';
 import { jsonResult, type Json } from '../lib/result.js';
-import { search } from '../lib/duckduckgo.js';
 import type { ToolDeps } from './deps.js';
 
 const inputSchema = {

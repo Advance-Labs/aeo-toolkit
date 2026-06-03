@@ -3,7 +3,7 @@ import type { JSX, ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'E-E-A-T Scanner',
+  title: 'E-E-A-T Scanner — AEO Toolkit',
   description:
     'Scan a website and score the four E-E-A-T pillars — Experience, Expertise, Authoritativeness, and Trust — across up to 12 crawled pages.',
 };

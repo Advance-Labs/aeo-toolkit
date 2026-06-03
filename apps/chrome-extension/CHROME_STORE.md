@@ -1,3 +1,5 @@
+<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+
 # Publishing to the Chrome Web Store
 
 This document describes how to package and submit the **AEO/GEO Auditor** MV3
@@ -13,7 +15,8 @@ ever leaves the browser**, and there are no server calls, accounts, or API keys.
 pnpm --filter @aeo/chrome-extension package
 ```
 
-This runs `vite build` (producing `dist/`) and then zips the build output into
+This generates the brand icons (`pnpm icons`), runs `vite build` (producing `dist/`),
+and then zips the build output into
 `apps/chrome-extension/aeo-extension.zip` — the file you upload to the store.
 The zip contains the `manifest.json` at its root (Chrome requires the manifest
 at the archive root, which is why the script zips the *contents* of `dist/`,
@@ -50,8 +53,8 @@ Prepare these before submission (the store will not publish without them):
 
 | Asset | Spec | Notes |
 | --- | --- | --- |
-| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | Add an `icons` map (and `action.default_icon`) in `manifest.config.ts`, with the PNGs in a `public/` folder so Vite copies them into `dist/`. Until real icons are added, Chrome falls back to a generic placeholder icon — fine for local dev, **not acceptable for a public listing**. |
-| **Store icon** | 128×128 PNG | The icon shown on the store listing page. |
+| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | Generated from the brand mark `src/icons/icon.svg` by `pnpm icons` (`scripts/generate-icons.mjs`, via `sharp`) into `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). The `package` script runs `icons` automatically, so the store zip always contains them. |
+| **Store icon** | 128×128 PNG | The icon shown on the store listing page — `public/icons/icon-128.png`, the same brand mark rasterized at 128px. |
 | **Screenshots** | 1280×800 or 640×400 PNG/JPEG, 1–5 images | Capture the popup: score gauge, the site-file (robots/sitemap/llms) grid, and the checklist. |
 | **Small promo tile** (optional) | 440×280 PNG/JPEG | Improves discoverability. |
 | **Marquee promo tile** (optional) | 1400×560 PNG/JPEG | Only needed for featured placement. |

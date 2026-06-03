@@ -25,3 +25,6 @@ export type { ReportLayoutProps } from './ReportLayout.js';
 
 export { TemplateDownload } from './TemplateDownload.js';
 export type { TemplateDownloadProps } from './TemplateDownload.js';
+
+export { Logo, LogoMark } from './Logo.js';
+export type { LogoProps, LogoMarkProps } from './Logo.js';

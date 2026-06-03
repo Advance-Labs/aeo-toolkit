@@ -1,4 +1,8 @@
+<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+
 # @aeo/llm-audit
+
+> Crawl a site, score technical SEO and answer-engine optimization out of 100, and get a prioritized fix list with ready-to-use templates.
 
 Tool 1 of the AEO Toolkit — the **LLM & Technical SEO Audit** web app. It crawls up to 50 pages
 of a site (sitemap-first, then internal links), scores **technical SEO and answer-engine

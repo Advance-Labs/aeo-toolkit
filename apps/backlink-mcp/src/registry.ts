@@ -10,9 +10,9 @@ import { complete } from '@aeo/llm';
 import { resolveRateLimiter } from '@aeo/storage';
 import type { LlmCompletionRequest } from '@aeo/types';
 
+import { createLiveHttpClient, createRateLimitedHttpClient, type HttpClient } from '@aeo/backlinks';
+
 import { resolveConfig, type ServerConfig } from './config.js';
-import { createLiveHttpClient, type HttpClient } from './lib/http.js';
-import { createRateLimitedHttpClient } from './lib/rate-limited-http.js';
 import type { OutreachClient } from './lib/outreach.js';
 import { TOOL_REGISTRARS, type ToolDeps } from './tools/index.js';
 

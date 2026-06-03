@@ -3,7 +3,7 @@ import type { JSX, ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'LLM & Technical SEO Audit',
+  title: 'LLM & Technical SEO Audit — AEO Toolkit',
   description:
     'Crawl a site, score technical SEO and answer-engine optimization out of 100, and get a prioritized fix list with ready-to-use templates.',
 };

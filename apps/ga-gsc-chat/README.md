@@ -1,4 +1,8 @@
+<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+
 # @aeo/ga-gsc-chat
+
+> Ask natural-language SEO questions grounded in your own GA4 + Google Search Console data, answered by your own LLM key (BYOK).
 
 Tool 6 — **GA4 + Google Search Console Chat**. A Next.js 15 (App Router) app that connects a user's
 Google Analytics 4 property and verified Search Console site over read-only OAuth, then answers

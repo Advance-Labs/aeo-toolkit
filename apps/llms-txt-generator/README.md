@@ -1,4 +1,8 @@
+<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+
 # @aeo/llms-txt-generator
+
+> Crawl any site and generate a structured llms.txt (and optional llms-full.txt) per the llmstxt.org spec.
 
 Next.js (App Router) tool that accepts a URL, crawls the site structure (sitemap-first +
 breadth-first link following), extracts each page's title/description, groups pages into

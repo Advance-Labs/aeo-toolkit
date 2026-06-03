@@ -39,12 +39,14 @@ client boundary.
 | `GradeBadge` | `{ grade: ScoreGrade; size?; className? }` | Compact A–F grade pill. |
 | `ReportLayout` | `{ title; children; subtitle?; actions?; className? }` | Semantic page shell (`<header>` + `<main>`) for report screens. |
 | `TemplateDownload` | `{ template: GeneratedTemplate; onDownload?; className? }` | Renders a generated file with a download action; download side effect is injectable. |
+| `LogoMark` | `{ size?; title?; idSuffix? }` | The square brand tile (gradient + "A" peak + cyan sparkle) as accessible inline SVG. Pass distinct `idSuffix` values to render multiple marks on one page. |
+| `Logo` | `{ size?; variant?; className? }` | Horizontal lockup (mark + "AEO Toolkit" wordmark); `variant="dark"` uses light text. |
 
 All prop types are also exported (`ScoreGaugeProps`, `FixListProps`, …).
 
 ## Status
 
-**Implemented.** All seven components are real, presentational implementations with
+**Implemented.** All nine components are real, presentational implementations with
 co-located Vitest + Testing Library (jsdom) tests. No stubs.
 
 - The `TemplateDownload` browser download (Blob + object URL) is isolated behind an
