@@ -1,0 +1,32 @@
+{
+  "name": "@aeo/chrome-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AEO/GEO Chrome MV3 extension — runs a client-side AI-readiness audit on the active tab and exports a PDF.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aeo/scoring": "workspace:*",
+    "@aeo/schema-validator": "workspace:*",
+    "@aeo/html-parser": "workspace:*",
+    "@aeo/types": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "jspdf": "^2.5.2"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.28",
+    "vite": "^6.0.7",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@types/chrome": "^0.0.287",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

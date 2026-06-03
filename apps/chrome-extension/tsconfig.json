@@ -1,0 +1,8 @@
+{
+  "extends": "../../packages/config/tsconfig/react-library.json",
+  "compilerOptions": {
+    "types": ["chrome"],
+    "noEmit": true
+  },
+  "include": ["src", "manifest.config.ts", "vite.config.ts"]
+}
