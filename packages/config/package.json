@@ -14,7 +14,11 @@
     "./tsconfig/react-library": "./tsconfig/react-library.json",
     "./tsconfig/next": "./tsconfig/next.json"
   },
-  "files": ["eslint", "prettier", "tsconfig"],
+  "files": [
+    "eslint",
+    "prettier",
+    "tsconfig"
+  ],
   "scripts": {
     "lint": "eslint eslint",
     "typecheck": "echo \"@aeo/config: no typecheck (config-only package)\""

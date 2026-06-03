@@ -1,0 +1,56 @@
+import type { JSX } from 'react';
+import type { ScoreCategory } from '@aeo/types';
+import { clamp, cx, gradeForScore, gradeStrokeColor } from './utils.js';
+
+export interface CategoryBreakdownProps {
+  categories: ScoreCategory[];
+  /** Extra Tailwind classes appended to the list wrapper. */
+  className?: string;
+}
+
+/**
+ * A list of per-category score bars (crawlability, metadata, AEO, …).
+ * Each row shows the category label, its 0–100 score as a colored bar, and
+ * pass/fail counts. Presentational only.
+ */
+export function CategoryBreakdown({ categories, className }: CategoryBreakdownProps): JSX.Element {
+  if (categories.length === 0) {
+    return <p className={cx('text-sm text-slate-500', className)}>No category data available.</p>;
+  }
+
+  return (
+    <ul className={cx('flex flex-col gap-4', className)} aria-label="Score breakdown by category">
+      {categories.map((category) => {
+        const pct = clamp(Math.round(category.score), 0, 100);
+        const color = gradeStrokeColor(gradeForScore(category.score));
+        return (
+          <li key={category.key} className="flex flex-col gap-1">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-sm font-medium text-slate-800">{category.label}</span>
+              <span className="text-sm tabular-nums text-slate-600">
+                {pct}
+                <span className="text-slate-400">
+                  {' '}
+                  · {category.passedCount}/{category.passedCount + category.failedCount} passed
+                </span>
+              </span>
+            </div>
+            <div
+              className="h-2 w-full overflow-hidden rounded-full bg-slate-200"
+              role="progressbar"
+              aria-valuenow={pct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${category.label} score`}
+            >
+              <div
+                className="h-full rounded-full transition-all"
+                style={{ width: `${pct}%`, backgroundColor: color }}
+              />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}

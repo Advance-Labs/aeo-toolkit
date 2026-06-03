@@ -1,0 +1,39 @@
+{
+  "name": "@aeo/html-parser",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "@aeo/types": "workspace:*",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@aeo/config": "workspace:*",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

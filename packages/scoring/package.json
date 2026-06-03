@@ -1,0 +1,38 @@
+{
+  "name": "@aeo/scoring",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "@aeo/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@aeo/config": "workspace:*",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
