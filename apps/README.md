@@ -14,6 +14,7 @@ The 9 tools. Each is an independently-deployable package that consumes the share
 | `ga-gsc-mcp` | GA4 + GSC MCP | MCP server | mcp-core, google-api |
 | `backlink-mcp` | Backlink MCP | MCP server | mcp-core, llm, crawler |
 | `blogging-agent` | Autonomous Blogging Agent | Node pipeline | google-api, llm |
+| `backlink-graph` | Backlink Graph (3D) | Next.js + WebGL | backlinks, ui |
 
 ## Running one app
 
