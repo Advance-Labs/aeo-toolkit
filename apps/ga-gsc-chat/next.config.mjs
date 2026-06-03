@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@aeo/google-api', '@aeo/llm', '@aeo/ui', '@aeo/types'],
+  transpilePackages: ['@aeo/google-api', '@aeo/llm', '@aeo/storage', '@aeo/ui', '@aeo/types'],
   reactStrictMode: true,
   // Lint runs as its own Turbo task (`pnpm lint`); don't duplicate it during the build.
   eslint: { ignoreDuringBuilds: true },

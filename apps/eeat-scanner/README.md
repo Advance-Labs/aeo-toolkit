@@ -64,6 +64,33 @@ A bare hostname is normalized to `https://`. Returns the `EeatReport` shape from
 **None.** The scanner takes only a URL and crawls public pages. There are no API
 keys, OAuth, or paid integrations — nothing to configure or persist.
 
+## Deploy
+
+This is a standard Next.js 15 App Router app and deploys to **Vercel** with no special
+configuration — no `vercel.json` is needed (Next.js auto-detection handles the framework,
+build, and output settings).
+
+Because this lives in a pnpm + Turborepo monorepo, point Vercel at this app's subdirectory:
+
+1. **New Project** → import the repository.
+2. **Root Directory**: `apps/eeat-scanner`.
+3. **Install Command** (run from the repo root so the workspace + `@aeo/*` deps resolve):
+   `pnpm install` — Vercel runs this at the repo root automatically when the root directory's
+   `package.json` declares workspace deps; if you override it, use
+   `cd ../.. && pnpm install --filter @aeo/eeat-scanner...`.
+4. **Build Command**: `pnpm --filter @aeo/eeat-scanner build`
+   (or leave the default `next build` — both work since the root directory is the app).
+5. **Output Directory**: leave as the Next.js default (`.next`); do not override it.
+6. **Node.js version**: 20.x (matches the repo's `engines.node >= 20`).
+
+The `/api/audit/eeat` route runs on the **Node.js runtime** (the crawler does outbound HTTP and
+is not edge-safe); no extra config is required for that on Vercel.
+
+### Environment variables
+
+**None.** See [Environment variables](#environment-variables) below — there is nothing to set in
+the Vercel dashboard. The bundled [`.env.example`](./.env.example) documents this explicitly.
+
 ## Architecture notes
 
 - The single external-I/O seam is the injectable `Crawler` interface in

@@ -70,6 +70,32 @@ None. Titles and descriptions come from the crawl, not an LLM. If a summarizer i
 route it through `@aeo/llm` (BYOK, request-scoped keys — never persisted/logged) and mark the seam
 with `// STUB:`.
 
+## Deploy
+
+Standard Next.js (App Router) app — deploys to **Vercel** with no special configuration and **no
+`vercel.json`** (Next.js auto-detection covers framework, build, and output settings).
+
+In this pnpm + Turborepo monorepo, point Vercel at the app's subdirectory:
+
+1. **New Project** → import the repository.
+2. **Root Directory**: `apps/llms-txt-generator`.
+3. **Install Command**: `pnpm install` at the repo root (Vercel installs the workspace so the
+   `@aeo/*` deps resolve; if overriding, use
+   `cd ../.. && pnpm install --filter @aeo/llms-txt-generator...`).
+4. **Build Command**: `pnpm --filter @aeo/llms-txt-generator build` (or the default `next build` —
+   both work once the root directory is set to this app).
+5. **Output Directory**: leave as the Next.js default (`.next`); do not override.
+6. **Node.js version**: 20.x (matches the repo's `engines.node >= 20`).
+
+The `/api/generate` route runs on the **Node.js runtime** (the crawler does outbound HTTP); no extra
+Vercel config is required.
+
+### Environment variables
+
+**None.** Titles/descriptions come from the crawl, not an LLM, so there is nothing to set in the
+Vercel dashboard. The bundled [`.env.example`](./.env.example) documents this. (If a summarizer is
+added later via `@aeo/llm`, keys must be **BYOK / request-scoped — never persisted or logged**.)
+
 ## Status
 
 **Implemented.** Full crawl → parse → group → render → download pipeline is real and runnable.

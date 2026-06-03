@@ -20,25 +20,28 @@ Configure these in **Settings → Secrets and variables → Actions**:
 | `GA4_PROPERTY_ID` | Numeric GA4 property id. **Required.** |
 | `SITE_URL` | Canonical site origin (e.g. `https://example.com`). **Required.** |
 | `GSC_SITE_URL` | Search Console property URL (defaults to `SITE_URL`). Optional. |
-| `PUBLISH_TOKEN` | Git/CMS credential for the live publisher. Omit to run in dry-run (no publish). |
-| `PUBLISH_TARGET` | Repo (`owner/name`) or CMS space id for the publisher. Omit for dry-run. |
-| `VERCEL_DEPLOY_HOOK_URL` | Optional deploy hook pinged after a publish commit. |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Enable the durable `SupabasePostStore`. Set both, or omit both to use the ephemeral JSON-file store. |
+| `PUBLISH_WEBHOOK_URL` | Webhook that receives each rendered post (JSON). Omit to run in dry-run (no publish). |
+| `PUBLISH_WEBHOOK_TOKEN` | Optional request-scoped bearer token sent in the publish request's `Authorization` header. |
+| `DEPLOY_HOOK_URL` | Optional deploy hook pinged (empty POST) after a successful publish. |
 
 Optional non-secret configuration (set as repo/Actions **variables**, not secrets):
 `GROQ_MODEL`, `ANTHROPIC_MODEL`, `OPENAI_MODEL`, `MAX_NEW_POSTS_PER_RUN`,
 `UNDERPERFORMANCE_THRESHOLD`, `DEDUP_THRESHOLD`, `CONTENT_PILLARS`, `COMPETITORS`, `AUDIENCE`,
-`VOICE`, `POST_STORE_PATH`.
+`VOICE`, `POST_STORE_PATH`, `POSTS_TABLE`.
 
 ## Persistence
 
-The default `POST_STORE_PATH` is `./data/posts.json` (the `JsonFilePostStore`). In CI this file is
-ephemeral, so commit it back after each run (shown below) or switch to the Supabase adapter
-(`SupabasePostStore`, currently a typed `// STUB`) for durable cross-run state.
+Set `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to use the durable `SupabasePostStore` (a `posts`
+table keyed by `slug`); this is the recommended production setup for cross-run state. Without them,
+the agent falls back to the `JsonFilePostStore` at `POST_STORE_PATH` (default `./data/posts.json`),
+which is ephemeral in CI — so commit it back after each run (shown below).
 
 ## Reference workflow
 
-Place this at the repository root as `.github/workflows/blogging-agent.yml` (the lead wires the
-root workflow; this file is the canonical reference — the app must not edit root files itself):
+The canonical workflow lives in the app at [`../deploy/blogging-agent.yml`](../deploy/blogging-agent.yml).
+The lead copies it to the repository root as `.github/workflows/blogging-agent.yml` (the app must
+not edit root files itself). It is reproduced here for convenience:
 
 ```yaml
 name: blogging-agent
@@ -47,6 +50,10 @@ on:
   schedule:
     - cron: '0 13 * * *' # daily at 13:00 UTC
   workflow_dispatch: {}
+
+concurrency:
+  group: blogging-agent
+  cancel-in-progress: false
 
 jobs:
   run:
@@ -63,7 +70,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @aeo/blogging-agent build
       - name: Run the agent
-        working-directory: apps/blogging-agent
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -72,16 +78,22 @@ jobs:
           GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
           SITE_URL: ${{ secrets.SITE_URL }}
           GSC_SITE_URL: ${{ secrets.GSC_SITE_URL }}
-          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-          PUBLISH_TARGET: ${{ secrets.PUBLISH_TARGET }}
-          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
-        run: node dist/run.js
-      - name: Persist post store
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PUBLISH_WEBHOOK_URL: ${{ secrets.PUBLISH_WEBHOOK_URL }}
+          PUBLISH_WEBHOOK_TOKEN: ${{ secrets.PUBLISH_WEBHOOK_TOKEN }}
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
+        run: node apps/blogging-agent/dist/run.js
+      - name: Persist post store (JSON-store fallback only)
         if: always()
         run: |
-          git config user.name "blogging-agent"
-          git config user.email "actions@users.noreply.github.com"
-          git add apps/blogging-agent/data/posts.json || true
-          git commit -m "chore(blogging-agent): update post store" || echo "no changes"
-          git push || echo "nothing to push"
+          if [ -f apps/blogging-agent/data/posts.json ]; then
+            git config user.name "blogging-agent"
+            git config user.email "actions@users.noreply.github.com"
+            git add apps/blogging-agent/data/posts.json || true
+            git commit -m "chore(blogging-agent): update post store" || echo "no changes"
+            git push || echo "nothing to push"
+          else
+            echo "no JSON post store to persist (Supabase store in use)"
+          fi
 ```

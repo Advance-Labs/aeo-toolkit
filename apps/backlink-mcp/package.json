@@ -21,6 +21,7 @@
     "@aeo/crawler": "workspace:*",
     "@aeo/llm": "workspace:*",
     "@aeo/mcp-core": "workspace:*",
+    "@aeo/storage": "workspace:*",
     "@aeo/types": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.12.0",
     "cheerio": "^1.0.0",

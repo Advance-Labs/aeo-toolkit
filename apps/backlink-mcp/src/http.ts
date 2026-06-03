@@ -11,7 +11,8 @@
  * Run (after build):  node dist/http.js
  * Env (in addition to the registry env vars):
  *   PORT                     — listen port (default 3000)
- *   BACKLINK_PUBLIC_URL      — public origin for OAuth discovery (default http://localhost:PORT)
+ *   MCP_PUBLIC_URL           — public origin for OAuth discovery (default http://localhost:PORT;
+ *                              BACKLINK_PUBLIC_URL is accepted as a legacy alias)
  *   BACKLINK_AUTH_SERVER     — external OAuth issuer for protected-resource metadata (optional)
  */
 import {
@@ -56,9 +57,17 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
  * Handle one MCP JSON-RPC request statelessly: build a fresh server, mount a
  * Streamable HTTP transport (sessionless), and pump the request through it.
  * Exported so a Vercel function handler can reuse the exact same logic.
+ *
+ * `preParsedBody` lets a serverless adapter (Vercel) pass `req.body` through when
+ * the platform already consumed the request stream; when omitted we read and
+ * JSON-parse the stream ourselves (the self-hosted `start()` path).
  */
-export async function handleMcpRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
-  const body = await readJsonBody(req);
+export async function handleMcpRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+  preParsedBody?: unknown,
+): Promise<void> {
+  const body = preParsedBody !== undefined ? preParsedBody : await readJsonBody(req);
   const created = buildServer();
   const transport = await mountHttp(created, { sessionIdGenerator: undefined });
   res.on('close', () => {
@@ -68,33 +77,49 @@ export async function handleMcpRequest(req: IncomingMessage, res: ServerResponse
   await transport.handleRequest(req, res, body);
 }
 
-/** Resolve the public origin used in OAuth discovery documents. */
-function publicOrigin(port: number): string {
-  const fromEnv = process.env.BACKLINK_PUBLIC_URL?.trim();
+/**
+ * Resolve the public origin used in OAuth discovery documents. Prefers
+ * `MCP_PUBLIC_URL` (the suite-wide canonical name) and accepts the app-scoped
+ * `BACKLINK_PUBLIC_URL` for backward compatibility; falls back to localhost.
+ * Exported so the Vercel function entry resolves the exact same origin.
+ */
+export function resolvePublicOrigin(port = 3000): string {
+  const fromEnv = process.env.MCP_PUBLIC_URL?.trim() || process.env.BACKLINK_PUBLIC_URL?.trim();
   return fromEnv && fromEnv !== '' ? fromEnv : `http://localhost:${port}`;
 }
 
-function serveDiscovery(res: ServerResponse, kind: 'as' | 'pr', origin: string): void {
+/**
+ * Build the `/.well-known/oauth-authorization-server` document for the current
+ * environment. Pure (reads env, no I/O); reused by both the inline HTTP server and
+ * the Vercel function entry so the hosted and self-run variants stay identical.
+ */
+export function oauthAuthorizationServerMetadata(): ReturnType<typeof wellKnownOAuthMetadata> {
+  return wellKnownOAuthMetadata({ issuer: resolvePublicOrigin() });
+}
+
+/** Build the `/.well-known/oauth-protected-resource` document for the current env. */
+export function oauthProtectedResourceMetadata(): ReturnType<typeof wellKnownProtectedResource> {
+  const origin = resolvePublicOrigin();
+  const authServer = process.env.BACKLINK_AUTH_SERVER?.trim();
+  return wellKnownProtectedResource({
+    resource: origin,
+    authorizationServers: [authServer && authServer !== '' ? authServer : origin],
+    resourceDocumentation: `${origin}${MCP_PATH}`,
+  });
+}
+
+function serveDiscovery(res: ServerResponse, kind: 'as' | 'pr'): void {
   if (kind === 'as') {
-    sendJson(res, 200, wellKnownOAuthMetadata({ issuer: origin }));
+    sendJson(res, 200, oauthAuthorizationServerMetadata());
     return;
   }
-  const authServer = process.env.BACKLINK_AUTH_SERVER?.trim();
-  sendJson(
-    res,
-    200,
-    wellKnownProtectedResource({
-      resource: origin,
-      authorizationServers: [authServer && authServer !== '' ? authServer : origin],
-      resourceDocumentation: `${origin}${MCP_PATH}`,
-    }),
-  );
+  sendJson(res, 200, oauthProtectedResourceMetadata());
 }
 
 function start(): void {
   const config = resolveConfig();
   const port = Number(process.env.PORT ?? 3000) || 3000;
-  const origin = publicOrigin(port);
+  const origin = resolvePublicOrigin(port);
 
   const httpServer = createHttpServer((req, res) => {
     const url = req.url ?? '/';
@@ -107,11 +132,11 @@ function start(): void {
           return;
         }
         if (req.method === 'GET' && path === '/.well-known/oauth-authorization-server') {
-          serveDiscovery(res, 'as', origin);
+          serveDiscovery(res, 'as');
           return;
         }
         if (req.method === 'GET' && path === '/.well-known/oauth-protected-resource') {
-          serveDiscovery(res, 'pr', origin);
+          serveDiscovery(res, 'pr');
           return;
         }
         if (req.method === 'POST' && path === MCP_PATH) {

@@ -19,9 +19,11 @@ import {
 } from 'node:http';
 
 import { mountHttp, wellKnownOAuthMetadata, wellKnownProtectedResource } from '@aeo/mcp-core';
+import type { RateLimiter } from '@aeo/storage';
 
 import { buildAiVisibilityServer } from './create-server.js';
 import { readOAuthDiscoveryEnv } from './config.js';
+import { checkRequestRateLimit, getSharedRateLimiter, rateLimitedBody } from './rate-limit.js';
 
 const OAUTH_AS_PATH = '/.well-known/oauth-authorization-server';
 const OAUTH_PR_PATH = '/.well-known/oauth-protected-resource';
@@ -57,17 +59,53 @@ export function oauthProtectedResourceMetadata(
   });
 }
 
+/** Options for {@link handleMcpRequest}. The limiter is injectable for tests. */
+export interface HandleMcpRequestOptions {
+  /**
+   * Distributed per-caller rate limiter. Defaults to the process-shared limiter
+   * built from the environment (Upstash in prod, in-memory fallback otherwise).
+   * Tests inject a fake `RateLimiter` to assert allow/block behaviour offline.
+   */
+  rateLimiter?: RateLimiter;
+}
+
 /**
- * Handle one MCP POST: build a fresh server + stateless Streamable-HTTP transport
- * and pump the (optionally pre-parsed) request through it. `parsedBody` lets a
+ * Send the structured 429 a caller receives when it exceeds its per-caller
+ * budget. Sets `Retry-After` so well-behaved clients back off automatically.
+ */
+function sendRateLimited(res: ServerResponse, resetSeconds: number): void {
+  const body = JSON.stringify(rateLimitedBody({ allowed: false, remaining: 0, resetSeconds }));
+  res.writeHead(429, {
+    'content-type': 'application/json',
+    'content-length': Buffer.byteLength(body).toString(),
+    'retry-after': String(Math.max(resetSeconds, 0)),
+  });
+  res.end(body);
+}
+
+/**
+ * Handle one MCP request: enforce the distributed per-caller rate limit, then —
+ * when allowed — build a fresh server + stateless Streamable-HTTP transport and
+ * pump the (optionally pre-parsed) request through it. `parsedBody` lets a
  * framework that already consumed the stream (e.g. Vercel/Express JSON parsing)
  * avoid double-reading the body.
+ *
+ * A rejected caller gets a structured 429 (`{ error: 'rate_limited', ... }`) with
+ * a `Retry-After` header instead of reaching the tool registry.
  */
 export async function handleMcpRequest(
   req: IncomingMessage,
   res: ServerResponse,
   parsedBody?: unknown,
+  options: HandleMcpRequestOptions = {},
 ): Promise<void> {
+  const limiter = options.rateLimiter ?? getSharedRateLimiter();
+  const { result } = await checkRequestRateLimit(limiter, req);
+  if (!result.allowed) {
+    sendRateLimited(res, result.resetSeconds);
+    return;
+  }
+
   const created = buildAiVisibilityServer();
   const transport = await mountHttp(created, { sessionIdGenerator: undefined });
   // Close the transport when the client disconnects to free the per-request server.

@@ -1,94 +1,46 @@
 /**
  * Per-IP rate limiting for the public audit endpoint.
  *
- * STUB: This is an in-memory, single-instance limiter. It is real and runnable
- * (it actually enforces a per-IP request budget within the current process), but
- * it is NOT production-grade: it does not share state across serverless instances
- * and resets on cold start. Before production, swap the implementation behind the
- * `RateLimiter` interface for a durable store (e.g. Upstash Redis / Vercel KV).
- * TODO: wire a distributed limiter and surface `Retry-After`.
+ * The limiter is resolved by `@aeo/storage#resolveRateLimiter`, which returns a distributed
+ * Upstash Redis sliding-window limiter when `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`
+ * are configured, and otherwise falls back to a real (but single-instance, cold-start-resetting)
+ * in-memory fixed-window limiter. This keeps local dev and the offline unit tests credential-free
+ * while making the production deployment durable and multi-instance-safe.
+ *
+ * Credentials come only from the environment — never hard-coded, never logged.
  */
+import { resolveRateLimiter } from '@aeo/storage';
+import type { RateLimiter } from '@aeo/storage';
 
-export interface RateLimitDecision {
-  allowed: boolean;
-  /** Remaining requests in the current window after this decision. */
-  remaining: number;
-  /** Seconds until the window resets — useful for a `Retry-After` header. */
-  resetSeconds: number;
-}
+export type { RateLimiter, RateLimitResult } from '@aeo/storage';
 
-/** The typed seam every limiter (stub or durable) must satisfy. */
-export interface RateLimiter {
-  check(key: string): RateLimitDecision;
-}
+/** Max audits allowed per IP within {@link AUDIT_WINDOW_SECONDS}. */
+export const AUDIT_RATE_LIMIT = 10;
+/** Rate-limit window length in seconds (10 minutes). */
+export const AUDIT_WINDOW_SECONDS = 10 * 60;
 
-export interface InMemoryRateLimiterOptions {
-  /** Max requests allowed per window. */
-  limit: number;
-  /** Window length in milliseconds. */
-  windowMs: number;
-  /** Injectable clock for testability; defaults to `Date.now`. */
-  now?: () => number;
-}
-
-interface WindowState {
-  count: number;
-  windowStart: number;
-}
-
-/** In-memory fixed-window limiter. See file-level STUB note. */
-export class InMemoryRateLimiter implements RateLimiter {
-  private readonly limit: number;
-  private readonly windowMs: number;
-  private readonly now: () => number;
-  private readonly windows = new Map<string, WindowState>();
-
-  constructor(opts: InMemoryRateLimiterOptions) {
-    this.limit = Math.max(1, opts.limit);
-    this.windowMs = Math.max(1, opts.windowMs);
-    this.now = opts.now ?? Date.now;
-  }
-
-  check(key: string): RateLimitDecision {
-    const now = this.now();
-    const existing = this.windows.get(key);
-
-    if (existing === undefined || now - existing.windowStart >= this.windowMs) {
-      const fresh: WindowState = { count: 1, windowStart: now };
-      this.windows.set(key, fresh);
-      return {
-        allowed: true,
-        remaining: this.limit - 1,
-        resetSeconds: this.resetSeconds(fresh, now),
-      };
-    }
-
-    if (existing.count >= this.limit) {
-      return { allowed: false, remaining: 0, resetSeconds: this.resetSeconds(existing, now) };
-    }
-
-    existing.count += 1;
-    return {
-      allowed: true,
-      remaining: this.limit - existing.count,
-      resetSeconds: this.resetSeconds(existing, now),
-    };
-  }
-
-  private resetSeconds(state: WindowState, now: number): number {
-    const elapsed = now - state.windowStart;
-    return Math.max(0, Math.ceil((this.windowMs - elapsed) / 1000));
-  }
+/**
+ * Build the audit limiter from the environment. Returns the Upstash adapter when Redis credentials
+ * are present, else the in-memory fallback. Reading env lazily (rather than at module load) keeps
+ * the factory test-friendly and avoids capturing stale values.
+ */
+export function resolveAuditRateLimiter(
+  env: Record<string, string | undefined> = process.env,
+): RateLimiter {
+  return resolveRateLimiter({
+    limit: AUDIT_RATE_LIMIT,
+    windowSeconds: AUDIT_WINDOW_SECONDS,
+    redisUrl: env.UPSTASH_REDIS_REST_URL,
+    redisToken: env.UPSTASH_REDIS_REST_TOKEN,
+  });
 }
 
 /**
- * Process-wide default limiter for the audit endpoint: 10 audits per IP per 10 minutes.
- * A module-level singleton so the in-memory window survives across requests in one instance.
+ * Process-wide default limiter for the audit endpoint: 10 audits per IP per 10 minutes. A
+ * module-level singleton so the in-memory window (dev fallback) survives across requests in one
+ * instance; in production this resolves to the shared Upstash limiter.
  */
-export const auditRateLimiter: RateLimiter = new InMemoryRateLimiter({
-  limit: 10,
-  windowMs: 10 * 60 * 1000,
-});
+export const auditRateLimiter: RateLimiter = resolveAuditRateLimiter();
 
 /** Best-effort client IP extraction from standard proxy headers. */
 export function clientIp(headers: Headers): string {

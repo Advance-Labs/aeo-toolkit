@@ -74,4 +74,41 @@ describe('find_mentions tool', () => {
     expect(data.totalResults).toBe(0);
     expect((data.warnings as string[]).length).toBeGreaterThan(0);
   });
+
+  it('adds CommonCrawl-indexed pages as supplementary linked coverage when a domain is given', async () => {
+    const ccBody = [
+      JSON.stringify({ url: 'https://brandsite.com/blog/post', status: '200' }),
+      // Already surfaced by DDG → must be de-duped, not double-counted.
+      JSON.stringify({ url: 'https://brandsite.com/about', status: '200' }),
+      // Off-domain capture → excluded from this domain-scoped supplementary list.
+      JSON.stringify({ url: 'https://other.example/x', status: '200' }),
+    ].join('\n');
+
+    // Route DDG vs CommonCrawl by inspecting the requested URL.
+    const routed: HttpClient = {
+      getText: async (url: string): Promise<TextResponse> => {
+        const body = url.includes('index.commoncrawl.org') ? ccBody : RESULTS_HTML;
+        return { ok: true, status: 200, body, url };
+      },
+      getResource: async () => {
+        throw new Error('not used');
+      },
+    };
+
+    const tool = findMentionsTool(deps(routed));
+    const result = await tool.handler({ brand: 'Brand', domain: 'brandsite.com' });
+    const data = structured(result);
+
+    const supplementary = data.commonCrawlMentions as Array<Record<string, unknown>>;
+    expect(supplementary).toHaveLength(1);
+    expect(supplementary[0]?.url).toBe('https://brandsite.com/blog/post');
+    expect(supplementary[0]?.source).toBe('commoncrawl');
+  });
+
+  it('omits CommonCrawl supplementary section when no domain is supplied', async () => {
+    const tool = findMentionsTool(deps(mockHttp(RESULTS_HTML)));
+    const result = await tool.handler({ brand: 'Brand' });
+    const data = structured(result);
+    expect(data.commonCrawlMentions).toBeNull();
+  });
 });

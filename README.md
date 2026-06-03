@@ -1,4 +1,15 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
+  <img src="brand/logo.svg" alt="AEO Toolkit" width="340">
+</picture>
+
 # AEO Toolkit — AI Search Optimization Suite
+
+### Rank in ChatGPT, Claude, Perplexity &amp; AI Overviews
+
+</div>
 
 > Open-source 9-package TypeScript monorepo for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility.
 

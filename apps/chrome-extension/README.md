@@ -49,6 +49,7 @@ Then load the unpacked extension:
 | --- | --- |
 | `dev` | `vite` dev build with HMR for the popup + content/background reload. |
 | `build` | `vite build` → production `dist/` (the loadable/zippable extension). |
+| `package` | `build`, then zip `dist/` into a store-uploadable `aeo-extension.zip` (manifest at the archive root). |
 | `typecheck` | `tsc --noEmit` under strict mode. |
 | `test` | `vitest run` — unit tests for the pure pipeline (mocks `@aeo/*` + I/O). |
 
@@ -78,5 +79,16 @@ crawl-hint file fetching, single-page scoring via `@aeo/scoring`, the React popu
 gauge, site-file grid, filterable checklist), and PDF export via jsPDF. No live credentials
 are required.
 
-- **Future:** Chrome Web Store packaging & publish flow (icons, store listing, `zip` + upload)
-  is intentionally out of scope and marked as future work.
+## Packaging for the Chrome Web Store
+
+```bash
+pnpm --filter @aeo/chrome-extension package
+```
+
+This builds `dist/` and zips its **contents** (so `manifest.json` sits at the archive root,
+as Chrome requires) into `apps/chrome-extension/aeo-extension.zip`. See
+[`CHROME_STORE.md`](./CHROME_STORE.md) for the full listing/submission walkthrough — required
+icon sizes (16/32/48/128 PNG), screenshots, the privacy disclosures (all analysis is local;
+**zero server calls**), and version-bump steps. Add real listing icons before publishing; the
+generated manifest currently relies on Chrome's default placeholder icon, which is fine for
+local `Load unpacked` but not for a public listing.

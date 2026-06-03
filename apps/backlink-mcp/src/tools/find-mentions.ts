@@ -10,6 +10,7 @@ import { z } from 'zod';
 import type { McpToolDef } from '@aeo/mcp-core';
 import { jsonResult, type Json } from '../lib/result.js';
 import { search } from '../lib/duckduckgo.js';
+import { queryIndex } from '../lib/commoncrawl.js';
 import { hostMatchesDomain } from '../lib/links.js';
 import type { ToolDeps } from './deps.js';
 
@@ -48,12 +49,34 @@ export function findMentionsTool(deps: ToolDeps): McpToolDef<Shape> {
 
       const linked: Json[] = [];
       const unlinked: Json[] = [];
+      const seenUrls = new Set<string>();
       for (const r of results) {
+        seenUrls.add(r.url);
         const entry: Json = { title: r.title, url: r.url, snippet: r.snippet };
         if (domain && hostMatchesDomain(hostOf(r.url), domain)) {
           linked.push(entry);
         } else {
           unlinked.push(entry);
+        }
+      }
+
+      // Supplementary free source: when a domain is known, surface pages
+      // CommonCrawl has indexed on that domain as additional *linked* coverage
+      // (a corroborating signal the brand owns/controls them). De-duplicated
+      // against the DDG results so we never double-count a URL. Degrades to an
+      // empty list + warning — never throws.
+      const supplementary: Json[] = [];
+      if (domain) {
+        const cc = await queryIndex(deps.http, domain, {
+          index: deps.commonCrawlIndex,
+          limit: max,
+        });
+        for (const w of cc.warnings) warnings.push(`[commoncrawl] ${w}`);
+        for (const c of cc.captures) {
+          if (seenUrls.has(c.url)) continue;
+          if (!hostMatchesDomain(c.host, domain)) continue;
+          seenUrls.add(c.url);
+          supplementary.push({ url: c.url, host: c.host, source: 'commoncrawl' });
         }
       }
 
@@ -64,6 +87,8 @@ export function findMentionsTool(deps: ToolDeps): McpToolDef<Shape> {
         // Without a domain every result is reported as an (unclassified) mention.
         linkedMentions: domain ? linked : null,
         unlinkedMentions: unlinked,
+        // Extra pages discovered via CommonCrawl (only when a domain is given).
+        commonCrawlMentions: domain ? supplementary : null,
         warnings,
       });
     },

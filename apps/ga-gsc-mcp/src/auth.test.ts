@@ -1,8 +1,25 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GoogleOAuthTokens, TokenStore } from '@aeo/types';
 import type { GoogleOAuth } from '@aeo/google-api';
 
-import { TokenResolver } from './auth.js';
+// Mock the storage adapter so the env-gated factory test never builds a real Supabase
+// client or touches the network. `vi.hoisted` keeps the spy refs available inside the
+// hoisted `vi.mock` factory.
+const { createSupabaseClientMock, supabaseTokenStoreCtor } = vi.hoisted(() => ({
+  createSupabaseClientMock: vi.fn((_config: unknown) => ({ __fakeClient: true })),
+  supabaseTokenStoreCtor: vi.fn(),
+}));
+vi.mock('@aeo/storage', () => ({
+  createSupabaseClient: (config: unknown) => createSupabaseClientMock(config),
+  SupabaseTokenStore: class {
+    constructor(client: unknown, opts: unknown) {
+      supabaseTokenStoreCtor(client, opts);
+    }
+  },
+}));
+
+import { createTokenStore, TokenResolver } from './auth.js';
+import { InMemoryTokenStore } from '@aeo/google-api';
 
 /** Minimal in-memory store for tests (the package's InMemoryTokenStore is also fine). */
 function makeStore(seed?: Record<string, GoogleOAuthTokens>): TokenStore {
@@ -79,5 +96,44 @@ describe('TokenResolver', () => {
     });
     const resolver = new TokenResolver({ store, oauth: null, now: () => FIXED_NOW });
     await expect(resolver.resolveAccessToken('u1')).resolves.toBe('stale');
+  });
+});
+
+describe('createTokenStore (env-gated)', () => {
+  beforeEach(() => {
+    createSupabaseClientMock.mockClear();
+    supabaseTokenStoreCtor.mockClear();
+  });
+
+  it('falls back to the in-memory store when no Supabase config is present', () => {
+    const store = createTokenStore(null);
+    expect(store).toBeInstanceOf(InMemoryTokenStore);
+    expect(createSupabaseClientMock).not.toHaveBeenCalled();
+    expect(supabaseTokenStoreCtor).not.toHaveBeenCalled();
+  });
+
+  it('builds a Supabase-backed store when config is present (no encryption key)', () => {
+    createTokenStore({
+      url: 'https://x.supabase.co',
+      serviceRoleKey: 'srk',
+      encryptionKey: null,
+    });
+    expect(createSupabaseClientMock).toHaveBeenCalledWith({
+      url: 'https://x.supabase.co',
+      serviceKey: 'srk',
+    });
+    expect(supabaseTokenStoreCtor).toHaveBeenCalledTimes(1);
+    const opts = supabaseTokenStoreCtor.mock.calls[0]?.[1];
+    expect(opts).toEqual({});
+  });
+
+  it('passes the encryption key through for at-rest encryption when configured', () => {
+    createTokenStore({
+      url: 'https://x.supabase.co',
+      serviceRoleKey: 'srk',
+      encryptionKey: 'passphrase',
+    });
+    const opts = supabaseTokenStoreCtor.mock.calls[0]?.[1];
+    expect(opts).toEqual({ encryptionKey: 'passphrase' });
   });
 });

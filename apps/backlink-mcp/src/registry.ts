@@ -7,10 +7,12 @@
  */
 import { createServer, type CreatedServer } from '@aeo/mcp-core';
 import { complete } from '@aeo/llm';
+import { resolveRateLimiter } from '@aeo/storage';
 import type { LlmCompletionRequest } from '@aeo/types';
 
 import { resolveConfig, type ServerConfig } from './config.js';
 import { createLiveHttpClient, type HttpClient } from './lib/http.js';
+import { createRateLimitedHttpClient } from './lib/rate-limited-http.js';
 import type { OutreachClient } from './lib/outreach.js';
 import { TOOL_REGISTRARS, type ToolDeps } from './tools/index.js';
 
@@ -39,15 +41,33 @@ export function buildServer(opts: BuildOptions = {}): CreatedServer {
     rateLimit: config.rateLimit,
   });
 
+  // Build the live HTTP seam and wrap it with the configurable scrape limiter.
+  // `resolveRateLimiter` returns the Upstash adapter when its REST creds are
+  // present (shared across serverless instances) and an in-memory fixed-window
+  // limiter otherwise — so local dev and tests need no secrets. Tests that inject
+  // `opts.http` bypass the live path (and its limiter) entirely.
+  let http: HttpClient;
+  if (opts.http) {
+    http = opts.http;
+  } else {
+    const live = createLiveHttpClient({
+      userAgent: config.userAgent,
+      requestTimeoutMs: config.requestTimeoutMs,
+    });
+    const limiter = resolveRateLimiter({
+      limit: config.scrapeRateLimit.limit,
+      windowSeconds: config.scrapeRateLimit.windowSeconds,
+      redisUrl: config.scrapeRateLimit.redisUrl,
+      redisToken: config.scrapeRateLimit.redisToken,
+    });
+    http = createRateLimitedHttpClient(live, limiter);
+  }
+
   const deps: ToolDeps = {
-    http:
-      opts.http ??
-      createLiveHttpClient({
-        userAgent: config.userAgent,
-        requestTimeoutMs: config.requestTimeoutMs,
-      }),
+    http,
     outreach: opts.outreach ?? liveOutreachClient,
     maxResults: config.rateLimit.capacity,
+    commonCrawlIndex: config.commonCrawlIndex,
   };
 
   // Each registrar captures its own tool's concrete zod shape at definition time

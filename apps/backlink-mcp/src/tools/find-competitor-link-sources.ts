@@ -10,6 +10,7 @@ import { z } from 'zod';
 import type { McpToolDef } from '@aeo/mcp-core';
 import { jsonResult, type Json } from '../lib/result.js';
 import { search } from '../lib/duckduckgo.js';
+import { queryIndex } from '../lib/commoncrawl.js';
 import { normalizeDomain, hostMatchesDomain } from '../lib/links.js';
 import type { ToolDeps } from './deps.js';
 
@@ -82,10 +83,31 @@ export function findCompetitorLinkSourcesTool(deps: ToolDeps): McpToolDef<Shape>
         .slice(0, max)
         .map(([host, s]) => ({ host, title: s.title, url: s.url, foundVia: [...s.via] }));
 
+      // Supplementary free source: CommonCrawl's index of the competitor's own
+      // pages. These are not third-party linkers (so they stay *out* of
+      // `sources`), but they are a high-signal list of the competitor's
+      // link-attracting URLs — the pages worth replicating/out-creating when
+      // prospecting. The wildcard query is path-scoped to the competitor domain,
+      // so every capture is on that domain by construction. Degrades gracefully.
+      const cc = await queryIndex(deps.http, domain, {
+        index: deps.commonCrawlIndex,
+        limit: max,
+      });
+      for (const w of cc.warnings) warnings.push(`[commoncrawl] ${w}`);
+      const seenCcUrls = new Set<string>();
+      const commonCrawlPages: Json[] = [];
+      for (const c of cc.captures) {
+        if (seenCcUrls.has(c.url)) continue;
+        seenCcUrls.add(c.url);
+        commonCrawlPages.push({ url: c.url, host: c.host, source: 'commoncrawl' });
+        if (commonCrawlPages.length >= max) break;
+      }
+
       return jsonResult({
         competitorDomain: domain,
         totalSources: sources.length,
         sources,
+        commonCrawlPages,
         warnings,
       });
     },

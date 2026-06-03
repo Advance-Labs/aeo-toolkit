@@ -1,1 +1,1 @@
-{ "extends": "../../packages/config/tsconfig/node-library.json", "include": ["src"] }
+{ "extends": "../../packages/config/tsconfig/node-library.json", "include": ["src", "api"] }

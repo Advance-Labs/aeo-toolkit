@@ -17,14 +17,17 @@ import {
   type IncomingMessage,
   type ServerResponse,
 } from 'node:http';
-import { randomUUID } from 'node:crypto';
 
 import { createServer, mountHttp } from '@aeo/mcp-core';
-import { InMemoryTokenStore } from '@aeo/google-api';
 import type { TokenStore } from '@aeo/types';
 
 import { loadConfig, type ServerConfig } from './config.js';
-import { createDefaultTokenResolver, DEFAULT_USER_ID, type TokenResolver } from './auth.js';
+import {
+  createDefaultTokenResolver,
+  createTokenStore,
+  DEFAULT_USER_ID,
+  type TokenResolver,
+} from './auth.js';
 import { defaultClientFactory, registerAllTools, type ToolContext } from './tools/index.js';
 import { authServerMetadata, protectedResourceMetadata } from './discovery.js';
 import { bearerToken, routeFor } from './http-util.js';
@@ -42,7 +45,8 @@ export interface HttpRuntime {
 /** Build the shared runtime (store + resolver) once per process. */
 export function buildRuntime(env: NodeJS.ProcessEnv = process.env): HttpRuntime {
   const config = loadConfig(env);
-  const store = new InMemoryTokenStore();
+  // Env-gated: Supabase-backed (durable, multi-instance) when configured, else in-memory.
+  const store = createTokenStore(config.supabase);
   const tokens = createDefaultTokenResolver({
     oauthEnv: config.oauth,
     staticAccessToken: config.staticAccessToken,
@@ -115,13 +119,20 @@ export async function handleHttp(
       if (runtime.config.oauth === null) {
         return sendJson(res, 501, { error: 'oauth_not_configured' });
       }
-      const state = url.searchParams.get('state') ?? randomUUID();
-      const consentUrl = buildAuthUrl(
-        { oauthEnv: runtime.config.oauth, store: runtime.store },
-        state,
-      );
-      res.writeHead(302, { location: consentUrl });
-      res.end();
+      // The identity to bind into the signed state. Single-tenant deployments use the
+      // default user; a `user` query param lets a multi-tenant front-end carry the id.
+      const userId = url.searchParams.get('user') ?? DEFAULT_USER_ID;
+      try {
+        const consentUrl = buildAuthUrl(
+          { oauthEnv: runtime.config.oauth, store: runtime.store },
+          userId,
+        );
+        res.writeHead(302, { location: consentUrl });
+        res.end();
+      } catch {
+        // signState throws when OAUTH_STATE_SECRET is unset — surface a clear 501.
+        return sendJson(res, 501, { error: 'oauth_state_secret_missing' });
+      }
       return;
     }
 

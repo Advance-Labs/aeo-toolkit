@@ -18,6 +18,7 @@
     "@aeo/pdf": "workspace:*",
     "@aeo/schema-validator": "workspace:*",
     "@aeo/scoring": "workspace:*",
+    "@aeo/storage": "workspace:*",
     "@aeo/types": "workspace:*",
     "@aeo/ui": "workspace:*",
     "next": "15.1.3",

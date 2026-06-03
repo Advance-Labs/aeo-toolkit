@@ -3,11 +3,14 @@ import type { Post } from '../types.js';
 import {
   InMemoryPostStore,
   JsonFilePostStore,
-  SupabaseNotImplementedError,
+  PostStoreError,
   SupabasePostStore,
+  getPostStore,
   parsePosts,
+  postToRow,
+  rowToPost,
 } from './PostStore.js';
-import type { FileIO } from './PostStore.js';
+import type { FileIO, PostRow, SupabaseLike } from './PostStore.js';
 
 function post(slug: string): Post {
   return {
@@ -93,11 +96,183 @@ describe('parsePosts', () => {
   });
 });
 
-describe('SupabasePostStore (STUB)', () => {
-  it('throws a typed not-implemented error from every method', async () => {
-    const store = new SupabasePostStore({ client: { from: () => ({}) } });
-    await expect(store.all()).rejects.toBeInstanceOf(SupabaseNotImplementedError);
-    await expect(store.get('x')).rejects.toBeInstanceOf(SupabaseNotImplementedError);
-    await expect(store.upsert(post('x'))).rejects.toBeInstanceOf(SupabaseNotImplementedError);
+type FakeErr = { message: string } | null;
+type FakeResult<T> = { data: T; error: FakeErr };
+
+/**
+ * A fake Supabase client backed by an in-memory `posts` table. It mimics the chainable PostgREST
+ * builder surface the store uses (`from().select().eq().maybeSingle()`, `.upsert()`, `.delete().eq()`)
+ * and never touches the network. An optional `errorOn` set forces `{ error }` responses to exercise
+ * the error path.
+ *
+ * Terminal builders are real `Promise`s (so they satisfy `PromiseLike`) augmented with the chaining
+ * methods the store calls; the whole thing is narrowed to `SupabaseLike` at the boundary — exactly
+ * how the production code narrows the real client.
+ */
+function fakeSupabase(
+  seed: PostRow[] = [],
+  errorOn: ReadonlySet<'select' | 'upsert' | 'delete'> = new Set(),
+): { client: SupabaseLike; rows: Map<string, PostRow> } {
+  const rows = new Map<string, PostRow>(seed.map((r) => [r.slug, r]));
+  const err = (op: 'select' | 'upsert' | 'delete'): FakeErr =>
+    errorOn.has(op) ? { message: `boom-${op}` } : null;
+
+  /** Build a thenable terminal builder: a resolved Promise with extra chaining methods attached. */
+  function builder<T>(value: FakeResult<T>, methods: Record<string, unknown> = {}): unknown {
+    return Object.assign(Promise.resolve(value), methods);
+  }
+
+  const client = {
+    from(table: string) {
+      expect(table).toBe('posts');
+      return {
+        select(_columns: string) {
+          const e = err('select');
+          return builder<PostRow[] | null>(
+            { data: e ? null : [...rows.values()], error: e },
+            {
+              eq(column: string, value: string) {
+                const match = column === 'slug' ? (rows.get(value) ?? null) : null;
+                return {
+                  maybeSingle: (): Promise<FakeResult<PostRow | null>> =>
+                    Promise.resolve({ data: e ? null : match, error: e }),
+                };
+              },
+            },
+          );
+        },
+        upsert(values: PostRow | PostRow[], options: { onConflict: string }) {
+          expect(options.onConflict).toBe('slug');
+          const e = err('upsert');
+          if (!e) for (const r of Array.isArray(values) ? values : [values]) rows.set(r.slug, r);
+          return builder<unknown>({ data: null, error: e });
+        },
+        delete() {
+          const e = err('delete');
+          return builder<unknown>(
+            { data: null, error: e },
+            {
+              eq(column: string, value: string) {
+                if (!e && column === 'slug') rows.delete(value);
+                return builder<unknown>({ data: null, error: e });
+              },
+            },
+          );
+        },
+      };
+    },
+  };
+  return { client: client as unknown as SupabaseLike, rows };
+}
+
+describe('postToRow / rowToPost', () => {
+  it('round-trips a post through the row representation', () => {
+    const p = post('rt');
+    p.scheduledFor = '2026-07-01';
+    p.publishedAt = '2026-07-02T00:00:00.000Z';
+    p.url = 'https://example.com/blog/rt';
+    p.health = {
+      clicks: 1,
+      impressions: 10,
+      ctr: 0.1,
+      position: 5,
+      pageViews: 3,
+      score: 0.6,
+      measuredAt: '2026-07-02T00:00:00.000Z',
+    };
+    expect(rowToPost(postToRow(p))).toEqual(p);
+  });
+
+  it('maps absent optional fields to null and back to omitted', () => {
+    const row = postToRow(post('min'));
+    expect(row.scheduled_for).toBeNull();
+    expect(row.published_at).toBeNull();
+    expect(row.url).toBeNull();
+    expect(row.health).toBeNull();
+    const back = rowToPost(row);
+    expect('scheduledFor' in back).toBe(false);
+    expect('url' in back).toBe(false);
+    expect('health' in back).toBe(false);
+  });
+});
+
+describe('SupabasePostStore', () => {
+  it('upserts, gets, lists, deletes, and exposes fingerprints', async () => {
+    const { client, rows } = fakeSupabase();
+    const store = new SupabasePostStore({ client });
+
+    await store.upsert(post('a'));
+    expect(rows.get('a')?.title).toBe('a');
+
+    const got = await store.get('a');
+    expect(got?.slug).toBe('a');
+    expect(await store.get('missing')).toBeNull();
+
+    await store.upsertMany([post('b'), post('c')]);
+    expect((await store.all()).map((p) => p.slug).sort()).toEqual(['a', 'b', 'c']);
+
+    expect(await store.fingerprints()).toContainEqual({ slug: 'a', fingerprint: ['a a', 'a b'] });
+
+    expect(await store.delete('b')).toBe(true);
+    expect(await store.delete('missing')).toBe(false);
+    expect((await store.all()).map((p) => p.slug).sort()).toEqual(['a', 'c']);
+  });
+
+  it('targets a custom table when configured', async () => {
+    const { client } = fakeSupabase();
+    const store = new SupabasePostStore({ client, table: 'posts' });
+    expect(store.table).toBe('posts');
+  });
+
+  it('upsertMany on an empty array is a no-op', async () => {
+    const { client, rows } = fakeSupabase();
+    const store = new SupabasePostStore({ client });
+    await store.upsertMany([]);
+    expect(rows.size).toBe(0);
+  });
+
+  it('wraps Supabase errors in a typed PostStoreError', async () => {
+    const selectErr = new SupabasePostStore({
+      client: fakeSupabase([], new Set(['select'])).client,
+    });
+    await expect(selectErr.all()).rejects.toBeInstanceOf(PostStoreError);
+    await expect(selectErr.get('a')).rejects.toBeInstanceOf(PostStoreError);
+    await expect(selectErr.fingerprints()).rejects.toBeInstanceOf(PostStoreError);
+
+    const upsertErr = new SupabasePostStore({
+      client: fakeSupabase([], new Set(['upsert'])).client,
+    });
+    await expect(upsertErr.upsert(post('a'))).rejects.toBeInstanceOf(PostStoreError);
+
+    // delete() first reads (get) then deletes; seed a row so the read succeeds and the delete fails.
+    const deleteErr = new SupabasePostStore({
+      client: fakeSupabase([postToRow(post('a'))], new Set(['delete'])).client,
+    });
+    await expect(deleteErr.delete('a')).rejects.toBeInstanceOf(PostStoreError);
+  });
+});
+
+describe('getPostStore (env-gated factory)', () => {
+  it('returns the fallback store when Supabase env vars are absent', () => {
+    const fallback = new InMemoryPostStore();
+    expect(getPostStore({}, fallback)).toBe(fallback);
+  });
+
+  it('returns a SupabasePostStore when an explicit client override is given', () => {
+    const fallback = new InMemoryPostStore();
+    const { client } = fakeSupabase();
+    const store = getPostStore({}, fallback, { client });
+    expect(store).toBeInstanceOf(SupabasePostStore);
+    expect(store).not.toBe(fallback);
+  });
+
+  it('honors a table override alongside a client override', async () => {
+    const fallback = new InMemoryPostStore();
+    const { client } = fakeSupabase();
+    const store = getPostStore({}, fallback, { client, table: 'posts' });
+    expect(store).toBeInstanceOf(SupabasePostStore);
+    // Exercise it to prove the override client is wired in.
+    await store.upsert(post('x'));
+    expect((await store.all()).map((p) => p.slug)).toEqual(['x']);
   });
 });

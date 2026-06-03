@@ -31,4 +31,29 @@ describe('loadConfig', () => {
     expect(loadConfig({ GOOGLE_ACCESS_TOKEN: 'tok' }).staticAccessToken).toBe('tok');
     expect(loadConfig({}).staticAccessToken).toBeNull();
   });
+
+  it('returns supabase=null unless both URL and service-role key are present', () => {
+    expect(loadConfig({}).supabase).toBeNull();
+    expect(loadConfig({ SUPABASE_URL: 'https://x.supabase.co' }).supabase).toBeNull();
+    expect(loadConfig({ SUPABASE_SERVICE_ROLE_KEY: 'srk' }).supabase).toBeNull();
+  });
+
+  it('builds supabase config from URL + service-role key, with optional encryption key', () => {
+    const cfg = loadConfig({
+      SUPABASE_URL: 'https://x.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'srk',
+    });
+    expect(cfg.supabase).toEqual({
+      url: 'https://x.supabase.co',
+      serviceRoleKey: 'srk',
+      encryptionKey: null,
+    });
+
+    const encrypted = loadConfig({
+      SUPABASE_URL: 'https://x.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'srk',
+      TOKEN_ENCRYPTION_KEY: 'passphrase',
+    });
+    expect(encrypted.supabase?.encryptionKey).toBe('passphrase');
+  });
 });

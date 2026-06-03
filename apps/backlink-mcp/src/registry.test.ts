@@ -41,8 +41,10 @@ describe('buildServer', () => {
         name: 'backlink-mcp',
         version: '0.1.0',
         rateLimit: { capacity: 8, refillPerSec: 1 },
+        scrapeRateLimit: { limit: 30, windowSeconds: 60 },
         userAgent: 'test-agent',
         requestTimeoutMs: 1000,
+        commonCrawlIndex: 'CC-MAIN-2024-51',
       },
     });
 
@@ -71,8 +73,10 @@ describe('buildServer', () => {
         name: 'backlink-mcp',
         version: '0.1.0',
         rateLimit: { capacity: 5, refillPerSec: 1 },
+        scrapeRateLimit: { limit: 30, windowSeconds: 60 },
         userAgent: 'test-agent',
         requestTimeoutMs: 1000,
+        commonCrawlIndex: 'CC-MAIN-2024-51',
       },
       http: {
         getText: vi.fn(async () => ({ ok: false, status: 0, body: '', url: '' })),

@@ -68,17 +68,35 @@ Claude Desktop config snippet:
 | `MCP_PUBLIC_URL` | hosted | Public base URL of this server; becomes the protected `resource` and default issuer. |
 | `OAUTH_ISSUER` | hosted | OAuth 2.1 authorization-server issuer URL (defaults to `MCP_PUBLIC_URL`). |
 | `OAUTH_AUTHORIZATION_SERVERS` | hosted | Comma-separated issuer URLs allowed to mint tokens (defaults to `OAUTH_ISSUER`). |
+| `UPSTASH_REDIS_REST_URL` | hosted | Upstash Redis REST URL for distributed per-caller rate limiting. Omit (with the token) to use the in-memory fallback. |
+| `UPSTASH_REDIS_REST_TOKEN` | hosted | Upstash Redis REST token. Required alongside the URL to enable the distributed limiter. |
 
-There is **no** `PERPLEXITY_API_KEY` env var: the key is a per-request tool argument (BYOK) passed
-straight to `@aeo/llm` and never stored or logged.
+See `.env.example` for the full list. There is **no** `PERPLEXITY_API_KEY` env var: the key is a
+per-request tool argument (BYOK) passed straight to `@aeo/llm` and never stored or logged.
+
+## Rate limiting
+
+Two layers guard the server:
+
+1. **In-process token bucket** (`@aeo/mcp-core`) — caps a single process's overall tool throughput;
+   exhaustion returns a structured MCP tool error.
+2. **Distributed per-caller limit** (`@aeo/storage` `resolveRateLimiter`) — applied at the HTTP entry
+   (`src/http.ts#handleMcpRequest`, shared by the standalone server and the Vercel function). Each
+   caller key (explicit `mcp-client-id`, else the bearer token, else the originating IP) gets
+   `60 requests / 60s`. Over the limit returns **HTTP 429** with a structured
+   `{ "error": "rate_limited", "retryAfterSeconds": N }` body and a `Retry-After` header. With
+   `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` set, the limit holds across stateless
+   serverless invocations via an Upstash sliding window; otherwise it falls back to an in-memory
+   fixed window (local dev / tests, no secrets needed).
 
 ## Status
 
 **Implemented:** all five tools end-to-end — the AEO crawl→parse→schema→`auditScore`→summary
 pipeline (real `@aeo/*` packages), Perplexity Sonar visibility checks with citation matching/ranking,
 prompt discovery, the combined report, competitor comparison, both transports (stdio + Streamable
-HTTP), the `.well-known` OAuth discovery documents, and Vitest coverage of the pure logic with
-mocked `@aeo/*` and network.
+HTTP), the `.well-known` OAuth discovery documents, **distributed per-caller rate limiting**
+(`@aeo/storage` — Upstash in prod, in-memory fallback), and Vitest coverage of the pure logic +
+the rate-limit guard with mocked `@aeo/*`, network, and an injected `RateLimiter`.
 
 **Stubbed (`// STUB:`):** hosted-mode **OAuth token persistence** behind the typed `TokenStore`
 seam (`src/token-store.ts`) — an `InMemoryTokenStore` ships for local/test use; a Supabase/KV adapter

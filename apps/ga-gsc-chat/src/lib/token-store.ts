@@ -2,53 +2,83 @@
  * Token-store seam for the app.
  *
  * The OAuth callback persists Google refresh tokens here and `/api/chat` reads them back to mint a
- * fresh access token per request. For local/dev we use the process-wide {@link InMemoryTokenStore}
- * from `@aeo/google-api`; a durable, encrypted adapter (Supabase) is the production wiring point.
+ * fresh access token per request. In production we use the durable, encrypted Supabase-backed
+ * {@link SupabaseTokenStore} from `@aeo/storage`; for local/dev (no Supabase credentials) we fall
+ * back to the process-wide {@link InMemoryTokenStore} from `@aeo/google-api`.
  *
- * The store is module-scoped so it survives across requests within a single server process. In a
- * serverless / multi-instance deployment this is NOT durable — that is exactly why the Supabase
- * adapter below is the real production seam.
+ * Selection is env-gated: when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are both set, the
+ * Supabase store is used (tokens encrypted at rest when `TOKEN_ENCRYPTION_KEY` is also present).
+ * Otherwise the in-memory store keeps local dev and the test suite working with no secrets. The
+ * in-memory store is module-scoped so it survives across requests within a single server process;
+ * in a serverless / multi-instance deployment it is NOT durable — which is exactly why the Supabase
+ * adapter is the production seam.
  */
 import { InMemoryTokenStore } from '@aeo/google-api';
-import type { GoogleOAuthTokens, TokenStore } from '@aeo/types';
-
-// Single in-memory store shared across route handlers in this process (dev / single instance only).
-const memoryStore = new InMemoryTokenStore();
+import { createSupabaseClient, SupabaseTokenStore } from '@aeo/storage';
+import type { TokenStore } from '@aeo/types';
 
 /**
- * Return the active {@link TokenStore}. Swap the implementation here to go durable without touching
- * call sites.
+ * Table holding the per-user OAuth token rows. Matches the `@aeo/storage` default schema
+ * (`user_id`, `access_token`, `refresh_token`, `expires_at`, `scope`).
  */
-export function getTokenStore(): TokenStore {
-  // STUB: production should return a SupabaseTokenStore (encrypted at rest, multi-instance safe).
-  // The seam is the `TokenStore` interface from `@aeo/types`; see {@link SupabaseTokenStore} below.
+const TOKEN_TABLE = 'oauth_tokens';
+
+// Single in-memory store shared across route handlers in this process (dev / single instance only).
+// Lazily created so importing this module never allocates when the Supabase path is used.
+let memoryStore: InMemoryTokenStore | undefined;
+
+function getMemoryStore(): InMemoryTokenStore {
+  if (memoryStore === undefined) {
+    memoryStore = new InMemoryTokenStore();
+  }
   return memoryStore;
 }
 
+// Cache the resolved store so we build the Supabase client at most once per process.
+let resolvedStore: TokenStore | undefined;
+
+function nonEmptyEnv(name: string): string | undefined {
+  const value = process.env[name];
+  return value !== undefined && value.length > 0 ? value : undefined;
+}
+
 /**
- * STUB: durable, encrypted token storage backed by Supabase.
- *
- * Implements the same {@link TokenStore} contract as the in-memory store. Left unwired so the app
- * compiles and runs without Supabase credentials; the method bodies mark exactly where the real
- * `@supabase/supabase-js` calls go. Refresh tokens MUST be encrypted at rest (e.g. pgsodium /
- * Vault) and scoped per user.
+ * Build the production Supabase-backed store when its credentials are configured, else `null` so the
+ * caller can fall back to the in-memory store. Encryption at rest is enabled only when
+ * `TOKEN_ENCRYPTION_KEY` is present; without it the store would persist plaintext tokens, which is
+ * unacceptable in production, so we require the key alongside the connection credentials.
  */
-export class SupabaseTokenStore implements TokenStore {
-  // STUB: constructor would accept a Supabase client + table name.
-  constructor(private readonly _table: string = 'google_oauth_tokens') {}
-
-  async get(_userId: string): Promise<GoogleOAuthTokens | null> {
-    // STUB: SELECT encrypted token row by userId, decrypt, map to GoogleOAuthTokens.
-    throw new Error('SupabaseTokenStore.get is not implemented (STUB).');
+function createSupabaseTokenStore(): TokenStore | null {
+  const url = nonEmptyEnv('SUPABASE_URL');
+  const serviceKey = nonEmptyEnv('SUPABASE_SERVICE_ROLE_KEY');
+  if (url === undefined || serviceKey === undefined) {
+    return null;
   }
 
-  async set(_userId: string, _tokens: GoogleOAuthTokens): Promise<void> {
-    // STUB: UPSERT encrypted token row keyed by userId.
-    throw new Error('SupabaseTokenStore.set is not implemented (STUB).');
-  }
+  const encryptionKey = nonEmptyEnv('TOKEN_ENCRYPTION_KEY');
+  const client = createSupabaseClient({ url, serviceKey });
+  return new SupabaseTokenStore(client, {
+    table: TOKEN_TABLE,
+    encryptionKey,
+  });
+}
 
-  async delete(_userId: string): Promise<void> {
-    // STUB: DELETE token row by userId (disconnect).
-    throw new Error('SupabaseTokenStore.delete is not implemented (STUB).');
+/**
+ * Return the active {@link TokenStore}. Picks the Supabase adapter when its env vars are present,
+ * otherwise the in-memory dev store. The choice is cached for the lifetime of the process.
+ */
+export function getTokenStore(): TokenStore {
+  if (resolvedStore === undefined) {
+    resolvedStore = createSupabaseTokenStore() ?? getMemoryStore();
   }
+  return resolvedStore;
+}
+
+/**
+ * Reset the cached store selection. Test-only seam: lets a suite flip env vars and re-resolve the
+ * store without leaking state between cases. Not used on the production request path.
+ */
+export function __resetTokenStoreForTests(): void {
+  resolvedStore = undefined;
+  memoryStore = undefined;
 }

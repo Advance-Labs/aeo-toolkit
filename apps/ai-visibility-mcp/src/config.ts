@@ -16,6 +16,18 @@ export const SERVER_VERSION = '0.1.0';
  */
 export const RATE_LIMIT = { capacity: 20, refillPerSec: 5 } as const;
 
+/**
+ * Distributed (per-caller) rate limit applied at the HTTP entry. Each MCP caller
+ * key gets `limit` requests per `windowSeconds`. Backed by Upstash Redis in
+ * production (so the limit holds across stateless serverless invocations) and an
+ * in-memory fixed window in local/dev when no Redis credentials are configured.
+ *
+ * This is intentionally separate from the in-process token bucket above: the
+ * bucket caps a single process's overall tool throughput, while this caps each
+ * individual caller across the whole deployment.
+ */
+export const DISTRIBUTED_RATE_LIMIT = { limit: 60, windowSeconds: 60 } as const;
+
 /** Perplexity Sonar is the AI-search engine whose citations we inspect. */
 export const PERPLEXITY_PROVIDER = 'perplexity' as const;
 export const PERPLEXITY_MODEL = 'sonar' as const;

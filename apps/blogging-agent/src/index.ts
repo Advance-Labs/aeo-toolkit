@@ -55,7 +55,10 @@ export {
   InMemoryPostStore as MemoryPostStore,
   JsonFilePostStore,
   SupabasePostStore,
-  SupabaseNotImplementedError,
+  PostStoreError,
+  getPostStore,
+  postToRow,
+  rowToPost,
   parsePosts,
 } from './store/PostStore.js';
 export type {
@@ -63,12 +66,26 @@ export type {
   FileIO,
   SupabaseLike,
   SupabasePostStoreConfig,
+  PostRow,
 } from './store/PostStore.js';
 export { nodeFileIO } from './store/node-file-io.js';
 
 // Publisher
-export { NoopPublisher, CmsPublisher, PublishError, joinUrl } from './publish/Publisher.js';
-export type { Publisher, PublishResult, CmsPublisherConfig } from './publish/Publisher.js';
+export {
+  NoopPublisher,
+  CmsPublisher,
+  PublishError,
+  joinUrl,
+  getPublisher,
+} from './publish/Publisher.js';
+export type {
+  Publisher,
+  PublishResult,
+  CmsPublisherConfig,
+  PublishWebhookPayload,
+  FetchLike,
+  FetchResponseLike,
+} from './publish/Publisher.js';
 
 // Seams
 export { defaultComplete } from './llm/client.js';

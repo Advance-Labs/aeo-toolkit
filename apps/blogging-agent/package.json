@@ -17,6 +17,7 @@
   "dependencies": {
     "@aeo/google-api": "workspace:*",
     "@aeo/llm": "workspace:*",
+    "@aeo/storage": "workspace:*",
     "@aeo/types": "workspace:*"
   },
   "devDependencies": {

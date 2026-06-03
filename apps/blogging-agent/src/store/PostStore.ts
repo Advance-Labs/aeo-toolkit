@@ -1,14 +1,17 @@
 /**
  * PostStore — the persistence seam for the blogging agent.
  *
- * Defines a typed interface plus two default implementations:
+ * Defines a typed interface plus three implementations:
  *   - `InMemoryPostStore`: zero-dependency, used by tests and dry runs.
  *   - `JsonFilePostStore`: durable single-file JSON store (no native deps — NOT better-sqlite3).
- * A Supabase adapter is sketched as a typed STUB so the wiring point is obvious without pulling in
- * a live database during the build.
+ *   - `SupabasePostStore`: durable cross-run persistence against a `posts` table (production).
+ * The `getPostStore` factory picks Supabase when its env vars are present, else the JSON/in-memory
+ * fallback, so local dev and tests run with no secrets.
  */
+import { createSupabaseClient } from '@aeo/storage';
 import type { DedupCandidate } from '../agents/dedup.js';
-import type { Post } from '../types.js';
+import type { Post, PostHealth, PostStatus } from '../types.js';
+import type { Env } from '../config.js';
 
 /** Durable storage contract for posts. All methods are async to allow remote adapters. */
 export interface PostStore {
@@ -162,14 +165,71 @@ function clone<T>(value: T): T {
   return structuredClone(value);
 }
 
-// STUB: Supabase-backed PostStore.
-//
-// Production deployments persist posts in Supabase (Postgres). This adapter is intentionally
-// unimplemented so the build needs no live database or `@supabase/supabase-js` dependency. Wire it
-// by mapping each method to a query against a `posts` table keyed by `slug`. The `SupabaseLike`
-// seam keeps this file SDK-free; inject a configured client at the call site.
+/**
+ * Supabase-backed PostStore.
+ *
+ * Persists posts in a `posts` table (Postgres) keyed by `slug`. Camel-cased domain fields map to
+ * snake_case columns; `fingerprint` and `health` are stored as JSON-compatible columns (text[]/jsonb).
+ * The Supabase SDK is reached only through the small structural {@link SupabaseLike} seam, so tests
+ * inject a fake with the same chainable shape and never touch the network. Build the real client
+ * with `@aeo/storage`'s `createSupabaseClient` and pass it in (see {@link getPostStore}).
+ *
+ * Expected `posts` table columns:
+ *   slug (text, pk), title, primary_keyword, status, markdown, fingerprint (text[]), created_at,
+ *   updated_at, scheduled_for (nullable), published_at (nullable), url (nullable),
+ *   health (jsonb, nullable), revision_count (int).
+ */
+
+/** Shape of `{ data, error }` returned by terminal PostgREST builders. */
+interface PostgrestResult<T> {
+  data: T;
+  error: { message: string } | null;
+}
+
+/** A PostgREST select builder is await-able and chainable for the calls we use. */
+interface SelectBuilder<Row> extends PromiseLike<PostgrestResult<Row[] | null>> {
+  eq(column: string, value: string): SingleSelectBuilder<Row>;
+}
+
+interface SingleSelectBuilder<Row> {
+  maybeSingle(): PromiseLike<PostgrestResult<Row | null>>;
+}
+
+interface MutationBuilder extends PromiseLike<PostgrestResult<unknown>> {
+  eq(column: string, value: string): MutationBuilder;
+}
+
+interface TableQuery<Row> {
+  select(columns: string): SelectBuilder<Row>;
+  upsert(values: Row | Row[], options: { onConflict: string }): MutationBuilder;
+  delete(): MutationBuilder;
+}
+
+/**
+ * The minimal structural surface of a Supabase client this store uses:
+ * `from(table).select().eq().maybeSingle()`, `.upsert(rows, { onConflict })`, `.delete().eq()`.
+ * The real `SupabaseClient`'s query builder is a structural superset; test fakes implement exactly
+ * this surface and pass through the same constructor.
+ */
 export interface SupabaseLike {
-  from(table: string): unknown;
+  from(table: string): TableQuery<PostRow>;
+}
+
+/** Raw database row layout for the `posts` table. */
+export interface PostRow {
+  slug: string;
+  title: string;
+  primary_keyword: string;
+  status: PostStatus;
+  markdown: string;
+  fingerprint: string[];
+  created_at: string;
+  updated_at: string;
+  scheduled_for: string | null;
+  published_at: string | null;
+  url: string | null;
+  health: PostHealth | null;
+  revision_count: number;
 }
 
 export interface SupabasePostStoreConfig {
@@ -177,48 +237,160 @@ export interface SupabasePostStoreConfig {
   table?: string;
 }
 
-export class SupabasePostStore implements PostStore {
-  constructor(private readonly config: SupabasePostStoreConfig) {}
+const DEFAULT_POSTS_TABLE = 'posts';
+const SLUG_COLUMN = 'slug';
+const ALL_COLUMNS =
+  'slug, title, primary_keyword, status, markdown, fingerprint, created_at, updated_at, ' +
+  'scheduled_for, published_at, url, health, revision_count';
 
-  /** The table the production adapter would target (referenced so `config` is not unused). */
-  get table(): string {
-    return this.config.table ?? 'posts';
-  }
-
-  // STUB: replace with `select('*')` from the posts table.
-  all(): Promise<Post[]> {
-    return Promise.reject(new SupabaseNotImplementedError('all'));
-  }
-
-  // STUB: `select('*').eq('slug', slug).maybeSingle()`.
-  get(_slug: string): Promise<Post | null> {
-    return Promise.reject(new SupabaseNotImplementedError('get'));
-  }
-
-  // STUB: `upsert(post, { onConflict: 'slug' })`.
-  upsert(_post: Post): Promise<void> {
-    return Promise.reject(new SupabaseNotImplementedError('upsert'));
-  }
-
-  // STUB: `upsert(posts, { onConflict: 'slug' })`.
-  upsertMany(_posts: Post[]): Promise<void> {
-    return Promise.reject(new SupabaseNotImplementedError('upsertMany'));
-  }
-
-  // STUB: `delete().eq('slug', slug)`.
-  delete(_slug: string): Promise<boolean> {
-    return Promise.reject(new SupabaseNotImplementedError('delete'));
-  }
-
-  // STUB: `select('slug, fingerprint')`.
-  fingerprints(): Promise<DedupCandidate[]> {
-    return Promise.reject(new SupabaseNotImplementedError('fingerprints'));
+/** Thrown when a Supabase operation returns an error. */
+export class PostStoreError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PostStoreError';
   }
 }
 
-export class SupabaseNotImplementedError extends Error {
-  constructor(method: string) {
-    super(`SupabasePostStore.${method} is a STUB — wire it to a Supabase client before use.`);
-    this.name = 'SupabaseNotImplementedError';
+export class SupabasePostStore implements PostStore {
+  private readonly client: SupabaseLike;
+  private readonly tableName: string;
+
+  constructor(config: SupabasePostStoreConfig) {
+    this.client = config.client;
+    this.tableName = config.table ?? DEFAULT_POSTS_TABLE;
   }
+
+  /** The table this adapter targets. */
+  get table(): string {
+    return this.tableName;
+  }
+
+  async all(): Promise<Post[]> {
+    const { data, error } = await this.client.from(this.tableName).select(ALL_COLUMNS);
+    if (error) throw new PostStoreError(`failed to load posts: ${error.message}`);
+    return (data ?? []).map(rowToPost);
+  }
+
+  async get(slug: string): Promise<Post | null> {
+    const { data, error } = await this.client
+      .from(this.tableName)
+      .select(ALL_COLUMNS)
+      .eq(SLUG_COLUMN, slug)
+      .maybeSingle();
+    if (error) throw new PostStoreError(`failed to load post '${slug}': ${error.message}`);
+    return data === null ? null : rowToPost(data);
+  }
+
+  async upsert(post: Post): Promise<void> {
+    const { error } = await this.client
+      .from(this.tableName)
+      .upsert(postToRow(post), { onConflict: SLUG_COLUMN });
+    if (error) throw new PostStoreError(`failed to upsert post '${post.slug}': ${error.message}`);
+  }
+
+  async upsertMany(posts: Post[]): Promise<void> {
+    if (posts.length === 0) return;
+    const { error } = await this.client
+      .from(this.tableName)
+      .upsert(posts.map(postToRow), { onConflict: SLUG_COLUMN });
+    if (error) throw new PostStoreError(`failed to upsert ${posts.length} posts: ${error.message}`);
+  }
+
+  async delete(slug: string): Promise<boolean> {
+    const existing = await this.get(slug);
+    if (existing === null) return false;
+    const { error } = await this.client.from(this.tableName).delete().eq(SLUG_COLUMN, slug);
+    if (error) throw new PostStoreError(`failed to delete post '${slug}': ${error.message}`);
+    return true;
+  }
+
+  async fingerprints(): Promise<DedupCandidate[]> {
+    const { data, error } = await this.client
+      .from(this.tableName)
+      .select(`${SLUG_COLUMN}, fingerprint`);
+    if (error) throw new PostStoreError(`failed to load fingerprints: ${error.message}`);
+    return (data ?? []).map((row) => ({
+      slug: row.slug,
+      fingerprint: [...(row.fingerprint ?? [])],
+    }));
+  }
+}
+
+/** Map a domain `Post` to its database row (camelCase → snake_case; undefined → null). */
+export function postToRow(post: Post): PostRow {
+  return {
+    slug: post.slug,
+    title: post.title,
+    primary_keyword: post.primaryKeyword,
+    status: post.status,
+    markdown: post.markdown,
+    fingerprint: [...post.fingerprint],
+    created_at: post.createdAt,
+    updated_at: post.updatedAt,
+    scheduled_for: post.scheduledFor ?? null,
+    published_at: post.publishedAt ?? null,
+    url: post.url ?? null,
+    health: post.health ?? null,
+    revision_count: post.revisionCount,
+  };
+}
+
+/** Map a database row back to a domain `Post` (snake_case → camelCase; null → omitted). */
+export function rowToPost(row: PostRow): Post {
+  const post: Post = {
+    slug: row.slug,
+    title: row.title,
+    primaryKeyword: row.primary_keyword,
+    status: row.status,
+    markdown: row.markdown,
+    fingerprint: [...(row.fingerprint ?? [])],
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    revisionCount: row.revision_count,
+  };
+  if (row.scheduled_for !== null) post.scheduledFor = row.scheduled_for;
+  if (row.published_at !== null) post.publishedAt = row.published_at;
+  if (row.url !== null) post.url = row.url;
+  if (row.health !== null) post.health = row.health;
+  return post;
+}
+
+/**
+ * Env-gated PostStore factory.
+ *
+ * Returns a {@link SupabasePostStore} (real client built via `@aeo/storage`) when both
+ * `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are present; otherwise the durable
+ * {@link JsonFilePostStore} (or {@link InMemoryPostStore} when no `FileIO`/path is available),
+ * so local dev and tests run with no secrets. An optional `client` override lets tests inject a
+ * fake Supabase seam without env.
+ */
+export function getPostStore(
+  env: Env,
+  fallback: PostStore,
+  overrides?: { client?: SupabaseLike; table?: string },
+): PostStore {
+  const client = overrides?.client;
+  if (client !== undefined) {
+    const config: SupabasePostStoreConfig = { client };
+    if (overrides?.table !== undefined) config.table = overrides.table;
+    return new SupabasePostStore(config);
+  }
+
+  const url = env['SUPABASE_URL'];
+  const serviceKey = env['SUPABASE_SERVICE_ROLE_KEY'];
+  if (
+    url !== undefined &&
+    url.trim().length > 0 &&
+    serviceKey !== undefined &&
+    serviceKey.trim().length > 0
+  ) {
+    // The real SupabaseClient query builder is a structural superset of our narrow seam.
+    const supabase = createSupabaseClient({ url, serviceKey }) as unknown as SupabaseLike;
+    const config: SupabasePostStoreConfig = { client: supabase };
+    const table = env['POSTS_TABLE'];
+    if (table !== undefined && table.trim().length > 0) config.table = table;
+    return new SupabasePostStore(config);
+  }
+
+  return fallback;
 }

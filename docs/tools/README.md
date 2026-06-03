@@ -13,6 +13,7 @@ One spec per tool. Each maps to an app under `apps/` and reuses the shared engin
 | 7 | [GA4 + GSC MCP](07-ga-gsc-mcp.md) | `apps/ga-gsc-mcp` | MCP server |
 | 8 | [Backlink MCP](08-backlink-mcp.md) | `apps/backlink-mcp` | MCP server |
 | 9 | [Blogging Agent](09-blogging-agent.md) | `apps/blogging-agent` | Actions pipeline |
+| 10 | [Backlink Graph (3D)](10-backlink-graph.md) | `apps/backlink-graph` | Next.js + WebGL |
 
 See [`../BUILD-PLAN.md`](../BUILD-PLAN.md) for the consolidated roadmap and [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
 for the reuse model.

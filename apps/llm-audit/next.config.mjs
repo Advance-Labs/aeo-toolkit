@@ -9,6 +9,7 @@ export default {
     '@aeo/pdf',
     '@aeo/schema-validator',
     '@aeo/scoring',
+    '@aeo/storage',
     '@aeo/types',
     '@aeo/ui',
   ],

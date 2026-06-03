@@ -53,6 +53,9 @@ importers:
       '@aeo/scoring':
         specifier: workspace:*
         version: link:../../packages/scoring
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -93,6 +96,9 @@ importers:
       '@aeo/mcp-core':
         specifier: workspace:*
         version: link:../../packages/mcp-core
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -133,6 +139,9 @@ importers:
       '@aeo/llm':
         specifier: workspace:*
         version: link:../../packages/llm
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -195,6 +204,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.7.0(vite@6.4.3(@types/node@22.19.19)(jiti@1.21.7))
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
@@ -271,6 +283,9 @@ importers:
       '@aeo/llm':
         specifier: workspace:*
         version: link:../../packages/llm
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -323,6 +338,9 @@ importers:
       '@aeo/mcp-core':
         specifier: workspace:*
         version: link:../../packages/mcp-core
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -369,6 +387,9 @@ importers:
       '@aeo/scoring':
         specifier: workspace:*
         version: link:../../packages/scoring
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@aeo/types':
         specifier: workspace:*
         version: link:../../packages/types

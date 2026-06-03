@@ -20,6 +20,7 @@ export function buildStdioServer(env: NodeJS.ProcessEnv = process.env) {
   const tokens = createDefaultTokenResolver({
     oauthEnv: config.oauth,
     staticAccessToken: config.staticAccessToken,
+    supabase: config.supabase,
   });
   const created = createServer({
     name: 'ga-gsc-mcp',

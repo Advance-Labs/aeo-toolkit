@@ -61,24 +61,44 @@ export function timestampToIso(ts: string): string | undefined {
 /** Narrow an unknown CDX cell to a trimmed string. */
 function cell(row: unknown[], index: number): string {
   const value = row[index];
-  return typeof value === 'string' ? value : value == null ? '' : String(value);
+  if (typeof value === 'string') return value.trim();
+  if (value == null) return '';
+  return String(value).trim();
+}
+
+/**
+ * Detect the CDX header row so we only skip it when it actually is one. The CDX
+ * server normally returns the column names as row 0, but under some query shapes
+ * (or future changes) the first row may already be data. Treating a data row as a
+ * header would silently drop the oldest snapshot, so we sniff for the literal
+ * `timestamp`/`original` column labels instead of blindly skipping index 0.
+ */
+function isHeaderRow(row: unknown): boolean {
+  if (!Array.isArray(row)) return false;
+  const first = typeof row[0] === 'string' ? row[0].trim().toLowerCase() : '';
+  return first === 'timestamp' || first === 'urlkey';
 }
 
 /**
  * Parse the CDX JSON body (already `JSON.parse`d into `unknown`) into snapshots.
- * The first row is a header and is skipped. Pure and exported for unit testing.
+ * The leading header row is skipped when present (detected, not assumed). Pure and
+ * exported for unit testing; a non-array, header-only, or rowless body yields `[]`
+ * rather than throwing.
  */
 export function parseCdx(parsed: unknown): WaybackSnapshot[] {
-  if (!Array.isArray(parsed) || parsed.length <= 1) return [];
+  if (!Array.isArray(parsed) || parsed.length === 0) return [];
   const snapshots: WaybackSnapshot[] = [];
 
   // Row layout follows the `fl` order: timestamp, original, statuscode, mimetype.
-  for (let i = 1; i < parsed.length; i += 1) {
+  // Skip a leading header row only when it really is one.
+  const start = isHeaderRow(parsed[0]) ? 1 : 0;
+  for (let i = start; i < parsed.length; i += 1) {
     const row = parsed[i];
     if (!Array.isArray(row)) continue;
     const timestamp = cell(row, 0);
     const original = cell(row, 1);
-    if (timestamp === '' || original === '') continue;
+    // A valid snapshot needs at least a 14-digit timestamp and a non-empty URL.
+    if (!/^\d{14}$/.test(timestamp) || original === '') continue;
     const snapshot: WaybackSnapshot = {
       timestamp,
       original,

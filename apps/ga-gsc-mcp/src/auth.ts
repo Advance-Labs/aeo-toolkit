@@ -14,7 +14,8 @@
 import { GoogleOAuth, InMemoryTokenStore } from '@aeo/google-api';
 import type { GoogleOAuthTokens, TokenStore } from '@aeo/types';
 import { McpToolError } from '@aeo/mcp-core';
-import type { GoogleOAuthEnv } from './config.js';
+import { createSupabaseClient, SupabaseTokenStore } from '@aeo/storage';
+import type { GoogleOAuthEnv, SupabaseEnv } from './config.js';
 
 /** Skew applied to the expiry check so we refresh slightly before the hard expiry. */
 const EXPIRY_SKEW_MS = 60_000;
@@ -109,17 +110,44 @@ export class TokenResolver {
 }
 
 /**
+ * Env-gated {@link TokenStore} factory.
+ *
+ * Returns the durable, optionally-encrypted Supabase-backed store from `@aeo/storage`
+ * when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are configured (the only path that
+ * survives stateless serverless across instances); otherwise falls back to the
+ * process-local {@link InMemoryTokenStore} so local dev and tests run without secrets.
+ *
+ * When `TOKEN_ENCRYPTION_KEY` is present the Supabase store encrypts the access/refresh
+ * tokens at rest (AES-256-GCM). The service-role key is read only here and is never
+ * logged.
+ */
+export function createTokenStore(supabase: SupabaseEnv | null): TokenStore {
+  if (supabase === null) {
+    return new InMemoryTokenStore();
+  }
+  const client = createSupabaseClient({
+    url: supabase.url,
+    serviceKey: supabase.serviceRoleKey,
+  });
+  return new SupabaseTokenStore(client, {
+    ...(supabase.encryptionKey !== null ? { encryptionKey: supabase.encryptionKey } : {}),
+  });
+}
+
+/**
  * Build the default {@link TokenResolver} wiring from server config.
  *
- * Uses {@link InMemoryTokenStore} unless a durable adapter is supplied. The OAuth
- * client is constructed only when full credentials are present.
+ * Uses the {@link createTokenStore} env-gated store (Supabase in prod, in-memory in
+ * dev) unless an explicit `store` is supplied. The OAuth client is constructed only
+ * when full credentials are present.
  */
 export function createDefaultTokenResolver(opts: {
   oauthEnv: GoogleOAuthEnv | null;
   staticAccessToken: string | null;
+  supabase?: SupabaseEnv | null;
   store?: TokenStore;
 }): TokenResolver {
-  const store = opts.store ?? new InMemoryTokenStore();
+  const store = opts.store ?? createTokenStore(opts.supabase ?? null);
   const oauth =
     opts.oauthEnv !== null
       ? new GoogleOAuth({
@@ -131,30 +159,6 @@ export function createDefaultTokenResolver(opts: {
   return new TokenResolver({ store, oauth, staticAccessToken: opts.staticAccessToken });
 }
 
-/**
- * STUB: durable, encrypted token storage backed by Supabase.
- *
- * The OAuth callback (see {@link handleOAuthCallback}) writes the exchanged tokens
- * here, and {@link TokenResolver} reads/refreshes them per request. Implement by
- * upserting into a `google_tokens` table keyed by `user_id`, encrypting the
- * `refresh_token` column at rest (pgcrypto / KMS). Until then it throws so the
- * wiring point is unmistakable; the InMemory store keeps the server runnable.
- */
-export class SupabaseTokenStore implements TokenStore {
-  // STUB: inject a configured Supabase client here once the adapter is built.
-  constructor(private readonly _config: { url: string; serviceRoleKey: string }) {}
-
-  async get(_userId: string): Promise<GoogleOAuthTokens | null> {
-    throw new Error('SupabaseTokenStore.get is not implemented — use InMemoryTokenStore for now.');
-  }
-
-  async set(_userId: string, _tokens: GoogleOAuthTokens): Promise<void> {
-    throw new Error('SupabaseTokenStore.set is not implemented — use InMemoryTokenStore for now.');
-  }
-
-  async delete(_userId: string): Promise<void> {
-    throw new Error(
-      'SupabaseTokenStore.delete is not implemented — use InMemoryTokenStore for now.',
-    );
-  }
-}
+// Durable, encrypted token storage is provided by `@aeo/storage`'s `SupabaseTokenStore`,
+// selected via `createTokenStore` when SUPABASE_* env vars are present. The previous
+// `// STUB:` placeholder class has been removed now that the real adapter is wired.

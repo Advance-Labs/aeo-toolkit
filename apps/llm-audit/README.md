@@ -67,18 +67,51 @@ curl -s -X POST http://localhost:3000/api/audit/technical \
 
 ## Environment variables
 
-The core audit is fully self-hosted and requires **no** credentials.
+The core audit is fully self-hosted and requires **no** credentials. All variables are optional —
+see `.env.example`.
 
 | Var | Required | Default | Purpose |
 | --- | --- | --- | --- |
 | `AUDIT_MAX_PAGES` | no | `50` | Default page cap when `maxPages` is omitted. Clamped to a hard ceiling of `100`. |
+| `UPSTASH_REDIS_REST_URL` | no | — | Upstash Redis REST URL. Provide with the token below to enable the distributed per-IP rate limiter. |
+| `UPSTASH_REDIS_REST_TOKEN` | no | — | Upstash Redis REST token. Required alongside the URL; secrets come only from the environment, never committed. |
+
+## Rate limiting
+
+The public `POST /api/audit/technical` endpoint is rate-limited per client IP (10 audits / 10 minutes)
+via [`@aeo/storage`](../../packages/storage) `resolveRateLimiter`. When `UPSTASH_REDIS_REST_URL` **and**
+`UPSTASH_REDIS_REST_TOKEN` are both set, requests are limited by a distributed Upstash Redis
+sliding-window limiter that coordinates across all serverless instances. With either absent, the app
+falls back to a real (but single-instance, cold-start-resetting) in-memory fixed-window limiter — so
+local dev and the offline tests run with no credentials. A blocked request returns `429` with a
+`Retry-After` header derived from `RateLimitResult.resetSeconds`. The limiter is injectable
+(`handleAudit(request, limiter)`) so tests exercise the 429 path with a deterministic fake.
+
+## Deploy
+
+Deploys to **Vercel** on the **Node runtime** (both route handlers set `export const runtime = 'nodejs'`
+— the crawler and react-pdf renderer are not edge-safe — and `force-dynamic` so audits are never
+statically cached).
+
+1. Import the repo into Vercel and set the project root to `apps/llm-audit` (the monorepo build uses
+   Turborepo; `next.config.mjs` already `transpilePackages` the `@aeo/*` workspace deps).
+2. **No environment variables are required** for a functional deployment. For production-grade,
+   multi-instance rate limiting, add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
+   (create an Upstash Redis database, e.g. via the Vercel Marketplace integration, and copy its REST
+   URL/token). Optionally set `AUDIT_MAX_PAGES`.
+3. Build command `next build`, output is the standard Next.js App Router server. Deploy:
+
+   ```bash
+   pnpm --filter @aeo/llm-audit build
+   vercel deploy --prebuilt    # or push to a Vercel-connected branch
+   ```
+
+Without the Upstash pair the endpoint still rate-limits, but the budget is per serverless instance
+and resets on cold start — set the credentials before exposing the endpoint publicly at scale.
 
 ## Status
 
 **Implemented** — the full crawl → parse → detect → score → report pipeline, the JSON audit route,
-the streaming PDF route, and the interactive UI are real and runnable with no credentials.
-
-**Stubbed** — per-IP rate limiting (`src/lib/rate-limit.ts`, marked `// STUB:`) is a real but
-in-memory, single-instance fixed-window limiter that resets on cold start and does not coordinate
-across serverless instances. It enforces a budget today; before production, swap the implementation
-behind the `RateLimiter` interface for a durable store (e.g. Upstash Redis / Vercel KV).
+the streaming PDF route, the interactive UI, and **per-IP rate limiting** are real and runnable. The
+limiter resolves to a distributed Upstash Redis limiter when its credentials are present (production)
+and to an in-memory fallback otherwise (local dev / tests). No remaining stubs.

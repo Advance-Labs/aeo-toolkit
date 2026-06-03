@@ -14,4 +14,10 @@ export interface ToolDeps {
   outreach: OutreachClient;
   /** Default max results for scraping tools; bounded so we stay polite. */
   maxResults: number;
+  /**
+   * CommonCrawl monthly index id the supplementary source queries against.
+   * Optional so existing fixtures/tests can omit it; the tools fall back to the
+   * adapter's `DEFAULT_CC_INDEX` when unset.
+   */
+  commonCrawlIndex?: string;
 }

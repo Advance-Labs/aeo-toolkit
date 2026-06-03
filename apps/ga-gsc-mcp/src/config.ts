@@ -14,6 +14,17 @@ export interface GoogleOAuthEnv {
   redirectUri: string;
 }
 
+/**
+ * Resolved Supabase service credentials for the durable token store (present only
+ * when both URL and service-role key are set). `encryptionKey` is optional — when
+ * supplied, OAuth tokens are encrypted at rest (AES-256-GCM).
+ */
+export interface SupabaseEnv {
+  url: string;
+  serviceRoleKey: string;
+  encryptionKey: string | null;
+}
+
 export interface ServerConfig {
   /** Public base URL of this MCP server (used for .well-known discovery). */
   publicUrl: string;
@@ -24,6 +35,11 @@ export interface ServerConfig {
    * is used as the default credential so the tools run without an OAuth round-trip.
    */
   staticAccessToken: string | null;
+  /**
+   * Supabase credentials for the durable, encrypted token store, or `null` to fall
+   * back to the in-memory store (local dev / single instance only).
+   */
+  supabase: SupabaseEnv | null;
   /** Token-bucket rate limit applied to every tool call. */
   rateLimit: { capacity: number; refillPerSec: number };
 }
@@ -60,10 +76,22 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
       ? { clientId, clientSecret, redirectUri }
       : null;
 
+  const supabaseUrl = optionalEnv(env, 'SUPABASE_URL');
+  const supabaseServiceKey = optionalEnv(env, 'SUPABASE_SERVICE_ROLE_KEY');
+  const supabase: SupabaseEnv | null =
+    supabaseUrl !== null && supabaseServiceKey !== null
+      ? {
+          url: supabaseUrl,
+          serviceRoleKey: supabaseServiceKey,
+          encryptionKey: optionalEnv(env, 'TOKEN_ENCRYPTION_KEY'),
+        }
+      : null;
+
   return {
     publicUrl: optionalEnv(env, 'MCP_PUBLIC_URL') ?? DEFAULT_PUBLIC_URL,
     oauth,
     staticAccessToken: optionalEnv(env, 'GOOGLE_ACCESS_TOKEN'),
+    supabase,
     rateLimit: {
       capacity: intEnv(env, 'MCP_RATE_CAPACITY', 30),
       refillPerSec: intEnv(env, 'MCP_RATE_REFILL_PER_SEC', 5),

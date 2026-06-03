@@ -26,10 +26,10 @@ import { runEditor } from './agents/editor.js';
 import { duePosts, runScheduler } from './agents/scheduler.js';
 import { runSelfCorrection } from './agents/self-correction.js';
 import type { PostStore } from './store/PostStore.js';
-import { InMemoryPostStore, JsonFilePostStore } from './store/PostStore.js';
+import { InMemoryPostStore, JsonFilePostStore, getPostStore } from './store/PostStore.js';
 import { nodeFileIO } from './store/node-file-io.js';
 import type { Publisher } from './publish/Publisher.js';
-import { CmsPublisher, NoopPublisher } from './publish/Publisher.js';
+import { getPublisher } from './publish/Publisher.js';
 import { loadConfig } from './config.js';
 import type { Env } from './config.js';
 import type { AgentConfig, Post, Strategy } from './types.js';
@@ -205,17 +205,19 @@ export async function runPipeline(deps: PipelineDeps): Promise<RunSummary> {
  * Build production dependencies from the environment and run one pipeline pass.
  *
  * Wiring choices:
- *   - PostStore: `JsonFilePostStore` at `POST_STORE_PATH` (default `./data/posts.json`).
- *   - Publisher: `CmsPublisher` when publish credentials are present, else `NoopPublisher` (dry run).
+ *   - PostStore: `SupabasePostStore` when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are set, else
+ *     the durable `JsonFilePostStore` at `POST_STORE_PATH` (default `./data/posts.json`).
+ *   - Publisher: `CmsPublisher` when `PUBLISH_WEBHOOK_URL` is set, else `NoopPublisher` (dry run).
  *   - Strategy: loaded from the store-adjacent strategy via env, or a minimal default seeded here.
  */
 export async function main(env: Env = process.env): Promise<RunSummary> {
   const config = loadConfig(env);
 
   const storePath = env['POST_STORE_PATH'] ?? './data/posts.json';
-  const store = new JsonFilePostStore(storePath, nodeFileIO);
+  const fallbackStore = new JsonFilePostStore(storePath, nodeFileIO);
+  const store = getPostStore(env, fallbackStore);
 
-  const publisher = makePublisher(env, config);
+  const publisher = getPublisher(env, config.siteUrl);
   const complete = defaultComplete;
   const gscQuery = makeGscQuery(config.googleAccessToken);
   const ga4Report = makeGa4Report(config.googleAccessToken);
@@ -234,21 +236,6 @@ export async function main(env: Env = process.env): Promise<RunSummary> {
   // Log-safe: the summary contains no secrets.
   console.log('[blogging-agent] run complete', JSON.stringify(summary));
   return summary;
-}
-
-function makePublisher(env: Env, config: AgentConfig): Publisher {
-  const token = env['PUBLISH_TOKEN'];
-  const target = env['PUBLISH_TARGET'];
-  if (token && target) {
-    return new CmsPublisher({
-      baseUrl: config.siteUrl,
-      target,
-      token,
-      ...(env['VERCEL_DEPLOY_HOOK_URL'] ? { deployHookUrl: env['VERCEL_DEPLOY_HOOK_URL'] } : {}),
-    });
-  }
-  // No publish credentials → dry run.
-  return new NoopPublisher(config.siteUrl);
 }
 
 function makeStrategy(env: Env, config: AgentConfig): Strategy {
