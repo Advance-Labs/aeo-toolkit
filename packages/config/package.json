@@ -1,0 +1,33 @@
+{
+  "name": "@aeo/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared ESLint, TypeScript, and Prettier configuration for the AEO Toolkit monorepo.",
+  "license": "MIT",
+  "exports": {
+    "./eslint": "./eslint/base.js",
+    "./eslint/react": "./eslint/react.js",
+    "./prettier": "./prettier/index.json",
+    "./tsconfig/base": "./tsconfig/base.json",
+    "./tsconfig/node-library": "./tsconfig/node-library.json",
+    "./tsconfig/react-library": "./tsconfig/react-library.json",
+    "./tsconfig/next": "./tsconfig/next.json"
+  },
+  "files": ["eslint", "prettier", "tsconfig"],
+  "scripts": {
+    "lint": "eslint eslint",
+    "typecheck": "echo \"@aeo/config: no typecheck (config-only package)\""
+  },
+  "dependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "typescript-eslint": "^8.18.2"
+  },
+  "peerDependencies": {
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "./base.json",
+  "display": "Node Library",
+  "compilerOptions": {
+    "lib": ["ES2022"]
+  }
+}
