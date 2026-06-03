@@ -31,6 +31,15 @@ export type {
 export { mountStdio, mountHttp, mountSse } from './transport.js';
 export type { HttpTransportOptions } from './transport.js';
 
+export {
+  enforceWebRateLimit,
+  callerKeyFromHeaders,
+  rateLimitedBody,
+  rateLimitedResponse,
+  ANONYMOUS_CALLER_KEY,
+} from './web-rate-limit.js';
+export type { WebRateLimiter, WebRateLimitResult, RateLimitedBody } from './web-rate-limit.js';
+
 export { toToolError, errorMessage, McpToolError } from './errors.js';
 export type { ToolErrorResult } from './errors.js';
 

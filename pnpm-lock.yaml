@@ -33,199 +33,6 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
-  apps/ai-visibility-mcp:
-    dependencies:
-      '@aeo/crawler':
-        specifier: workspace:*
-        version: link:../../packages/crawler
-      '@aeo/html-parser':
-        specifier: workspace:*
-        version: link:../../packages/html-parser
-      '@aeo/llm':
-        specifier: workspace:*
-        version: link:../../packages/llm
-      '@aeo/mcp-core':
-        specifier: workspace:*
-        version: link:../../packages/mcp-core
-      '@aeo/schema-validator':
-        specifier: workspace:*
-        version: link:../../packages/schema-validator
-      '@aeo/scoring':
-        specifier: workspace:*
-        version: link:../../packages/scoring
-      '@aeo/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.12.0
-        version: 1.29.0(zod@3.25.76)
-      zod:
-        specifier: ^3.24.1
-        version: 3.25.76
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      tsup:
-        specifier: ^8.3.5
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/backlink-graph:
-    dependencies:
-      '@aeo/backlinks':
-        specifier: workspace:*
-        version: link:../../packages/backlinks
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@aeo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 15.1.3
-        version: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
-      react-force-graph-3d:
-        specifier: ^1.26.1
-        version: 1.29.1(react@19.2.7)
-      three:
-        specifier: ^0.171.0
-        version: 0.171.0
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.2.16
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.16)
-      '@types/three':
-        specifier: ^0.171.0
-        version: 0.171.0
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.5.0(postcss@8.5.15)
-      postcss:
-        specifier: ^8.4.49
-        version: 8.5.15
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.19
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/backlink-mcp:
-    dependencies:
-      '@aeo/backlinks':
-        specifier: workspace:*
-        version: link:../../packages/backlinks
-      '@aeo/crawler':
-        specifier: workspace:*
-        version: link:../../packages/crawler
-      '@aeo/llm':
-        specifier: workspace:*
-        version: link:../../packages/llm
-      '@aeo/mcp-core':
-        specifier: workspace:*
-        version: link:../../packages/mcp-core
-      '@aeo/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.12.0
-        version: 1.29.0(zod@3.25.76)
-      cheerio:
-        specifier: ^1.0.0
-        version: 1.2.0
-      zod:
-        specifier: ^3.24.1
-        version: 3.25.76
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      tsup:
-        specifier: ^8.3.5
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/blogging-agent:
-    dependencies:
-      '@aeo/google-api':
-        specifier: workspace:*
-        version: link:../../packages/google-api
-      '@aeo/llm':
-        specifier: workspace:*
-        version: link:../../packages/llm
-      '@aeo/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      tsup:
-        specifier: ^8.3.5
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
   apps/chrome-extension:
     dependencies:
       '@aeo/html-parser':
@@ -281,167 +88,29 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
 
-  apps/eeat-scanner:
+  apps/console:
     dependencies:
+      '@aeo/backlinks':
+        specifier: workspace:*
+        version: link:../../packages/backlinks
+      '@aeo/blogging':
+        specifier: workspace:*
+        version: link:../../packages/blogging
       '@aeo/crawler':
         specifier: workspace:*
         version: link:../../packages/crawler
-      '@aeo/html-parser':
-        specifier: workspace:*
-        version: link:../../packages/html-parser
-      '@aeo/schema-validator':
-        specifier: workspace:*
-        version: link:../../packages/schema-validator
-      '@aeo/scoring':
-        specifier: workspace:*
-        version: link:../../packages/scoring
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@aeo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 15.1.3
-        version: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.2.16
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.16)
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.5.0(postcss@8.5.15)
-      postcss:
-        specifier: ^8.4.49
-        version: 8.5.15
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.19
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/ga-gsc-chat:
-    dependencies:
       '@aeo/google-api':
         specifier: workspace:*
         version: link:../../packages/google-api
+      '@aeo/html-parser':
+        specifier: workspace:*
+        version: link:../../packages/html-parser
       '@aeo/llm':
         specifier: workspace:*
         version: link:../../packages/llm
-      '@aeo/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@aeo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 15.1.3
-        version: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.2.16
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.16)
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.5.0(postcss@8.5.15)
-      postcss:
-        specifier: ^8.4.49
-        version: 8.5.15
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.19
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/ga-gsc-mcp:
-    dependencies:
-      '@aeo/google-api':
-        specifier: workspace:*
-        version: link:../../packages/google-api
       '@aeo/mcp-core':
         specifier: workspace:*
         version: link:../../packages/mcp-core
-      '@aeo/storage':
-        specifier: workspace:*
-        version: link:../../packages/storage
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.12.0
-        version: 1.29.0(zod@3.25.76)
-      zod:
-        specifier: ^3.24.1
-        version: 3.25.76
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      tsup:
-        specifier: ^8.3.5
-        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/llm-audit:
-    dependencies:
-      '@aeo/crawler':
-        specifier: workspace:*
-        version: link:../../packages/crawler
-      '@aeo/html-parser':
-        specifier: workspace:*
-        version: link:../../packages/html-parser
       '@aeo/pdf':
         specifier: workspace:*
         version: link:../../packages/pdf
@@ -460,6 +129,12 @@ importers:
       '@aeo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.12.0
+        version: 1.29.0(zod@3.25.76)
+      mcp-handler:
+        specifier: ^1.0.1
+        version: 1.1.0(@modelcontextprotocol/sdk@1.29.0(zod@3.25.76))(next@15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
       next:
         specifier: 15.1.3
         version: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -469,6 +144,15 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.7(react@19.2.7)
+      react-force-graph-3d:
+        specifier: ^1.26.1
+        version: 1.29.1(react@19.2.7)
+      three:
+        specifier: ^0.171.0
+        version: 0.171.0
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
     devDependencies:
       '@aeo/config':
         specifier: workspace:*
@@ -482,58 +166,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.2
         version: 19.2.3(@types/react@19.2.16)
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.5.0(postcss@8.5.15)
-      postcss:
-        specifier: ^8.4.49
-        version: 8.5.15
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.19
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.8
-        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
-
-  apps/llms-txt-generator:
-    dependencies:
-      '@aeo/crawler':
-        specifier: workspace:*
-        version: link:../../packages/crawler
-      '@aeo/html-parser':
-        specifier: workspace:*
-        version: link:../../packages/html-parser
-      '@aeo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@aeo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 15.1.3
-        version: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react:
-        specifier: ^19.0.0
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.7(react@19.2.7)
-    devDependencies:
-      '@aeo/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.19
-      '@types/react':
-        specifier: ^19.0.2
-        version: 19.2.16
-      '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.16)
+      '@types/three':
+        specifier: ^0.171.0
+        version: 0.171.0
       autoprefixer:
         specifier: ^10.4.20
         version: 10.5.0(postcss@8.5.15)
@@ -564,6 +199,40 @@ importers:
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0
+    devDependencies:
+      '@aeo/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.19
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.19.19)(jsdom@25.0.1)
+
+  packages/blogging:
+    dependencies:
+      '@aeo/google-api':
+        specifier: workspace:*
+        version: link:../google-api
+      '@aeo/llm':
+        specifier: workspace:*
+        version: link:../llm
+      '@aeo/storage':
+        specifier: workspace:*
+        version: link:../storage
+      '@aeo/types':
+        specifier: workspace:*
+        version: link:../types
     devDependencies:
       '@aeo/config':
         specifier: workspace:*
@@ -1908,6 +1577,35 @@ packages:
   '@react-pdf/types@2.11.1':
     resolution: {integrity: sha512-i9xQgfaDU9QoeNnbp6rltXCWg1huEh195rpOuN8cE4BZ2FuLdQrsIcb2dhFF9aOxXf+XBA6LOSpIW051MDD/bw==}
 
+  '@redis/bloom@1.2.0':
+    resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/client@1.6.1':
+    resolution: {integrity: sha512-/KCsg3xSlR+nCK8/8ZYSknYxvXHwubJrU82F3Lm1Fp6789VQ0/3RJKfsmRXjqfaTA++23CvC3hqmqe/2GEt6Kw==}
+    engines: {node: '>=14'}
+
+  '@redis/graph@1.1.1':
+    resolution: {integrity: sha512-FEMTcTHZozZciLRl6GiiIB4zGm5z5F3F6a6FZCyrfxdKOhFlGkiAqlexWMBzCi4DcRoyiOsuLfW+cjlGWyExOw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/json@1.0.7':
+    resolution: {integrity: sha512-6UyXfjVaTBTJtKNG4/9Z8PSpKE6XgSyEb8iwaqDcy+uKrd/DGYHTWkUdnQDyzm727V7p21WUMhsqz5oy65kPcQ==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/search@1.2.0':
+    resolution: {integrity: sha512-tYoDBbtqOVigEDMAcTGsRlMycIIjwMCgD8eR2t0NANeQmgK/lvxNAvYyb6bZDD4frHRhIHkJu2TBRvB0ERkOmw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/time-series@1.1.0':
+    resolution: {integrity: sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
 
@@ -2541,6 +2239,10 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
+  chalk@5.6.2:
+    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
   chardet@2.1.1:
     resolution: {integrity: sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==}
 
@@ -2570,6 +2272,10 @@ packages:
     resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
     engines: {node: '>=0.8'}
 
+  cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
+
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
@@ -2595,6 +2301,10 @@ packages:
   combined-stream@1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
+
+  commander@11.1.0:
+    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
+    engines: {node: '>=16'}
 
   commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -3105,6 +2815,10 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
+  generic-pool@3.9.0:
+    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
+    engines: {node: '>= 4'}
+
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
@@ -3442,6 +3156,16 @@ packages:
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
+
+  mcp-handler@1.1.0:
+    resolution: {integrity: sha512-MVCES7g18gcoZy+R/3v5nadkUMzMAWdos8jRl6DyljOKvd2/ZKDmwlCjL6zp4vo+7FeCXOYL1uWinHWlkKAAUg==}
+    hasBin: true
+    peerDependencies:
+      '@modelcontextprotocol/sdk': 1.26.0
+      next: '>=13.0.0'
+    peerDependenciesMeta:
+      next:
+        optional: true
 
   media-engine@1.0.3:
     resolution: {integrity: sha512-aa5tG6sDoK+k70B9iEX1NeyfT8ObCKhNDs6lJVpwF6r8vhUfuKMslIcirq6HIUYuuUYLefcEQOn9bSBOvawtwg==}
@@ -3900,6 +3624,9 @@ packages:
   redent@3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
+
+  redis@4.7.1:
+    resolution: {integrity: sha512-S1bJDnqLftzHXHP8JsT5II/CtHWQrASX5K96REjWjlmWKrviSOLWmM7QnRLstAWsu1VBBV1ffV6DzCvxNP0UJQ==}
 
   regenerator-runtime@0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
@@ -4496,6 +4223,9 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  yallist@4.0.0:
+    resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
@@ -5418,6 +5148,32 @@ snapshots:
       '@react-pdf/primitives': 4.3.0
       '@react-pdf/stylesheet': 6.2.1
 
+  '@redis/bloom@1.2.0(@redis/client@1.6.1)':
+    dependencies:
+      '@redis/client': 1.6.1
+
+  '@redis/client@1.6.1':
+    dependencies:
+      cluster-key-slot: 1.1.2
+      generic-pool: 3.9.0
+      yallist: 4.0.0
+
+  '@redis/graph@1.1.1(@redis/client@1.6.1)':
+    dependencies:
+      '@redis/client': 1.6.1
+
+  '@redis/json@1.0.7(@redis/client@1.6.1)':
+    dependencies:
+      '@redis/client': 1.6.1
+
+  '@redis/search@1.2.0(@redis/client@1.6.1)':
+    dependencies:
+      '@redis/client': 1.6.1
+
+  '@redis/time-series@1.1.0(@redis/client@1.6.1)':
+    dependencies:
+      '@redis/client': 1.6.1
+
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
   '@rollup/pluginutils@4.2.1':
@@ -6035,6 +5791,8 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  chalk@5.6.2: {}
+
   chardet@2.1.1: {}
 
   check-error@2.1.3: {}
@@ -6082,6 +5840,8 @@ snapshots:
 
   clone@2.1.2: {}
 
+  cluster-key-slot@1.1.2: {}
+
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -6107,6 +5867,8 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+
+  commander@11.1.0: {}
 
   commander@4.1.1: {}
 
@@ -6691,6 +6453,8 @@ snapshots:
 
   function-bind@1.1.2: {}
 
+  generic-pool@3.9.0: {}
+
   gensync@1.0.0-beta.2: {}
 
   get-intrinsic@1.3.0:
@@ -7018,6 +6782,15 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   math-intrinsics@1.1.0: {}
+
+  mcp-handler@1.1.0(@modelcontextprotocol/sdk@1.29.0(zod@3.25.76))(next@15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)):
+    dependencies:
+      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
+      chalk: 5.6.2
+      commander: 11.1.0
+      redis: 4.7.1
+    optionalDependencies:
+      next: 15.1.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
 
   media-engine@1.0.3: {}
 
@@ -7421,6 +7194,15 @@ snapshots:
     dependencies:
       indent-string: 4.0.0
       strip-indent: 3.0.0
+
+  redis@4.7.1:
+    dependencies:
+      '@redis/bloom': 1.2.0(@redis/client@1.6.1)
+      '@redis/client': 1.6.1
+      '@redis/graph': 1.1.1(@redis/client@1.6.1)
+      '@redis/json': 1.0.7(@redis/client@1.6.1)
+      '@redis/search': 1.2.0(@redis/client@1.6.1)
+      '@redis/time-series': 1.1.0(@redis/client@1.6.1)
 
   regenerator-runtime@0.13.11:
     optional: true
@@ -8031,6 +7813,8 @@ snapshots:
   xmlchars@2.2.0: {}
 
   yallist@3.1.1: {}
+
+  yallist@4.0.0: {}
 
   yocto-queue@0.1.0: {}
 

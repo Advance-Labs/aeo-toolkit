@@ -1,30 +1,60 @@
 # Deployment
 
-| App | Target | How |
-|-----|--------|-----|
-| `llm-audit`, `eeat-scanner`, `llms-txt-generator`, `ga-gsc-chat` | Vercel (Fluid Compute, Node runtime) | `vercel` per app; set root directory to the app folder |
-| `ai-visibility-mcp`, `ga-gsc-mcp` | Vercel Functions (remote MCP, HTTP/SSE) | deploy `src/http.ts` entry; expose `.well-known` OAuth discovery |
-| `backlink-mcp` | npm (stdio, Claude Desktop/Cursor) + Vercel (remote) | publish `src/server.ts` bin; deploy `src/http.ts` for hosted |
-| `chrome-extension` | Chrome Web Store | `pnpm --filter @aeo/chrome-extension build` → upload `dist/` zip |
-| `blogging-agent` | GitHub Actions (scheduled) | cron workflow runs `node dist/run.js`; secrets via Actions secrets |
+The suite deploys as **one Vercel project** (`apps/console`) plus the Chrome extension (built from the
+repo, shipped via the Web Store). One domain, one env set.
 
-## Monorepo on Vercel
+| Piece | Target | How |
+|-------|--------|-----|
+| `apps/console` — all tools + MCP + blogging cron | **Vercel** (one project) | Root Directory = `apps/console`, framework Next.js, install at repo root with pnpm |
+| `apps/chrome-extension` | Chrome Web Store | `pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload |
 
-Each Next.js app is a separate Vercel project pointing at its `apps/<name>` directory. Vercel detects the
-workspace; set the install command to `pnpm install` at the repo root and the build command to
-`pnpm --filter @aeo/<name> build` (Turborepo prunes the graph). Add `transpilePackages` for the `@aeo/*`
-deps (already configured in each app's `next.config.mjs`).
+## 1. Provision backing services
 
-## Environment variables
+| Service | Used by | Gives you |
+|---------|---------|-----------|
+| **Supabase** (Postgres) | `/tools/chat`, `/api/mcp/ga-gsc`, blogging cron | `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`; tables `oauth_tokens` + `posts` |
+| **Upstash Redis** | audit + MCP rate limiting | `UPSTASH_REDIS_REST_URL` + `..._TOKEN` (falls back to in-memory if unset) |
+| **Google Cloud** OAuth | GA4 + Search Console tools/MCP, blogging | OAuth web client (`GOOGLE_CLIENT_ID/SECRET`); enable GA4 Data API, GA4 Admin API, Search Console API; scopes `analytics.readonly` + `webmasters.readonly` |
+| **Groq + Anthropic/OpenAI** | blogging cron | model keys (other LLM use is BYOK — passed per request) |
 
-Never commit secrets — `.gitignore` blocks `.env*`. Each app ships a `.env.example`. Common ones:
+Generate two secrets: `TOKEN_ENCRYPTION_KEY` and `OAUTH_STATE_SECRET` (`openssl rand -base64 32`), plus a
+`CRON_SECRET` for the blogging cron.
 
-| Var | Used by | Notes |
-|-----|---------|-------|
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `GOOGLE_REDIRECT_URI` | ga-gsc-chat, ga-gsc-mcp | OAuth (read-only GA4 + GSC) |
-| `MCP_PUBLIC_URL` | the MCP servers | base URL for `.well-known` discovery |
-| `GROQ_API_KEY`, `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` | blogging-agent | model access (bulk vs strategy) |
-| Perplexity / LLM keys | ai-visibility-mcp, ga-gsc-chat | **BYOK** — passed per request, never persisted |
+## 2. Deploy the console to Vercel
 
-OAuth refresh tokens are stored via a pluggable `TokenStore` (in-memory by default; the Supabase adapter
-is a marked `// STUB:` seam for production).
+1. New Vercel project from the repo → **Root Directory = `apps/console`** (Vercel detects the pnpm workspace + Next.js).
+2. Set the env vars from [`../apps/console/.env.example`](../apps/console/.env.example) — one set covers the whole suite:
+   - `MCP_PUBLIC_URL` (this deployment's URL), `GOOGLE_*` (`GOOGLE_REDIRECT_URI` = `<url>/api/auth/google/callback`),
+     `SUPABASE_*`, `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `UPSTASH_*`, `AUDIT_MAX_PAGES`, `BACKLINK_GRAPH_LIMIT`,
+     and the blogging-cron vars (`CRON_SECRET`, `GROQ_API_KEY`, `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`, `GOOGLE_ACCESS_TOKEN`, `GA4_PROPERTY_ID`, `SITE_URL`, `GSC_SITE_URL`, optional `PUBLISH_WEBHOOK_URL`/`DEPLOY_HOOK_URL`).
+3. Deploy. Then set `MCP_PUBLIC_URL` to the real URL and redeploy so the MCP `.well-known` discovery advertises the right origin.
+4. Add your custom domain.
+
+The blogging agent runs automatically via the **Vercel Cron** declared in `apps/console/vercel.json`
+(`/api/cron/blogging`, daily) — Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
+
+## 3. Connect MCP servers to Claude
+
+In **Claude.ai → Settings → Connectors**, add:
+- `https://<your-domain>/api/mcp/ai-visibility`
+- `https://<your-domain>/api/mcp/ga-gsc`
+- `https://<your-domain>/api/mcp/backlink`
+
+OAuth discovery at `/.well-known/*` handles authorization. (A local **stdio** MCP variant for Claude
+Desktop is not part of the Vercel deployment; re-add it later from a thin package over the same tools.)
+
+## 4. Chrome extension
+
+`pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload to the Chrome Web Store (icons are
+generated; analysis is 100% local). See `apps/chrome-extension/CHROME_STORE.md`.
+
+## 5. CI / previews
+
+`.github/workflows/ci.yml` gates lint + typecheck + test + build on every push. Connect Vercel's Git
+integration for per-PR preview deployments. Secrets live only in Vercel/GitHub env — never in git
+(`.env*` is gitignored).
+
+## Becoming a billable SaaS (not yet built)
+
+The console is the surface; a commercial product still needs **auth** (Supabase Auth), **Stripe** billing
++ plans, **usage metering/quotas** on the audit/visibility endpoints, and an **account dashboard**.

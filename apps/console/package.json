@@ -1,0 +1,50 @@
+{
+  "name": "@aeo/console",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AEO Toolkit Console — the unified SaaS surface: all tools, MCP endpoints, and the blogging cron in one Next.js app (one Vercel deployment).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aeo/backlinks": "workspace:*",
+    "@aeo/blogging": "workspace:*",
+    "@aeo/crawler": "workspace:*",
+    "@aeo/google-api": "workspace:*",
+    "@aeo/html-parser": "workspace:*",
+    "@aeo/llm": "workspace:*",
+    "@aeo/mcp-core": "workspace:*",
+    "@aeo/pdf": "workspace:*",
+    "@aeo/schema-validator": "workspace:*",
+    "@aeo/scoring": "workspace:*",
+    "@aeo/storage": "workspace:*",
+    "@aeo/types": "workspace:*",
+    "@aeo/ui": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "mcp-handler": "^1.0.1",
+    "next": "15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-force-graph-3d": "^1.26.1",
+    "three": "^0.171.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@aeo/config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/three": "^0.171.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

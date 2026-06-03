@@ -1,28 +1,32 @@
 # Apps
 
-The 9 tools. Each is an independently-deployable package that consumes the shared engines in
-[`../packages`](../packages). Full specs live in [`../docs/tools`](../docs/tools).
+The toolkit ships as **one unified app** plus the browser extension. All tool logic lives in the shared
+engines under [`../packages`](../packages); these apps are the thin composition + delivery layer.
 
-| App | Tool | Type | Key `@aeo/*` deps |
-|-----|------|------|-------------------|
-| `llm-audit` | LLM & Technical SEO Audit | Next.js | crawler, html-parser, schema-validator, scoring, pdf, ui |
-| `eeat-scanner` | E-E-A-T Scanner | Next.js | crawler, html-parser, scoring, ui |
-| `llms-txt-generator` | llms.txt Generator | Next.js | crawler, html-parser, ui |
-| `ai-visibility-mcp` | AI Visibility MCP | MCP server | mcp-core, crawler, scoring, llm |
-| `chrome-extension` | AEO/GEO Chrome Extension | MV3 (Vite) | scoring, schema-validator, html-parser |
-| `ga-gsc-chat` | GA4 + GSC Chat | Next.js | google-api, llm, ui |
-| `ga-gsc-mcp` | GA4 + GSC MCP | MCP server | mcp-core, google-api |
-| `backlink-mcp` | Backlink MCP | MCP server | mcp-core, llm, crawler |
-| `blogging-agent` | Autonomous Blogging Agent | Node pipeline | google-api, llm |
-| `backlink-graph` | Backlink Graph (3D) | Next.js + WebGL | backlinks, ui |
+| App | What | Deploy target |
+|-----|------|---------------|
+| [`console`](console) | **The whole suite in one Next.js app** — all 5 web tools as routes, the 3 MCP servers as route handlers, and the blogging agent as a Vercel Cron. One Vercel project, one domain. | Vercel |
+| [`chrome-extension`](chrome-extension) | Single-page AEO/GEO audit that runs locally in the browser (zero server calls). Built from the repo, shipped via the Chrome Web Store. | Chrome Web Store |
 
-## Running one app
+> The former standalone tool apps (llm-audit, eeat-scanner, llms-txt-generator, ga-gsc-chat,
+> backlink-graph, ai-visibility-mcp, ga-gsc-mcp, backlink-mcp, blogging-agent) were **consolidated into
+> `console`** — their logic was preserved in the `@aeo/*` packages and re-homed as routes/handlers.
+
+## Console surface
+
+| Route | Tool / endpoint |
+|-------|-----------------|
+| `/` | Dashboard |
+| `/tools/audit` · `/tools/eeat` · `/tools/llms-txt` · `/tools/chat` · `/tools/graph` | the 5 web tools |
+| `/api/audit/*` · `/api/generate` · `/api/chat` · `/api/auth/google/*` · `/api/graph/*` | tool APIs (Node runtime) |
+| `/api/mcp/{ai-visibility,ga-gsc,backlink}` + `/.well-known/*` | MCP servers (via `mcp-handler`) for Claude connectors |
+| `/api/cron/blogging` | blogging agent, invoked by a Vercel Cron (`apps/console/vercel.json`) |
+
+## Running
 
 ```bash
-pnpm --filter @aeo/llm-audit dev      # Next.js dev server
-pnpm --filter @aeo/ga-gsc-mcp build   # build an MCP server
+pnpm --filter @aeo/console dev          # the whole suite
 pnpm --filter @aeo/chrome-extension build
 ```
 
-Each app's `README.md` documents its routes/entrypoints, required env vars, and which integrations are
-live vs stubbed.
+See [`../docs/DEPLOYMENT.md`](../docs/DEPLOYMENT.md) for the single-deployment runbook.
