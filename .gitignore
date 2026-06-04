@@ -40,3 +40,6 @@ apps/chrome-extension/*.zip
 
 # Local crawl caches
 .cache/
+
+# Vercel
+.vercel
