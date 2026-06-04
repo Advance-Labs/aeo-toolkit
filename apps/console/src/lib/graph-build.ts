@@ -139,5 +139,16 @@ export function buildGraph(
     engineOpts.commonCrawlIndex = ccIndex;
   }
 
-  return builder(url, engineOpts);
+  return builder(url, engineOpts).then((graph) => {
+    // DuckDuckGo reliably 403s from serverless IPs (it blocks datacenter ranges). That failure is
+    // expected and not actionable by the user, and the graph is still populated by CommonCrawl +
+    // Wayback — so drop the [duckduckgo] warning to avoid a permanent, alarming "provider failed"
+    // banner. Real, transient warnings from the other sources are preserved.
+    if (graph.warnings) {
+      const kept = graph.warnings.filter((w) => !w.startsWith('[duckduckgo]'));
+      if (kept.length > 0) graph.warnings = kept;
+      else delete graph.warnings;
+    }
+    return graph;
+  });
 }

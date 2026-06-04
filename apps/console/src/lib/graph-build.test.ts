@@ -131,6 +131,35 @@ describe('buildGraph', () => {
     expect(graph.stats.sampled).toBe(true);
   });
 
+  it('drops the [duckduckgo] block warning but keeps other provider warnings', async () => {
+    const builder: GraphBuilder = (url) => {
+      const g = fakeGraph(url);
+      g.warnings = [
+        '[duckduckgo] DuckDuckGo request failed (status 403). Returning no results; try again later.',
+        '[wayback] Wayback CDX request failed (status 0). Returning no captures.',
+      ];
+      return Promise.resolve(g);
+    };
+
+    const graph = await buildGraph('https://acme.com/', {}, builder, {});
+
+    expect(graph.warnings).toEqual([
+      '[wayback] Wayback CDX request failed (status 0). Returning no captures.',
+    ]);
+  });
+
+  it('removes the warnings field entirely when only duckduckgo warnings were present', async () => {
+    const builder: GraphBuilder = (url) => {
+      const g = fakeGraph(url);
+      g.warnings = ['[duckduckgo] DuckDuckGo request failed (status 403).'];
+      return Promise.resolve(g);
+    };
+
+    const graph = await buildGraph('https://acme.com/', {}, builder, {});
+
+    expect(graph.warnings).toBeUndefined();
+  });
+
   it('propagates an engine rejection to the caller (route maps it to build_failed)', async () => {
     const builder: GraphBuilder = () => Promise.reject(new Error('all sources down'));
 
