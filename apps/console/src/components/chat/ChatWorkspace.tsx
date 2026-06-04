@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { FormEvent, JSX } from 'react';
 import type { Ga4Property, GscSite, LlmProvider } from '@aeo/types';
 import type {
   ChatRequestBody,
@@ -12,6 +12,8 @@ import type {
 import { PRESET_PROMPTS } from '@/components/chat/presets.js';
 import { PROVIDER_OPTIONS, defaultModelFor } from '@/components/chat/models.js';
 import { ConnectButton } from '@/components/chat/ConnectButton.js';
+import { Button, Input, Reveal, SpotlightCard } from '@/components/ui';
+import { cn } from '@/lib/cn';
 
 interface ChatTurn {
   id: string;
@@ -25,7 +27,132 @@ function newId(): string {
   return Math.random().toString(36).slice(2);
 }
 
-export function ChatWorkspace({ initialConnected }: { initialConnected: boolean }) {
+/** Shared dark field style for the native <select> elements (Input covers <input>). */
+const SELECT_CLASS =
+  'h-12 w-full appearance-none rounded-xl border border-white/[0.12] bg-white/[0.04] px-4 pr-10 text-[15px] text-white outline-none transition focus:border-brand-cyan/60 focus:bg-white/[0.06] focus:ring-2 focus:ring-brand-cyan/20 [&>option]:bg-ink-900 [&>option]:text-white';
+
+function FieldLabel({ children }: { children: string }): JSX.Element {
+  return (
+    <span className="text-xs font-medium uppercase tracking-wide text-slate-400">{children}</span>
+  );
+}
+
+function ChevronIcon(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function StepBadge({ n }: { n: number }): JSX.Element {
+  return (
+    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-sm font-semibold text-brand-cyan">
+      {n}
+    </span>
+  );
+}
+
+function StatusDot({ ok }: { ok: boolean }): JSX.Element {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'inline-block h-2 w-2 rounded-full',
+        ok ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]' : 'bg-slate-500',
+      )}
+    />
+  );
+}
+
+/** A glassy panel that wraps each configuration step. */
+function Panel({
+  step,
+  title,
+  description,
+  action,
+  children,
+}: {
+  step: number;
+  title: string;
+  description?: string;
+  action?: JSX.Element;
+  children?: JSX.Element;
+}): JSX.Element {
+  return (
+    <section className="surface p-5 sm:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
+          <StepBadge n={step} />
+          <div className="flex flex-col gap-1">
+            <h2 className="text-base font-semibold text-white">{title}</h2>
+            {description ? (
+              <p className="text-sm leading-relaxed text-slate-400">{description}</p>
+            ) : null}
+          </div>
+        </div>
+        {action ? <div className="shrink-0 sm:pl-4">{action}</div> : null}
+      </div>
+      {children ? <div className="mt-5">{children}</div> : null}
+    </section>
+  );
+}
+
+/** Renders a single user→assistant exchange as a chat thread entry. */
+function ChatBubble({ turn }: { turn: ChatTurn }): JSX.Element {
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-end">
+        <div className="max-w-[85%] rounded-2xl rounded-br-md bg-[linear-gradient(110deg,rgba(99,102,241,0.22),rgba(139,92,246,0.18))] px-4 py-2.5 text-[15px] leading-relaxed text-white ring-1 ring-white/10">
+          {turn.question}
+        </div>
+      </div>
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden="true"
+          className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,#6366F1,#22D3EE)] text-[11px] font-bold text-white"
+        >
+          AI
+        </span>
+        <div className="min-w-0 flex-1 rounded-2xl rounded-tl-md border border-white/[0.08] bg-white/[0.025] px-4 py-3">
+          {turn.pending ? (
+            <p className="flex items-center gap-2 text-sm text-slate-400" aria-live="polite">
+              <span className="flex gap-1">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-cyan [animation-delay:0ms]" />
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-violet [animation-delay:150ms]" />
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-indigo [animation-delay:300ms]" />
+              </span>
+              Analyzing your data…
+            </p>
+          ) : null}
+          {turn.error ? (
+            <p role="alert" className="text-sm text-red-300">
+              {turn.error}
+            </p>
+          ) : null}
+          {turn.answer ? (
+            <pre className="whitespace-pre-wrap break-words font-sans text-[15px] leading-relaxed text-slate-200">
+              {turn.answer}
+            </pre>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ChatWorkspace({ initialConnected }: { initialConnected: boolean }): JSX.Element {
   const [connected, setConnected] = useState(initialConnected);
   const [sites, setSites] = useState<GscSite[]>([]);
   const [properties, setProperties] = useState<Ga4Property[]>([]);
@@ -38,6 +165,8 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
 
   const [turns, setTurns] = useState<ChatTurn[]>([]);
   const [draft, setDraft] = useState('');
+
+  const threadEndRef = useRef<HTMLDivElement>(null);
 
   const loadConnection = useCallback(async () => {
     try {
@@ -65,6 +194,12 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
     // Intentionally run once on mount; loadConnection captures current setters.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep the latest turn in view as the thread grows.
+  useEffect(() => {
+    if (turns.length === 0) return;
+    threadEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [turns]);
 
   const onProviderChange = useCallback((next: LlmProvider) => {
     setProvider(next);
@@ -133,181 +268,242 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
     connected && siteUrl.trim() !== '' && propertyId.trim() !== '' && apiKey.trim() !== '';
 
   return (
-    <div className="flex flex-col gap-6">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-base font-semibold text-slate-900">1. Connect Google</h2>
-            <p className="text-sm text-slate-500">
-              Read-only GA4 + Search Console access. {connected ? 'Connected.' : 'Not connected.'}
-            </p>
+    <div className="flex flex-col gap-5">
+      {/* 1. Connect Google */}
+      <Reveal>
+        <Panel
+          step={1}
+          title="Connect Google"
+          description="Read-only access to your GA4 and Search Console data. We never write or store your reports."
+          action={
+            <div className="flex flex-col items-start gap-2 sm:items-end">
+              <ConnectButton connected={connected} />
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                <StatusDot ok={connected} />
+                {connected ? 'Connected' : 'Not connected'}
+              </span>
+            </div>
+          }
+        />
+      </Reveal>
+
+      {/* 2. Pick data sources */}
+      <Reveal delay={0.05}>
+        <Panel
+          step={2}
+          title="Pick data sources"
+          description="Choose the property and site the assistant should ground its answers in."
+        >
+          <div className="flex flex-col gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5">
+                <FieldLabel>Search Console site</FieldLabel>
+                {sites.length > 0 ? (
+                  <div className="relative">
+                    <select
+                      className={SELECT_CLASS}
+                      value={siteUrl}
+                      onChange={(e) => setSiteUrl(e.target.value)}
+                    >
+                      {sites.map((s) => (
+                        <option key={s.siteUrl} value={s.siteUrl}>
+                          {s.siteUrl}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronIcon />
+                  </div>
+                ) : (
+                  <Input
+                    placeholder="https://example.com/"
+                    value={siteUrl}
+                    onChange={(e) => setSiteUrl(e.target.value)}
+                  />
+                )}
+              </label>
+
+              <label className="flex flex-col gap-1.5">
+                <FieldLabel>GA4 property ID</FieldLabel>
+                {properties.length > 0 ? (
+                  <div className="relative">
+                    <select
+                      className={SELECT_CLASS}
+                      value={propertyId}
+                      onChange={(e) => setPropertyId(e.target.value)}
+                    >
+                      {properties.map((p) => (
+                        <option key={p.propertyId} value={p.propertyId}>
+                          {p.displayName} ({p.propertyId})
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronIcon />
+                  </div>
+                ) : (
+                  <Input
+                    placeholder="123456789"
+                    value={propertyId}
+                    onChange={(e) => setPropertyId(e.target.value)}
+                  />
+                )}
+              </label>
+            </div>
+            {properties.length === 0 ? (
+              <p className="text-xs leading-relaxed text-slate-500">
+                Property listing requires the GA4 Admin API (not yet wired) — enter your numeric
+                property ID manually.
+              </p>
+            ) : null}
           </div>
-          <ConnectButton connected={connected} />
-        </div>
-      </section>
+        </Panel>
+      </Reveal>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-base font-semibold text-slate-900">2. Pick data sources</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-700">Search Console site</span>
-            {sites.length > 0 ? (
-              <select
-                className="rounded-md border border-slate-300 px-3 py-2"
-                value={siteUrl}
-                onChange={(e) => setSiteUrl(e.target.value)}
-              >
-                {sites.map((s) => (
-                  <option key={s.siteUrl} value={s.siteUrl}>
-                    {s.siteUrl}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                className="rounded-md border border-slate-300 px-3 py-2"
-                placeholder="https://example.com/"
-                value={siteUrl}
-                onChange={(e) => setSiteUrl(e.target.value)}
+      {/* 3. Bring your own LLM key */}
+      <Reveal delay={0.1}>
+        <Panel
+          step={3}
+          title="Bring your own LLM key"
+          description="Your key is sent only with the request and is never stored on the server."
+        >
+          <div className="grid gap-4 sm:grid-cols-3">
+            <label className="flex flex-col gap-1.5">
+              <FieldLabel>Provider</FieldLabel>
+              <div className="relative">
+                <select
+                  className={SELECT_CLASS}
+                  value={provider}
+                  onChange={(e) => onProviderChange(e.target.value as LlmProvider)}
+                >
+                  {PROVIDER_OPTIONS.map((o) => (
+                    <option key={o.provider} value={o.provider}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronIcon />
+              </div>
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <FieldLabel>Model</FieldLabel>
+              <Input value={model} onChange={(e) => setModel(e.target.value)} />
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <FieldLabel>API key</FieldLabel>
+              <Input
+                type="password"
+                autoComplete="off"
+                placeholder="sk-… / your provider key"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
               />
-            )}
-          </label>
+            </label>
+          </div>
+        </Panel>
+      </Reveal>
 
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-700">GA4 property ID</span>
-            {properties.length > 0 ? (
-              <select
-                className="rounded-md border border-slate-300 px-3 py-2"
-                value={propertyId}
-                onChange={(e) => setPropertyId(e.target.value)}
-              >
-                {properties.map((p) => (
-                  <option key={p.propertyId} value={p.propertyId}>
-                    {p.displayName} ({p.propertyId})
-                  </option>
-                ))}
-              </select>
+      {/* 4. Ask — presets + thread + composer */}
+      <Reveal delay={0.15}>
+        <section className="surface flex flex-col gap-5 p-5 sm:p-6">
+          <div className="flex items-center gap-3">
+            <StepBadge n={4} />
+            <div className="flex flex-col gap-1">
+              <h2 className="text-base font-semibold text-white">Ask your data</h2>
+              <p className="text-sm leading-relaxed text-slate-400">
+                Start from a preset or type your own question below.
+              </p>
+            </div>
+          </div>
+
+          {/* Preset prompt cards */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {PRESET_PROMPTS.map((preset) => (
+              <SpotlightCard key={preset.id}>
+                <button
+                  type="button"
+                  disabled={!canAsk}
+                  onClick={() => void ask(preset.question)}
+                  className="flex w-full flex-col items-start gap-1 p-4 text-left transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <span className="text-sm font-semibold text-white">{preset.title}</span>
+                  <span className="text-xs leading-relaxed text-slate-400">
+                    {preset.description}
+                  </span>
+                </button>
+              </SpotlightCard>
+            ))}
+          </div>
+
+          {/* Chat thread */}
+          <div
+            aria-live="polite"
+            className="flex flex-col gap-6 rounded-2xl border border-white/[0.06] bg-black/20 p-4 sm:p-5"
+          >
+            {turns.length === 0 ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-center">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="28"
+                  height="28"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="text-slate-600"
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <p className="text-sm text-slate-500">
+                  No questions yet. Pick a preset or type one below.
+                </p>
+              </div>
             ) : (
-              <input
-                className="rounded-md border border-slate-300 px-3 py-2"
-                placeholder="123456789"
-                value={propertyId}
-                onChange={(e) => setPropertyId(e.target.value)}
+              <>
+                {turns.map((turn) => (
+                  <ChatBubble key={turn.id} turn={turn} />
+                ))}
+                <div ref={threadEndRef} />
+              </>
+            )}
+          </div>
+
+          {/* Composer */}
+          <form onSubmit={onSubmit} className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Input
+                aria-label="Ask a question about your GA4 and Search Console data"
+                placeholder="Ask a question about your GA4 + Search Console data…"
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                className="flex-1"
               />
-            )}
-          </label>
-        </div>
-        {properties.length === 0 && (
-          <p className="mt-2 text-xs text-slate-400">
-            Property listing requires the GA4 Admin API (not yet wired) — enter your numeric
-            property ID manually.
-          </p>
-        )}
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-1 text-base font-semibold text-slate-900">3. Bring your own LLM key</h2>
-        <p className="mb-3 text-xs text-slate-400">
-          Your key is sent only with the request and is never stored on the server.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-700">Provider</span>
-            <select
-              className="rounded-md border border-slate-300 px-3 py-2"
-              value={provider}
-              onChange={(e) => onProviderChange(e.target.value as LlmProvider)}
-            >
-              {PROVIDER_OPTIONS.map((o) => (
-                <option key={o.provider} value={o.provider}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-700">Model</span>
-            <input
-              className="rounded-md border border-slate-300 px-3 py-2"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-700">API key</span>
-            <input
-              type="password"
-              autoComplete="off"
-              className="rounded-md border border-slate-300 px-3 py-2"
-              placeholder="sk-… / your provider key"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </label>
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="mb-3 text-base font-semibold text-slate-900">4. Ask</h2>
-        <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {PRESET_PROMPTS.map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              disabled={!canAsk}
-              onClick={() => void ask(preset.question)}
-              className="flex flex-col gap-1 rounded-md border border-slate-200 p-3 text-left transition-colors hover:border-blue-400 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <span className="text-sm font-semibold text-slate-800">{preset.title}</span>
-              <span className="text-xs text-slate-500">{preset.description}</span>
-            </button>
-          ))}
-        </div>
-
-        <form onSubmit={onSubmit} className="flex gap-2">
-          <input
-            className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Ask a question about your GA4 + Search Console data…"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-          />
-          <button
-            type="submit"
-            disabled={!canAsk || draft.trim() === ''}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Send
-          </button>
-        </form>
-        {!canAsk && (
-          <p className="mt-2 text-xs text-amber-600">
-            Connect Google, pick a site + property, and enter an API key to start asking.
-          </p>
-        )}
-      </section>
-
-      <section className="flex flex-col gap-4">
-        {turns.length === 0 && (
-          <p className="text-sm text-slate-400">
-            No questions yet. Pick a preset or type one above.
-          </p>
-        )}
-        {turns.map((turn) => (
-          <article
-            key={turn.id}
-            className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <p className="mb-2 text-sm font-semibold text-slate-900">{turn.question}</p>
-            {turn.pending && <p className="text-sm text-slate-400">Analyzing your data…</p>}
-            {turn.error && <p className="text-sm text-red-600">{turn.error}</p>}
-            {turn.answer && (
-              <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed text-slate-700">
-                {turn.answer}
-              </pre>
-            )}
-          </article>
-        ))}
-      </section>
+              <Button type="submit" size="md" disabled={!canAsk || draft.trim() === ''}>
+                <svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m22 2-7 20-4-9-9-4Z" />
+                  <path d="M22 2 11 13" />
+                </svg>
+                Send
+              </Button>
+            </div>
+            {!canAsk ? (
+              <p className="text-xs text-amber-300/90">
+                Connect Google, pick a site + property, and enter an API key to start asking.
+              </p>
+            ) : null}
+          </form>
+        </section>
+      </Reveal>
     </div>
   );
 }

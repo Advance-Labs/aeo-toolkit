@@ -1,8 +1,10 @@
 'use client';
 
 /**
- * The single-URL entry point. Wraps the shared `@aeo/ui` UrlInputForm (which
- * normalizes the scheme and validates the URL) with the tool's title + framing.
+ * The single-URL entry point that sits above the 3D scene. Wraps the shared
+ * `@aeo/ui` UrlInputForm (which normalizes the scheme and validates the URL) in
+ * a glassy, themed bar. The page hero owns the single `<h1>`, so this is a plain
+ * control surface (no heading) — it just labels the input for assistive tech.
  */
 import type { JSX } from 'react';
 import { UrlInputForm } from '@aeo/ui';
@@ -18,20 +20,21 @@ export interface UrlBarProps {
 
 export function UrlBar({ onSubmit, loading = false, defaultValue }: UrlBarProps): JSX.Element {
   return (
-    <div className="pointer-events-auto flex w-full max-w-xl flex-col gap-2 rounded-xl border border-slate-700/60 bg-slate-900/90 p-4 shadow-xl backdrop-blur">
-      <div className="flex flex-col gap-0.5">
-        <h1 className="text-lg font-semibold tracking-tight text-slate-100">Backlink Graph</h1>
-        <p className="text-xs text-slate-400">
-          Enter one URL to explore its backlink universe in 3D.
-        </p>
-      </div>
+    <div
+      role="search"
+      aria-label="Build a backlink graph"
+      className="pointer-events-auto w-full max-w-2xl rounded-2xl border border-white/[0.12] bg-ink-950/80 p-3 shadow-glow backdrop-blur-md sm:p-4"
+    >
       <UrlInputForm
         onSubmit={onSubmit}
         loading={loading}
         submitLabel="Build graph"
-        placeholder="example.com"
+        placeholder="example.com — enter any domain or URL"
         {...(defaultValue === undefined ? {} : { defaultValue })}
       />
+      <p className="mt-2 px-1 text-xs text-slate-500">
+        We map referring domains, backlink pages, and brand mentions in 3D.
+      </p>
     </div>
   );
 }

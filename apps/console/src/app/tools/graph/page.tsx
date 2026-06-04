@@ -1,230 +1,215 @@
-'use client';
+import type { JSX } from 'react';
+import type { Metadata } from 'next';
+import { Badge, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { GraphExplorer } from '@/components/graph/GraphExplorer.js';
 
 /**
  * Backlink Graph — the single-page 3D explorer. Re-homed from the standalone
  * `backlink-graph` app into the console route segment.
  *
- * Flow: UrlBar → stream the graph (SSE) for the "web grows live" effect, falling
- * back to a single POST when streaming is unavailable → project to force-graph
- * data → render the canvas behind overlay panels (stats, filters, details).
- * Clicking a node opens the DetailPanel; "Expand backlinks" POSTs the node and
- * merges the result so exploration is progressive.
- *
- * The WebGL canvas is isolated in `BacklinkGraphCanvas` (dynamic, ssr:false);
- * all data shaping lives in the pure `graph-data.ts`, so this orchestrator stays
- * declarative. The shell layout supplies the page `<main>`, so the full-bleed
- * scene here lives in a contained, rounded panel (a `<div>`, not a nested `<main>`).
+ * This is a static server component so it can export `metadata` and server-render
+ * the answer-first hero, the "sampled, not complete" note, the FAQ block, and the
+ * FAQPage / HowTo / BreadcrumbList JSON-LD the AEO plan requires. The interactive
+ * WebGL flow (UrlBar → stream → canvas → side rail) lives in the
+ * {@link GraphExplorer} client island so the heavy three.js bundle stays
+ * browser-only (`dynamic`, `ssr:false`). The shell layout supplies the page
+ * `<main>`, so this renders its content inside a plain wrapper (no nested `<main>`).
  */
-import { useCallback, useMemo, useRef, useState } from 'react';
-import type { JSX } from 'react';
-import { BacklinkGraphCanvas } from '@/components/graph/BacklinkGraphCanvas.js';
-import { DetailPanel } from '@/components/graph/DetailPanel.js';
-import { Filters, applyFilter, defaultFilter } from '@/components/graph/Filters.js';
-import type { GraphFilter } from '@/components/graph/Filters.js';
-import { StatsSidebar } from '@/components/graph/StatsSidebar.js';
-import { UrlBar } from '@/components/graph/UrlBar.js';
-import {
-  GraphApiError,
-  expandNode,
-  requestGraph,
-  streamGraph,
-} from '@/components/graph/graph-client.js';
-import { mergeGraph, toForceGraphData } from '@/components/graph/graph-data.js';
-import type { FgNode, ForceGraphData } from '@/components/graph/graph-data.js';
-import type { BacklinkGraph, BacklinkGraphStats } from '@aeo/backlinks';
 
-type Status = 'idle' | 'building' | 'done' | 'error';
+const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
+const PATH = '/tools/graph';
 
-interface GraphState {
-  data: ForceGraphData;
-  stats: BacklinkGraphStats;
-  warnings: string[];
+export const metadata: Metadata = {
+  title: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
+  description:
+    'Map any site’s referring domains, backlink pages, and brand mentions in an interactive 3D graph. Sourced from open indexes (DuckDuckGo, CommonCrawl, Wayback) — a free, directional view of your link profile.',
+  alternates: { canonical: PATH },
+  openGraph: {
+    title: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
+    description:
+      'Map referring domains, backlink pages, and brand mentions in an interactive 3D graph — sourced from open web indexes.',
+    url: `${SITE_URL}${PATH}`,
+    type: 'website',
+  },
+};
+
+interface Faq {
+  readonly q: string;
+  readonly a: string;
 }
+
+const FAQS: readonly Faq[] = [
+  {
+    q: 'What is the Backlink Graph and what does it show?',
+    a: 'The Backlink Graph is a free 3D explorer that maps the links pointing to a site. Each node is a referring domain, backlink page, brand mention, or competitor, and each edge is a link — dofollow links pulse brighter than nofollow. It gives you a directional picture of your link profile and which sources carry the most authority.',
+  },
+  {
+    q: 'Where does the backlink data come from?',
+    a: 'Backlinks are discovered from open web indexes — DuckDuckGo, CommonCrawl, and the Wayback Machine — not from a paid crawler. That means it is free and privacy-friendly, but it is a sample of the open web rather than a complete commercial index like Ahrefs or Semrush.',
+  },
+  {
+    q: 'Is this a complete backlink index?',
+    a: 'No. The Backlink Graph is sampled from open indexes, so treat it as directional rather than exhaustive. Use it to spot patterns — your strongest referring domains, dofollow vs nofollow balance, and competitor overlap — not to report an exact total link count.',
+  },
+  {
+    q: 'How do I explore deeper into the graph?',
+    a: 'Click any node to open its detail panel, then choose “Expand backlinks” to fetch and merge that node’s own backlinks into the scene. The graph grows progressively, so you can follow a chain of authority outward from your root domain.',
+  },
+  {
+    q: 'What do dofollow and nofollow links mean here?',
+    a: 'Dofollow links pass ranking signals (link equity) and are drawn brighter with more particles; nofollow links are rendered faint. Toggle “Dofollow links only” in the filters to focus on the links most likely to influence search and answer-engine visibility.',
+  },
+];
+
+const HOW_TO_STEPS: ReadonlyArray<{ name: string; text: string }> = [
+  {
+    name: 'Enter a URL',
+    text: 'Type any domain or URL into the search bar above the scene and select “Build graph”.',
+  },
+  {
+    name: 'Watch the graph grow',
+    text: 'Backlinks stream in from open indexes and merge into the 3D scene in real time as they are discovered.',
+  },
+  {
+    name: 'Inspect a node',
+    text: 'Click any node to see its type, authority, link equity, and source in the detail panel.',
+  },
+  {
+    name: 'Expand and filter',
+    text: 'Use “Expand backlinks” to grow the graph outward, and the filters to focus on dofollow links, specific node types, or a minimum authority.',
+  },
+];
 
 export default function GraphToolPage(): JSX.Element {
-  const [status, setStatus] = useState<Status>('idle');
-  const [url, setUrl] = useState<string>('');
-  const [graph, setGraph] = useState<GraphState | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const breadcrumb: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Tools', item: `${SITE_URL}/#tools` },
+      { '@type': 'ListItem', position: 3, name: 'Backlink Graph', item: `${SITE_URL}${PATH}` },
+    ],
+  };
 
-  const [filter, setFilter] = useState<GraphFilter>(defaultFilter);
-  const [selected, setSelected] = useState<FgNode | null>(null);
-  const [expandingId, setExpandingId] = useState<string | null>(null);
-  const [expandError, setExpandError] = useState<string | null>(null);
+  const webPage: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
+    description: metadata.description ?? undefined,
+    url: `${SITE_URL}${PATH}`,
+    isPartOf: { '@type': 'WebSite', name: 'AEO Toolkit', url: SITE_URL },
+  };
 
-  // Abort any in-flight stream when a new build starts or the page unmounts.
-  const abortRef = useRef<AbortController | null>(null);
+  const howTo: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'How to map a backlink graph in 3D',
+    description:
+      'Build an interactive 3D backlink graph for any URL from free open-web indexes, then explore referring domains, dofollow links, and brand mentions.',
+    step: HOW_TO_STEPS.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.name,
+      text: step.text,
+    })),
+  };
 
-  /** Fold one engine graph into the accumulated UI state (dedup via mergeGraph). */
-  const absorb = useCallback((incoming: BacklinkGraph): void => {
-    const next = toForceGraphData(incoming);
-    setGraph((prev) => ({
-      data: prev === null ? next : mergeGraph(prev.data, next),
-      stats: incoming.stats,
-      warnings: incoming.warnings ?? [],
-    }));
-  }, []);
-
-  const build = useCallback(
-    async (target: string): Promise<void> => {
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-
-      setStatus('building');
-      setUrl(target);
-      setErrorMessage(null);
-      setGraph(null);
-      setSelected(null);
-      setExpandError(null);
-
-      try {
-        // Preferred path: stream partial graphs so the web visibly grows. Each
-        // snapshot is a progressively-larger graph; absorb (merge) folds it in.
-        let received = false;
-        for await (const event of streamGraph(target, controller.signal)) {
-          if (event.type === 'error') throw new GraphApiError(event.message, 200, 'stream');
-          received = true;
-          absorb(event.graph);
-        }
-        if (!received) {
-          // Stream produced nothing usable — fall back to the one-shot endpoint.
-          absorb(await requestGraph(target));
-        }
-        setStatus('done');
-      } catch (streamErr) {
-        if (controller.signal.aborted) return; // superseded by a newer build
-        // Streaming failed; try the non-streaming fallback before giving up.
-        try {
-          absorb(await requestGraph(target));
-          setStatus('done');
-        } catch (err) {
-          setErrorMessage(toMessage(err, streamErr));
-          setStatus('error');
-        }
-      }
-    },
-    [absorb],
-  );
-
-  const onSubmit = useCallback(
-    (target: string): void => {
-      void build(target);
-    },
-    [build],
-  );
-
-  const onExpand = useCallback(
-    async (node: FgNode): Promise<void> => {
-      // The expand endpoint keys off a URL; use the node's page URL when it has
-      // one, otherwise derive an https URL from its domain.
-      const locator = node.url ?? `https://${node.domain}`;
-      setExpandingId(node.id);
-      setExpandError(null);
-      try {
-        absorb(await expandNode(locator));
-      } catch (err) {
-        setExpandError(err instanceof GraphApiError ? err.message : 'Could not expand this node.');
-      } finally {
-        setExpandingId(null);
-      }
-    },
-    [absorb],
-  );
-
-  // Apply filters to the accumulated data before it reaches the canvas.
-  const filteredData = useMemo<ForceGraphData | null>(
-    () => (graph === null ? null : applyFilter(graph.data, filter)),
-    [graph, filter],
-  );
-
-  const hasNodes = filteredData !== null && filteredData.nodes.length > 0;
+  const faqPage: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQS.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  };
 
   return (
-    <div className="relative h-[calc(100dvh-9rem)] min-h-[32rem] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0b1020]">
-      {/* Full-bleed canvas layer */}
-      <div className="absolute inset-0">
-        {hasNodes && filteredData !== null ? (
-          <BacklinkGraphCanvas data={filteredData} onNodeClick={setSelected} />
-        ) : (
-          <EmptyOrLoading status={status} hasGraph={graph !== null} />
-        )}
-      </div>
+    <>
+      <JsonLd data={[webPage, breadcrumb, howTo, faqPage]} />
 
-      {/* Top overlay: URL entry */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center p-4">
-        <UrlBar onSubmit={onSubmit} loading={status === 'building'} defaultValue={url} />
-      </div>
+      <Container className="flex max-w-6xl flex-col gap-10 py-10 sm:gap-12 sm:py-14">
+        {/* Tool hero — single h1, answer-first intro. */}
+        <header className="flex flex-col gap-5">
+          <nav aria-label="Breadcrumb">
+            <ol className="flex items-center gap-2 text-xs text-slate-500">
+              <li>
+                <a href="/" className="transition hover:text-slate-300">
+                  Home
+                </a>
+              </li>
+              <li aria-hidden>/</li>
+              <li className="text-slate-300">Backlink Graph</li>
+            </ol>
+          </nav>
 
-      {/* Error toast */}
-      {status === 'error' && errorMessage !== null ? (
-        <div className="pointer-events-none absolute inset-x-0 top-28 flex justify-center px-4">
-          <div
-            role="alert"
-            className="pointer-events-auto max-w-xl rounded-lg border border-red-500/40 bg-red-950/80 px-4 py-3 text-sm text-red-200 shadow-xl backdrop-blur"
-          >
-            {errorMessage}
+          <div className="flex flex-col gap-4">
+            <Badge tone="violet">3D Explorer</Badge>
+            <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
+              Backlink <GradientText>Graph</GradientText>
+            </h1>
+            <p className="max-w-2xl text-pretty text-base leading-relaxed text-slate-400 sm:text-lg">
+              See any site’s backlink universe as an interactive 3D map. The Backlink Graph renders
+              referring domains, backlink pages, and brand mentions discovered from open web indexes
+              — so you can spot your strongest link sources, dofollow vs nofollow balance, and
+              competitor overlap at a glance. Enter a URL below to build it.
+            </p>
           </div>
-        </div>
-      ) : null}
 
-      {/* Left overlay: stats + filters */}
-      {graph !== null ? (
-        <div className="pointer-events-none absolute left-0 top-24 bottom-4 flex flex-col gap-3 overflow-y-auto p-4">
-          <StatsSidebar stats={graph.stats} warnings={graph.warnings} />
-          <Filters filter={filter} onChange={setFilter} />
-        </div>
-      ) : null}
+          {/* Sampled, not a complete index — set expectations up front. */}
+          <div className="flex max-w-2xl items-start gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.025] px-3.5 py-2.5 text-xs leading-relaxed text-slate-400">
+            <svg
+              viewBox="0 0 16 16"
+              width="15"
+              height="15"
+              fill="none"
+              aria-hidden
+              className="mt-px shrink-0 text-brand-cyan"
+            >
+              <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.3" />
+              <path
+                d="M8 7.2v4M8 5h.01"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span>
+              Data is <strong className="font-semibold text-slate-300">sampled</strong> from open
+              indexes (DuckDuckGo, CommonCrawl, Wayback) — it is a directional view, not a complete
+              index like a paid backlink tool.
+            </span>
+          </div>
+        </header>
 
-      {/* Right overlay: selected node details */}
-      {selected !== null ? (
-        <div className="pointer-events-none absolute right-0 top-24 flex justify-end p-4">
-          <DetailPanel
-            node={selected}
-            onExpand={(node) => {
-              void onExpand(node);
-            }}
-            onClose={() => setSelected(null)}
-            expanding={expandingId === selected.id}
-            expandError={expandError}
-          />
-        </div>
-      ) : null}
-    </div>
+        {/* The interactive 3D explorer island. */}
+        <GraphExplorer />
+
+        {/* FAQ — visible HTML mirrored by the FAQPage JSON-LD above. */}
+        <Reveal>
+          <section aria-labelledby="graph-faq-heading" className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <span className="eyebrow">FAQ</span>
+              <h2
+                id="graph-faq-heading"
+                className="text-2xl font-semibold tracking-tight text-white sm:text-3xl"
+              >
+                Backlink Graph questions
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {FAQS.map((faq) => (
+                <SpotlightCard key={faq.q} className="p-5 sm:p-6">
+                  <h3 className="text-base font-semibold text-white">{faq.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{faq.a}</p>
+                </SpotlightCard>
+              ))}
+            </div>
+          </section>
+        </Reveal>
+      </Container>
+    </>
   );
-}
-
-/** Centered placeholder shown when the canvas has no nodes to render. */
-function EmptyOrLoading({ status, hasGraph }: { status: Status; hasGraph: boolean }): JSX.Element {
-  let message: string;
-  if (status === 'building') {
-    message = hasGraph
-      ? 'Discovering more backlinks — the graph is growing…'
-      : 'Gathering backlinks from open indexes…';
-  } else if (status === 'done') {
-    message = 'No backlinks were discovered for this URL in the open indexes.';
-  } else if (status === 'error') {
-    message = 'Enter a URL above to try again.';
-  } else {
-    message = 'Enter a URL above to map its backlink universe.';
-  }
-
-  return (
-    <div className="flex h-full w-full items-center justify-center px-6 text-center">
-      <p
-        className="max-w-md text-sm text-slate-400"
-        aria-live="polite"
-        aria-busy={status === 'building'}
-      >
-        {message}
-      </p>
-    </div>
-  );
-}
-
-/** Prefer a structured API message; otherwise fall back to a generic string. */
-function toMessage(primary: unknown, secondary: unknown): string {
-  if (primary instanceof GraphApiError) return primary.message;
-  if (secondary instanceof GraphApiError) return secondary.message;
-  return 'Something went wrong while building the backlink graph.';
 }

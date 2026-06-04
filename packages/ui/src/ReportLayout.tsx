@@ -25,13 +25,15 @@ export function ReportLayout({
   className,
 }: ReportLayoutProps): JSX.Element {
   return (
-    <div className={cx('mx-auto w-full max-w-4xl px-4 py-8', className)}>
-      <header className="mb-6 flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
-          {subtitle ? <p className="text-sm text-slate-600">{subtitle}</p> : null}
+    <div className={cx('mx-auto w-full max-w-4xl px-4 py-8 sm:py-10', className)}>
+      <header className="mb-8 flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            {title}
+          </h1>
+          {subtitle ? <p className="text-sm leading-relaxed text-slate-400">{subtitle}</p> : null}
         </div>
-        {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
+        {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
       </header>
       <main className="flex flex-col gap-6">{children}</main>
     </div>

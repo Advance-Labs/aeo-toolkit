@@ -18,8 +18,12 @@ import type { FgLink, FgNode, ForceGraphData } from './graph-data.js';
 const ForceGraph3D = dynamic(() => import('react-force-graph-3d'), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full w-full items-center justify-center text-sm text-slate-400">
-      Loading 3D engine…
+    <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-sm text-slate-400">
+      <span
+        aria-hidden
+        className="h-8 w-8 animate-spin rounded-full border-2 border-white/15 border-t-brand-cyan"
+      />
+      <span>Loading 3D engine…</span>
     </div>
   ),
 }) as ComponentType<ForceGraph3DProps>;
@@ -102,9 +106,10 @@ function nodeTooltip(node: FgNode): string {
   }
   return [
     '<div style="',
-    'padding:6px 8px;border-radius:8px;background:rgba(11,16,32,0.92);',
-    'border:1px solid rgba(148,163,184,0.25);color:#e2e8f0;',
-    'font-size:12px;line-height:1.4;max-width:240px;',
+    'padding:8px 10px;border-radius:10px;background:rgba(10,12,27,0.94);',
+    'border:1px solid rgba(255,255,255,0.12);color:#e7eaf3;',
+    'box-shadow:0 12px 30px -12px rgba(0,0,0,0.8);',
+    'font-size:12px;line-height:1.45;max-width:240px;',
     '">',
     lines.join('<br/>'),
     '</div>',
@@ -149,7 +154,7 @@ export function BacklinkGraphCanvas({ data, onNodeClick }: BacklinkGraphCanvasPr
   // Cap simulation cooldown so large graphs settle quickly rather than spinning.
   const props: ForceGraph3DProps = {
     graphData: data,
-    backgroundColor: '#0b1020',
+    backgroundColor: '#070a17',
     nodeColor: (node) => node.color,
     nodeVal: (node) => node.val,
     nodeLabel: nodeTooltip,

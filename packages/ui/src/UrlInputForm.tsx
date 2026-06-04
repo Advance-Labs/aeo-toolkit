@@ -69,34 +69,96 @@ export function UrlInputForm({
       className={cx('flex w-full flex-col gap-2', className)}
       noValidate
     >
-      <div className="flex w-full items-stretch gap-2">
+      <div className="flex w-full flex-col items-stretch gap-2.5 sm:flex-row">
         <label className="sr-only" htmlFor="aeo-url-input">
           Website URL
         </label>
-        <input
-          id="aeo-url-input"
-          name="url"
-          type="text"
-          inputMode="url"
-          autoComplete="url"
-          value={value}
-          disabled={loading}
-          placeholder={placeholder}
-          aria-invalid={error !== null}
-          aria-describedby={error !== null ? 'aeo-url-error' : undefined}
-          onChange={(event) => setValue(event.target.value)}
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200 disabled:opacity-60"
-        />
+        <div className="relative flex-1">
+          {/* Leading globe glyph for affordance. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z" />
+            </svg>
+          </span>
+          <input
+            id="aeo-url-input"
+            name="url"
+            type="text"
+            inputMode="url"
+            autoComplete="url"
+            value={value}
+            disabled={loading}
+            placeholder={placeholder}
+            aria-invalid={error !== null}
+            aria-describedby={error !== null ? 'aeo-url-error' : undefined}
+            onChange={(event) => setValue(event.target.value)}
+            className={cx(
+              'w-full rounded-xl border bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white shadow-inner outline-none backdrop-blur-sm transition',
+              'placeholder:text-slate-500',
+              'focus:border-brand-indigo/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-brand-indigo/30',
+              'disabled:cursor-not-allowed disabled:opacity-60',
+              error !== null ? 'border-red-400/60 focus:ring-red-400/30' : 'border-white/12',
+            )}
+          />
+        </div>
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className={cx(
+            'group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-glow transition',
+            'bg-gradient-to-r from-brand-indigo via-brand-violet to-brand-cyan bg-[length:200%_100%] bg-left',
+            'hover:bg-right hover:shadow-[0_0_0_1px_rgba(255,255,255,0.10),0_22px_60px_-18px_rgba(99,102,241,0.65)]',
+            'focus-visible:ring-2 focus-visible:ring-brand-cyan/50',
+            'disabled:cursor-not-allowed disabled:opacity-70',
+          )}
         >
-          {loading ? 'Analyzing…' : submitLabel}
+          {loading ? (
+            <>
+              <svg
+                className="animate-spin"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke="currentColor"
+                  strokeOpacity="0.3"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M21 12a9 9 0 0 0-9-9"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </svg>
+              Analyzing…
+            </>
+          ) : (
+            submitLabel
+          )}
         </button>
       </div>
       {error !== null ? (
-        <p id="aeo-url-error" role="alert" className="text-sm text-red-600">
+        <p id="aeo-url-error" role="alert" className="text-sm font-medium text-red-300">
           {error}
         </p>
       ) : null}

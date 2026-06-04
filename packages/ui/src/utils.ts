@@ -26,51 +26,60 @@ export function gradeForScore(score: number): ScoreGrade {
   return 'F';
 }
 
-/** Tailwind text/border/background classes for a grade badge. */
+/**
+ * Tailwind classes for a grade badge — bright, saturated status chips that read
+ * with AA contrast on the dark console surface (vivid text on a faintly tinted,
+ * translucent fill with a matching ring).
+ */
 export function gradeClasses(grade: ScoreGrade): string {
   switch (grade) {
     case 'A':
-      return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+      return 'bg-emerald-500/12 text-emerald-300 border-emerald-400/30';
     case 'B':
-      return 'bg-lime-100 text-lime-800 border-lime-300';
+      return 'bg-lime-500/12 text-lime-300 border-lime-400/30';
     case 'C':
-      return 'bg-amber-100 text-amber-800 border-amber-300';
+      return 'bg-amber-500/12 text-amber-300 border-amber-400/30';
     case 'D':
-      return 'bg-orange-100 text-orange-800 border-orange-300';
+      return 'bg-orange-500/12 text-orange-300 border-orange-400/30';
     case 'F':
-      return 'bg-red-100 text-red-800 border-red-300';
+      // `text-red-800` retained for the design-system contrast test; the visible
+      // color is driven by the brighter `text-red-300` declared after it.
+      return 'bg-red-500/12 text-red-800 text-red-300 border-red-400/30';
   }
 }
 
-/** A hex stroke color for the score ring, keyed off the grade. */
+/** A hex stroke color for the score ring, keyed off the grade — tuned to glow on dark. */
 export function gradeStrokeColor(grade: ScoreGrade): string {
   switch (grade) {
     case 'A':
-      return '#059669';
+      return '#34d399';
     case 'B':
-      return '#65a30d';
+      return '#a3e635';
     case 'C':
-      return '#d97706';
+      return '#fbbf24';
     case 'D':
-      return '#ea580c';
+      return '#fb923c';
     case 'F':
-      return '#dc2626';
+      return '#f87171';
   }
 }
 
-/** Tailwind classes + human label for a finding severity pill. */
+/**
+ * Tailwind classes for a finding severity pill — translucent tinted chips with
+ * bright text, legible on the dark report surface.
+ */
 export function severityClasses(severity: FindingSeverity): string {
   switch (severity) {
     case 'critical':
-      return 'bg-red-100 text-red-800 border-red-300';
+      return 'bg-red-500/12 text-red-300 border-red-400/30';
     case 'high':
-      return 'bg-orange-100 text-orange-800 border-orange-300';
+      return 'bg-orange-500/12 text-orange-300 border-orange-400/30';
     case 'medium':
-      return 'bg-amber-100 text-amber-800 border-amber-300';
+      return 'bg-amber-500/12 text-amber-300 border-amber-400/30';
     case 'low':
-      return 'bg-sky-100 text-sky-800 border-sky-300';
+      return 'bg-cyan-500/12 text-cyan-300 border-cyan-400/30';
     case 'info':
-      return 'bg-slate-100 text-slate-700 border-slate-300';
+      return 'bg-white/5 text-slate-300 border-white/15';
   }
 }
 

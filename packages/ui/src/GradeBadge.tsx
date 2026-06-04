@@ -26,7 +26,8 @@ export function GradeBadge({ grade, size = 'md', className }: GradeBadgeProps): 
       role="status"
       aria-label={`Grade ${grade}`}
       className={cx(
-        'inline-flex items-center justify-center rounded-full border font-bold',
+        'inline-flex items-center justify-center rounded-full border font-bold backdrop-blur-sm',
+        'shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]',
         SIZE_CLASSES[size],
         gradeClasses(grade),
         className,

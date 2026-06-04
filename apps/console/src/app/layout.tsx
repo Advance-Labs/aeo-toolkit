@@ -1,41 +1,63 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import Link from 'next/link';
-import { Logo } from '@aeo/ui';
+import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { AuroraBackground } from '@/components/ui/AuroraBackground';
+import { Footer } from '@/components/ui/Footer';
+import { Header } from '@/components/Header';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { organizationSchema, websiteSchema, softwareApplicationSchema } from '@/lib/seo';
 import './globals.css';
 
-export const metadata: Metadata = {
-  title: 'AEO Toolkit — AI Search Optimization Suite',
-  description:
-    'Audit, optimize, and track your visibility in AI answer engines (ChatGPT, Claude, Perplexity, AI Overviews) — one console for the whole AEO Toolkit.',
-};
+const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
+const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
-/** Top-level tools, surfaced in the console nav. */
-const NAV = [
-  { href: '/tools/audit', label: 'Audit' },
-  { href: '/tools/eeat', label: 'E-E-A-T' },
-  { href: '/tools/llms-txt', label: 'llms.txt' },
-  { href: '/tools/chat', label: 'GA4 + GSC' },
-  { href: '/tools/graph', label: 'Backlink Graph' },
-] as const;
+const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'AEO Toolkit — Rank in ChatGPT, Claude, Perplexity & AI Overviews',
+    template: '%s — AEO Toolkit',
+  },
+  description:
+    'Audit, optimize, and track your visibility across AI answer engines. Technical SEO + AEO audits, E-E-A-T scoring, llms.txt generation, GA4/GSC chat, and a 3D backlink graph — one console.',
+  applicationName: 'AEO Toolkit',
+  keywords: [
+    'answer engine optimization',
+    'AEO',
+    'generative engine optimization',
+    'GEO',
+    'AI SEO',
+    'llms.txt',
+    'technical SEO audit',
+    'E-E-A-T',
+  ],
+  openGraph: {
+    type: 'website',
+    siteName: 'AEO Toolkit',
+    title: 'AEO Toolkit — Rank in ChatGPT, Claude, Perplexity & AI Overviews',
+    description:
+      'One console to audit, optimize, and track your visibility across AI answer engines.',
+    url: SITE_URL,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AEO Toolkit — AI Search Optimization Suite',
+    description:
+      'Audit, optimize, and track your visibility across AI answer engines. One console.',
+  },
+};
 
 export default function RootLayout({ children }: { children: ReactNode }): ReactNode {
   return (
-    <html lang="en">
-      <body>
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#0b1020]/80 px-6 py-3 backdrop-blur">
-          <Link href="/" aria-label="AEO Toolkit home">
-            <Logo size={28} variant="dark" />
-          </Link>
-          <nav className="flex gap-4 text-sm text-slate-300">
-            {NAV.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-white">
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </header>
-        <main className="mx-auto w-full max-w-6xl px-6 py-8">{children}</main>
+    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`}>
+      <body className="relative min-h-screen overflow-x-hidden bg-ink-950 antialiased">
+        <JsonLd data={[organizationSchema(), websiteSchema(), softwareApplicationSchema()]} />
+        <AuroraBackground />
+        <Header />
+        <main className="relative">{children}</main>
+        <Footer />
       </body>
     </html>
   );

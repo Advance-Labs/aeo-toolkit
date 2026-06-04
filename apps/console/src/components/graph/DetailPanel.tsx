@@ -1,11 +1,12 @@
 'use client';
 
 /**
- * Overlay panel describing the currently-selected node. Shows the node's
+ * Side-rail panel describing the currently-selected node. Shows the node's
  * identity + signals and offers an "Expand backlinks" action that asks the page
  * to fetch and merge the node's own backlinks for progressive exploration.
  */
 import type { JSX } from 'react';
+import { Button } from '@/components/ui/Button';
 import type { FgNode } from './graph-data.js';
 
 export interface DetailPanelProps {
@@ -43,50 +44,55 @@ export function DetailPanel({
   return (
     <aside
       aria-label="Node details"
-      className="pointer-events-auto flex w-80 max-w-[90vw] flex-col gap-3 rounded-xl border border-slate-700/60 bg-slate-900/90 p-4 text-sm text-slate-200 shadow-xl backdrop-blur"
+      className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-ink-900/85 p-4 text-sm text-slate-200 shadow-xl backdrop-blur-md"
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2.5">
           <span
             aria-hidden
-            className="inline-block h-3 w-3 shrink-0 rounded-full"
+            className="inline-block h-3 w-3 shrink-0 rounded-full ring-2 ring-white/10"
             style={{ backgroundColor: node.color }}
           />
-          <h2 className="break-all font-semibold text-slate-100">{node.domain}</h2>
+          <h2 className="break-all font-semibold text-white">{node.domain}</h2>
         </div>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close details"
-          className="rounded p-1 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+          className="shrink-0 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/[0.08] hover:text-white"
         >
-          ✕
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden>
+            <path
+              d="M4 4l8 8M12 4l-8 8"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
         </button>
       </div>
 
-      <dl className="flex flex-col gap-2">
+      <dl className="flex flex-col gap-2.5">
         <Row label="Type" value={TYPE_LABELS[node.type]} />
         {node.title !== undefined && node.title !== '' ? (
           <Row label="Title" value={node.title} />
         ) : null}
         {node.url !== undefined ? (
           <div className="flex flex-col gap-0.5">
-            <dt className="text-xs uppercase tracking-wide text-slate-500">URL</dt>
+            <dt className="text-[11px] uppercase tracking-wider text-slate-500">URL</dt>
             <dd>
               <a
                 href={node.url}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="break-all text-cyan-400 underline-offset-2 hover:underline"
+                className="break-all text-brand-cyan underline-offset-2 transition hover:text-cyan-300 hover:underline"
               >
                 {node.url}
               </a>
             </dd>
           </div>
         ) : null}
-        {typeof node.authority === 'number' ? (
-          <Row label="Authority" value={`${Math.round(node.authority)} / 100`} />
-        ) : null}
+        {typeof node.authority === 'number' ? <AuthorityRow authority={node.authority} /> : null}
         {node.mentionType !== undefined ? (
           <Row label="Mention" value={node.mentionType === 'linked' ? 'Linked' : 'Unlinked'} />
         ) : null}
@@ -99,17 +105,28 @@ export function DetailPanel({
       </dl>
 
       {canExpand ? (
-        <div className="flex flex-col gap-1">
-          <button
+        <div className="flex flex-col gap-1.5">
+          <Button
             type="button"
             onClick={() => onExpand(node)}
             disabled={expanding}
-            className="rounded-lg bg-cyan-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-60"
+            size="sm"
+            className="w-full"
           >
-            {expanding ? 'Expanding…' : 'Expand backlinks'}
-          </button>
+            {expanding ? (
+              <>
+                <Spinner />
+                Expanding…
+              </>
+            ) : (
+              <>
+                <PlusIcon />
+                Expand backlinks
+              </>
+            )}
+          </Button>
           {expandError !== null ? (
-            <p role="alert" className="text-xs text-red-400">
+            <p role="alert" className="text-xs text-red-300">
               {expandError}
             </p>
           ) : null}
@@ -122,9 +139,52 @@ export function DetailPanel({
 function Row({ label, value }: { label: string; value: string }): JSX.Element {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-xs uppercase tracking-wide text-slate-500">{label}</dt>
+      <dt className="text-[11px] uppercase tracking-wider text-slate-500">{label}</dt>
       <dd className="break-words text-slate-200">{value}</dd>
     </div>
+  );
+}
+
+/** Authority as a value plus a slim gradient progress bar for quick read. */
+function AuthorityRow({ authority }: { authority: number }): JSX.Element {
+  const pct = Math.max(0, Math.min(100, Math.round(authority)));
+  return (
+    <div className="flex flex-col gap-1">
+      <dt className="flex items-center justify-between text-[11px] uppercase tracking-wider text-slate-500">
+        <span>Authority</span>
+        <span className="tabular-nums text-slate-300">{pct} / 100</span>
+      </dt>
+      <dd className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+        <span
+          className="block h-full rounded-full bg-[linear-gradient(90deg,#6366F1,#8B5CF6_55%,#22D3EE)]"
+          style={{ width: `${pct}%` }}
+        />
+      </dd>
+    </div>
+  );
+}
+
+function PlusIcon(): JSX.Element {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden>
+      <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Spinner(): JSX.Element {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      fill="none"
+      aria-hidden
+      className="animate-spin"
+    >
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity="0.3" strokeWidth="2" />
+      <path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Overlay filter controls. Emits a {@link GraphFilter} the page applies to the
+ * Side-rail filter controls. Emits a {@link GraphFilter} the page applies to the
  * force-graph data *before* handing it to the canvas, so toggling never re-runs
  * the crawl. The filtering itself is the pure {@link applyFilter} helper, so the
  * logic is testable and the component stays a thin control surface.
@@ -24,6 +24,15 @@ const TYPE_LABELS: Record<GraphNodeType, string> = {
   'backlink-page': 'Backlink pages',
   mention: 'Mentions',
   competitor: 'Competitors',
+};
+
+/** Swatch colors that mirror the canvas legend for at-a-glance correlation. */
+const TYPE_SWATCH: Record<GraphNodeType, string> = {
+  root: '#22D3EE',
+  'referring-domain': '#6366F1',
+  'backlink-page': '#818CF8',
+  mention: '#8B5CF6',
+  competitor: '#F59E0B',
 };
 
 export interface GraphFilter {
@@ -85,39 +94,51 @@ export function Filters({ filter, onChange }: FiltersProps): JSX.Element {
   return (
     <section
       aria-label="Filters"
-      className="pointer-events-auto flex w-72 max-w-[90vw] flex-col gap-3 rounded-xl border border-slate-700/60 bg-slate-900/90 p-4 text-sm text-slate-200 shadow-xl backdrop-blur"
+      className="flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-ink-900/80 p-4 text-sm text-slate-200 shadow-xl backdrop-blur-md"
     >
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Filters</h3>
+      <h3 className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Filters</h3>
 
-      <label className="flex items-center gap-2">
+      <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-1 py-0.5 transition-colors hover:text-white">
         <input
           type="checkbox"
           checked={filter.dofollowOnly}
           onChange={(event) => onChange({ ...filter, dofollowOnly: event.target.checked })}
-          className="h-4 w-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500"
+          className="h-4 w-4 rounded border-white/20 bg-white/[0.06] text-brand-cyan focus:ring-2 focus:ring-brand-cyan/40 focus:ring-offset-0"
         />
         <span>Dofollow links only</span>
       </label>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="mb-1 text-xs text-slate-400">Node types</legend>
+        <legend className="mb-1 text-[11px] uppercase tracking-wider text-slate-500">
+          Node types
+        </legend>
         {FILTERABLE_TYPES.map((type) => (
-          <label key={type} className="flex items-center gap-2">
+          <label
+            key={type}
+            className="flex cursor-pointer items-center gap-2.5 rounded-lg px-1 py-0.5 transition-colors hover:text-white"
+          >
             <input
               type="checkbox"
               checked={filter.visibleTypes.has(type)}
               onChange={() => toggleType(type)}
-              className="h-4 w-4 rounded border-slate-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500"
+              className="h-4 w-4 rounded border-white/20 bg-white/[0.06] text-brand-cyan focus:ring-2 focus:ring-brand-cyan/40 focus:ring-offset-0"
+            />
+            <span
+              aria-hidden
+              className="h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{ backgroundColor: TYPE_SWATCH[type] }}
             />
             <span>{TYPE_LABELS[type]}</span>
           </label>
         ))}
       </fieldset>
 
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1.5">
         <span className="flex items-center justify-between">
-          <span className="text-xs text-slate-400">Min authority</span>
-          <span className="tabular-nums text-slate-300">{filter.minAuthority}</span>
+          <span className="text-[11px] uppercase tracking-wider text-slate-500">Min authority</span>
+          <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-xs tabular-nums text-slate-200">
+            {filter.minAuthority}
+          </span>
         </span>
         <input
           type="range"
@@ -126,7 +147,8 @@ export function Filters({ filter, onChange }: FiltersProps): JSX.Element {
           step={5}
           value={filter.minAuthority}
           onChange={(event) => onChange({ ...filter, minAuthority: Number(event.target.value) })}
-          className="w-full accent-cyan-500"
+          aria-label="Minimum authority"
+          className="w-full accent-brand-cyan"
         />
       </label>
     </section>

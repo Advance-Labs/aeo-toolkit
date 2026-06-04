@@ -15,28 +15,28 @@ export interface CategoryBreakdownProps {
  */
 export function CategoryBreakdown({ categories, className }: CategoryBreakdownProps): JSX.Element {
   if (categories.length === 0) {
-    return <p className={cx('text-sm text-slate-500', className)}>No category data available.</p>;
+    return <p className={cx('text-sm text-slate-400', className)}>No category data available.</p>;
   }
 
   return (
-    <ul className={cx('flex flex-col gap-4', className)} aria-label="Score breakdown by category">
+    <ul className={cx('flex flex-col gap-5', className)} aria-label="Score breakdown by category">
       {categories.map((category) => {
         const pct = clamp(Math.round(category.score), 0, 100);
         const color = gradeStrokeColor(gradeForScore(category.score));
         return (
-          <li key={category.key} className="flex flex-col gap-1">
+          <li key={category.key} className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-sm font-medium text-slate-800">{category.label}</span>
-              <span className="text-sm tabular-nums text-slate-600">
-                {pct}
-                <span className="text-slate-400">
+              <span className="text-sm font-semibold text-white">{category.label}</span>
+              <span className="text-sm tabular-nums text-slate-300">
+                <span className="font-semibold text-white">{pct}</span>
+                <span className="text-slate-500">
                   {' '}
                   · {category.passedCount}/{category.passedCount + category.failedCount} passed
                 </span>
               </span>
             </div>
             <div
-              className="h-2 w-full overflow-hidden rounded-full bg-slate-200"
+              className="h-2.5 w-full overflow-hidden rounded-full bg-white/5 ring-1 ring-inset ring-white/10"
               role="progressbar"
               aria-valuenow={pct}
               aria-valuemin={0}
@@ -44,8 +44,12 @@ export function CategoryBreakdown({ categories, className }: CategoryBreakdownPr
               aria-label={`${category.label} score`}
             >
               <div
-                className="h-full rounded-full transition-all"
-                style={{ width: `${pct}%`, backgroundColor: color }}
+                className="h-full rounded-full transition-all duration-700 ease-out"
+                style={{
+                  width: `${pct}%`,
+                  backgroundImage: `linear-gradient(90deg, #6366F1, ${color})`,
+                  boxShadow: `0 0 12px ${color}66`,
+                }}
               />
             </div>
           </li>

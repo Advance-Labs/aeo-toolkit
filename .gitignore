@@ -43,3 +43,4 @@ apps/chrome-extension/*.zip
 
 # Vercel
 .vercel
+.env*.local
