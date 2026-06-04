@@ -12,16 +12,15 @@ import { MissingEnvError } from '@/lib/google-env';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
   let oauth;
   try {
     oauth = createOAuth();
   } catch (err) {
-    const message =
-      err instanceof MissingEnvError
-        ? `Server not configured: ${err.variable} is missing.`
-        : 'Server OAuth configuration error.';
-    return NextResponse.json({ error: message }, { status: 500 });
+    // Not configured (e.g. GOOGLE_CLIENT_ID unset). Redirect back with a friendly notice instead of a
+    // hard 500 — this route is also prefetched by the Connect link, so a 5xx would noise the console.
+    const reason = err instanceof MissingEnvError ? 'google_not_configured' : 'oauth_error';
+    return NextResponse.redirect(new URL(`/tools/chat?error=${reason}`, request.url));
   }
 
   const cookieStore = await cookies();

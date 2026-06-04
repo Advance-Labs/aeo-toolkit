@@ -30,12 +30,13 @@ export function Button({
   size = 'md',
   className,
   href,
+  prefetch,
   ...props
-}: CommonProps & { href?: string } & ComponentPropsWithoutRef<'button'>): React.ReactElement {
+}: CommonProps & { href?: string; prefetch?: boolean } & ComponentPropsWithoutRef<'button'>): React.ReactElement {
   const classes = cn(BASE, VARIANTS[variant], SIZES[size], className);
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} prefetch={prefetch} className={classes}>
         {props.children}
       </Link>
     );

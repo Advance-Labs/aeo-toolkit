@@ -31,7 +31,12 @@ function GoogleMark(): JSX.Element {
 /** Anchor that starts the Google OAuth flow by navigating to the server route. */
 export function ConnectButton({ connected }: { connected: boolean }): JSX.Element {
   return (
-    <Button href="/api/auth/google" variant={connected ? 'secondary' : 'primary'} size="md">
+    <Button
+      href="/api/auth/google"
+      prefetch={false}
+      variant={connected ? 'secondary' : 'primary'}
+      size="md"
+    >
       <GoogleMark />
       {connected ? 'Reconnect Google' : 'Connect Google'}
     </Button>
