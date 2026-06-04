@@ -30,7 +30,9 @@ export interface WaybackOutcome {
   warnings: string[];
 }
 
-const CDX_ENDPOINT = 'http://web.archive.org/cdx/search/cdx';
+// HTTPS, not HTTP: plain-HTTP outbound to web.archive.org fails (status 0) from serverless
+// platforms like Vercel, which silently broke the Wayback source in production.
+const CDX_ENDPOINT = 'https://web.archive.org/cdx/search/cdx';
 
 /** Build the CDX query URL. We request the fields we use, collapsed by digest. */
 export function buildCdxUrl(url: string, limit: number): string {
@@ -104,7 +106,7 @@ export function parseCdx(parsed: unknown): WaybackSnapshot[] {
       original,
       statusCode: cell(row, 2),
       mimeType: cell(row, 3),
-      archiveUrl: `http://web.archive.org/web/${timestamp}/${original}`,
+      archiveUrl: `https://web.archive.org/web/${timestamp}/${original}`,
     };
     const iso = timestampToIso(timestamp);
     if (iso) snapshot.iso = iso;

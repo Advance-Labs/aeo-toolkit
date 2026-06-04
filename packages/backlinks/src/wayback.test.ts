@@ -49,7 +49,7 @@ describe('parseCdx', () => {
     expect(snaps).toHaveLength(2);
     expect(snaps[0]?.timestamp).toBe('20180101120000');
     expect(snaps[0]?.archiveUrl).toBe(
-      'http://web.archive.org/web/20180101120000/https://example.com/',
+      'https://web.archive.org/web/20180101120000/https://example.com/',
     );
     expect(snaps[1]?.iso).toBe('2021-06-15T09:30:00Z');
   });
