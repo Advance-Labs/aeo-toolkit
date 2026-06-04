@@ -1,5 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { buildIndexUrl, parseNdjson, queryIndex, DEFAULT_CC_INDEX } from './commoncrawl.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import {
+  buildIndexUrl,
+  parseNdjson,
+  queryIndex,
+  resolveLatestIndex,
+  resetLatestIndexCache,
+  DEFAULT_CC_INDEX,
+} from './commoncrawl.js';
 import type { HttpClient, TextResponse } from './http.js';
 
 const NDJSON = [
@@ -26,11 +33,69 @@ function httpReturning(res: TextResponse): HttpClient {
 describe('buildIndexUrl', () => {
   it('targets the CommonCrawl index with a host wildcard, json output, and limit', () => {
     const url = buildIndexUrl('acme.com', DEFAULT_CC_INDEX, 25);
-    expect(url).toContain('index.commoncrawl.org/CC-MAIN-2024-51-index');
+    expect(url).toContain(`index.commoncrawl.org/${DEFAULT_CC_INDEX}-index`);
     expect(url).toContain('output=json');
     expect(url).toContain('limit=25');
     // The domain wildcard `*` is sent raw — the CommonCrawl CDX index treats it as a prefix wildcard.
     expect(url).toContain('url=acme.com*');
+  });
+});
+
+describe('resolveLatestIndex', () => {
+  beforeEach(() => resetLatestIndexCache());
+
+  const collinfo = JSON.stringify([
+    { id: 'CC-MAIN-2026-21', name: 'May 2026 Index', 'cdx-api': 'x' },
+    { id: 'CC-MAIN-2026-17', name: 'April 2026 Index', 'cdx-api': 'y' },
+  ]);
+
+  it('returns the newest (first) index id from collinfo.json', async () => {
+    const id = await resolveLatestIndex(
+      httpReturning({ ok: true, status: 200, body: collinfo, url: 'x' }),
+    );
+    expect(id).toBe('CC-MAIN-2026-21');
+  });
+
+  it('caches the resolved id so it only fetches once per process', async () => {
+    let calls = 0;
+    const http: HttpClient = {
+      getText: async () => {
+        calls += 1;
+        return { ok: true, status: 200, body: collinfo, url: 'x' };
+      },
+      getResource: async () => {
+        throw new Error('unused');
+      },
+    };
+    expect(await resolveLatestIndex(http)).toBe('CC-MAIN-2026-21');
+    expect(await resolveLatestIndex(http)).toBe('CC-MAIN-2026-21');
+    expect(calls).toBe(1);
+  });
+
+  it('falls back to DEFAULT_CC_INDEX on a transport failure (and does not cache it)', async () => {
+    let ok = false;
+    const http: HttpClient = {
+      getText: async () => {
+        const res: TextResponse = ok
+          ? { ok: true, status: 200, body: collinfo, url: 'x' }
+          : { ok: false, status: 0, body: '', url: 'x' };
+        return res;
+      },
+      getResource: async () => {
+        throw new Error('unused');
+      },
+    };
+    expect(await resolveLatestIndex(http)).toBe(DEFAULT_CC_INDEX);
+    // A later successful lookup still resolves the real latest (fallback wasn't cached).
+    ok = true;
+    expect(await resolveLatestIndex(http)).toBe('CC-MAIN-2026-21');
+  });
+
+  it('falls back to DEFAULT_CC_INDEX on a non-array / unexpected body', async () => {
+    const id = await resolveLatestIndex(
+      httpReturning({ ok: true, status: 200, body: '{"not":"an array"}', url: 'x' }),
+    );
+    expect(id).toBe(DEFAULT_CC_INDEX);
   });
 });
 

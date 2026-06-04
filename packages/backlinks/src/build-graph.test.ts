@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { buildBacklinkGraph, canonicalUrl, normalizeDomain } from './build-graph.js';
+import { resetLatestIndexCache } from './commoncrawl.js';
 import type { HttpClient, TextResponse } from './http.js';
 
 /** DuckDuckGo HTML for third-party pages that mention the root domain. */
@@ -57,10 +58,15 @@ describe('canonicalUrl', () => {
 });
 
 describe('buildBacklinkGraph', () => {
+  beforeEach(() => resetLatestIndexCache());
+
   it('aggregates page signals into a layered domain graph with stats', async () => {
     const graph = await buildBacklinkGraph('https://acme.com', {
       http: routedHttp(),
       limit: 10,
+      // Scope to the two sources this fixture models; Wayback (a default source) is
+      // covered by its own case below.
+      sources: ['duckduckgo', 'commoncrawl'],
     });
 
     // Root node.
@@ -183,6 +189,39 @@ describe('buildBacklinkGraph', () => {
     expect(ddgCalled).toBe(false);
     // Only the two CommonCrawl pages, aggregated under the acme.com domain.
     expect(graph.stats.backlinks).toBe(2);
+  });
+
+  it('includes Wayback captures as backlink nodes (reliable fallback source)', async () => {
+    // Valid CDX JSON for the domain: a header row + two archived pages under acme.com.
+    const cdx = JSON.stringify([
+      ['timestamp', 'original'],
+      ['20230115120000', 'https://acme.com/features'],
+      ['20240620090000', 'https://acme.com/changelog'],
+    ]);
+    const http: HttpClient = {
+      getText: async (url: string): Promise<TextResponse> => {
+        const body = url.includes('web.archive.org') ? cdx : '';
+        // Only Wayback is active here; other hosts return an empty (non-ok) body.
+        return { ok: body !== '', status: body !== '' ? 200 : 0, body, url };
+      },
+      getResource: async () => {
+        throw new Error('not used');
+      },
+    };
+
+    const graph = await buildBacklinkGraph('https://acme.com', {
+      http,
+      limit: 10,
+      sources: ['wayback'],
+    });
+
+    // Both archived pages become backlink-page nodes under the acme.com domain node.
+    const pageNodes = graph.nodes.filter((n) => n.type === 'backlink-page');
+    expect(pageNodes).toHaveLength(2);
+    expect(pageNodes.every((n) => n.dofollow)).toBe(true);
+    expect(graph.stats.backlinks).toBe(2);
+    const features = pageNodes.find((n) => n.url === 'https://acme.com/features');
+    expect(features?.firstSeen).toBe('2023-01-15T12:00:00Z');
   });
 
   it('warns and returns an empty-ish graph when the root domain is underivable', async () => {

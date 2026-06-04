@@ -114,6 +114,102 @@ export function parseCdx(parsed: unknown): WaybackSnapshot[] {
   return snapshots;
 }
 
+/** A page the Wayback Machine has archived under a domain — a coverage signal. */
+export interface WaybackCapture {
+  /** The archived (original) URL. */
+  url: string;
+  /** Host extracted from {@link url}, lowercased and `www.`-stripped. */
+  host: string;
+  /** 14-digit capture timestamp, when present. */
+  timestamp?: string;
+}
+
+export interface WaybackCapturesOutcome {
+  captures: WaybackCapture[];
+  /** Non-fatal problems (blocked, empty, malformed) surfaced to the caller. */
+  warnings: string[];
+}
+
+/** Normalised host from a URL string, or `''` when unparseable. */
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '').toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Build a CDX query for every page archived under a domain. `matchType=domain`
+ * matches the apex and all subdomains/paths; `collapse=urlkey` de-dups to distinct
+ * URLs (not per-snapshot), so one call yields the domain's archived coverage. The
+ * Internet Archive CDX server is reachable from datacenter IPs (unlike DuckDuckGo),
+ * which makes this a reliable fallback so the graph renders even when other sources fail.
+ */
+export function buildDomainCdxUrl(domain: string, limit: number): string {
+  const params = new URLSearchParams({
+    url: domain,
+    matchType: 'domain',
+    output: 'json',
+    fl: 'timestamp,original',
+    collapse: 'urlkey',
+    limit: String(limit),
+  });
+  return `${CDX_ENDPOINT}?${params.toString()}`;
+}
+
+/**
+ * Query the Wayback Machine for pages archived under `domain`, through the
+ * injectable {@link HttpClient}. Returns distinct captures (url + host + first
+ * timestamp). Never throws: transport failure, a non-JSON body, or no snapshots
+ * all degrade to an empty capture list plus a warning.
+ */
+export async function queryDomainCaptures(
+  http: HttpClient,
+  domain: string,
+  limit = 50,
+): Promise<WaybackCapturesOutcome> {
+  const warnings: string[] = [];
+  const trimmed = domain
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, '');
+  if (trimmed === '') {
+    return { captures: [], warnings: ['Empty domain for Wayback lookup.'] };
+  }
+
+  const res = await http.getText(buildDomainCdxUrl(trimmed, limit), { accept: 'application/json' });
+  if (!res.ok || res.body === '') {
+    warnings.push(`Wayback CDX request failed (status ${res.status}). Returning no captures.`);
+    return { captures: [], warnings };
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(res.body);
+  } catch {
+    // STUB: CDX occasionally returns a non-JSON error body under load.
+    warnings.push('Wayback CDX returned an unparseable body. Returning no captures.');
+    return { captures: [], warnings };
+  }
+
+  const captures: WaybackCapture[] = [];
+  const seen = new Set<string>();
+  for (const snap of parseCdx(parsed)) {
+    const host = hostOf(snap.original);
+    if (host === '' || seen.has(snap.original)) continue;
+    seen.add(snap.original);
+    const capture: WaybackCapture = { url: snap.original, host };
+    if (/^\d{14}$/.test(snap.timestamp)) capture.timestamp = snap.timestamp;
+    captures.push(capture);
+  }
+
+  if (captures.length === 0) {
+    warnings.push('No archived captures found for this domain.');
+  }
+  return { captures: captures.slice(0, limit), warnings };
+}
+
 /** Fetch and summarise a URL's Wayback history. Never throws. */
 export async function fetchHistory(
   http: HttpClient,

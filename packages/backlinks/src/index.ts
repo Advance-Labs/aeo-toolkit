@@ -21,12 +21,31 @@ export { search, parseResults, unwrapRedirect, buildSearchUrl } from './duckduck
 export type { SearchResult, SearchOutcome } from './duckduckgo.js';
 
 // --- CommonCrawl provider ---
-export { queryIndex, parseNdjson, buildIndexUrl, DEFAULT_CC_INDEX } from './commoncrawl.js';
+export {
+  queryIndex,
+  parseNdjson,
+  buildIndexUrl,
+  resolveLatestIndex,
+  resetLatestIndexCache,
+  DEFAULT_CC_INDEX,
+} from './commoncrawl.js';
 export type { CommonCrawlCapture, CommonCrawlOutcome, CommonCrawlOptions } from './commoncrawl.js';
 
 // --- Wayback provider ---
-export { fetchHistory, parseCdx, timestampToIso, buildCdxUrl } from './wayback.js';
-export type { WaybackSnapshot, WaybackOutcome } from './wayback.js';
+export {
+  fetchHistory,
+  parseCdx,
+  timestampToIso,
+  buildCdxUrl,
+  queryDomainCaptures,
+  buildDomainCdxUrl,
+} from './wayback.js';
+export type {
+  WaybackSnapshot,
+  WaybackOutcome,
+  WaybackCapture,
+  WaybackCapturesOutcome,
+} from './wayback.js';
 
 // --- Contact extraction ---
 export { extractContacts, extractEmails, extractSocials } from './contacts.js';

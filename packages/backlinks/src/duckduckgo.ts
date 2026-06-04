@@ -163,8 +163,13 @@ export async function search(http: HttpClient, query: string, limit = 20): Promi
     return { results: [], warnings: ['Empty search query.'] };
   }
 
+  // Browser-like headers reduce (but can't eliminate) DuckDuckGo's anti-scraping 403s. From a
+  // datacenter IP (e.g. Vercel) DDG often still blocks; the build treats DDG as best-effort and
+  // falls back to the CommonCrawl + Wayback coverage sources, so a block degrades to a warning.
   const res = await http.getText(buildSearchUrl(trimmed), {
-    accept: 'text/html',
+    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'accept-language': 'en-US,en;q=0.9',
+    referer: 'https://duckduckgo.com/',
   });
 
   if (!res.ok || res.body === '') {

@@ -18,15 +18,66 @@
 import type { HttpClient } from './http.js';
 
 /**
- * Default crawl index to query. CommonCrawl ships a new monthly crawl
- * (`CC-MAIN-YYYY-WW`); callers may override via {@link CommonCrawlOptions.index}
- * or the `BACKLINK_CC_INDEX` env var so the toolkit can roll forward without a
- * code change. `2024-51` is a known-good, widely-mirrored crawl id.
+ * Fallback crawl index, used ONLY when {@link resolveLatestIndex} cannot reach
+ * CommonCrawl's collection listing. CommonCrawl ships a new monthly crawl
+ * (`CC-MAIN-YYYY-WW`) and retires old index paths, so a hard-pinned id eventually
+ * 404s — which is exactly what broke the live graph. Prefer the dynamically
+ * resolved latest index; this constant is just a last-resort, recent-known-good id.
  */
-// STUB: monthly crawl id — overridable so we never hard-pin a stale crawl.
-export const DEFAULT_CC_INDEX = 'CC-MAIN-2024-51';
+export const DEFAULT_CC_INDEX = 'CC-MAIN-2026-21';
 
 const CC_INDEX_HOST = 'https://index.commoncrawl.org';
+
+/** Public collection listing: a JSON array of `{ id, name, cdx-api, ... }`, newest first. */
+const CC_COLLINFO_URL = `${CC_INDEX_HOST}/collinfo.json`;
+
+/**
+ * In-process cache of the resolved latest index id. CommonCrawl publishes a new
+ * crawl roughly monthly and keeps the listing stable between, so resolving once
+ * per server instance (cold start) is both correct and polite. Only a *real*
+ * resolved id is cached — a failed lookup falls back to {@link DEFAULT_CC_INDEX}
+ * without poisoning the cache, so a transient outage doesn't pin the fallback.
+ */
+let cachedLatestIndex: string | null = null;
+
+/** Test-only: clear the resolved-index cache so cases don't leak state across each other. */
+export function resetLatestIndexCache(): void {
+  cachedLatestIndex = null;
+}
+
+/**
+ * Resolve the newest CommonCrawl index id from `collinfo.json` (the canonical list
+ * of available crawls, newest first), through the injectable {@link HttpClient}.
+ *
+ * This is the fix for the stale-index 404: rather than hard-pinning a crawl id that
+ * CommonCrawl eventually retires, we read the current latest at runtime and cache
+ * it. Never throws — any failure (transport, non-JSON, unexpected shape) silently
+ * degrades to {@link DEFAULT_CC_INDEX} so a build still proceeds.
+ */
+export async function resolveLatestIndex(http: HttpClient): Promise<string> {
+  if (cachedLatestIndex !== null) return cachedLatestIndex;
+
+  const res = await http.getText(CC_COLLINFO_URL, { accept: 'application/json' });
+  if (res.ok && res.body !== '') {
+    try {
+      const parsed: unknown = JSON.parse(res.body);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const first = parsed[0];
+        if (typeof first === 'object' && first !== null) {
+          const id = (first as Record<string, unknown>).id;
+          if (typeof id === 'string' && id.trim() !== '') {
+            cachedLatestIndex = id.trim();
+            return cachedLatestIndex;
+          }
+        }
+      }
+    } catch {
+      // fall through to the fallback id
+    }
+  }
+  // Don't cache the fallback — a later request can still resolve the real latest.
+  return DEFAULT_CC_INDEX;
+}
 
 export interface CommonCrawlCapture {
   /** The captured URL. */

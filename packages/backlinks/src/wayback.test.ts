@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { parseCdx, timestampToIso, buildCdxUrl, fetchHistory } from './wayback.js';
+import {
+  parseCdx,
+  timestampToIso,
+  buildCdxUrl,
+  buildDomainCdxUrl,
+  fetchHistory,
+  queryDomainCaptures,
+} from './wayback.js';
 import type { HttpClient, TextResponse } from './http.js';
 
 const CDX_JSON = JSON.stringify([
@@ -82,5 +89,78 @@ describe('fetchHistory', () => {
     );
     expect(outcome.totalSnapshots).toBe(0);
     expect(outcome.warnings.join(' ')).toMatch(/failed/i);
+  });
+});
+
+describe('buildDomainCdxUrl', () => {
+  it('queries the whole domain (matchType=domain) collapsed to distinct urls', () => {
+    const url = buildDomainCdxUrl('example.com', 25);
+    expect(url).toContain('web.archive.org/cdx/search/cdx');
+    expect(url).toContain('url=example.com');
+    expect(url).toContain('matchType=domain');
+    expect(url).toContain('collapse=urlkey');
+    expect(url).toContain('output=json');
+    expect(url).toContain('limit=25');
+  });
+});
+
+describe('queryDomainCaptures', () => {
+  const DOMAIN_CDX = JSON.stringify([
+    ['timestamp', 'original'],
+    ['20230115120000', 'https://example.com/features'],
+    ['20240620090000', 'https://www.example.com/changelog'],
+    // Duplicate original — collapsed to one capture.
+    ['20250101000000', 'https://example.com/features'],
+  ]);
+
+  it('parses distinct domain captures with host + timestamp', async () => {
+    const outcome = await queryDomainCaptures(
+      httpReturning({ ok: true, status: 200, body: DOMAIN_CDX, url: 'x' }),
+      'example.com',
+    );
+    expect(outcome.captures).toHaveLength(2);
+    expect(outcome.captures[0]).toEqual({
+      url: 'https://example.com/features',
+      host: 'example.com',
+      timestamp: '20230115120000',
+    });
+    // `www.` is stripped from the host.
+    expect(outcome.captures[1]?.host).toBe('example.com');
+    expect(outcome.warnings).toEqual([]);
+  });
+
+  it('warns without hitting the network on an empty domain', async () => {
+    let called = false;
+    const http: HttpClient = {
+      getText: async () => {
+        called = true;
+        return { ok: true, status: 200, body: DOMAIN_CDX, url: 'x' };
+      },
+      getResource: async () => {
+        throw new Error('unused');
+      },
+    };
+    const outcome = await queryDomainCaptures(http, '   ');
+    expect(called).toBe(false);
+    expect(outcome.captures).toEqual([]);
+    expect(outcome.warnings.length).toBeGreaterThan(0);
+  });
+
+  it('degrades with a warning on a transport failure', async () => {
+    const outcome = await queryDomainCaptures(
+      httpReturning({ ok: false, status: 0, body: '', url: 'x' }),
+      'example.com',
+    );
+    expect(outcome.captures).toEqual([]);
+    expect(outcome.warnings.join(' ')).toMatch(/failed/i);
+  });
+
+  it('degrades with a warning on an unparseable body', async () => {
+    const outcome = await queryDomainCaptures(
+      httpReturning({ ok: true, status: 200, body: '<html>error</html>', url: 'x' }),
+      'example.com',
+    );
+    expect(outcome.captures).toEqual([]);
+    expect(outcome.warnings.join(' ')).toMatch(/unparseable|no archived/i);
   });
 });

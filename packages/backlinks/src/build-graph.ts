@@ -14,7 +14,8 @@
  * sources are directional, not a complete backlink index.
  */
 import { search } from './duckduckgo.js';
-import { queryIndex } from './commoncrawl.js';
+import { queryIndex, resolveLatestIndex } from './commoncrawl.js';
+import { queryDomainCaptures } from './wayback.js';
 import { createLiveHttpClient, type HttpClient } from './http.js';
 import type {
   BacklinkGraph,
@@ -25,7 +26,7 @@ import type {
 } from './graph-types.js';
 
 /** A provider the builder may run. Lets a caller scope the fan-out. */
-export type BacklinkSource = 'duckduckgo' | 'commoncrawl';
+export type BacklinkSource = 'duckduckgo' | 'commoncrawl' | 'wayback';
 
 export interface BuildBacklinkGraphOptions {
   /** Injectable HTTP seam. Defaults to a fresh live (non-rate-limited) client. */
@@ -153,7 +154,10 @@ export async function buildBacklinkGraph(
 ): Promise<BacklinkGraph> {
   const rootDomain = normalizeDomain(rootUrl);
   const limit = opts.limit && opts.limit > 0 ? opts.limit : DEFAULT_LIMIT;
-  const sources: BacklinkSource[] = opts.sources ?? ['duckduckgo', 'commoncrawl'];
+  // Wayback is included by default as a reliable, datacenter-reachable fallback: DuckDuckGo
+  // frequently 403s from server IPs and a single stale CommonCrawl index used to empty the graph,
+  // so a third independent source keeps the graph populated even when the other two fail.
+  const sources: BacklinkSource[] = opts.sources ?? ['duckduckgo', 'commoncrawl', 'wayback'];
   const http =
     opts.http ??
     createLiveHttpClient({
@@ -221,15 +225,33 @@ export async function buildBacklinkGraph(
 
   // --- CommonCrawl: pages the index has seen referencing the root domain. ---
   if (rootDomain !== '' && sources.includes('commoncrawl')) {
-    const cc = await queryIndex(http, rootDomain, {
-      index: opts.commonCrawlIndex,
-      limit,
-    });
+    // Resolve the latest crawl id at runtime unless the caller pinned one — a hard-pinned
+    // index eventually 404s as CommonCrawl retires old crawls (the bug that emptied the graph).
+    const index = opts.commonCrawlIndex ?? (await resolveLatestIndex(http));
+    const cc = await queryIndex(http, rootDomain, { index, limit });
     for (const w of cc.warnings) warnings.push(`[commoncrawl] ${w}`);
     for (const c of cc.captures) {
       // CommonCrawl's wildcard is scoped to the root domain, so captures are on
       // the root itself — model them as linked backlink pages corroborating
       // coverage (a real crawled url referencing the domain).
+      addSignal({
+        url: c.url,
+        domain: c.host,
+        kind: 'backlink',
+        mentionType: 'linked',
+        dofollow: true,
+        firstSeen: timestampToIso(c.timestamp),
+      });
+    }
+  }
+
+  // --- Wayback Machine: pages the Internet Archive has captured under the domain. ---
+  // A reliable, datacenter-reachable coverage source; corroborates CommonCrawl and keeps the
+  // graph populated when DuckDuckGo/CommonCrawl are blocked or empty.
+  if (rootDomain !== '' && sources.includes('wayback')) {
+    const wb = await queryDomainCaptures(http, rootDomain, limit);
+    for (const w of wb.warnings) warnings.push(`[wayback] ${w}`);
+    for (const c of wb.captures) {
       addSignal({
         url: c.url,
         domain: c.host,
