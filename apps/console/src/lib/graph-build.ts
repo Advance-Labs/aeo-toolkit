@@ -125,8 +125,11 @@ export function buildGraph(
 ): Promise<BacklinkGraph> {
   const limit = resolveLimit(opts.limit, env);
 
+  // 20s per request: the Wayback CDX domain scan (and a cold CommonCrawl index) can be slow from
+  // serverless IPs; a 10s cap aborted Wayback (status 0) on Vercel, leaving CommonCrawl as the only
+  // working source. Vercel functions allow far longer, so give the free fallback sources room.
   const http = createRateLimitedHttpClient(
-    createLiveHttpClient({ userAgent: USER_AGENT, requestTimeoutMs: 10_000 }),
+    createLiveHttpClient({ userAgent: USER_AGENT, requestTimeoutMs: 20_000 }),
     scrapeLimiter,
   );
 

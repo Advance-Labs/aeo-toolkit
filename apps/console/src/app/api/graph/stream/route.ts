@@ -27,6 +27,9 @@ import { buildGraph } from '@/lib/graph-build';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+// Free sources run sequentially and Wayback/CommonCrawl can be slow from serverless IPs
+// (each up to the 20s client timeout), so allow headroom above any short default.
+export const maxDuration = 60;
 
 /** Nodes/edges emitted per batch — small enough that the web visibly grows. */
 const BATCH_SIZE = 8;
