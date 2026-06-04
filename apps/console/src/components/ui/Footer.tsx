@@ -67,12 +67,39 @@ function FooterCol({
       <ul className="mt-4 space-y-2.5">
         {links.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className="text-sm text-slate-400 transition hover:text-white">
-              {l.label}
-            </Link>
+            <FooterLink href={l.href}>{l.label}</FooterLink>
           </li>
         ))}
       </ul>
     </div>
+  );
+}
+
+/**
+ * Internal page routes use Next `<Link>` (prefetched RSC nav). Anything else — external sites and
+ * raw API/MCP endpoints — uses a plain `<a>`: same-origin `<a>` is never RSC-prefetched, so MCP
+ * endpoints (POST-only) don't get a stray GET prefetch that 404s the console. Endpoints/external
+ * links open in a new tab.
+ */
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}): React.ReactElement {
+  const className = 'text-sm text-slate-400 transition hover:text-white';
+  const isPageRoute = href.startsWith('/') && !href.startsWith('/api/');
+  if (isPageRoute) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} className={className} target="_blank" rel="noreferrer noopener">
+      {children}
+    </a>
   );
 }
