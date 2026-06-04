@@ -5,54 +5,161 @@ repo, shipped via the Web Store). One domain, one env set.
 
 | Piece | Target | How |
 |-------|--------|-----|
-| `apps/console` — all tools + MCP + blogging cron | **Vercel** (one project) | Root Directory = `apps/console`, framework Next.js, install at repo root with pnpm |
+| `apps/console` — all tools + MCP + blogging cron | **Vercel** (one project) | Root Directory = `apps/console`, framework Next.js, install/build at repo root with pnpm + Turbo |
 | `apps/chrome-extension` | Chrome Web Store | `pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload |
 
-## 1. Provision backing services
+---
 
-| Service | Used by | Gives you |
-|---------|---------|-----------|
-| **Supabase** (Postgres) | `/tools/chat`, `/api/mcp/ga-gsc`, blogging cron | `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`; tables `oauth_tokens` + `posts` |
-| **Upstash Redis** | audit + MCP rate limiting | `UPSTASH_REDIS_REST_URL` + `..._TOKEN` (falls back to in-memory if unset) |
-| **Google Cloud** OAuth | GA4 + Search Console tools/MCP, blogging | OAuth web client (`GOOGLE_CLIENT_ID/SECRET`); enable GA4 Data API, GA4 Admin API, Search Console API; scopes `analytics.readonly` + `webmasters.readonly` |
-| **Groq + Anthropic/OpenAI** | blogging cron | model keys (other LLM use is BYOK — passed per request) |
+## Current deployment (live)
 
-Generate two secrets: `TOKEN_ENCRYPTION_KEY` and `OAUTH_STATE_SECRET` (`openssl rand -base64 32`), plus a
-`CRON_SECRET` for the blogging cron.
+- **Project:** `advancelabs/aeo-toolkit` (Vercel team **Advance Labs**), Root Directory `apps/console`.
+- **URL:** https://aeo-toolkit-ten.vercel.app
+- **Database:** Supabase, provisioned via the **Vercel Marketplace** (project `axuaeezqdxyhenmpbdnf`),
+  connected to Production + Preview, schema applied (`oauth_tokens` + `posts`).
+- **Env set:** `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `CRON_SECRET`, `MCP_PUBLIC_URL`,
+  `AUDIT_MAX_PAGES`, `BACKLINK_GRAPH_LIMIT`, `SUPABASE_URL` (+ the integration's `SUPABASE_SERVICE_ROLE_KEY`,
+  `NEXT_PUBLIC_SUPABASE_URL`, `POSTGRES_*`, …).
+- **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`; the
+  `ai-visibility` + `backlink` MCP servers (BYOK Perplexity); MCP discovery; Supabase-backed token + post storage.
+- **Pending creds:** Google OAuth (chat + ga-gsc MCP), LLM keys (blogging cron), Upstash (optional), custom domain.
 
-## 2. Deploy the console to Vercel
+---
 
-1. New Vercel project from the repo → **Root Directory = `apps/console`** (Vercel detects the pnpm workspace + Next.js).
-2. Set the env vars from [`../apps/console/.env.example`](../apps/console/.env.example) — one set covers the whole suite:
-   - `MCP_PUBLIC_URL` (this deployment's URL), `GOOGLE_*` (`GOOGLE_REDIRECT_URI` = `<url>/api/auth/google/callback`),
-     `SUPABASE_*`, `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `UPSTASH_*`, `AUDIT_MAX_PAGES`, `BACKLINK_GRAPH_LIMIT`,
-     and the blogging-cron vars (`CRON_SECRET`, `GROQ_API_KEY`, `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`, `GOOGLE_ACCESS_TOKEN`, `GA4_PROPERTY_ID`, `SITE_URL`, `GSC_SITE_URL`, optional `PUBLISH_WEBHOOK_URL`/`DEPLOY_HOOK_URL`).
-3. Deploy. Then set `MCP_PUBLIC_URL` to the real URL and redeploy so the MCP `.well-known` discovery advertises the right origin.
-4. Add your custom domain.
+## 1. Deploy the console to Vercel
 
-The blogging agent runs automatically via the **Vercel Cron** declared in `apps/console/vercel.json`
-(`/api/cron/blogging`, daily) — Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
+### Create + configure the project
+```bash
+# from the repo ROOT (not apps/console — the root is the deploy context for a sub-dir app)
+vercel link --yes --scope <team> --project aeo-toolkit
+```
 
-## 3. Connect MCP servers to Claude
+Then set the **Root Directory to `apps/console`**. Linking from a subdir does *not* set it, and the
+default (repo root) fails with *"No Next.js version detected"*. Set it in the dashboard
+(**Settings → General → Root Directory**) or via the API:
+
+```bash
+TOKEN=$(sed -n 's/.*"token" *: *"\([^"]*\)".*/\1/p' \
+  "$HOME/Library/Application Support/com.vercel.cli/auth.json")
+curl -X PATCH "https://api.vercel.com/v9/projects/<projectId>?teamId=<teamId>" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"rootDirectory":"apps/console","framework":"nextjs"}'
+```
+
+The monorepo install/build is declared in [`apps/console/vercel.json`](../apps/console/vercel.json) — Turbo
+builds the `@aeo/*` workspace packages (their `dist/`) **before** the Next build, or Next can't resolve them:
+
+```jsonc
+{
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@aeo/console",
+  "crons": [{ "path": "/api/cron/blogging", "schedule": "0 13 * * *" }]
+}
+```
+
+> **Gotcha — Next.js version:** Vercel **blocks deploys on known-vulnerable Next versions**. Keep `next`
+> at a patched release (the repo runs **15.5.x**; `15.1.x` is rejected).
+
+### Set env vars + deploy
+```bash
+# generate the app secrets (one-time)
+openssl rand -base64 32   # TOKEN_ENCRYPTION_KEY
+openssl rand -base64 32   # OAUTH_STATE_SECRET
+openssl rand -hex 16      # CRON_SECRET
+
+# add each (reads value from stdin); repeat per var, see apps/console/.env.example
+printf '%s' "<value>" | vercel env add TOKEN_ENCRYPTION_KEY production
+
+# deploy from the repo ROOT
+vercel deploy --prod --yes
+```
+
+After the first deploy, set `MCP_PUBLIC_URL` to the live URL and redeploy so MCP `.well-known` discovery
+advertises the right origin.
+
+---
+
+## 2. Databases — Vercel Marketplace (`vercel install`)
+
+The **Vercel CLI** provisions a Marketplace database, connects it to the project, **and auto-syncs the env
+vars** (the Vercel *MCP server* tools do not — they're for deploy/projects/logs/docs/domains).
+
+```bash
+vercel install supabase --name aeo-toolkit -e production -e preview
+vercel install neon --name aeo-toolkit-db --plan free -e production -e preview
+vercel install upstash/upstash-kv -e production -e preview
+vercel integration discover            # list all available providers
+```
+
+Marketplace database options for this team:
+
+| Type | Providers (slug) |
+|------|------------------|
+| Postgres | **Supabase** (`supabase`), **Neon** (`neon`), Prisma Postgres (`prisma/prisma-postgres`), Nile, Amazon Aurora (`aws/aws-apg`, `aws/aws-dsql`) |
+| Serverless SQLite | Turso (`tursocloud/database`) |
+| Redis / KV | Redis (`redis`), Upstash for Redis (`upstash/upstash-kv`) |
+| NoSQL / reactive | DynamoDB (`aws/aws-dynamodb`), Convex (`convex`) |
+
+> **Code compatibility:** `@aeo/storage` talks to Supabase via **`@supabase/supabase-js`** (PostgREST +
+> service-role key). Supabase drops in with **no code change**. A raw-SQL Postgres (Neon / Prisma) needs a
+> small adapter — implement `TokenStore` / `PostStore` (the existing interfaces) against `@neondatabase/serverless`.
+> Redis/KV is a natural fit for the token store (get/set/delete by key).
+
+### Supabase specifics (what this deployment uses)
+1. `vercel install supabase …` (accept the marketplace terms once, in the browser or
+   `vercel integration accept-terms supabase --yes`).
+2. **Alias the URL:** the integration syncs `NEXT_PUBLIC_SUPABASE_URL`, but the code reads `SUPABASE_URL` —
+   add `SUPABASE_URL` with the same value (`SUPABASE_SERVICE_ROLE_KEY` matches as-is).
+3. **Apply the schema** ([`apps/console/supabase/schema.sql`](../apps/console/supabase/schema.sql)) using the
+   synced `POSTGRES_URL_NON_POOLING`:
+   ```bash
+   vercel env pull /tmp/prod.env --environment production --yes
+   PG=$(grep -E '^POSTGRES_URL_NON_POOLING=' /tmp/prod.env | cut -d= -f2- | tr -d '"')
+   psql "$PG" -f apps/console/supabase/schema.sql        # or paste into the Supabase SQL editor
+   rm -f /tmp/prod.env
+   ```
+   (No `psql`? Use the Supabase dashboard SQL editor, or a one-off Node client with the `postgres` package.)
+4. **Redeploy** so the new env applies. Token rows are encrypted at rest via `TOKEN_ENCRYPTION_KEY`; RLS is
+   enabled with no permissive policies (service-role only).
+
+---
+
+## 3. Remaining backing services
+
+| Service | Lights up | Env to set |
+|---------|-----------|------------|
+| ✅ **Supabase** | token persistence + blog store | *(done — see above)* |
+| **Google Cloud** OAuth | `/tools/chat`, `ga-gsc` MCP | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=https://<domain>/api/auth/google/callback`; enable GA4 Data API, GA4 Admin API, Search Console API; scopes `analytics.readonly` + `webmasters.readonly` |
+| **LLM keys** | blogging cron | `GROQ_API_KEY`, `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`, `GOOGLE_ACCESS_TOKEN`, `GA4_PROPERTY_ID`, `SITE_URL`, `GSC_SITE_URL` |
+| **Upstash** (optional) | distributed rate limiting | `vercel install upstash/upstash-kv`, or `UPSTASH_REDIS_REST_URL` + `..._TOKEN` (in-memory fallback otherwise) |
+| **Custom domain** | pretty URL | attach in Vercel, then update `MCP_PUBLIC_URL` + the Google redirect |
+
+The blogging agent runs via the **Vercel Cron** in `apps/console/vercel.json` (`/api/cron/blogging`, daily) —
+Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
+
+---
+
+## 4. Connect MCP servers to Claude
 
 In **Claude.ai → Settings → Connectors**, add:
-- `https://<your-domain>/api/mcp/ai-visibility`
-- `https://<your-domain>/api/mcp/ga-gsc`
-- `https://<your-domain>/api/mcp/backlink`
+- `https://<domain>/api/mcp/ai-visibility`
+- `https://<domain>/api/mcp/ga-gsc`
+- `https://<domain>/api/mcp/backlink`
 
 OAuth discovery at `/.well-known/*` handles authorization. (A local **stdio** MCP variant for Claude
-Desktop is not part of the Vercel deployment; re-add it later from a thin package over the same tools.)
+Desktop isn't part of the Vercel deployment; re-add it later from a thin package over the same tools.)
 
-## 4. Chrome extension
+## 5. Chrome extension
 
 `pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload to the Chrome Web Store (icons are
 generated; analysis is 100% local). See `apps/chrome-extension/CHROME_STORE.md`.
 
-## 5. CI / previews
+## 6. CI / previews
 
 `.github/workflows/ci.yml` gates lint + typecheck + test + build on every push. Connect Vercel's Git
 integration for per-PR preview deployments. Secrets live only in Vercel/GitHub env — never in git
-(`.env*` is gitignored).
+(`.env*` and `.vercel` are gitignored).
+
+---
 
 ## Becoming a billable SaaS (not yet built)
 

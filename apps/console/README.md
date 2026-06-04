@@ -25,11 +25,15 @@ pnpm --filter @aeo/console dev
 ## Deploy (single Vercel project)
 - Import the repo → **Root Directory = `apps/console`**, framework Next.js, install at repo root with pnpm.
 - Set the env vars from `.env.example` (one set for the whole suite).
-- Crons are declared in `vercel.ts`. Add the backing services (Supabase, Upstash, Google OAuth) per
+- Crons are declared in `vercel.json`. Add the backing services (Supabase, Upstash, Google OAuth) per
   [`../../docs/DEPLOYMENT.md`](../../docs/DEPLOYMENT.md).
 
 The Chrome extension (`apps/chrome-extension`) is built separately and offered as a download — it runs
 in the browser, not on Vercel.
 
 ## Status
-🚧 Consolidation in progress — replaces the former standalone tool apps (logic preserved in `@aeo/*`).
+✅ **Live** at https://aeo-toolkit-ten.vercel.app (Vercel team Advance Labs, root directory `apps/console`).
+Supabase is provisioned via the Vercel Marketplace and the schema is applied. The audit / E-E-A-T /
+llms.txt / graph tools and the `ai-visibility` + `backlink` MCP servers work now; `/tools/chat`, the
+`ga-gsc` MCP, and the blogging cron come online once Google OAuth + LLM keys are added. See
+[`../../docs/DEPLOYMENT.md`](../../docs/DEPLOYMENT.md) for the current state and the full runbook.
