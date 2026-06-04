@@ -40,6 +40,7 @@ export function Footer(): React.ReactElement {
           <FooterCol
             title="Company"
             links={[
+              { href: '/about', label: 'About' },
               { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
               { href: 'https://advancelabs.dev', label: 'Advance Labs' },
             ]}

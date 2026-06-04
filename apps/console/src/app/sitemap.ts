@@ -14,6 +14,7 @@ const ROUTES: ReadonlyArray<{
   { path: '/tools/llms-txt', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/tools/chat', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/tools/graph', changeFrequency: 'weekly', priority: 0.8 },
+  { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
