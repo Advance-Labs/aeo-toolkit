@@ -1,32 +1,24 @@
 import type { JSX } from 'react';
-import type { Metadata } from 'next';
 import { ChatWorkspace } from '@/components/chat/ChatWorkspace.js';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { Badge, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
+import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
 const PAGE_PATH = '/tools/chat';
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
+const PAGE_TITLE = 'GA4 + Search Console Chat';
+const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, PAGE_PATH);
 
-export const metadata: Metadata = {
+export const metadata = toolMetadata({
+  path: PAGE_PATH,
   title: 'GA4 + Search Console Chat — Ask Your SEO Data in Plain English',
   description:
-    'Chat with your own Google Analytics 4 and Search Console data. Connect Google read-only, bring your own LLM key, and get grounded SEO answers — no dashboards required.',
-  alternates: { canonical: PAGE_PATH },
-  openGraph: {
-    type: 'website',
-    url: PAGE_URL,
-    title: 'GA4 + Search Console Chat — Ask Your SEO Data in Plain English',
-    description:
-      'Connect GA4 + Search Console read-only, bring your own LLM key, and ask SEO questions grounded in your real Google data.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'GA4 + Search Console Chat — AEO Toolkit',
-    description:
-      'Ask SEO questions grounded in your own GA4 + Search Console data, answered by your own LLM key.',
-  },
-};
+    'Chat with your own GA4 and Search Console data. Connect Google read-only, bring your own LLM key, and get grounded SEO answers — no dashboards.',
+  shareTitle: 'GA4 + Search Console Chat — Ask Your SEO Data in Plain English',
+  shareDescription:
+    'Connect GA4 + Search Console read-only, bring your own LLM key, and ask SEO questions grounded in your real Google data.',
+});
 
 /** Answer-first FAQ — rendered as visible HTML and mirrored into FAQPage JSON-LD below. */
 const FAQ: ReadonlyArray<{ q: string; a: string }> = [
@@ -72,15 +64,7 @@ const HOW_IT_WORKS: ReadonlyArray<{ title: string; body: string }> = [
 ];
 
 export default function ChatToolPage(): JSX.Element {
-  const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Tools', item: `${SITE_URL}/#tools` },
-      { '@type': 'ListItem', position: 3, name: 'GA4 + Search Console Chat', item: PAGE_URL },
-    ],
-  };
+  const breadcrumbLd = breadcrumbSchema(TRAIL);
 
   const faqLd = {
     '@context': 'https://schema.org',
@@ -131,6 +115,9 @@ export default function ChatToolPage(): JSX.Element {
           {/* Hero */}
           <header className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
             <Reveal>
+              <Breadcrumb trail={TRAIL} />
+            </Reveal>
+            <Reveal delay={0.02}>
               <Badge tone="cyan">GA4 + Search Console</Badge>
             </Reveal>
             <Reveal delay={0.05}>
@@ -218,7 +205,7 @@ export default function ChatToolPage(): JSX.Element {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         aria-hidden="true"
-                        className="shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180"
+                        className="shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180"
                       >
                         <path d="m6 9 6 6 6-6" />
                       </svg>

@@ -79,7 +79,7 @@ export function DetailPanel({
         ) : null}
         {node.url !== undefined ? (
           <div className="flex flex-col gap-0.5">
-            <dt className="text-[11px] uppercase tracking-wider text-slate-500">URL</dt>
+            <dt className="text-[11px] uppercase tracking-wider text-slate-400">URL</dt>
             <dd>
               <a
                 href={node.url}
@@ -139,7 +139,7 @@ export function DetailPanel({
 function Row({ label, value }: { label: string; value: string }): JSX.Element {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-[11px] uppercase tracking-wider text-slate-500">{label}</dt>
+      <dt className="text-[11px] uppercase tracking-wider text-slate-400">{label}</dt>
       <dd className="break-words text-slate-200">{value}</dd>
     </div>
   );
@@ -150,7 +150,7 @@ function AuthorityRow({ authority }: { authority: number }): JSX.Element {
   const pct = Math.max(0, Math.min(100, Math.round(authority)));
   return (
     <div className="flex flex-col gap-1">
-      <dt className="flex items-center justify-between text-[11px] uppercase tracking-wider text-slate-500">
+      <dt className="flex items-center justify-between text-[11px] uppercase tracking-wider text-slate-400">
         <span>Authority</span>
         <span className="tabular-nums text-slate-300">{pct} / 100</span>
       </dt>

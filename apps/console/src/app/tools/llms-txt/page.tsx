@@ -1,8 +1,7 @@
 import type { JSX } from 'react';
-import type { Metadata } from 'next';
-import { Badge, Button, Container, GradientText, Reveal, SectionHeading } from '@/components/ui';
+import { Badge, Breadcrumb, Button, Container, GradientText, Reveal, SectionHeading } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { SITE_NAME, SITE_URL } from '@/lib/seo';
+import { SITE_URL, breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { GeneratorView } from '@/components/llms-txt/GeneratorView.js';
 import { FaqSection } from '@/components/llms-txt/FaqSection.js';
 import { FAQ_ITEMS, HOW_TO_STEPS } from '@/components/llms-txt/content.js';
@@ -11,36 +10,21 @@ const PAGE_PATH = '/tools/llms-txt';
 const PAGE_URL = `${SITE_URL.replace(/\/$/, '')}${PAGE_PATH}`;
 const PAGE_TITLE = 'llms.txt Generator';
 const PAGE_DESCRIPTION =
-  'Generate a structured llms.txt for any website. Crawl your pages, extract titles and descriptions, and ship a curated AI crawl map so ChatGPT, Claude, and Perplexity can find and cite your content. Free.';
+  'Generate a structured llms.txt for any site — crawl your pages, extract titles and descriptions, and ship a curated AI crawl map answer engines can cite.';
+const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, PAGE_PATH);
 
-export const metadata: Metadata = {
-  title: PAGE_TITLE,
+export const metadata = toolMetadata({
+  path: PAGE_PATH,
+  title: 'llms.txt Generator — Build an AI Crawl Map',
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: PAGE_PATH },
-  openGraph: {
-    title: `${PAGE_TITLE} — ${SITE_NAME}`,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    type: 'website',
-  },
-};
+  shareTitle: 'llms.txt Generator — Build an AI Crawl Map for ChatGPT & Claude',
+  shareDescription:
+    'Crawl your pages and ship a curated llms.txt so ChatGPT, Claude, and Perplexity can find and cite your best content. Free.',
+});
 
 /** schema.org JSON-LD: breadcrumb trail, the FAQ Q&A pairs, and the HowTo steps. */
 function structuredData(): Record<string, unknown>[] {
-  const breadcrumb = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL.replace(/\/$/, '') },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Tools',
-        item: `${SITE_URL.replace(/\/$/, '')}/#tools`,
-      },
-      { '@type': 'ListItem', position: 3, name: PAGE_TITLE, item: PAGE_URL },
-    ],
-  };
+  const breadcrumb = breadcrumbSchema(TRAIL);
 
   const faqPage = {
     '@context': 'https://schema.org',
@@ -86,23 +70,7 @@ export default function LlmsTxtToolPage(): JSX.Element {
         <div className="flex flex-col gap-16 lg:gap-24">
           {/* Hero + generator */}
           <section className="flex flex-col gap-8">
-            <nav aria-label="Breadcrumb" className="text-xs text-slate-500">
-              <ol className="flex flex-wrap items-center gap-1.5">
-                <li>
-                  <a href="/" className="transition hover:text-slate-300">
-                    Home
-                  </a>
-                </li>
-                <li aria-hidden>/</li>
-                <li>
-                  <a href="/#tools" className="transition hover:text-slate-300">
-                    Tools
-                  </a>
-                </li>
-                <li aria-hidden>/</li>
-                <li className="text-slate-300">llms.txt Generator</li>
-              </ol>
-            </nav>
+            <Breadcrumb trail={TRAIL} />
 
             <Reveal className="flex max-w-2xl flex-col gap-5">
               <Badge tone="cyan">AI Crawl Map · Free Tool</Badge>
@@ -229,7 +197,7 @@ export default function LlmsTxtToolPage(): JSX.Element {
                     <svg
                       aria-hidden
                       viewBox="0 0 24 24"
-                      className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-cyan"
+                      className="h-4 w-4 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-cyan"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.8"

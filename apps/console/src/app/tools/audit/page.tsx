@@ -1,26 +1,24 @@
 import type { JSX } from 'react';
-import type { Metadata } from 'next';
-import { Badge, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { AuditExperience } from '@/components/audit/AuditExperience';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
 const PAGE_PATH = '/tools/audit';
 const PAGE_URL = `${SITE_URL}${PAGE_PATH}`;
+const PAGE_TITLE = 'LLM & Technical SEO Audit';
+const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, PAGE_PATH);
 
-export const metadata: Metadata = {
-  title: 'LLM & Technical SEO Audit',
+export const metadata = toolMetadata({
+  path: PAGE_PATH,
+  title: 'LLM & Technical SEO Audit — Crawl, Score & Fix',
   description:
-    'Run a free LLM & technical SEO audit: crawl up to 50 pages, score crawlability, metadata, structured data, and answer-engine readiness out of 100, and get a prioritized fix list.',
-  alternates: { canonical: PAGE_PATH },
-  openGraph: {
-    title: 'LLM & Technical SEO Audit — AEO Toolkit',
-    description:
-      'Crawl, score, and fix your site for both classic SEO and AI answer engines. Free, no sign-up.',
-    url: PAGE_URL,
-    type: 'website',
-  },
-};
+    'Free LLM & technical SEO audit — crawl up to 50 pages and score crawlability, metadata, schema, and AEO readiness out of 100, with a prioritized fix list.',
+  shareTitle: 'Free LLM & Technical SEO Audit — AEO Toolkit',
+  shareDescription:
+    'Crawl, score, and fix your site for both classic SEO and AI answer engines. Free, no sign-up.',
+});
 
 /** Answer-first summary an LLM can lift verbatim. Kept in one place for reuse in copy + JSON-LD. */
 const ANSWER_FIRST =
@@ -114,15 +112,7 @@ const HOW_TO_STEPS: ReadonlyArray<{ name: string; text: string }> = [
 ];
 
 function buildJsonLd(): Record<string, unknown>[] {
-  const breadcrumb = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Tools', item: `${SITE_URL}/tools` },
-      { '@type': 'ListItem', position: 3, name: 'LLM & Technical SEO Audit', item: PAGE_URL },
-    ],
-  };
+  const breadcrumb = breadcrumbSchema(TRAIL);
 
   const webPage = {
     '@context': 'https://schema.org',
@@ -177,6 +167,7 @@ export default function AuditToolPage(): JSX.Element {
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-10">
           {/* Hero */}
           <header className="flex flex-col gap-5">
+            <Breadcrumb trail={TRAIL} />
             <Badge tone="cyan">Free audit · no sign-up</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
               LLM &amp; Technical <GradientText>SEO Audit</GradientText>

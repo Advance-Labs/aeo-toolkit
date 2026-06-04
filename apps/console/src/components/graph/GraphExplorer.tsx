@@ -239,7 +239,7 @@ export function GraphExplorer(): JSX.Element {
                 expandError={expandError}
               />
             ) : (
-              <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-slate-500">
+              <p className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-slate-400">
                 Tip: click any node in the scene to inspect its authority, link equity, and source —
                 then expand it to grow the graph.
               </p>

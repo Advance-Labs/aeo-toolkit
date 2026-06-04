@@ -1,26 +1,24 @@
 import type { JSX, ReactNode } from 'react';
-import type { Metadata } from 'next';
-import { Badge, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { EeatScanner } from '@/components/eeat/EeatScanner.js';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
 const CANONICAL_PATH = '/tools/eeat';
 const PAGE_URL = `${SITE_URL}${CANONICAL_PATH}`;
+const PAGE_TITLE = 'E-E-A-T Scanner';
+const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, CANONICAL_PATH);
 
-export const metadata: Metadata = {
+export const metadata = toolMetadata({
+  path: CANONICAL_PATH,
   title: 'E-E-A-T Scanner — Score Experience, Expertise, Authority & Trust',
   description:
-    'Free E-E-A-T checker. Crawl up to 12 pages and score Experience, Expertise, Authoritativeness, and Trust signals that Google and AI answer engines reward. Get a prioritized fix list.',
-  alternates: { canonical: CANONICAL_PATH },
-  openGraph: {
-    type: 'website',
-    title: 'E-E-A-T Scanner — Free Experience, Expertise, Authority & Trust Checker',
-    description:
-      'Scan any URL and score the four E-E-A-T pillars with present/absent signals and a prioritized fix list.',
-    url: PAGE_URL,
-  },
-};
+    'Free E-E-A-T checker — crawl up to 12 pages and score the Experience, Expertise, Authoritativeness, and Trust signals Google and AI engines reward.',
+  shareTitle: 'E-E-A-T Scanner — Free Experience, Expertise, Authority & Trust Checker',
+  shareDescription:
+    'Scan any URL and score the four E-E-A-T pillars with present/absent signals and a prioritized fix list.',
+});
 
 /** The four E-E-A-T pillars, used for the visible explainer. */
 const PILLARS: { key: string; label: string; blurb: string; icon: ReactNode; accent: string }[] = [
@@ -169,15 +167,7 @@ const FAQS: { q: string; a: string }[] = [
  * structured data (WebPage + BreadcrumbList + HowTo + FAQPage).
  */
 export default function EeatToolPage(): JSX.Element {
-  const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Tools', item: `${SITE_URL}/tools` },
-      { '@type': 'ListItem', position: 3, name: 'E-E-A-T Scanner', item: PAGE_URL },
-    ],
-  };
+  const breadcrumbLd = breadcrumbSchema(TRAIL);
 
   const webPageLd = {
     '@context': 'https://schema.org',
@@ -222,6 +212,9 @@ export default function EeatToolPage(): JSX.Element {
         <Container>
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center">
             <Reveal>
+              <Breadcrumb trail={TRAIL} />
+            </Reveal>
+            <Reveal delay={0.02}>
               <Badge tone="violet">E-E-A-T Scanner</Badge>
             </Reveal>
             <Reveal delay={0.05}>

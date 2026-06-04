@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
-import type { Metadata } from 'next';
-import { Badge, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { GraphExplorer } from '@/components/graph/GraphExplorer.js';
 
 /**
@@ -19,20 +19,18 @@ import { GraphExplorer } from '@/components/graph/GraphExplorer.js';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
 const PATH = '/tools/graph';
+const PAGE_TITLE = 'Backlink Graph';
+const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, PATH);
 
-export const metadata: Metadata = {
+export const metadata = toolMetadata({
+  path: PATH,
   title: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
   description:
-    'Map any site’s referring domains, backlink pages, and brand mentions in an interactive 3D graph. Sourced from open indexes (DuckDuckGo, CommonCrawl, Wayback) — a free, directional view of your link profile.',
-  alternates: { canonical: PATH },
-  openGraph: {
-    title: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
-    description:
-      'Map referring domains, backlink pages, and brand mentions in an interactive 3D graph — sourced from open web indexes.',
-    url: `${SITE_URL}${PATH}`,
-    type: 'website',
-  },
-};
+    'Map any site’s referring domains, backlink pages, and brand mentions in an interactive 3D graph — sourced from open web indexes. Free and directional.',
+  shareTitle: 'Backlink Graph — Visualize Your Backlink Universe in 3D',
+  shareDescription:
+    'Map referring domains, backlink pages, and brand mentions in an interactive 3D graph — sourced from open web indexes.',
+});
 
 interface Faq {
   readonly q: string;
@@ -82,15 +80,7 @@ const HOW_TO_STEPS: ReadonlyArray<{ name: string; text: string }> = [
 ];
 
 export default function GraphToolPage(): JSX.Element {
-  const breadcrumb: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Tools', item: `${SITE_URL}/#tools` },
-      { '@type': 'ListItem', position: 3, name: 'Backlink Graph', item: `${SITE_URL}${PATH}` },
-    ],
-  };
+  const breadcrumb = breadcrumbSchema(TRAIL);
 
   const webPage: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -132,17 +122,7 @@ export default function GraphToolPage(): JSX.Element {
       <Container className="flex max-w-6xl flex-col gap-10 py-10 sm:gap-12 sm:py-14">
         {/* Tool hero — single h1, answer-first intro. */}
         <header className="flex flex-col gap-5">
-          <nav aria-label="Breadcrumb">
-            <ol className="flex items-center gap-2 text-xs text-slate-500">
-              <li>
-                <a href="/" className="transition hover:text-slate-300">
-                  Home
-                </a>
-              </li>
-              <li aria-hidden>/</li>
-              <li className="text-slate-300">Backlink Graph</li>
-            </ol>
-          </nav>
+          <Breadcrumb trail={TRAIL} />
 
           <div className="flex flex-col gap-4">
             <Badge tone="violet">3D Explorer</Badge>

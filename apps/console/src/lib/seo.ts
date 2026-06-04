@@ -6,6 +6,8 @@
  * the product with confidence. All builders return plain objects to feed into `<JsonLd data={...} />`.
  */
 
+import type { Metadata } from 'next';
+
 /** Canonical origin for the deployed site. Override via `MCP_PUBLIC_URL` in the environment. */
 export const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
 
@@ -22,10 +24,96 @@ export const SITE_DESCRIPTION =
 export type SchemaObject = Record<string, unknown>;
 
 /** Absolute URL helper that tolerates a trailing slash on `SITE_URL`. */
-function absolute(path: string): string {
+export function absolute(path: string): string {
   const base = SITE_URL.replace(/\/$/, '');
   const suffix = path.startsWith('/') ? path : `/${path}`;
   return `${base}${suffix}`;
+}
+
+/**
+ * Canonical parent for every tool's breadcrumb. The tools are surfaced as the `#tools` section on
+ * the landing page (there is no standalone `/tools` index), so both the visible breadcrumb and the
+ * `BreadcrumbList` JSON-LD must point here — a bare `/tools` 404s. Defined once so all five tool
+ * pages stay consistent.
+ */
+export const TOOLS_PARENT_PATH = '/#tools';
+export const TOOLS_PARENT_URL = absolute(TOOLS_PARENT_PATH);
+
+/** One crumb in a breadcrumb trail: a label and the path it links to. */
+export interface Crumb {
+  name: string;
+  path: string;
+}
+
+/**
+ * `BreadcrumbList` JSON-LD from a trail of crumbs. Each `path` is resolved to an absolute URL so the
+ * structured-data links never dead-end (Google drops breadcrumb rich results whose items 404).
+ */
+export function breadcrumbSchema(trail: ReadonlyArray<Crumb>): SchemaObject {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: absolute(crumb.path),
+    })),
+  };
+}
+
+/** Standard `Home › Tools › {tool}` trail used by every tool page (visible nav + JSON-LD). */
+export function toolBreadcrumbTrail(toolName: string, toolPath: string): Crumb[] {
+  return [
+    { name: 'Home', path: '/' },
+    { name: 'Tools', path: TOOLS_PARENT_PATH },
+    { name: toolName, path: toolPath },
+  ];
+}
+
+/** Inputs for a tool page's metadata. `title` feeds the `%s — AEO Toolkit` template (keep ≤ ~60
+ *  chars incl. suffix); `shareTitle` is the full, standalone title used on social/AI cards. */
+export interface ToolMetadataInput {
+  path: string;
+  title: string;
+  description: string;
+  shareTitle: string;
+  /** Defaults to `description` when omitted. Keep punchy — it's the card subtitle. */
+  shareDescription?: string;
+}
+
+/**
+ * Build a tool page's `Metadata`: canonical + per-page Open Graph **and** Twitter title/description.
+ * Card images are wired by each route's `opengraph-image.tsx` (Next's file convention auto-populates
+ * both `og:image` and `twitter:image`), so we deliberately don't set `images` here. Twitter does NOT
+ * inherit title/description from Open Graph in Next, so we set them explicitly to avoid falling back
+ * to the generic site-level card.
+ */
+export function toolMetadata({
+  path,
+  title,
+  description,
+  shareTitle,
+  shareDescription,
+}: ToolMetadataInput): Metadata {
+  const cardDescription = shareDescription ?? description;
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: 'website',
+      siteName: SITE_NAME,
+      title: shareTitle,
+      description: cardDescription,
+      url: absolute(path),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: shareTitle,
+      description: cardDescription,
+    },
+  };
 }
 
 /**

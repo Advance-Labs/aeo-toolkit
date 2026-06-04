@@ -27,7 +27,7 @@ export function WhyAeo(): React.ReactElement {
               </caption>
               <thead>
                 <tr className="border-b border-white/[0.08]">
-                  <th scope="col" className="px-5 py-4 font-medium text-slate-500" />
+                  <th scope="col" className="px-5 py-4 font-medium text-slate-400" />
                   <th scope="col" className="px-5 py-4 font-medium text-slate-400">
                     Classic SEO
                   </th>
@@ -59,7 +59,7 @@ export function WhyAeo(): React.ReactElement {
                 <dd className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-semibold tracking-tight text-transparent">
                   {stat.value}
                 </dd>
-                <p aria-hidden className="text-xs leading-snug text-slate-500">
+                <p aria-hidden className="text-xs leading-snug text-slate-400">
                   {stat.label}
                 </p>
               </div>

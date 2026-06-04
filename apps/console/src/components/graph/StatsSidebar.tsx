@@ -73,7 +73,7 @@ export function StatsSidebar({ stats, warnings }: StatsSidebarProps): JSX.Elemen
         </details>
       ) : null}
 
-      <p className="border-t border-white/10 pt-3 text-xs leading-relaxed text-slate-500">
+      <p className="border-t border-white/10 pt-3 text-xs leading-relaxed text-slate-400">
         Discovered from open indexes (DuckDuckGo, CommonCrawl, Wayback). This is a{' '}
         <strong className="font-semibold text-slate-300">sample</strong>, not a complete index like
         a paid tool — treat it as directional.

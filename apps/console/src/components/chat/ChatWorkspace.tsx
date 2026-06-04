@@ -49,7 +49,7 @@ function ChevronIcon(): JSX.Element {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"
     >
       <path d="m6 9 6 6 6-6" />
     </svg>
@@ -349,7 +349,7 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
               </label>
             </div>
             {properties.length === 0 ? (
-              <p className="text-xs leading-relaxed text-slate-500">
+              <p className="text-xs leading-relaxed text-slate-400">
                 Property listing requires the GA4 Admin API (not yet wired) — enter your numeric
                 property ID manually.
               </p>
@@ -454,7 +454,7 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
                 >
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-400">
                   No questions yet. Pick a preset or type one below.
                 </p>
               </div>

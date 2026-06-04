@@ -45,7 +45,7 @@ export function Footer(): React.ReactElement {
             ]}
           />
         </div>
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-slate-500 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-slate-400 sm:flex-row sm:items-center">
           <p>© 2026 Advance Labs Inc. All rights reserved.</p>
           <p>Built clean-room in TypeScript · MIT licensed</p>
         </div>

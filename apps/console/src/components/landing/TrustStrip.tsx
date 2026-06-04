@@ -14,7 +14,7 @@ export function TrustStrip(): React.ReactElement {
     >
       <Container>
         <Reveal className="flex flex-col items-center gap-6">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
             Optimizes your visibility across
           </p>
           <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-12">

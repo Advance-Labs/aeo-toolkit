@@ -109,7 +109,7 @@ export function Filters({ filter, onChange }: FiltersProps): JSX.Element {
       </label>
 
       <fieldset className="flex flex-col gap-1.5">
-        <legend className="mb-1 text-[11px] uppercase tracking-wider text-slate-500">
+        <legend className="mb-1 text-[11px] uppercase tracking-wider text-slate-400">
           Node types
         </legend>
         {FILTERABLE_TYPES.map((type) => (
@@ -135,7 +135,7 @@ export function Filters({ filter, onChange }: FiltersProps): JSX.Element {
 
       <label className="flex flex-col gap-1.5">
         <span className="flex items-center justify-between">
-          <span className="text-[11px] uppercase tracking-wider text-slate-500">Min authority</span>
+          <span className="text-[11px] uppercase tracking-wider text-slate-400">Min authority</span>
           <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-xs tabular-nums text-slate-200">
             {filter.minAuthority}
           </span>

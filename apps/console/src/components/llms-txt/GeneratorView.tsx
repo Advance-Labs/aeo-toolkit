@@ -155,7 +155,7 @@ function OutputCard({ file }: { file: FileOutput }): JSX.Element {
             <FileIcon />
             {file.filename}
           </span>
-          <span className="hidden text-xs text-slate-500 sm:inline">
+          <span className="hidden text-xs text-slate-400 sm:inline">
             {file.label} · {lineCount} line{lineCount === 1 ? '' : 's'}
           </span>
         </div>
@@ -337,8 +337,8 @@ export function GeneratorView(): JSX.Element {
               <CheckIcon />
             </span>
             <span>
-              Also generate <span className="font-mono text-brand-cyan">llms-full.txt</span>
-              <span className="ml-1 text-slate-500">(expanded content variant)</span>
+              Also generate <span className="font-mono text-brand-cyan">llms-full.txt</span>{' '}
+              <span className="text-slate-400">(expanded content variant)</span>
             </span>
           </label>
         </form>
@@ -406,7 +406,7 @@ export function GeneratorView(): JSX.Element {
           <p className="text-sm font-medium text-slate-200">
             Your generated llms.txt will appear here
           </p>
-          <p className="max-w-sm text-sm text-slate-500">
+          <p className="max-w-sm text-sm text-slate-400">
             Enter a site URL above and we&apos;ll crawl it (sitemap-first), extract titles and
             descriptions, and assemble a ready-to-ship file.
           </p>

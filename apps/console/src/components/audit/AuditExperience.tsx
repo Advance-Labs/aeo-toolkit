@@ -253,7 +253,7 @@ function AuditInputCard({
           <div className="relative flex-1">
             <span
               aria-hidden
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
             >
               <GlobeIcon />
             </span>
@@ -291,8 +291,9 @@ function AuditInputCard({
             {error}
           </p>
         ) : (
-          <p className="text-xs text-slate-500">
-            Crawls up to 50 pages. No sign-up — your report renders right here.
+          <p className="text-xs text-slate-400">
+            Crawls up to 50 pages. No sign-up, and we never store your site content — your report
+            renders right here.
           </p>
         )}
       </form>
@@ -665,7 +666,7 @@ function CategoryBars({ categories }: { categories: ScoreCategory[] }): JSX.Elem
               <span className="text-sm font-medium text-slate-200">{category.label}</span>
               <span className="text-sm tabular-nums text-slate-300">
                 {pct}
-                <span className="text-slate-500">
+                <span className="text-slate-400">
                   {' '}
                   · {category.passedCount}/{total}
                 </span>
@@ -738,7 +739,7 @@ function FixCards({ findings }: { findings: Finding[] }): JSX.Element {
             {finding.recommendation}
           </p>
           {finding.affectedUrls && finding.affectedUrls.length > 0 ? (
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-slate-400">
               Affects {finding.affectedUrls.length} URL
               {finding.affectedUrls.length === 1 ? '' : 's'}
             </p>

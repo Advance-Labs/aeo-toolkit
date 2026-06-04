@@ -37,9 +37,9 @@ export function Hero(): React.ReactElement {
               </Button>
             </div>
 
-            <p className="flex items-center gap-2 text-sm text-slate-500">
+            <p className="flex items-center gap-2 text-sm text-slate-400">
               <CheckIcon />
-              Free to start · No account required · 5 tools, one console
+              Free to start · No account required · five tools, one console
             </p>
           </Reveal>
 

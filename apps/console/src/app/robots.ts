@@ -25,8 +25,14 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/', '/.well-known/'],
       },
-      // Explicitly allow each answer-engine crawler full access.
-      ...AI_BOTS.map((userAgent) => ({ userAgent, allow: '/' })),
+      // Explicitly welcome each answer-engine crawler across all content. Named user-agent groups do
+      // NOT inherit the `*` group's rules, so we repeat the API/plumbing disallow here — otherwise AI
+      // bots would crawl the POST-only MCP/tool endpoints under /api/ and dead-end on 404/405s.
+      ...AI_BOTS.map((userAgent) => ({
+        userAgent,
+        allow: '/',
+        disallow: ['/api/', '/.well-known/'],
+      })),
     ],
     sitemap: `${base}/sitemap.xml`,
     host: base,

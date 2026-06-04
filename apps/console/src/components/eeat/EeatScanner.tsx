@@ -68,7 +68,7 @@ export function EeatScanner(): JSX.Element {
             submitLabel="Scan E-E-A-T"
             placeholder="example.com"
           />
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             We crawl up to 12 pages and never store your site content. Results are scored instantly.
           </p>
         </div>
@@ -182,7 +182,7 @@ function ScoreRing({ score }: { score: number }): JSX.Element {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-3xl font-bold tabular-nums text-white">{clamped}</span>
-        <span className="text-[11px] uppercase tracking-wider text-slate-500">/ 100</span>
+        <span className="text-[11px] uppercase tracking-wider text-slate-400">/ 100</span>
       </div>
     </div>
   );
@@ -204,7 +204,7 @@ function ReportView({ report }: { report: EeatReport }): JSX.Element {
                 <p className="text-sm text-slate-400">
                   <span className="break-all font-medium text-slate-200">{report.url}</span>
                 </p>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-400">
                   {report.pagesCrawled} page{report.pagesCrawled === 1 ? '' : 's'} scanned
                 </p>
               </div>
@@ -239,7 +239,7 @@ function PillarStat({ label, score }: { label: string; score: number }): JSX.Ele
   return (
     <div className="flex flex-col gap-0.5 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5">
       <span className={cn('text-lg font-bold tabular-nums', tone)}>{score}</span>
-      <span className="truncate text-[11px] uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="truncate text-[11px] uppercase tracking-wide text-slate-400">{label}</span>
     </div>
   );
 }

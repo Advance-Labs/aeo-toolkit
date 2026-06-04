@@ -78,7 +78,7 @@ export function EeatUrlForm({
         <div className="relative flex-1">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
           >
             <svg
               width="18"

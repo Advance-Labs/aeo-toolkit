@@ -32,7 +32,7 @@ export function UrlBar({ onSubmit, loading = false, defaultValue }: UrlBarProps)
         placeholder="example.com — enter any domain or URL"
         {...(defaultValue === undefined ? {} : { defaultValue })}
       />
-      <p className="mt-2 px-1 text-xs text-slate-500">
+      <p className="mt-2 px-1 text-xs text-slate-400">
         We map referring domains, backlink pages, and brand mentions in 3D.
       </p>
     </div>
