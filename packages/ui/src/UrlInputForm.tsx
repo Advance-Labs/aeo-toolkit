@@ -77,7 +77,7 @@ export function UrlInputForm({
           {/* Leading globe glyph for affordance. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
           >
             <svg
               width="18"
@@ -107,7 +107,7 @@ export function UrlInputForm({
             onChange={(event) => setValue(event.target.value)}
             className={cx(
               'w-full rounded-xl border bg-white/[0.03] py-3 pl-11 pr-4 text-sm text-white shadow-inner outline-none backdrop-blur-sm transition',
-              'placeholder:text-slate-500',
+              'placeholder:text-slate-400',
               'focus:border-brand-indigo/60 focus:bg-white/[0.05] focus:ring-2 focus:ring-brand-indigo/30',
               'disabled:cursor-not-allowed disabled:opacity-60',
               error !== null ? 'border-red-400/60 focus:ring-red-400/30' : 'border-white/12',

@@ -85,7 +85,7 @@ export function FixList({
             {finding.recommendation}
           </p>
           {finding.affectedUrls && finding.affectedUrls.length > 0 ? (
-            <p className="mt-2.5 text-xs text-slate-500">
+            <p className="mt-2.5 text-xs text-slate-400">
               Affects {finding.affectedUrls.length} URL
               {finding.affectedUrls.length === 1 ? '' : 's'}
             </p>

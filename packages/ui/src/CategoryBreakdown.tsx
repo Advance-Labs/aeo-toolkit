@@ -29,7 +29,7 @@ export function CategoryBreakdown({ categories, className }: CategoryBreakdownPr
               <span className="text-sm font-semibold text-white">{category.label}</span>
               <span className="text-sm tabular-nums text-slate-300">
                 <span className="font-semibold text-white">{pct}</span>
-                <span className="text-slate-500">
+                <span className="text-slate-400">
                   {' '}
                   · {category.passedCount}/{category.passedCount + category.failedCount} passed
                 </span>
