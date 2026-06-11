@@ -9,7 +9,7 @@
 import type { Metadata } from 'next';
 
 /** Canonical origin for the deployed site. Override via `MCP_PUBLIC_URL` in the environment. */
-export const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
+export const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo.advancelabs.dev';
 
 /** Human-facing brand + publisher metadata, reused across every schema. */
 export const SITE_NAME = 'AEO Toolkit';

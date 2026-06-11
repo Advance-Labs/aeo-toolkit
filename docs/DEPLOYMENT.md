@@ -13,7 +13,7 @@ repo, shipped via the Web Store). One domain, one env set.
 ## Current deployment (live)
 
 - **Project:** `advancelabs/aeo-toolkit` (Vercel team **Advance Labs**), Root Directory `apps/console`.
-- **URL:** https://aeo-toolkit-ten.vercel.app
+- **URL:** https://aeo.advancelabs.dev (canonical) · https://aeo-toolkit-ten.vercel.app (Vercel alias)
 - **Database:** Supabase, provisioned via the **Vercel Marketplace** (project `axuaeezqdxyhenmpbdnf`),
   connected to Production + Preview, schema applied (`oauth_tokens` + `posts`).
 - **Env set:** `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `CRON_SECRET`, `MCP_PUBLIC_URL`,

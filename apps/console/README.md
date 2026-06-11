@@ -32,7 +32,7 @@ The Chrome extension (`apps/chrome-extension`) is built separately and offered a
 in the browser, not on Vercel.
 
 ## Status
-✅ **Live** at https://aeo-toolkit-ten.vercel.app (Vercel team Advance Labs, root directory `apps/console`).
+✅ **Live** at https://aeo.advancelabs.dev (Vercel team Advance Labs, root directory `apps/console`).
 Supabase is provisioned via the Vercel Marketplace and the schema is applied. The audit / E-E-A-T /
 llms.txt / graph tools and the `ai-visibility` + `backlink` MCP servers work now; `/tools/chat`, the
 `ga-gsc` MCP, and the blogging cron come online once Google OAuth + LLM keys are added. See
