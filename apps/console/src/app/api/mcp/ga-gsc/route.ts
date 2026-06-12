@@ -24,6 +24,7 @@ import {
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/ga-gsc/config.js';
 import { bearerToken } from '@/mcp/ga-gsc/http-util.js';
 import { getSharedMcpRateLimiter } from '@/mcp/shared.js';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 
@@ -60,6 +61,10 @@ function buildHandler(requestToken: string | null): (req: Request) => Promise<Re
 async function handler(request: Request): Promise<Response> {
   const limited = await enforceWebRateLimit(getSharedMcpRateLimiter(), request);
   if (limited) return limited;
+
+  // Entitlement gate (no-op when billing is dormant; gates MCP access to plans with mcpAccess).
+  const gate = await checkEntitlement(request, 'mcp');
+  if (!gate.ok) return Response.json(gate.body, { status: gate.status });
 
   const token = bearerToken(request.headers.get('authorization'));
   return buildHandler(token)(request);

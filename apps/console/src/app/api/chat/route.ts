@@ -12,6 +12,7 @@ import { LlmHttpError, LlmRequestError } from '@aeo/llm';
 import { answerQuestion, liveDeps } from '@/lib/answer';
 import { parseChatRequest, type ChatResponseBody, type ChatErrorBody } from '@/lib/chat-types';
 import { getValidAccessToken, USER_COOKIE } from '@/lib/oauth';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,10 @@ function err(message: string, status: number): NextResponse<ChatErrorBody> {
 export async function POST(
   req: NextRequest,
 ): Promise<NextResponse<ChatResponseBody | ChatErrorBody>> {
+  // Entitlement gate (no-op when billing is dormant; returns ok and the site stays open as today).
+  const gate = await checkEntitlement(req, 'chat');
+  if (!gate.ok) return NextResponse.json(gate.body, { status: gate.status });
+
   let raw: unknown;
   try {
     raw = await req.json();

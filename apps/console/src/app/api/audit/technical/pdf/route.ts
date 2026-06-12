@@ -13,6 +13,7 @@ import { renderAuditReportPdf } from '@aeo/pdf';
 import { runAudit } from '@/lib/audit-pipeline';
 import { toErrorBody, AuditError } from '@/lib/audit-errors';
 import { parseAuditRequest } from '@/lib/audit-validate';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -44,6 +45,10 @@ async function resolveReport(payload: unknown): Promise<AuditReport> {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  // Entitlement gate (no-op when billing is dormant; returns ok and the site stays open as today).
+  const gate = await checkEntitlement(request, 'audit');
+  if (!gate.ok) return Response.json(gate.body, { status: gate.status });
+
   let payload: unknown;
   try {
     payload = await request.json();

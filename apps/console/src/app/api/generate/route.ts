@@ -7,6 +7,7 @@
 import { NextResponse } from 'next/server';
 import { CrawlerError } from '@aeo/crawler';
 import { generateLlmsTxt } from '@/lib/generate';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 import type {
   GenerateErrorResponse,
   GenerateRequest,
@@ -36,6 +37,10 @@ function isGenerateRequest(value: unknown): value is GenerateRequest {
 export async function POST(
   request: Request,
 ): Promise<NextResponse<GenerateResponse | GenerateErrorResponse>> {
+  // Entitlement gate (no-op when billing is dormant; meters the generator against the audit quota).
+  const gate = await checkEntitlement(request, 'audit');
+  if (!gate.ok) return NextResponse.json(gate.body, { status: gate.status });
+
   let payload: unknown;
   try {
     payload = await request.json();

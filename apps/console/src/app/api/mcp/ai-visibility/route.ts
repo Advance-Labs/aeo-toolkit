@@ -17,6 +17,7 @@ import { enforceWebRateLimit } from '@aeo/mcp-core';
 import { registerAiVisibilityTools } from '@/mcp/ai-visibility/server.js';
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/ai-visibility/config.js';
 import { getSharedMcpRateLimiter } from '@/mcp/shared.js';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 
@@ -38,6 +39,9 @@ const mcpHandler = createMcpHandler(
 async function handler(request: Request): Promise<Response> {
   const limited = await enforceWebRateLimit(getSharedMcpRateLimiter(), request);
   if (limited) return limited;
+  // Entitlement gate (no-op when billing is dormant; gates MCP access to plans with mcpAccess).
+  const gate = await checkEntitlement(request, 'mcp');
+  if (!gate.ok) return Response.json(gate.body, { status: gate.status });
   return mcpHandler(request);
 }
 

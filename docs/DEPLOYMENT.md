@@ -19,8 +19,9 @@ repo, shipped via the Web Store). One domain, one env set.
 - **Env set:** `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `CRON_SECRET`, `MCP_PUBLIC_URL`,
   `AUDIT_MAX_PAGES`, `BACKLINK_GRAPH_LIMIT`, `SUPABASE_URL` (+ the integration's `SUPABASE_SERVICE_ROLE_KEY`,
   `NEXT_PUBLIC_SUPABASE_URL`, `POSTGRES_*`, …).
-- **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`; the
-  `ai-visibility` + `backlink` MCP servers (BYOK Perplexity); MCP discovery; Supabase-backed token + post storage.
+- **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`; the human MCP
+  connection page at **`/mcp`**; the `ai-visibility` + `backlink` MCP servers (BYOK Perplexity); MCP
+  discovery; Supabase-backed token + post storage.
 - **Pending creds:** Google OAuth (chat + ga-gsc MCP), LLM keys (blogging cron), Upstash (optional), custom domain.
 
 ---
@@ -140,7 +141,8 @@ Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
 
 ## 4. Connect MCP servers to Claude
 
-In **Claude.ai → Settings → Connectors**, add:
+The human-facing connection page is **`https://<domain>/mcp`** — it lists every tool and the exact
+connect steps for Claude.ai and Cursor. In **Claude.ai → Settings → Connectors**, add:
 - `https://<domain>/api/mcp/ai-visibility`
 - `https://<domain>/api/mcp/ga-gsc`
 - `https://<domain>/api/mcp/backlink`
@@ -161,7 +163,39 @@ integration for per-PR preview deployments. Secrets live only in Vercel/GitHub e
 
 ---
 
-## Becoming a billable SaaS (not yet built)
+## Becoming a billable SaaS (BUILT — ships dormant)
 
-The console is the surface; a commercial product still needs **auth** (Supabase Auth), **Stripe** billing
-+ plans, **usage metering/quotas** on the audit/visibility endpoints, and an **account dashboard**.
+The commercial layer is **fully built and ships dormant**: Supabase Auth (magic-link), Stripe billing
++ plans, usage metering/quotas on the tool + MCP endpoints, and an account dashboard. With **no new env
+set, the site behaves exactly as today** — all five tools free and open, no sign-in, no paywall — so the
+code is safe to deploy now. It lights up only when its keys are present (the repo's "lights up when creds
+are added" convention, e.g. ga-gsc).
+
+Two independent switches, each derived purely from whether its keys exist (no separate on/off flag):
+
+| Switch | On when… | Unlocks |
+|--------|----------|---------|
+| `AUTH_ENABLED`    | `NEXT_PUBLIC_SUPABASE_URL` **and** `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set | `/login`, sessions, `/account` |
+| `BILLING_ENABLED` | `STRIPE_SECRET_KEY` is set | checkout, the customer portal, plan/quota gating |
+
+Until `BILLING_ENABLED` is true, `checkEntitlement()` returns "allow" for every request, so adding these
+keys is the only thing that can ever wall a tool — and unsetting `STRIPE_SECRET_KEY` rolls back instantly.
+
+**Activation runbook (the full, authoritative steps):** see [`ACTIVATION.md`](./ACTIVATION.md). In short:
+
+1. **Apply the billing schema** — `psql "$POSTGRES_URL" -f apps/console/supabase/schema-billing.sql`
+   (adds `profiles`, `subscriptions`, `usage_events` with RLS policies + the profile-seeding trigger;
+   additive — it does not touch the existing `schema.sql`).
+2. **Enable Auth** — set `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the Supabase **anon/publishable** key;
+   `NEXT_PUBLIC_SUPABASE_URL` is already set by the Vercel Supabase integration), and add
+   `https://aeo.advancelabs.dev/auth/callback` to Supabase's allowed redirect URLs (enable Email magic-link).
+3. **Enable Billing** — create a Stripe product + recurring monthly price per paid plan, then set
+   `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_PRICE_PRO`, `STRIPE_PRICE_AGENCY`.
+4. **Webhook** — add a Stripe endpoint at `https://aeo.advancelabs.dev/api/billing/webhook` for
+   `checkout.session.completed` + `customer.subscription.{created,updated,deleted}`, and set
+   `STRIPE_WEBHOOK_SECRET` to its signing secret (the handler verifies every call's signature).
+5. **Tune pricing (optional)** — defaults are Free $0 / Pro $29 / Agency $99 in
+   `apps/console/src/lib/billing/plans.ts`; `/pricing` and the gate both read from that one file.
+
+Roll back any time by unsetting `STRIPE_SECRET_KEY` (and the anon key) and redeploying — the schema and
+Stripe data are untouched and reactivate the moment the keys return.

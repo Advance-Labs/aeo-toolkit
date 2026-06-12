@@ -24,6 +24,7 @@ import { NextResponse } from 'next/server';
 import type { BacklinkGraph, GraphEdge, GraphNode } from '@aeo/backlinks';
 import { validateGraphRequest } from '@/lib/graph-validate';
 import { buildGraph } from '@/lib/graph-build';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -55,6 +56,11 @@ function chunk<T>(items: readonly T[], size: number): T[][] {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  // Entitlement gate (no-op when billing is dormant; denials answer with a normal JSON response,
+  // matching the validation-failure path — no stream is opened).
+  const gate = await checkEntitlement(request, 'graph');
+  if (!gate.ok) return NextResponse.json(gate.body, { status: gate.status });
+
   const url = new URL(request.url).searchParams.get('url');
   const validated = validateGraphRequest({ url });
   if (!validated.ok) {

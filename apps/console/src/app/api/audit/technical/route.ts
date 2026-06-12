@@ -11,11 +11,16 @@
  */
 import { handleAudit } from '@/lib/handle-audit';
 import { auditRateLimiter } from '@/lib/audit-rate-limit';
+import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 // The audit is request-driven and must never be statically cached.
 export const dynamic = 'force-dynamic';
 
-export function POST(request: Request): Promise<Response> {
+export async function POST(request: Request): Promise<Response> {
+  // Entitlement gate (no-op when billing is dormant; returns ok and the site stays open as today).
+  const gate = await checkEntitlement(request, 'audit');
+  if (!gate.ok) return Response.json(gate.body, { status: gate.status });
+
   return handleAudit(request, auditRateLimiter);
 }
