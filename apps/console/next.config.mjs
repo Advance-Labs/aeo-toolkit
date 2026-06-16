@@ -3,6 +3,11 @@ export default {
   reactStrictMode: true,
   // Lint runs as its own Turbo task (`pnpm lint`); don't duplicate it during the build.
   eslint: { ignoreDuringBuilds: true },
+  // `@react-pdf/renderer` (used by `@aeo/pdf` in the /api/audit/technical/pdf route) must not be
+  // webpack-bundled: bundling mangles its internal font/layout machinery and the renderer throws
+  // "Cannot read properties of undefined (reading 'S')" at runtime. Keep it external so Next
+  // require()s it from node_modules in the server function instead.
+  serverExternalPackages: ['@react-pdf/renderer'],
   transpilePackages: [
     '@aeo/backlinks',
     '@aeo/blogging',
@@ -11,7 +16,9 @@ export default {
     '@aeo/html-parser',
     '@aeo/llm',
     '@aeo/mcp-core',
-    '@aeo/pdf',
+    // NOTE: '@aeo/pdf' is intentionally NOT transpiled. It ships compiled dist and pulls in
+    // '@react-pdf/renderer'; listing it here would bundle react-pdf's subtree (mangling its
+    // font/layout internals → "reading 'S'" at runtime) and override serverExternalPackages above.
     '@aeo/schema-validator',
     '@aeo/scoring',
     '@aeo/storage',
@@ -19,12 +26,26 @@ export default {
     '@aeo/ui',
   ],
   // Resolve ESM-style ".js" specifiers to their ".ts"/".tsx" sources (verbatimModuleSyntax).
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.extensionAlias = {
       ...config.resolve.extensionAlias,
       '.js': ['.ts', '.tsx', '.js'],
       '.jsx': ['.tsx', '.jsx'],
     };
+    // Belt-and-suspenders for the PDF renderer: `serverExternalPackages` alone does not externalize
+    // `@react-pdf/renderer` here (it's reached through a workspace symlink), so it ends up bundled
+    // and breaks. Force it (and its subpackages) external on the server build so they load from
+    // node_modules at runtime — the same way the renderer works under plain Node.
+    if (isServer) {
+      const externals = Array.isArray(config.externals) ? config.externals : [config.externals].filter(Boolean);
+      externals.unshift(({ request }, callback) => {
+        if (request && /^@react-pdf\//.test(request)) {
+          return callback(null, `commonjs ${request}`);
+        }
+        return callback();
+      });
+      config.externals = externals;
+    }
     return config;
   },
 };
