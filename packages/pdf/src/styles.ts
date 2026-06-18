@@ -17,6 +17,8 @@ export const palette = {
   low: '#4b5563',
   info: '#2563eb',
   good: '#15803d',
+  /** Advance Labs brand purple — co-branding accent (wordmark dot, footer link, rule). */
+  brand: '#7c3aed',
 } as const;
 
 /**
@@ -55,13 +57,52 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     marginBottom: 18,
     borderBottomWidth: 1,
     borderBottomColor: palette.border,
     paddingBottom: 12,
+  },
+  // Top brand strip: Advance Labs lockup (left) + a quiet "AEO Toolkit audit" tag (right).
+  brandBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  brandLockup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  brandMoon: {
+    width: 18,
+    height: 18,
+    marginRight: 6,
+  },
+  brandWordmark: {
+    fontSize: 12,
+  },
+  brandWordAdvance: {
+    fontFamily: 'Helvetica-Bold',
+    color: palette.ink,
+  },
+  brandWordLabs: {
+    fontFamily: 'Helvetica',
+    color: palette.ink,
+  },
+  brandDot: {
+    fontFamily: 'Helvetica-Bold',
+    color: palette.brand,
+  },
+  brandTag: {
+    fontSize: 8,
+    color: palette.muted,
+    letterSpacing: 0.4,
+  },
+  // The original header row (report title + subtitles on the left, score gauge on the right).
+  headerMain: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 18,
@@ -173,10 +214,34 @@ export const styles = StyleSheet.create({
     right: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     fontSize: 8,
     color: palette.muted,
     borderTopWidth: 1,
     borderTopColor: palette.border,
     paddingTop: 6,
+  },
+  // Contact strip: brand name + clickable website + the AEO Toolkit attribution.
+  footerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  footerName: {
+    fontFamily: 'Helvetica-Bold',
+    color: palette.ink,
+  },
+  footerLink: {
+    color: palette.brand,
+    textDecoration: 'none',
+  },
+  footerMeta: {
+    color: palette.muted,
+  },
+  footerSep: {
+    color: palette.border,
+    marginHorizontal: 5,
+  },
+  footerPage: {
+    color: palette.muted,
   },
 });

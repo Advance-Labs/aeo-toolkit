@@ -6,9 +6,14 @@
  * assembled by the audit app) and turns it into PDF primitives. No I/O happens here — the actual
  * byte rendering lives in `renderAuditReportPdf`, which keeps this component trivially testable.
  */
-import { Document, Page, Text, View } from '@react-pdf/renderer';
+import { Document, Image, Link, Page, Text, View } from '@react-pdf/renderer';
 import type { JSX } from 'react';
 import type { AuditReport, Finding, ScoreCategory } from '@aeo/types';
+import {
+  ADVANCE_LABS_MOON_DATA_URI,
+  ADVANCE_LABS_WEBSITE,
+  ADVANCE_LABS_WEBSITE_LABEL,
+} from './brand.js';
 import { scoreColor, severityColor, styles } from './styles.js';
 
 export interface AuditReportDocumentProps {
@@ -28,6 +33,25 @@ function formatGeneratedAt(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return date.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+}
+
+/**
+ * Advance Labs co-brand lockup: the faceted "moon" mark beside the "Advance Labs." wordmark
+ * ("Advance" bold, "Labs" regular, a purple terminating dot). Mirrors the web logo on a white
+ * surface. Presentational only.
+ */
+function BrandLockup(): JSX.Element {
+  return (
+    <View style={styles.brandLockup}>
+      {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf Image has no alt prop */}
+      <Image style={styles.brandMoon} src={ADVANCE_LABS_MOON_DATA_URI} />
+      <Text style={styles.brandWordmark}>
+        <Text style={styles.brandWordAdvance}>Advance</Text>
+        <Text style={styles.brandWordLabs}> Labs</Text>
+        <Text style={styles.brandDot}>.</Text>
+      </Text>
+    </View>
+  );
 }
 
 function CategoryRow({ category }: { category: ScoreCategory }): JSX.Element {
@@ -82,14 +106,20 @@ export function AuditReportDocument({ report }: AuditReportDocumentProps): JSX.E
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>
-          <View>
-            <Text style={styles.title}>AEO Audit Report</Text>
-            <Text style={styles.subtitle}>{report.url}</Text>
-            <Text style={styles.subtitle}>Generated {formatGeneratedAt(report.generatedAt)}</Text>
+          <View style={styles.brandBar}>
+            <BrandLockup />
+            <Text style={styles.brandTag}>AEO TOOLKIT AUDIT</Text>
           </View>
-          <View style={styles.scoreBlock}>
-            <Text style={[styles.scoreNumber, { color: headerColor }]}>{Math.round(overall)}</Text>
-            <Text style={[styles.scoreGrade, { color: headerColor }]}>Grade {score.grade}</Text>
+          <View style={styles.headerMain}>
+            <View>
+              <Text style={styles.title}>AEO Audit Report</Text>
+              <Text style={styles.subtitle}>{report.url}</Text>
+              <Text style={styles.subtitle}>Generated {formatGeneratedAt(report.generatedAt)}</Text>
+            </View>
+            <View style={styles.scoreBlock}>
+              <Text style={[styles.scoreNumber, { color: headerColor }]}>{Math.round(overall)}</Text>
+              <Text style={[styles.scoreGrade, { color: headerColor }]}>Grade {score.grade}</Text>
+            </View>
           </View>
         </View>
 
@@ -123,8 +153,19 @@ export function AuditReportDocument({ report }: AuditReportDocumentProps): JSX.E
         )}
 
         <View style={styles.footer} fixed>
-          <Text>AEO Toolkit · {report.meta.crawler}</Text>
-          <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+          <View style={styles.footerLeft}>
+            <Text style={styles.footerName}>Advance Labs</Text>
+            <Text style={styles.footerSep}>·</Text>
+            <Link style={styles.footerLink} src={ADVANCE_LABS_WEBSITE}>
+              {ADVANCE_LABS_WEBSITE_LABEL}
+            </Link>
+            <Text style={styles.footerSep}>·</Text>
+            <Text style={styles.footerMeta}>Report by AEO Toolkit · {report.meta.crawler}</Text>
+          </View>
+          <Text
+            style={styles.footerPage}
+            render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+          />
         </View>
       </Page>
     </Document>
