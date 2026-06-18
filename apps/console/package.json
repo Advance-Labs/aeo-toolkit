@@ -10,6 +10,8 @@
     "start": "next start",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
+    "audit": "node scripts/seo-audit.mjs",
+    "audit:batch": "node scripts/seo-audit-batch.mjs --targets scripts/targets/london-smb.txt",
     "test": "vitest run"
   },
   "dependencies": {
@@ -27,6 +29,7 @@
     "@aeo/types": "workspace:*",
     "@aeo/ui": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "@react-pdf/renderer": "^4.1.6",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.1",
     "clsx": "^2.1.1",

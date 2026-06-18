@@ -1,8 +1,19 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 export default {
   reactStrictMode: true,
   // Lint runs as its own Turbo task (`pnpm lint`); don't duplicate it during the build.
   eslint: { ignoreDuringBuilds: true },
+  // We're an app inside a pnpm workspace. Point output file tracing at the monorepo root so Next's
+  // tracer (nft) can follow workspace symlinks (e.g. `@aeo/pdf` → `@react-pdf/renderer` in the
+  // shared `.pnpm` store) when collecting the files each serverless function needs. Without this,
+  // the tracing root defaults to the app dir and react-pdf is silently dropped from the Lambda →
+  // "Cannot find module '@react-pdf/renderer'" at runtime on the PDF route.
+  outputFileTracingRoot: path.join(__dirname, '../../'),
   // `@react-pdf/renderer` (used by `@aeo/pdf` in the /api/audit/technical/pdf route) must not be
   // webpack-bundled: bundling mangles its internal font/layout machinery and the renderer throws
   // "Cannot read properties of undefined (reading 'S')" at runtime. Keep it external so Next
