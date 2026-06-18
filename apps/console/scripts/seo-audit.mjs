@@ -18,12 +18,7 @@
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { crawl } from "@aeo/crawler";
-import { parseHtml } from "@aeo/html-parser";
-import { analyzeStructuredData } from "@aeo/schema-validator";
-import { buildAuditReport } from "@aeo/scoring";
-
-const VERSION = "0.1.0";
+import { auditSite, ENGINE_VERSION as VERSION } from "./lib/audit-site.mjs";
 
 function parseArgs(argv) {
   const args = { site: "https://advancelabs.dev", max: 25, out: null };
@@ -34,12 +29,6 @@ function parseArgs(argv) {
     else if (a === "--out") args.out = argv[++i];
   }
   return args;
-}
-
-function isParseable(page) {
-  if (!page.ok || typeof page.body !== "string" || page.body.length === 0) return false;
-  const ct = page.contentType;
-  return ct === undefined || /text\/html|application\/xhtml\+xml/i.test(ct);
 }
 
 const SEV_RANK = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
@@ -100,29 +89,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   process.stderr.write(`Crawling ${args.site} (max ${args.max} pages)…\n`);
 
-  const startedAt = Date.now();
-  const crawlResult = await crawl(args.site, {
-    maxPages: args.max,
-    respectRobotsTxt: true,
-    followSitemap: true,
-    userAgent: `@aeo/seo-audit/${VERSION}`,
-  });
-
-  if (crawlResult.pageCount === 0) {
-    process.stderr.write(`No pages crawled — site unreachable or blocking the crawler.\n`);
-    process.exit(1);
-  }
-
-  const pages = [];
-  const structuredData = [];
-  for (const page of crawlResult.pages) {
-    if (!isParseable(page)) continue;
-    pages.push(parseHtml(page.body, page.finalUrl));
-    structuredData.push(analyzeStructuredData(page.body, page.finalUrl));
-  }
-
-  const ctx = { crawl: crawlResult, pages, structuredData, mode: "full-site" };
-  const report = await buildAuditReport(ctx, { durationMs: Date.now() - startedAt, version: VERSION });
+  const report = await auditSite(args.site, { max: args.max, version: VERSION });
   const md = toMarkdown(report, args.site);
 
   if (args.out) {

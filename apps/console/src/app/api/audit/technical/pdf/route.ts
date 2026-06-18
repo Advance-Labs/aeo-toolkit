@@ -9,7 +9,6 @@
  * Node runtime: `@aeo/pdf` (react-pdf) is server-only and not edge-safe.
  */
 import type { AuditReport } from '@aeo/types';
-import { renderAuditReportPdf } from '@aeo/pdf';
 import { runAudit } from '@/lib/audit-pipeline';
 import { toErrorBody, AuditError } from '@/lib/audit-errors';
 import { parseAuditRequest } from '@/lib/audit-validate';
@@ -61,6 +60,10 @@ export async function POST(request: Request): Promise<Response> {
 
   try {
     const report = await resolveReport(payload);
+    // `@aeo/pdf` (and its dep `@react-pdf/renderer`) are ESM-only and kept external (see
+    // next.config.mjs). Load them via dynamic import() so this CJS route never `require()`s an ESM
+    // module — a static import would compile to `require()` and throw ERR_REQUIRE_ESM on Vercel.
+    const { renderAuditReportPdf } = await import('@aeo/pdf');
     const bytes = await renderAuditReportPdf(report);
     const filename = pdfFilename(report.url);
     // Copy into a fresh ArrayBuffer so the Response body is a standalone, typed BodyInit.

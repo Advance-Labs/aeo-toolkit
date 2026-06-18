@@ -1,0 +1,27 @@
+# Target list — London ON SMBs, the 15 HIGH-priority prospects for AI-visibility (AEO) audits.
+# Source: advance-labs/docs/operating-system/sales/targets-smb-london.md (2026-06-11).
+# These are the cold-outreach TARGETS (stale/owner-operated sites, weak AI visibility) — NOT the
+# digital incumbents named in the pitch. Verify each site for 2 min before any send (CASL).
+#
+# Used by: node scripts/seo-audit-batch.mjs --targets targets/london-smb.txt
+
+# HVAC / plumbing
+bowhomecomfort.ca
+hydeparkplumbing.ca
+comfortzoneservices.ca
+budgethvac.ca
+maxcareheatingandcooling.com
+
+# Law
+rhaas.ca
+affordablefamilylaw.ca
+forestcitylawyers.com
+ledroitsabo.com
+macdonaldevenden.ca
+
+# Dental
+londonfamilydental.com
+dawndentalcentre.com
+cosmodentallondon.ca
+jainfamilydentistry.ca
+riverparkdental.ca

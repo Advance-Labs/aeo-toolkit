@@ -132,6 +132,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.12.0
         version: 1.29.0(zod@3.25.76)
+      '@react-pdf/renderer':
+        specifier: ^4.1.6
+        version: 4.5.1(react@19.2.7)
       '@supabase/ssr':
         specifier: ^0.12.0
         version: 0.12.0(@supabase/supabase-js@2.108.1)
