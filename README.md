@@ -99,3 +99,5 @@ This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, 
 ---
 
 <sub>© 2026 Advance Labs Inc. — <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
+
+> **HEALTHCHECK:** run `pnpm install && pnpm build && pnpm test` to confirm the monorepo is green before opening a PR.
