@@ -98,4 +98,10 @@ This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, 
 
 ---
 
+## Code of Conduct
+
+We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) — be respectful and constructive in all project spaces, and report unacceptable behavior to [conduct@advancelabs.dev](mailto:conduct@advancelabs.dev).
+
+---
+
 <sub>© 2026 Advance Labs Inc. — <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
