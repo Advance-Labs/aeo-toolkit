@@ -127,7 +127,11 @@ export function organizationSchema(): SchemaObject {
     '@id': `${SITE_URL.replace(/\/$/, '')}/#organization`,
     name: ORG_NAME,
     legalName: ORG_LEGAL_NAME,
-    url: SITE_URL,
+    // The org's canonical home is the company site, not this product subdomain. Pointing url +
+    // sameAs at advancelabs.dev (and the shared GitHub org / LinkedIn) makes this "Advance Labs"
+    // node resolve to the SAME entity the main site declares it `owns` — so answer/search engines
+    // treat aeo.advancelabs.dev as a trusted property of the established brand, not a stray site.
+    url: 'https://advancelabs.dev',
     logo: {
       '@type': 'ImageObject',
       url: absolute('/icon.svg'),
@@ -135,7 +139,12 @@ export function organizationSchema(): SchemaObject {
       height: 512,
     },
     description: SITE_DESCRIPTION,
-    sameAs: [REPO_URL],
+    sameAs: [
+      'https://advancelabs.dev',
+      'https://github.com/Advance-Labs',
+      'https://www.linkedin.com/company/advance-labs',
+      REPO_URL,
+    ],
   };
 }
 

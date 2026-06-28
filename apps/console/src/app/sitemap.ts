@@ -17,9 +17,15 @@ const ROUTES: ReadonlyArray<{
   { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
 ];
 
+// Stable content-derived lastmod, NOT `new Date()` at build time — otherwise every deploy
+// rewrites every <lastmod> even when the page is unchanged, training crawlers to distrust the
+// signal and ignore it for re-crawl prioritization. Bump this when tool pages get a substantive
+// content update.
+const LAST_CONTENT_UPDATE = '2026-06-27';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE_URL.replace(/\/$/, '');
-  const lastModified = new Date();
+  const lastModified = LAST_CONTENT_UPDATE;
   return ROUTES.map((route) => ({
     url: `${base}${route.path}`,
     lastModified,
