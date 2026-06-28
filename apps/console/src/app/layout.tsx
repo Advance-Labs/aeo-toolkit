@@ -5,14 +5,17 @@ import { AuroraBackground } from '@/components/ui/AuroraBackground';
 import { Footer } from '@/components/ui/Footer';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { organizationSchema, websiteSchema, softwareApplicationSchema } from '@/lib/seo';
+import { organizationSchema, websiteSchema, softwareApplicationSchema, SITE_URL } from '@/lib/seo';
 import './globals.css';
 
 const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
-const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
+// SITE_URL is imported from '@/lib/seo' — the single source of truth (falls back to the
+// canonical https://aeo.advancelabs.dev). Previously this file redefined it with a divergent
+// vercel.app fallback, which would split the canonical/OG host from the sitemap/robots host
+// whenever MCP_PUBLIC_URL was unset.
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
