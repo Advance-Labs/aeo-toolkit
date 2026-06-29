@@ -17,7 +17,7 @@ import { SupabaseProposalStore, type SupabaseLike } from '@aeo/orchestrator';
 import { getUser } from '@/lib/auth/server';
 import { managedEnabled } from '@/lib/managed/staff';
 import { assertCanDecide } from '@/lib/managed/authz';
-import { sanitizeForPublish } from '@/lib/managed/sanitize';
+import { publishApprovedContent } from '@/lib/managed/publish';
 import {
   createServiceClient,
   getCustomerSiteUrl,
@@ -76,15 +76,14 @@ export async function POST(req: Request): Promise<Response> {
   await insertAudit(client, { proposalId, ownerId: proposal.ownerId, action: 'approved', actorId, rationale });
 
   if (proposal.kind === 'content') {
-    // H3: sanitize before publish; the only allowed link is the customer's own site.
+    // H3: publishApprovedContent sanitizes at the boundary (only the customer's own href survives),
+    // then pushes through the env-gated Publisher — real CmsPublisher when PUBLISH_WEBHOOK_URL is set,
+    // else a dry-run NoopPublisher.
     const allowedHref = (await getCustomerSiteUrl(client, proposal.customerId)) ?? proposal.payload.slug;
-    const safeMarkdown = sanitizeForPublish(proposal.payload.markdown, allowedHref);
-    // TODO(lead): publish `safeMarkdown` via @aeo/blogging CmsPublisher once a CMS connection exists.
-    // For now the sanitized content is recorded as executed (NoopPublisher semantics).
-    void safeMarkdown;
+    const published = await publishApprovedContent(proposal, allowedHref);
     await store.setStatus(proposalId, { status: 'executed', decidedBy: actorId, decidedAt });
     await insertAudit(client, { proposalId, ownerId: proposal.ownerId, action: 'executed', actorId });
-    return NextResponse.json({ ok: true, status: 'executed' });
+    return NextResponse.json({ ok: true, status: 'executed', url: published.url });
   }
 
   // Outreach (and deferred kinds): approval hands the vetted draft to the human to send — not auto-sent.
