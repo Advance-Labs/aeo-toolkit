@@ -19,6 +19,29 @@ and a counsel review. The browser-agent prompt at the bottom automates the dashb
   does NOT set. So add: `SUPABASE_URL` = (the `NEXT_PUBLIC_SUPABASE_URL` value) and
   `NEXT_PUBLIC_SUPABASE_ANON_KEY` = (the `SUPABASE_ANON_KEY` value). Without these the managed/auth
   paths stay closed.
+- ✅ **Cron is now code-native** (PR #8): `vercel.json` schedules `/api/orchestrator/run` daily at 09:00
+  UTC, authorized by `Authorization: Bearer ${CRON_SECRET}` (same as the blogging cron). **No dashboard
+  cron setup needed** — just ensure `CRON_SECRET` is set (it already is, for the blogging cron) and
+  redeploy. `ORCHESTRATOR_JOB_SECRET` is now **optional** (only the manual `POST` trigger uses it).
+
+## ⚡ The only thing left: set env vars in Vercel, then redeploy
+Set these on the **aeo-toolkit** project (Production), then redeploy `main`. Staff email is
+`lucas@advancelabs.dev`. Values for secrets are provided out-of-band (not in this file):
+```
+SUPABASE_URL                  # = NEXT_PUBLIC_SUPABASE_URL value
+NEXT_PUBLIC_SUPABASE_ANON_KEY # = SUPABASE_ANON_KEY value
+TOKEN_ENCRYPTION_KEY          # required (managed token store refuses plaintext)
+STRIPE_PRICE_MANAGED          # = price_1TnZvpAz8RYdQls2hbd59W3U  (live)
+STAFF_EMAILS                  # = lucas@advancelabs.dev
+MANAGED_LLM_PROVIDER          # = anthropic
+MANAGED_LLM_API_KEY           # platform Anthropic key
+MANAGED_DRAFT_MODEL           # = claude-haiku-4-5-20251001
+MANAGED_REASONING_MODEL       # = claude-sonnet-4-6
+# already set by the Supabase integration: SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_SUPABASE_URL
+# already set for the blogging cron: CRON_SECRET
+# verify billing is on: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+# optional: PUBLISH_WEBHOOK_URL (omit = dry-run), ORCHESTRATOR_JOB_SECRET (manual trigger only)
+```
 
 ## Environment variables the Managed tier reads
 | Var | Purpose | Where used |
