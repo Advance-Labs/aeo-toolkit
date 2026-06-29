@@ -51,3 +51,40 @@ describe('encrypt/decrypt', () => {
     expect(k1.equals(k2)).toBe(true);
   });
 });
+
+describe('key-versioned ciphertext (rotation support, H4)', () => {
+  it('tags fresh ciphertext with the current "v1:" key-version prefix', () => {
+    const payload = encrypt('secret', PASSPHRASE);
+    expect(payload.startsWith('v1:')).toBe(true);
+    // The body after the prefix is the base64 iv|authTag|ciphertext, not the plaintext.
+    expect(payload).not.toContain('secret');
+  });
+
+  it('round-trips a versioned payload', () => {
+    const payload = encrypt('ya29.versioned-token', PASSPHRASE);
+    expect(decrypt(payload, PASSPHRASE)).toBe('ya29.versioned-token');
+  });
+
+  it('still decrypts a legacy (un-prefixed) payload for backward compatibility', () => {
+    // Rows written before key-versioning have no "vN:" prefix — strip it to simulate one.
+    const versioned = encrypt('legacy-token', PASSPHRASE);
+    const legacy = versioned.slice('v1:'.length);
+    // The stripped payload has no "vN:" version prefix (':' is not a base64 char, so this is
+    // deterministic regardless of the random ciphertext bytes).
+    expect(legacy.startsWith('v1:')).toBe(false);
+    expect(decrypt(legacy, PASSPHRASE)).toBe('legacy-token');
+  });
+
+  it('rejects an unknown/future key version rather than mis-decrypting it', () => {
+    const versioned = encrypt('token', PASSPHRASE);
+    const body = versioned.slice('v1:'.length);
+    expect(() => decrypt(`v99:${body}`, PASSPHRASE)).toThrow(TokenCryptoError);
+  });
+
+  it('rejects arbitrary garbage instead of returning it as plaintext', () => {
+    // The single most important security property: a non-ciphertext value must NOT round-trip
+    // back out of decrypt() as if it were a plaintext token.
+    expect(() => decrypt('not-actually-ciphertext', PASSPHRASE)).toThrow(TokenCryptoError);
+    expect(() => decrypt('v1:not-actually-ciphertext', PASSPHRASE)).toThrow(TokenCryptoError);
+  });
+});

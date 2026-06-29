@@ -14,15 +14,20 @@
 export { createSupabaseClient } from './supabase-client.js';
 export type { SupabaseClientConfig } from './supabase-client.js';
 
-export { SupabaseTokenStore, TokenStoreError } from './token-store.js';
+export {
+  SupabaseTokenStore,
+  TokenStoreError,
+  createManagedTokenStore,
+} from './token-store.js';
 export type {
   SupabaseLike,
   SupabaseClientLike,
   SupabaseTokenStoreOptions,
+  ManagedTokenStoreOptions,
   TokenRow,
 } from './token-store.js';
 
-export { deriveKey, encrypt, decrypt, TokenCryptoError } from './crypto.js';
+export { deriveKey, encrypt, decrypt, TokenCryptoError, CURRENT_KEY_VERSION } from './crypto.js';
 
 export { InMemoryRateLimiter, UpstashRateLimiter, resolveRateLimiter } from './rate-limit.js';
 export type {
