@@ -24,14 +24,18 @@ and a counsel review. The browser-agent prompt at the bottom automates the dashb
   cron setup needed** — just ensure `CRON_SECRET` is set (it already is, for the blogging cron) and
   redeploy. `ORCHESTRATOR_JOB_SECRET` is now **optional** (only the manual `POST` trigger uses it).
 
-## Smoke test (2026-06-29, production)
-- `/pricing` → **200**, Managed/Autopilot card renders ✅
-- `/onboarding` → **200** ✅
-- `POST`/`GET` `/api/orchestrator/run` unauthenticated → **404** ✅ (correct inert/H1 behavior)
-- Authenticated trigger → **404** ⇒ `managedEnabled()` was still false at test time: env vars set in
-  Vercel **only take effect on a new deployment**, and the serving build predated the env paste.
-  **Resolution: a fresh deploy of `main` activates it** (this docs push triggers one). Re-test the
-  authenticated trigger after the deploy completes.
+## Smoke test (2026-06-29, production) — VERIFIED LIVE, one config gap
+- `/pricing` → **200**, Managed/Autopilot card with $499 renders ✅
+- `/onboarding` → **200**, active onboarding form (managed **enabled**) ✅
+- Unauthenticated `/api/orchestrator/run` → **404** ✅ (inert/H1 — correct)
+- Authenticated `POST` (job secret) → **503 "Managed tier not fully configured"** — this is the good
+  failure: it passed both the `managedEnabled()` gate AND the job-secret check (so enablement + H1 auth
+  work). 503 means `createServiceClient()` or `managedModelsFromEnv()` returned null.
+- **Remaining to be fully operational — set in Production, then it runs end-to-end:**
+  - `SUPABASE_URL` = the `NEXT_PUBLIC_SUPABASE_URL` value (server reads `SUPABASE_URL`, not the public one)
+  - `MANAGED_LLM_API_KEY` (+ `MANAGED_LLM_PROVIDER`/`MANAGED_DRAFT_MODEL`/`MANAGED_REASONING_MODEL`)
+  - Vercel server env applies only to deployments built **after** the vars are saved, and only in the
+    scope (Production vs Preview) they're saved to — re-save to **Production** and redeploy if needed.
 
 ## ⚡ The only thing left: set env vars in Vercel, then redeploy
 Set these on the **aeo-toolkit** project (Production), then redeploy `main`. Staff email is
