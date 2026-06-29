@@ -21,7 +21,7 @@
 
 -- ── Customer profiles (one managed site per row; the autopilot cadence target) ──
 create table if not exists public.customer_profiles (
-  id            uuid        primary key default gen_random_uuid(),
+  id            text        primary key default gen_random_uuid()::text,
   owner_id      uuid        not null references auth.users (id) on delete cascade,
   site_url      text        not null,
   niche         text,
@@ -45,8 +45,8 @@ create index if not exists customer_profiles_owner_idx on public.customer_profil
 
 -- ── Proposals (the approval inbox: content drafts + outreach pitches awaiting a staff decision) ──
 create table if not exists public.proposals (
-  id          uuid        primary key default gen_random_uuid(),
-  customer_id uuid        not null references public.customer_profiles (id) on delete cascade,
+  id          text        primary key default gen_random_uuid()::text,  -- orchestrator-supplied id
+  customer_id text        not null references public.customer_profiles (id) on delete cascade,
   owner_id    uuid        not null references auth.users (id) on delete cascade,
   kind        text        not null check (kind in ('content', 'link-outreach', 'link-placement', 'community-reply')),
   status      text        not null default 'pending'
@@ -75,7 +75,7 @@ create index if not exists proposals_customer_status_idx on public.proposals (cu
 -- dispute record of who approved/rejected what, when, and why.
 create table if not exists public.proposal_audit (
   id          bigserial   primary key,
-  proposal_id uuid        not null references public.proposals (id) on delete cascade,
+  proposal_id text        not null references public.proposals (id) on delete cascade,
   owner_id    uuid        not null references auth.users (id) on delete cascade,
   action      text        not null check (action in ('created', 'approved', 'rejected', 'executed', 'failed')),
   actor_id    uuid        references auth.users (id),       -- the staff/user who took the action
@@ -95,7 +95,7 @@ create index if not exists proposal_audit_proposal_idx on public.proposal_audit 
 -- ── Managed jobs (cadence run ledger; lets the orchestrator skip already-run periods) ──
 create table if not exists public.managed_jobs (
   id          bigserial   primary key,
-  customer_id uuid        not null references public.customer_profiles (id) on delete cascade,
+  customer_id text        not null references public.customer_profiles (id) on delete cascade,
   owner_id    uuid        not null references auth.users (id) on delete cascade,
   job_kind    text        not null check (job_kind in ('content.generate', 'link.outreach')),
   period      text        not null,                          -- e.g. '2026-06'
