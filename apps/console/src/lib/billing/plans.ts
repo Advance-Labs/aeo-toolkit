@@ -12,8 +12,11 @@
  * lights up only when those vars are set (see `lib/billing/stripe.ts`).
  */
 
-/** The three subscription tiers. `free` is the default for unauthenticated / unsubscribed users. */
-export type PlanId = 'free' | 'pro' | 'agency';
+/**
+ * The subscription tiers. `free` is the default for unauthenticated / unsubscribed users. `managed`
+ * is the done-for-you "Autopilot" tier — a productized service (staff-vetted), priced above agency.
+ */
+export type PlanId = 'free' | 'pro' | 'agency' | 'managed';
 
 /**
  * A single pricing tier. Limits use `-1` to mean "unlimited" (checked explicitly by the gating layer
@@ -40,6 +43,12 @@ export interface Plan {
     mcpAccess: boolean;
     /** Number of seats included. `-1` = unlimited. */
     seats: number;
+    /** Whether the plan includes the done-for-you Managed / Autopilot service. Only `managed` has it. */
+    managedAccess: boolean;
+    /** Managed-only: articles delivered per month (the work-delivered SLA). Omitted on self-serve tiers. */
+    articlesPerMonth?: number;
+    /** Managed-only: outreach placements pursued per month. Omitted on self-serve tiers. */
+    outreachPlacementsPerMonth?: number;
   };
   /** One-line marketing blurb for the pricing card. */
   blurb: string;
@@ -63,7 +72,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Free',
     priceUsdMonthly: 0,
     stripePriceEnv: null,
-    limits: { auditsPerMonth: 5, mcpAccess: false, seats: 1 },
+    limits: { auditsPerMonth: 5, mcpAccess: false, seats: 1, managedAccess: false },
     blurb: 'Kick the tires on every tool, no card required.',
     features: [
       '5 site audits per month',
@@ -77,7 +86,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Pro',
     priceUsdMonthly: 29,
     stripePriceEnv: 'STRIPE_PRICE_PRO',
-    limits: { auditsPerMonth: 200, mcpAccess: true, seats: 1 },
+    limits: { auditsPerMonth: 200, mcpAccess: true, seats: 1, managedAccess: false },
     blurb: 'For operators shipping AEO work every week.',
     features: [
       '200 site audits per month',
@@ -91,7 +100,7 @@ export const PLANS: Record<PlanId, Plan> = {
     name: 'Agency',
     priceUsdMonthly: 99,
     stripePriceEnv: 'STRIPE_PRICE_AGENCY',
-    limits: { auditsPerMonth: -1, mcpAccess: true, seats: 5 },
+    limits: { auditsPerMonth: -1, mcpAccess: true, seats: 5, managedAccess: false },
     blurb: 'Unlimited audits and MCP for the whole team.',
     features: [
       'Unlimited site audits',
@@ -100,10 +109,33 @@ export const PLANS: Record<PlanId, Plan> = {
       '5 seats',
     ],
   },
+  managed: {
+    id: 'managed',
+    name: 'Managed',
+    priceUsdMonthly: 499,
+    stripePriceEnv: 'STRIPE_PRICE_MANAGED',
+    limits: {
+      auditsPerMonth: -1,
+      mcpAccess: true,
+      seats: 5,
+      managedAccess: true,
+      articlesPerMonth: 20,
+      outreachPlacementsPerMonth: 8,
+    },
+    blurb: 'Done-for-you, human-vetted, penalty-safe — we run your AEO growth.',
+    features: [
+      'Up to 20 published articles / month',
+      'Up to 8 compliant link-outreach placements / month',
+      'Reddit/community + AI-citation visibility tracking',
+      'Human-vetted before anything ships (no penalties)',
+      '90-day work-delivered guarantee',
+      'Everything in Agency',
+    ],
+  },
 };
 
-/** Ordered list of plans (free → agency) for rendering pricing cards in tier order. */
-export const PLAN_ORDER: readonly PlanId[] = ['free', 'pro', 'agency'];
+/** Ordered list of plans (free → managed) for rendering pricing cards in tier order. */
+export const PLAN_ORDER: readonly PlanId[] = ['free', 'pro', 'agency', 'managed'];
 
 /** Stripe subscription statuses that grant a paid plan's entitlements. */
 const ACTIVE_SUBSCRIPTION_STATUSES: ReadonlySet<string> = new Set(['active', 'trialing']);
@@ -129,7 +161,7 @@ export function planFor(
   if (subscriptionStatus == null || !ACTIVE_SUBSCRIPTION_STATUSES.has(subscriptionStatus)) {
     return 'free';
   }
-  if (plan === 'agency' || plan === 'pro') {
+  if (plan === 'managed' || plan === 'agency' || plan === 'pro') {
     return plan;
   }
   // Active subscription with an unknown/missing plan label: grant the lowest paid tier rather than
