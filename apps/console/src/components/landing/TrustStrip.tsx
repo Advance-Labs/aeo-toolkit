@@ -2,11 +2,17 @@ import { Container, Reveal } from '@/components/ui';
 import { ENGINES } from './data';
 
 /**
- * Thin social-proof band naming the AI surfaces the toolkit optimizes for. The
- * engine names are rendered as styled wordmarks (no third-party logos) so the strip
- * stays fast, license-clean, and on-brand.
+ * Social-proof band naming the AI surfaces the toolkit optimizes for, rendered as a slow,
+ * continuously-scrolling marquee (a "logo loop"): the engine wordmarks are duplicated into
+ * two adjacent tracks and translated -50%, so the loop is seamless. Edge-fade mask keeps the
+ * ends soft. Pure CSS — no third-party logos (license-clean) and no JS — and the static
+ * wordmark list is fully present in the HTML for crawlers; the scroll is enhancement-only and
+ * pauses for reduced-motion users via the global rule.
  */
 export function TrustStrip(): React.ReactElement {
+  // Two copies back-to-back so translateX(-50%) lands exactly on the start of the second copy.
+  const track = [...ENGINES, ...ENGINES];
+
   return (
     <section
       className="border-y border-white/[0.06] bg-white/[0.015] py-10"
@@ -17,16 +23,19 @@ export function TrustStrip(): React.ReactElement {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
             Optimizes your visibility across
           </p>
-          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-12">
-            {ENGINES.map((engine) => (
-              <li
-                key={engine}
-                className="text-base font-semibold text-slate-400 transition-colors duration-200 hover:text-white sm:text-lg"
-              >
-                {engine}
-              </li>
-            ))}
-          </ul>
+          <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)]">
+            <ul className="flex w-max items-center gap-x-12 pr-12 animate-marquee sm:gap-x-16 sm:pr-16">
+              {track.map((engine, i) => (
+                <li
+                  key={`${engine}-${i}`}
+                  aria-hidden={i >= ENGINES.length}
+                  className="whitespace-nowrap text-base font-semibold text-slate-400 transition-colors duration-200 hover:text-white sm:text-lg"
+                >
+                  {engine}
+                </li>
+              ))}
+            </ul>
+          </div>
         </Reveal>
       </Container>
     </section>

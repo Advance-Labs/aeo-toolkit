@@ -43,7 +43,7 @@ function formatGeneratedAt(iso: string): string {
 function BrandLockup(): JSX.Element {
   return (
     <View style={styles.brandLockup}>
-      {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf Image has no alt prop */}
+      {/* @react-pdf Image has no alt prop; jsx-a11y is not enabled for this package. */}
       <Image style={styles.brandMoon} src={ADVANCE_LABS_MOON_DATA_URI} />
       <Text style={styles.brandWordmark}>
         <Text style={styles.brandWordAdvance}>Advance</Text>

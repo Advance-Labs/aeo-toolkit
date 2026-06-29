@@ -13,9 +13,9 @@ export function ToolsShowcase(): React.ReactElement {
     <Section id="tools">
       <Reveal>
         <SectionHeading
+          align="left"
           eyebrow="The toolkit"
-          title="Five tools,"
-          gradient="one console."
+          title="Five tools, one console."
           subtitle="Each tool targets a different lever of AI visibility. Use them on their own or run the full sweep from one place."
         />
       </Reveal>

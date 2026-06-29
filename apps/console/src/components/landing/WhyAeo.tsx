@@ -1,24 +1,24 @@
-import { Badge, Card, Reveal, Section, SectionHeading } from '@/components/ui';
-import { COMPARE, STATS } from './data';
+import { Badge, Button, Card, Reveal, Section, SectionHeading } from '@/components/ui';
+import { COMPARE } from './data';
 
 /**
  * "AEO vs SEO" explainer. A semantic comparison `<table>` (crawler- and AI-friendly,
- * exactly the extractable structure the SEO plan calls for) sits beside a column of
- * headline stat callouts.
+ * exactly the extractable structure the SEO plan calls for) is the focus, paired with a
+ * short framing callout that reinforces the shift to answer engines and routes to the audit.
  */
 export function WhyAeo(): React.ReactElement {
   return (
     <Section id="why-aeo">
       <Reveal>
         <SectionHeading
+          align="left"
           eyebrow="AEO vs SEO"
-          title="Ranking is not"
-          gradient="enough anymore."
+          title="Ranking is not enough anymore."
           subtitle="Search is shifting from ten blue links to a single synthesized answer. AEO optimizes for being the source that answer cites."
         />
       </Reveal>
 
-      <div className="mt-14 grid items-start gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <div className="mt-14 grid items-start gap-6 lg:grid-cols-[1.5fr_1fr]">
         <Reveal>
           <Card className="overflow-hidden p-0">
             <table className="w-full border-collapse text-left text-sm">
@@ -52,19 +52,21 @@ export function WhyAeo(): React.ReactElement {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <dl className="grid grid-cols-2 gap-4">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="surface flex flex-col gap-1 p-5">
-                <dt className="sr-only">{stat.label}</dt>
-                <dd className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-semibold tracking-tight text-transparent">
-                  {stat.value}
-                </dd>
-                <p aria-hidden className="text-xs leading-snug text-slate-400">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </dl>
+          <div className="surface flex h-full flex-col gap-5 p-7">
+            <Badge tone="violet">The shift</Badge>
+            <p className="text-pretty text-lg font-medium leading-relaxed text-slate-200">
+              Over half of searches now end without a click. When the answer is synthesized for the
+              user, the only visibility that counts is being{' '}
+              <span className="text-white">the source it quotes.</span>
+            </p>
+            <p className="text-sm leading-relaxed text-slate-400">
+              The toolkit scores exactly the signals answer engines weigh — structure, E-E-A-T, and
+              extractable answers — and hands you the fixes in priority order.
+            </p>
+            <Button href="/tools/audit" variant="secondary" size="md" className="mt-auto self-start">
+              Score my site
+            </Button>
+          </div>
         </Reveal>
       </div>
     </Section>

@@ -1,6 +1,7 @@
 /** Marketing landing page sections, composed in `src/app/page.tsx`. */
 export { Hero } from './Hero';
 export { TrustStrip } from './TrustStrip';
+export { ProofBand } from './ProofBand';
 export { Features } from './Features';
 export { ToolsShowcase } from './ToolsShowcase';
 export { HowItWorks } from './HowItWorks';

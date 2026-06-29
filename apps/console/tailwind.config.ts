@@ -63,6 +63,20 @@ export default {
           '0%,100%': { transform: 'translate(8%, 4%) scale(1.1)' },
           '50%': { transform: 'translate(-6%, -8%) scale(0.95)' },
         },
+        // Continuous horizontal scroll for the answer-engine marquee (one wordmark set wide).
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        // Orbiting border sweeps for StarBorder (adapted from React Bits).
+        'star-movement-bottom': {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(-100%, 0%)', opacity: '0' },
+        },
+        'star-movement-top': {
+          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
+          '100%': { transform: 'translate(100%, 0%)', opacity: '0' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.22,1,0.36,1) both',
@@ -71,6 +85,9 @@ export default {
         float: 'float 6s ease-in-out infinite',
         'aurora-1': 'aurora-1 18s ease-in-out infinite',
         'aurora-2': 'aurora-2 22s ease-in-out infinite',
+        marquee: 'marquee 32s linear infinite',
+        'star-movement-bottom': 'star-movement-bottom 6s linear infinite alternate',
+        'star-movement-top': 'star-movement-top 6s linear infinite alternate',
       },
     },
   },
