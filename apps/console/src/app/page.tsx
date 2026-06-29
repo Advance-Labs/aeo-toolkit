@@ -8,6 +8,7 @@ import {
   Features,
   Hero,
   HowItWorks,
+  ProofBand,
   ToolsShowcase,
   TrustStrip,
   WhyAeo,
@@ -75,6 +76,7 @@ export default function LandingPage(): JSX.Element {
       <JsonLd data={[softwareApplicationLd, faqPageLd]} />
       <Hero />
       <TrustStrip />
+      <ProofBand />
       <Features />
       <ToolsShowcase />
       <HowItWorks />

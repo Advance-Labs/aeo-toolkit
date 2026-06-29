@@ -159,6 +159,27 @@ export const STATS: readonly { value: string; label: string }[] = [
   { value: '0', label: 'cost to start' },
 ] as const;
 
+/**
+ * Animated "by the numbers" proof band — every figure is a verifiable capability of the
+ * toolkit (not a fabricated customer result), so the band stays honest while reading like
+ * the results stat band on high-converting SaaS landings.
+ */
+export interface ProofStat {
+  /** Numeric target the CountUp animates to. */
+  to: number;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+}
+
+export const PROOF_STATS: readonly ProofStat[] = [
+  { to: 50, label: 'pages crawled per audit' },
+  { to: 100, label: 'point technical SEO + AEO score' },
+  { to: 5, label: 'answer engines you optimize for' },
+  { to: 3, label: 'MCP servers for AI clients' },
+  { to: 0, prefix: '$', label: 'to run your first audit' },
+] as const;
+
 /** A single FAQ entry — rendered visibly *and* mirrored into `FAQPage` JSON-LD. */
 export interface FaqEntry {
   question: string;

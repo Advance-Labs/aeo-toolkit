@@ -2,6 +2,8 @@
 export { AuroraBackground } from './AuroraBackground';
 export { GradientText } from './GradientText';
 export { ShinyText } from './ShinyText';
+export { CountUp } from './CountUp';
+export { StarBorder } from './StarBorder';
 export { SpotlightCard } from './SpotlightCard';
 export { Reveal } from './Reveal';
 export { Button } from './Button';

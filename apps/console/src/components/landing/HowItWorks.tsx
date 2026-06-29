@@ -12,8 +12,7 @@ export function HowItWorks(): React.ReactElement {
       <Reveal>
         <SectionHeading
           eyebrow="How it works"
-          title="From audit to"
-          gradient="citations."
+          title="From audit to citations."
           subtitle="Three steps from “invisible to AI” to “quoted in the answer.”"
         />
       </Reveal>

@@ -20,8 +20,7 @@ export function Faq(): React.ReactElement {
       <Reveal>
         <SectionHeading
           eyebrow="FAQ"
-          title="Questions about"
-          gradient="answer engines."
+          title="Questions about answer engines."
           subtitle="The essentials on AEO, llms.txt, and E-E-A-T — the concepts the toolkit puts to work."
         />
       </Reveal>

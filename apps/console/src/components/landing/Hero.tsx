@@ -1,4 +1,4 @@
-import { Badge, Button, Container, GradientText, Reveal } from '@/components/ui';
+import { Badge, Button, Container, GradientText, Reveal, StarBorder } from '@/components/ui';
 import { HeroVisual } from './HeroVisual';
 
 /**
@@ -37,10 +37,12 @@ export function Hero(): React.ReactElement {
               </Button>
             </div>
 
-            <p className="flex items-center gap-2 text-sm text-slate-400">
-              <CheckIcon />
-              Free to start · No account required · five tools, one console
-            </p>
+            <StarBorder className="mt-1">
+              <p className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300">
+                <CheckIcon />
+                Free to start · No account required · five tools, one console
+              </p>
+            </StarBorder>
           </Reveal>
 
           <Reveal delay={0.15} className="order-first lg:order-last">
