@@ -87,7 +87,7 @@ describe('safeFetch', () => {
     try {
       let aborted = false;
       const fetchImpl: SafeFetchDeps['fetchImpl'] = (_url, signal) =>
-        new Promise((resolve) => {
+        new Promise(() => {
           signal.addEventListener('abort', () => { aborted = true; });
           // never resolves on its own
         });
