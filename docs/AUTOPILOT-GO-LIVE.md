@@ -24,6 +24,15 @@ and a counsel review. The browser-agent prompt at the bottom automates the dashb
   cron setup needed** — just ensure `CRON_SECRET` is set (it already is, for the blogging cron) and
   redeploy. `ORCHESTRATOR_JOB_SECRET` is now **optional** (only the manual `POST` trigger uses it).
 
+## Smoke test (2026-06-29, production)
+- `/pricing` → **200**, Managed/Autopilot card renders ✅
+- `/onboarding` → **200** ✅
+- `POST`/`GET` `/api/orchestrator/run` unauthenticated → **404** ✅ (correct inert/H1 behavior)
+- Authenticated trigger → **404** ⇒ `managedEnabled()` was still false at test time: env vars set in
+  Vercel **only take effect on a new deployment**, and the serving build predated the env paste.
+  **Resolution: a fresh deploy of `main` activates it** (this docs push triggers one). Re-test the
+  authenticated trigger after the deploy completes.
+
 ## ⚡ The only thing left: set env vars in Vercel, then redeploy
 Set these on the **aeo-toolkit** project (Production), then redeploy `main`. Staff email is
 `lucas@advancelabs.dev`. Values for secrets are provided out-of-band (not in this file):
