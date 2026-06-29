@@ -4,6 +4,22 @@ Everything in PR #7 ships **dormant**. This runbook covers the operational steps
 code is done and verified; what remains is dashboard configuration (Supabase, Stripe, Vercel), a cron,
 and a counsel review. The browser-agent prompt at the bottom automates the dashboard work.
 
+## Status (2026-06-29)
+- ✅ **Supabase DB provisioned** for AEO via the Vercel integration — project ref `axuaeezqdxyhenmpbdnf`
+  (URL `https://axuaeezqdxyhenmpbdnf.supabase.co`). **Schema applied + verified:** `schema.sql`,
+  `schema-billing.sql`, `schema-managed.sql`, and migration `0001` (the project already had a legacy
+  `oauth_tokens` with a single-column PK, so `0001` was required to reach the composite
+  `(user_id, provider)` key). Managed tables (`customer_profiles`, `proposals`, `proposal_audit`,
+  `managed_jobs`) exist with RLS enabled.
+- ✅ **Stripe Managed price** created: `price_1TnZvpAz8RYdQls2hbd59W3U` (product `prod_UnAGFo4XzP2Td5`,
+  $499/mo recurring). NOTE: created in **livemode** — recreate in test mode if desired.
+- ⚠️ **Vercel env-name reconciliation (the agent MUST do this):** the Vercel→Supabase integration sets
+  `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY` — but our **server** code
+  reads `SUPABASE_URL` and our **client** reads `NEXT_PUBLIC_SUPABASE_ANON_KEY`, which the integration
+  does NOT set. So add: `SUPABASE_URL` = (the `NEXT_PUBLIC_SUPABASE_URL` value) and
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` = (the `SUPABASE_ANON_KEY` value). Without these the managed/auth
+  paths stay closed.
+
 ## Environment variables the Managed tier reads
 | Var | Purpose | Where used |
 |---|---|---|
