@@ -13,6 +13,7 @@ export type * from './llmstxt.js';
 export type * from './google.js';
 export type * from './llm.js';
 export type * from './mcp.js';
+export type * from './autopilot.js';
 
 /** Toolkit-wide version marker, surfaced in report metadata. */
 export const TYPES_VERSION = '0.1.0';

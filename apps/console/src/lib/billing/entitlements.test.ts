@@ -101,7 +101,7 @@ describe('evaluateEntitlement — metered quota', () => {
 });
 
 describe('checkEntitlement — dormant-safe (no billing env in CI)', () => {
-  it('returns ok with plan=free and userId=null for EVERY feature when billing is dormant', async () => {
+  it('returns ok with plan=free and userId=null for EVERY self-serve feature when billing is dormant', async () => {
     const features: readonly Feature[] = ['audit', 'mcp', 'graph', 'chat'];
     for (const feature of features) {
       const result = await checkEntitlement(req(), feature);
@@ -111,5 +111,26 @@ describe('checkEntitlement — dormant-safe (no billing env in CI)', () => {
         expect(result.userId).toBeNull();
       }
     }
+  });
+});
+
+describe('evaluateEntitlement — managed gate', () => {
+  it('allows the managed feature only on the managed plan', () => {
+    expect(evaluateEntitlement('managed', 0, 'managed').allow).toBe(true);
+  });
+
+  it('denies managed on every self-serve plan with reason managed_not_in_plan', () => {
+    for (const plan of ['free', 'pro', 'agency'] as const) {
+      const decision = evaluateEntitlement(plan, 0, 'managed');
+      expect(decision.allow).toBe(false);
+      expect(decision.reason).toBe('managed_not_in_plan');
+    }
+  });
+});
+
+describe('checkEntitlement — managed is inert when dormant (NOT open)', () => {
+  it('denies the managed feature when managed env is absent, unlike the always-open free tools', async () => {
+    const result = await checkEntitlement(req(), 'managed');
+    expect(result.ok).toBe(false);
   });
 });

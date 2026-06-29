@@ -8,6 +8,7 @@ import { getUser } from '@/lib/auth/server';
 import { BILLING_ENABLED } from '@/lib/billing/stripe';
 import { PLANS, planFor, type PlanId } from '@/lib/billing/plans';
 import { AccountActions } from './AccountActions';
+import { ManagedPanel } from './ManagedPanel';
 
 export const runtime = 'nodejs';
 // Per-user, session-bound — never cached.
@@ -33,11 +34,97 @@ function startOfMonthIso(): string {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 }
 
+/**
+ * Trailing window (days) for the 90-day work-delivered guarantee. Delivered proposals created within
+ * this window count toward the SLA. Keep in sync with `GUARANTEE_PERIOD_MONTHS` in `ManagedPanel`.
+ */
+const GUARANTEE_PERIOD_DAYS = 90;
+
+/** ISO timestamp `days` ago — the start of the managed delivery window. */
+function daysAgoIso(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+}
+
+/** Managed-tier summary: work delivered this period + guarantee baseline presence. */
+interface ManagedSummary {
+  /** Whether a `customer_profiles` row exists (managed onboarding completed). */
+  configured: boolean;
+  /** Executed `content` proposals in the window, or `null` if the managed data layer is unavailable. */
+  articlesDelivered: number | null;
+  /** Executed outreach proposals in the window, or `null` if unavailable. */
+  placementsDelivered: number | null;
+  /** Whether `guarantee_baseline` was captured at onboarding. */
+  hasBaseline: boolean;
+  /** ISO timestamp the managed profile was created (baseline capture), or `null`. */
+  baselineCapturedAt: string | null;
+}
+
 /** What the page needs to render: the resolved plan, this-month usage, and subscription presence. */
 interface AccountData {
   plan: PlanId;
   usageThisMonth: number;
   hasSubscription: boolean;
+  /** Present only when the resolved plan is `managed`; `null` otherwise. */
+  managed: ManagedSummary | null;
+}
+
+/**
+ * Load the managed-tier summary for a user via the service-role client (same path as usage). Counts
+ * *delivered* (executed) proposals by kind over the guarantee window and reads the guarantee baseline
+ * presence from `customer_profiles`. Fails soft: any missing table or read error yields `null` counts
+ * (rendered as "—") and an unconfigured state, so the panel never throws on a half-provisioned deploy.
+ */
+async function loadManagedSummary(
+  client: ReturnType<typeof createSupabaseClient>,
+  userId: string,
+): Promise<ManagedSummary> {
+  const since = daysAgoIso(GUARANTEE_PERIOD_DAYS);
+  const [profileResult, articlesResult, placementsResult] = await Promise.all([
+    client
+      .from('customer_profiles')
+      .select('guarantee_baseline, created_at')
+      .eq('owner_id', userId)
+      .order('created_at', { ascending: true })
+      .limit(1),
+    client
+      .from('proposals')
+      .select('id', { count: 'exact', head: true })
+      .eq('owner_id', userId)
+      .eq('kind', 'content')
+      .eq('status', 'executed')
+      .gte('created_at', since),
+    client
+      .from('proposals')
+      .select('id', { count: 'exact', head: true })
+      .eq('owner_id', userId)
+      .in('kind', ['link-outreach', 'link-placement'])
+      .eq('status', 'executed')
+      .gte('created_at', since),
+  ]);
+
+  const profileRow =
+    profileResult.error === null && Array.isArray(profileResult.data)
+      ? ((profileResult.data[0] as
+          | { guarantee_baseline: unknown; created_at: string | null }
+          | undefined) ?? null)
+      : null;
+
+  const articlesDelivered =
+    articlesResult.error === null && typeof articlesResult.count === 'number'
+      ? articlesResult.count
+      : null;
+  const placementsDelivered =
+    placementsResult.error === null && typeof placementsResult.count === 'number'
+      ? placementsResult.count
+      : null;
+
+  return {
+    configured: profileRow !== null,
+    articlesDelivered,
+    placementsDelivered,
+    hasBaseline: profileRow !== null && profileRow.guarantee_baseline != null,
+    baselineCapturedAt: profileRow?.created_at ?? null,
+  };
 }
 
 /**
@@ -49,7 +136,7 @@ async function loadAccountData(userId: string): Promise<AccountData> {
   const url = nonEmptyEnv('SUPABASE_URL');
   const serviceKey = nonEmptyEnv('SUPABASE_SERVICE_ROLE_KEY');
   if (url === undefined || serviceKey === undefined) {
-    return { plan: 'free', usageThisMonth: 0, hasSubscription: false };
+    return { plan: 'free', usageThisMonth: 0, hasSubscription: false, managed: null };
   }
   const client = createSupabaseClient({ url, serviceKey });
 
@@ -70,7 +157,10 @@ async function loadAccountData(userId: string): Promise<AccountData> {
   const usageThisMonth =
     usageResult.error === null && typeof usageResult.count === 'number' ? usageResult.count : 0;
 
-  return { plan, usageThisMonth, hasSubscription: subRow !== null && plan !== 'free' };
+  // Managed-tier summary is only loaded for managed subscribers (extra queries otherwise wasted).
+  const managed = plan === 'managed' ? await loadManagedSummary(client, userId) : null;
+
+  return { plan, usageThisMonth, hasSubscription: subRow !== null && plan !== 'free', managed };
 }
 
 /** Format a monthly limit for display: `-1` (unlimited) renders as "Unlimited". */
@@ -123,7 +213,7 @@ export default async function AccountPage(): Promise<JSX.Element> {
     redirect('/login');
   }
 
-  const { plan, usageThisMonth, hasSubscription } = await loadAccountData(user.id);
+  const { plan, usageThisMonth, hasSubscription, managed } = await loadAccountData(user.id);
   const planMeta = PLANS[plan];
   const limit = planMeta.limits.auditsPerMonth;
   const limitLabel = formatLimit(limit);
@@ -211,6 +301,18 @@ export default async function AccountPage(): Promise<JSX.Element> {
             upgradeTo={upgradeTo}
           />
         </SpotlightCard>
+
+        {/* Managed / Autopilot panel — only for the managed tier; degrades gracefully when its data
+            layer is absent (counts show "—", an unconfigured state is shown). */}
+        {plan === 'managed' && managed !== null ? (
+          <ManagedPanel
+            configured={managed.configured}
+            articlesDelivered={managed.articlesDelivered}
+            placementsDelivered={managed.placementsDelivered}
+            hasBaseline={managed.hasBaseline}
+            baselineCapturedAt={managed.baselineCapturedAt}
+          />
+        ) : null}
 
         <p className="text-center text-xs leading-relaxed text-slate-500">
           See all plans on the <a href="/pricing" className="text-brand-cyan hover:underline">pricing page</a>.

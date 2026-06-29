@@ -14,6 +14,7 @@ const NAV = [
   { href: '/tools/chat', label: 'GA4 + GSC' },
   { href: '/tools/graph', label: 'Graph' },
   { href: '/mcp', label: 'MCP' },
+  { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
 ];
 

@@ -1,8 +1,9 @@
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import type { Metadata } from 'next';
 import {
   Badge,
   Breadcrumb,
+  Button,
   Container,
   GradientText,
   Reveal,
@@ -45,6 +46,13 @@ const TRAIL: ReadonlyArray<Crumb> = [
 /** The tier rendered with extra emphasis (the recommended plan). */
 const HIGHLIGHT_PLAN = 'pro';
 
+/**
+ * Self-serve tiers shown in the comparison grid. The `managed` (Autopilot) tier is rendered
+ * separately below as a premium / contact card — it is a productized human service with a 3-month
+ * minimum, not a one-click self-serve checkout — so it is excluded here.
+ */
+const SELF_SERVE_PLANS = PLAN_ORDER.filter((id) => id !== 'managed');
+
 export const metadata: Metadata = {
   title: 'Pricing — Free to start, upgrade for more',
   description: PAGE_DESCRIPTION,
@@ -68,6 +76,27 @@ function ctaLabel(planName: string, isFree: boolean): string {
   return isFree ? 'Start for free' : `Upgrade to ${planName}`;
 }
 
+/** A single feature bullet with the brand check glyph — shared by the grid cards and Managed card. */
+function FeatureItem({ children }: { children: ReactNode }): JSX.Element {
+  return (
+    <li className="flex items-start gap-2.5 text-sm leading-relaxed text-slate-300">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        className="mt-0.5 shrink-0 text-brand-cyan"
+        aria-hidden="true"
+      >
+        <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <span>{children}</span>
+    </li>
+  );
+}
+
 /**
  * Pricing page. Server component: reads the session (signed-in?) and {@link BILLING_ENABLED} once,
  * renders {@link PLANS} in tier order as cards, and emits Product/Offer + BreadcrumbList JSON-LD so
@@ -78,6 +107,13 @@ export default async function PricingPage(): Promise<JSX.Element> {
   const session = await getSession();
   const signedIn = session !== null;
   const breadcrumb = breadcrumbSchema(TRAIL);
+
+  // Managed (Autopilot) tier: a human service, not a self-serve checkout. Signed-in buyers go to
+  // onboarding (baseline capture → scoping); signed-out buyers sign in first. Always renderable, so
+  // the card shows even when billing/managed env is dormant (the CTA degrades to login).
+  const managed = PLANS.managed;
+  const managedHref = signedIn ? '/onboarding' : '/login';
+  const managedCtaLabel = signedIn ? 'Start onboarding' : 'Sign in to get started';
 
   // OfferCatalog JSON-LD: one Offer per plan so the pricing is machine-readable.
   const offerCatalog = {
@@ -124,10 +160,10 @@ export default async function PricingPage(): Promise<JSX.Element> {
         </div>
       </Section>
 
-      <Section className="pb-20 pt-4">
+      <Section className="pb-12 pt-4">
         <Container>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            {PLAN_ORDER.map((id, i) => {
+            {SELF_SERVE_PLANS.map((id, i) => {
               const plan = PLANS[id];
               const highlighted = id === HIGHLIGHT_PLAN;
               const isFree = id === 'free';
@@ -156,24 +192,7 @@ export default async function PricingPage(): Promise<JSX.Element> {
 
                     <ul className="flex flex-1 flex-col gap-2.5">
                       {plan.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-start gap-2.5 text-sm leading-relaxed text-slate-300"
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                            className="mt-0.5 shrink-0 text-brand-cyan"
-                            aria-hidden="true"
-                          >
-                            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          <span>{feature}</span>
-                        </li>
+                        <FeatureItem key={feature}>{feature}</FeatureItem>
                       ))}
                     </ul>
 
@@ -193,6 +212,71 @@ export default async function PricingPage(): Promise<JSX.Element> {
           <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
             Prices in USD, billed monthly. Cancel anytime from your account.
           </p>
+        </Container>
+      </Section>
+
+      {/* Managed / Autopilot — premium, human-vetted, contact tier (rendered from PLANS.managed). */}
+      <Section className="pb-20 pt-4">
+        <Container>
+          <Reveal>
+            <SpotlightCard className="flex flex-col gap-8 p-7 ring-1 ring-brand-violet/40 sm:p-9 lg:flex-row lg:items-stretch lg:gap-12">
+              <div className="flex flex-1 flex-col gap-5">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <Badge tone="violet">{managed.name} · Autopilot</Badge>
+                  <Badge tone="neutral">Premium · done-for-you</Badge>
+                </div>
+                <h2 className="text-balance text-2xl font-semibold leading-[1.12] tracking-tight text-white sm:text-3xl">
+                  Penalty-safe, human-vetted growth that gets you{' '}
+                  <GradientText>cited inside ChatGPT &amp; Perplexity</GradientText>.
+                </h2>
+                <p className="max-w-xl text-sm leading-relaxed text-slate-300">
+                  Done-for-you AEO for brands with something to protect. Every article and outreach
+                  placement is <span className="text-white">human-vetted before it ships</span> — so
+                  you grow without the link-scheme and spam risk that gets sites penalized later. The
+                  whole toolkit is <span className="text-white">open-source-transparent</span>, so you
+                  always see exactly what runs on your behalf, and the work is{' '}
+                  <span className="text-white">guaranteed</span>.
+                </p>
+                <ul className="flex flex-col gap-2.5">
+                  {managed.features.map((feature) => (
+                    <FeatureItem key={feature}>{feature}</FeatureItem>
+                  ))}
+                </ul>
+                <p className="max-w-xl rounded-xl border border-brand-violet/20 bg-brand-violet/[0.04] px-4 py-3 text-xs leading-relaxed text-slate-300">
+                  <span className="font-medium text-white">90-day work-delivered guarantee:</span> we
+                  deliver the agreed articles, outreach placements, and citation-coverage tracking — or
+                  we keep working free until we do. It&rsquo;s a guarantee on the{' '}
+                  <span className="text-white">work we deliver</span>, never a traffic or ranking
+                  outcome promise.
+                </p>
+              </div>
+
+              <div className="flex w-full flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-6 lg:w-72 lg:shrink-0">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Starting at
+                  </span>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-4xl font-semibold tracking-tight text-white">
+                      ${managed.priceUsdMonthly}
+                    </span>
+                    <span className="text-sm text-slate-400">/ mo per site</span>
+                  </div>
+                  <p className="text-xs leading-relaxed text-slate-500">
+                    3-month minimum. Scoped to your site and volume on a quick onboarding call.
+                  </p>
+                </div>
+                <Button href={managedHref} variant="primary" className="w-full">
+                  {managedCtaLabel}
+                </Button>
+                <p className="text-center text-xs leading-relaxed text-slate-500">
+                  {signedIn
+                    ? 'We capture your baseline, then our team scopes and runs your AEO growth.'
+                    : 'Sign in to start onboarding — or talk to us before you commit.'}
+                </p>
+              </div>
+            </SpotlightCard>
+          </Reveal>
         </Container>
       </Section>
     </>

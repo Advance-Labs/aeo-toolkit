@@ -33,6 +33,14 @@ import { BILLING_ENABLED } from './stripe';
 import { PLANS, planFor, type PlanId } from './plans';
 
 /**
+ * Whether the done-for-you Managed tier is live on this deploy. Gated by its own env (the managed
+ * Stripe price) so the `managed` feature is **inert-when-dormant**: unlike the free tools — which fail
+ * *open* to `free` when billing is off — `managed` returns a closed denial unless explicitly enabled.
+ * (Security review M1: managed routes must not inherit "open when dormant".)
+ */
+const MANAGED_ENABLED: boolean = nonEmptyEnv('STRIPE_PRICE_MANAGED') !== undefined;
+
+/**
  * The single auth dependency the gate needs, narrowed to what we call. We resolve the real
  * implementation (`@/lib/auth/server` `getUser`) via a **call-time dynamic import** inside
  * {@link checkEntitlement}, never at module load. This keeps `entitlements.ts` importable — and its
@@ -49,7 +57,7 @@ interface AuthUser {
  * A billable feature. Maps 1:1 to a `usage_events.feature` value and to a quota in {@link PLANS}.
  * `audit`, `graph`, and `chat` are metered against `auditsPerMonth`; `mcp` is gated by `mcpAccess`.
  */
-export type Feature = 'audit' | 'mcp' | 'graph' | 'chat';
+export type Feature = 'audit' | 'mcp' | 'graph' | 'chat' | 'managed';
 
 /**
  * Resolved entitlement snapshot for a caller. Returned by the pure core; `allow=false` carries a
@@ -63,7 +71,7 @@ export interface Entitlement {
   /** Whether the feature call is permitted. */
   allow: boolean;
   /** Why the call was denied; absent when `allow` is `true`. */
-  reason?: 'auth_required' | 'quota_exceeded' | 'mcp_not_in_plan';
+  reason?: 'auth_required' | 'quota_exceeded' | 'mcp_not_in_plan' | 'managed_not_in_plan';
 }
 
 /** HTTP status codes the gate can deny with: 401 unauth, 402 payment required, 429 over quota. */
@@ -92,7 +100,7 @@ export interface EntitlementErrorBody {
   /** Human-readable, end-user-safe message. */
   error: string;
   /** Machine-readable denial reason, mirrors {@link Entitlement.reason}. */
-  reason: 'auth_required' | 'quota_exceeded' | 'mcp_not_in_plan';
+  reason: 'auth_required' | 'quota_exceeded' | 'mcp_not_in_plan' | 'managed_not_in_plan';
   /** Present on quota/plan denials: the plan that would lift the limit (e.g. `'pro'`). */
   upgradeTo?: PlanId;
 }
@@ -110,6 +118,7 @@ const REQUIRES_AUTH: Record<Feature, boolean> = {
   mcp: true,
   graph: true,
   chat: true,
+  managed: true,
 };
 
 /** Features metered against the per-month `auditsPerMonth` quota (vs. the boolean `mcpAccess` gate). */
@@ -118,6 +127,9 @@ const METERED: Record<Feature, boolean> = {
   graph: true,
   chat: true,
   mcp: false,
+  // `managed` is a boolean entitlement (like `mcp`), gated by `managedAccess`, not metered here.
+  // The per-month article/outreach delivery quotas are enforced by the orchestrator cadence.
+  managed: false,
 };
 
 /**
@@ -158,6 +170,13 @@ export function evaluateEntitlement(
   if (feature === 'mcp') {
     if (!limits.mcpAccess) {
       return { plan, userId, allow: false, reason: 'mcp_not_in_plan' };
+    }
+    return { plan, userId, allow: true };
+  }
+
+  if (feature === 'managed') {
+    if (!limits.managedAccess) {
+      return { plan, userId, allow: false, reason: 'managed_not_in_plan' };
     }
     return { plan, userId, allow: true };
   }
@@ -273,6 +292,20 @@ async function recordUsage(
   }
 }
 
+/**
+ * The closed denial returned for the `managed` feature when the Managed tier is not enabled on this
+ * deploy. Security M1: managed is inert-when-dormant, so it returns a payment-required denial rather
+ * than the free tools' open `{ ok: true, plan: 'free' }`.
+ */
+const MANAGED_CLOSED: EntitlementDenied = {
+  ok: false,
+  status: 402,
+  body: {
+    error: 'The Managed (Autopilot) plan is not available on this workspace.',
+    reason: 'managed_not_in_plan',
+  },
+};
+
 /** Map a pure {@link Entitlement} denial to the HTTP status + JSON body the route should return. */
 function denyFor(entitlement: Entitlement): EntitlementDenied {
   const plan = entitlement.plan;
@@ -291,6 +324,16 @@ function denyFor(entitlement: Entitlement): EntitlementDenied {
           error: `MCP access requires the ${PLANS[UPGRADE_TARGET].name} plan or higher.`,
           reason: 'mcp_not_in_plan',
           upgradeTo: UPGRADE_TARGET,
+        },
+      };
+    case 'managed_not_in_plan':
+      return {
+        ok: false,
+        status: 402,
+        body: {
+          error: 'The done-for-you Managed plan is required for this action.',
+          reason: 'managed_not_in_plan',
+          upgradeTo: 'managed',
         },
       };
     case 'quota_exceeded':
@@ -327,9 +370,20 @@ export async function checkEntitlement(
   _req: Request,
   feature: Feature,
 ): Promise<EntitlementResult> {
-  // ── DORMANT PATH: billing off → fully open, exactly as today. ──
+  // ── MANAGED CARVE-OUT (security M1): inert-when-dormant, NOT open-when-dormant. ──
+  // The managed feature must never inherit the free tools' "open when billing off" behavior. When the
+  // Managed tier isn't enabled (or billing is dormant and we cannot resolve an entitlement), it is
+  // closed, not free-and-open.
+  if (feature === 'managed' && !MANAGED_ENABLED) {
+    return MANAGED_CLOSED;
+  }
+
+  // ── DORMANT PATH: billing off → fully open, exactly as today (self-serve tools only). ──
   // Returns before any auth/DB import is touched, so the live site needs no auth deps when dormant.
   if (!BILLING_ENABLED) {
+    if (feature === 'managed') {
+      return MANAGED_CLOSED;
+    }
     return { ok: true, userId: null, plan: 'free' };
   }
 

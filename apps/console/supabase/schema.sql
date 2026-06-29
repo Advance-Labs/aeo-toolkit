@@ -10,11 +10,13 @@
 
 -- ── OAuth tokens (GA4 + Search Console connections; chat + ga-gsc MCP) ──
 create table if not exists public.oauth_tokens (
-  user_id       text primary key,
+  user_id       text   not null,
+  provider      text   not null default 'google',  -- composite key with user_id: google | reddit | cms
   access_token  text   not null,
   refresh_token text,
   expires_at    bigint not null,            -- unix milliseconds
-  scope         text   not null default ''
+  scope         text   not null default '',
+  primary key (user_id, provider)
 );
 alter table public.oauth_tokens enable row level security;
 

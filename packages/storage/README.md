@@ -28,6 +28,7 @@ const tokens = new SupabaseTokenStore(supabase, {
   encryptionKey: process.env.TOKEN_ENCRYPTION_KEY, // omit to store plaintext (dev only)
 });
 
+// Provider defaults to 'google', so existing single-provider callers are unchanged.
 await tokens.set('user-123', {
   accessToken: 'ya29...',
   refreshToken: '1//0g...',
@@ -36,6 +37,16 @@ await tokens.set('user-123', {
 });
 const loaded = await tokens.get('user-123'); // GoogleOAuthTokens | null
 await tokens.delete('user-123');
+
+// Rows are keyed by (user_id, provider): one user can hold independent tokens per provider.
+await tokens.set('user-123', redditTokens, 'reddit');
+const reddit = await tokens.get('user-123', 'reddit');
+
+// Managed (done-for-you) tier: no plaintext fallback — omitting encryptionKey throws (§H4).
+import { createManagedTokenStore } from '@aeo/storage';
+const managed = createManagedTokenStore(supabase, {
+  encryptionKey: process.env.TOKEN_ENCRYPTION_KEY!, // required; throws if missing
+});
 
 // Rate limiting: Upstash in prod, in-memory fallback when Redis creds are absent.
 const limiter = resolveRateLimiter({
@@ -56,13 +67,15 @@ if (!allowed) {
 | Export | Kind | Description |
 | --- | --- | --- |
 | `createSupabaseClient(config)` | `SupabaseClient` | Thin wrapper over `@supabase/supabase-js` `createClient` with `auth.persistSession = false`. |
-| `SupabaseTokenStore` | class (`implements TokenStore`) | `get`/`set`/`delete(userId)` against an `oauth_tokens`-shaped table; optional AES-256-GCM encryption of access/refresh tokens at rest. |
-| `TokenStoreError` | class | Thrown when a Supabase operation returns an error. |
+| `SupabaseTokenStore` | class (`implements TokenStore`) | `get`/`set`/`delete(userId, provider?)` against an `oauth_tokens`-shaped table keyed by `(user_id, provider)` (`provider` defaults to `'google'`); optional AES-256-GCM encryption of access/refresh tokens at rest. `requireEncryption: true` makes a missing `encryptionKey` throw. |
+| `createManagedTokenStore(client, opts?)` | factory | Builds a `SupabaseTokenStore` with `requireEncryption` forced on — the managed-tier entry point (no plaintext fallback, §H4). |
+| `TokenStoreError` | class | Thrown when a Supabase operation returns an error, or when `requireEncryption` is set without an `encryptionKey`. |
 | `RateLimiter` | interface | `{ check(key): Promise<{ allowed, remaining, resetSeconds }> }`. |
 | `InMemoryRateLimiter` | class | Real fixed-window limiter with an injectable clock; single-instance fallback. |
 | `UpstashRateLimiter` | class | Sliding-window limiter over Upstash Redis (`@upstash/ratelimit` + `@upstash/redis`). |
 | `resolveRateLimiter(opts)` | `RateLimiter` | Returns `UpstashRateLimiter` when `redisUrl` + `redisToken` are set, else `InMemoryRateLimiter`. |
-| `encrypt` / `decrypt` / `deriveKey` | functions | AES-256-GCM helpers (scrypt-derived key, random IV, packed `iv\|authTag\|ciphertext` base64). |
+| `encrypt` / `decrypt` / `deriveKey` | functions | AES-256-GCM helpers (scrypt-derived key, random IV, key-versioned `v1:<base64(iv\|authTag\|ciphertext)>`). `decrypt` tolerates the current version + legacy un-prefixed bodies, and rejects unknown versions. See `ROTATION.md`. |
+| `CURRENT_KEY_VERSION` | const | The at-rest key/scheme version stamped onto fresh ciphertext (today `'v1'`). |
 | `TokenCryptoError` | class | Thrown on malformed ciphertext or authentication failure. |
 | `SupabaseLike`, `UpstashLimiterLike` | types | The injectable I/O seams that let tests substitute fakes. |
 
@@ -73,11 +86,16 @@ redefines them.
 
 | Column | Type | Notes |
 | --- | --- | --- |
-| `user_id` | text (primary key / unique) | conflict target for `upsert` |
+| `user_id` | text | part of the composite primary key |
+| `provider` | text | `'google'` / `'reddit'` / `'cms'`; part of the composite primary key + conflict target |
 | `access_token` | text | ciphertext when `encryptionKey` is set |
 | `refresh_token` | text, nullable | ciphertext when `encryptionKey` is set |
 | `expires_at` | bigint | Unix milliseconds |
 | `scope` | text | OAuth scope string |
+
+Primary key / `upsert` conflict target is the composite `(user_id, provider)`. Apply
+`migrations/0001_oauth_tokens_provider.sql` to an existing single-key table (additive, back-fills
+`provider = 'google'`).
 
 ## Status
 
