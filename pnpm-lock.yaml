@@ -111,6 +111,12 @@ importers:
       '@aeo/mcp-core':
         specifier: workspace:*
         version: link:../../packages/mcp-core
+      '@aeo/net-guard':
+        specifier: workspace:*
+        version: link:../../packages/net-guard
+      '@aeo/orchestrator':
+        specifier: workspace:*
+        version: link:../../packages/orchestrator
       '@aeo/pdf':
         specifier: workspace:*
         version: link:../../packages/pdf

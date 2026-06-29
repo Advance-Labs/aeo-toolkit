@@ -22,6 +22,8 @@
     "@aeo/html-parser": "workspace:*",
     "@aeo/llm": "workspace:*",
     "@aeo/mcp-core": "workspace:*",
+    "@aeo/net-guard": "workspace:*",
+    "@aeo/orchestrator": "workspace:*",
     "@aeo/pdf": "workspace:*",
     "@aeo/schema-validator": "workspace:*",
     "@aeo/scoring": "workspace:*",
