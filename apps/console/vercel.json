@@ -4,6 +4,7 @@
   "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@aeo/console",
   "crons": [
     { "path": "/api/cron/blogging", "schedule": "0 13 * * *" },
-    { "path": "/api/cron/indexnow", "schedule": "0 8 * * *" }
+    { "path": "/api/cron/indexnow", "schedule": "0 8 * * *" },
+    { "path": "/api/orchestrator/run", "schedule": "0 9 * * *" }
   ]
 }
