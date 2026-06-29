@@ -1,10 +1,119 @@
 # Autopilot — Managed Layer Design (BLG-equivalent)
 
-> Spec v1.0 · 2026-06-29 · Owner: Advance Labs
+> Spec v1.1 · 2026-06-29 · Owner: Advance Labs
 > Adapts the BabyLoveGrowth (BLG) "done-for-you organic growth" model onto the existing
 > `aeo-toolkit` monorepo. Decisions locked with the user: (1) **compliant alternatives** to BLG's
 > ToS-risky features, (2) **add a done-for-you "Managed/Autopilot" tier** on top of the existing
 > self-serve toolkit, (3) deliverable is an **implementation swarm plan** in the `BUILD-PLAN.md` style.
+>
+> **v1.1 supersedes v1.0** where they conflict. v1.0 was pressure-tested by four parallel check agents
+> (feasibility, compliance/legal, security, business). Their findings materially tightened the v1 scope
+> and added a security + legal layer. Section 0 below records the outcomes and is binding.
+
+---
+
+## 0. Check-Agent Review Outcomes (binding; supersedes conflicting earlier text)
+
+Four independent reviews converged on the same core conclusions. Net effect: **v1 ships smaller, safer,
+and positioned differently** than v1.0 proposed.
+
+### 0.1 Business + compliance converged: cut the two risky subsystems from v1
+- **`@aeo/link-exchange` (marketplace) → DEFERRED to v1.5.** Two independent reasons: (a) *compliance* — an
+  organized link-exchange is a Google link-scheme **by intent**, regardless of relevance/consent; and the
+  followed-vs-`nofollow` squeeze means the "compliant" version is either non-compliant (followed) or
+  near-worthless to the customer (`nofollow`/`sponsored`). (b) *business* — a two-sided, two-approval,
+  relevance-gated network has a brutal **cold-start** (zero participants vs. BLG's 4,000) and won't produce
+  value for months. **Replace it in v1 with done-for-you link *outreach*** built on the already-shipped
+  `@aeo/backlinks` discovery/outreach engine — placements on day one, no network effect, fully compliant.
+- **`@aeo/community` (Reddit) → DEFERRED to v1.5.** Listening is genuinely safe (LOW risk); posting is
+  MEDIUM (coordinated-promotion patterns + FTC disclosure aren't cured by "a human clicks post"), and
+  multi-customer polling is **commercial use** that likely exceeds Reddit's free API tier (a cost/ToS item
+  v1.0 ignored). It also just generates more inbox items for uncertain payoff. Defer until the core loop is proven.
+
+### 0.2 Resolve the "done-for-you" contradiction: staff-vetted + graduated autonomy
+v1.0's "nothing executes without approval, inbox in the customer console" = **done-WITH-you** (sold
+convenience, shipped homework) — a worse BLG at a higher price. Binding resolution:
+- **The approver is Advance Labs staff**, not the customer. This is a productized *service* with a human
+  cost-of-goods, priced and staffed as one — not pure-SaaS margin. The approval inbox is **internal**.
+- **Graduated autonomy:** auto-publish *first-party content to the customer's own CMS* above a confidence
+  threshold (near-zero compliance risk — that's where the "magic" is); keep the genuinely risky surface
+  (link outreach actions, and later community/links) human-gated. v1.0's "nothing executes without approval"
+  is relaxed for first-party content only.
+
+### 0.3 Positioning: not "compliant BLG"
+Sell the downside BLG hides. Frame: **"penalty-safe, human-vetted, guaranteed, gets you *cited inside
+ChatGPT/Perplexity*, and open-source-transparent"** — aimed at a *different, risk-averse buyer* (established
+SMBs/agencies with a brand to protect), not BLG's cheapest-growth-hack founder. "Compliance" is the feature;
+"durable growth you won't have to clean up later" is the wedge.
+
+### 0.4 Pricing + guarantee
+- **Managed tier: $499–$999/mo per site, 3-month minimum** (editable defaults). NOT $99–499 — human review
+  is COGS; below ~$499/site the unit economics break. Value metric = per-site, volume-capped. (Existing
+  `agency` is already $99 self-serve; managed must sit clearly above it, and `planFor()` must learn `managed`
+  or managed subs silently downgrade — see 0.5.)
+- **Guarantee = work-delivered SLA, never an outcome promise.** "We deliver X articles + Y outreach
+  placements + measurable citation coverage on Z target prompts, or we keep working free until we do."
+  Caps exposure at marginal cost (not cash refunds). Requires real **T&Cs + a claims/exclusions workflow**,
+  including a clause that **customer inaction (didn't approve, blocked the bot, prior manual action) voids
+  it.** Baseline capture stays, but it must encode terms/exclusions, not just a delta chart. This needs a
+  **legal layer** v1.0 lacked entirely: ToS/MSA with assumption-of-risk, limitation-of-liability, indemnification.
+
+### 0.5 Feasibility corrections (two v1.0 claims were FALSE)
+- **"Reuse `@aeo/scoring` for relevance" — FALSE.** `@aeo/scoring` is a rule engine; it has no
+  similarity/cosine. A `RelevanceScorer` is **net-new**. (Only relevant to the deferred marketplace.)
+- **"Embeddings over declared topics/content" — embeddings DON'T EXIST in the repo** (`@aeo/llm` is chat-only;
+  no pgvector). New dependency + per-call cost. Fallback when needed: `@aeo/blogging` already exports
+  `tokenize`/`jaccard` dedup primitives → cheap token-overlap relevance first, defer embeddings. (Deferred-scope only.)
+- **`ContentRunner` cannot wrap `runBloggingPipeline`** (single-tenant; publishes as its last step). It must
+  compose the sub-agents `research→write→edit`, **stop before schedule/publish**, emit the draft as a
+  `ContentProposal`, and publish only on approval — building `PipelineDeps` *per customer* with that
+  customer's BYOK key + Google token.
+- **Dependency-direction trap:** `ai-visibility` logic lives in `apps/console`, not a package. The console
+  managed tier may use it; **`@aeo/orchestrator` must NOT import from `apps/console`.** `ProposalStore` and
+  `RedditReadProvider` are net-new on `createSupabaseClient` + the existing Google-OAuth pattern (like
+  `@aeo/blogging`'s `SupabasePostStore`). The commercial layer is **real and implemented**, not a doc.
+
+### 0.6 Security controls now mandatory in v1 (designed-in, not bolted-on)
+From the security review (severities verified against code):
+- **C1 — SSRF guard (CRITICAL).** Any fetch of a user-supplied URL (outreach prospect fetch; later
+  placement-verify) must go through a guarded HTTP seam: scheme allowlist, DNS-resolve and reject
+  loopback/link-local/private/CGNAT/cloud-metadata ranges (incl. IPv6 `::1`, `fc00::/7`, mapped `::ffff:`),
+  re-validate the IP on **every** redirect hop (or `redirect:'manual'`), timeout + max-body cap, host-pin to
+  defeat DNS-rebind. Do **not** reuse the scraper HTTP as-is.
+- **C2 — Cross-tenant authz (CRITICAL).** Inbox approve/reject/execute runs service-role (bypasses RLS).
+  Every action must, in app code: resolve session user → load proposal → assert `proposal.owner_id ===
+  session.user.id` (or staff role) → only then execute. Scheduled orchestrator jobs are hard-scoped to one
+  `customer_id`, re-checked at execution; never trust a job-payload tenant id.
+- **H1 — Scheduler auth.** Trigger out-of-band (queue/cron worker), not a public route; if HTTP, a dedicated
+  constant-time job secret. Service-role key stays server-only; isolate the service-role execution module.
+- **H2 — Prompt-injection.** Scraped/external text is *data, not instructions* (delimit + structured
+  extraction, never concatenated into the system prompt). Constrain LLM output to a schema and validate it;
+  a drafted `href` MUST equal the already-agreed target, never a model-derived URL; strip other URLs/markup.
+- **H3 — Stored-XSS.** Never publish raw model HTML: emit plain text + one vetted anchor, escape/sanitize on
+  insertion, allowlist the `href`, add `rel` disclosure where applicable.
+- **H4 — TokenStore hardening.** Managed onboarding hard-fails if `encryptionKey` is absent (no plaintext
+  fallback). Move `oauth_tokens` to composite key **`(user_id, provider)`** (Google/Reddit/CMS collide today).
+  Add a key-id/version prefix to ciphertext + a rotation runbook.
+- **H5 — OAuth CSRF.** Random `state` bound to the session cookie + verified on callback; PKCE where
+  supported; strict `redirect_uri` allowlist; persist tokens against the authenticated session user, never a
+  request-supplied id. Mirror the existing `app/auth/callback/route.ts`.
+- **M1 — Managed-dormant carve-out.** `checkEntitlement` fails *open* (`free`) when billing is dormant — correct
+  for existing free tools, **wrong for managed**. Add a `managed` feature that requires auth + active
+  entitlement and is **inert/closed** when managed env is absent. Gate the orchestrator *enqueue/execute*, not
+  just the UI.
+- **M2/M4 — Marketplace abuse + audit immutability** (mostly deferred-scope): domain-ownership verification
+  (DNS TXT) before a site can host/offer; the consent/approval **audit log is append-only at the DB level**
+  (no update/delete policy, service-role writes).
+
+### 0.7 Revised v1 scope (binding)
+**Build in v1:** `@aeo/orchestrator` (cadence + ProposalStore + ContentRunner + OutreachRunner, graduated
+auto-publish, injection-hardened drafting) · a guarded HTTP seam (C1) · TokenStore hardening (H4) · the
+console **Managed tier** (entitlements extension, internal staff approval inbox with C2 authz, onboarding via
+existing audit + `findQueryGaps` + `ai-visibility` baseline, out-of-band scheduler trigger H1, guarantee
+baseline) · the **legal layer** (ToS/MSA + guarantee T&Cs — human/legal task, tracked here).
+**Defer to v1.5:** `@aeo/link-exchange` marketplace, `@aeo/community` Reddit, branded infographics,
+multi-language. Sections 3–5 below describe the *eventual* subsystems; for v1, only the orchestrator +
+outreach + managed-tier portions are in scope.
 
 ---
 
