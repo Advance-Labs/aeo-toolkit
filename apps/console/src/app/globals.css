@@ -73,12 +73,29 @@
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-brand-cyan;
   }
-  /* Subtle dotted/grid backdrop used behind sections. */
+  /* Subtle dotted/grid backdrop used behind sections.
+     The grid image AND its radial fade-mask live on a ::before layer so the mask only fades the
+     decorative grid — never the section's actual content. (Applying mask-image directly to the
+     section clipped the cards/text, fading body copy to transparent toward the bottom.) */
   .bg-grid {
-    background-image: var(--tw-bg-grid, none);
+    position: relative;
+  }
+  .bg-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
     background-size: 56px 56px;
     -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
     mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+  .bg-grid > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
