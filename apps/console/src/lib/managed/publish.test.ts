@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ContentProposal } from '@aeo/types';
+import type { Post, PublishResult } from '@aeo/blogging';
 import { buildPostFromProposal, publishApprovedContent } from './publish.js';
 
 const NOW = (): Date => new Date('2026-06-29T00:00:00.000Z');
@@ -29,11 +30,13 @@ describe('buildPostFromProposal', () => {
 
 describe('publishApprovedContent', () => {
   it('publishes a sanitized post through the injected publisher', async () => {
-    const publish = vi.fn(async () => ({
-      slug: 'my-slug',
-      url: 'https://me.example/blog/my-slug',
-      publishedAt: NOW().toISOString(),
-    }));
+    const publish = vi.fn(
+      async (_post: Post): Promise<PublishResult> => ({
+        slug: 'my-slug',
+        url: 'https://me.example/blog/my-slug',
+        publishedAt: NOW().toISOString(),
+      }),
+    );
     const result = await publishApprovedContent(
       proposal('see https://evil.example/x'),
       'https://me.example',
