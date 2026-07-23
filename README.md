@@ -1,3 +1,5 @@
+> Contributions welcome — see CONTRIBUTING.md.
+
 <div align="center">
 
 <picture>
