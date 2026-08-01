@@ -155,6 +155,39 @@ describe('tech.sitemap-covers-pages', () => {
     expect((await finding(ctx, 'tech.sitemap-covers-pages'))?.passed).toBe(true);
   });
 
+  it('ignores static assets held in the crawl record', async () => {
+    // Regression: the first version compared against crawl.pages, which also holds fonts,
+    // images, CSS and JS chunks. Against advancelabs.dev it duly reported .woff2 and .png
+    // files as "pages missing from the sitemap".
+    const ctx = ctxWith((c) => ({
+      ...c,
+      crawl: {
+        ...c.crawl,
+        pages: [
+          ...c.crawl.pages,
+          page('https://good.example.com/_next/static/media/x.woff2'),
+          page('https://good.example.com/logo.png'),
+          page('https://good.example.com/_next/static/chunks/main.js'),
+        ],
+      },
+    }));
+    expect((await finding(ctx, 'tech.sitemap-covers-pages'))?.passed).toBe(true);
+  });
+
+  it('treats a tracking-parameter variant as covered by its canonical', async () => {
+    // Regression: /services/aeo-audit?src=home is the same page as /services/aeo-audit and
+    // canonicalizes to it. Counting it missing would flag a correct internal-linking pattern.
+    const canonical = 'https://good.example.com/about';
+    const ctx = ctxWith((c) => ({
+      ...c,
+      pages: [
+        ...c.pages,
+        { ...c.pages[0]!, url: `${canonical}?src=home`, meta: { ...c.pages[0]!.meta, canonical } },
+      ],
+    }));
+    expect((await finding(ctx, 'tech.sitemap-covers-pages'))?.passed).toBe(true);
+  });
+
   it('is not applicable in single-page mode', async () => {
     expect((await finding(singlePageContext(), 'tech.sitemap-covers-pages'))?.passed).toBe(true);
   });
@@ -265,11 +298,12 @@ describe('aeo.entity-identity-consistent', () => {
     expect((await finding(goodContext(), 'aeo.entity-identity-consistent'))?.passed).toBe(true);
   });
 
+  // NB: hosts here must match goodContext's rootUrl (good.example.com). Nodes on any other
+  // host are treated as third-party by design and skipped.
   it('fails when Organization nodes disagree on @id', async () => {
-    // The advancelabs.dev / aeo.advancelabs.dev split, exactly.
     const ctx = withOrgs([
-      orgItem({ '@id': 'https://example.com/#organization', url: 'https://example.com' }),
-      orgItem({ '@id': 'https://aeo.example.com/#organization', url: 'https://example.com' }),
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com' }),
+      orgItem({ '@id': 'https://good.example.com/#org', url: 'https://good.example.com' }),
     ]);
     const f = await finding(ctx, 'aeo.entity-identity-consistent');
     expect(f?.passed).toBe(false);
@@ -278,22 +312,46 @@ describe('aeo.entity-identity-consistent', () => {
 
   it('fails when Organization nodes disagree on url', async () => {
     const ctx = withOrgs([
-      orgItem({ '@id': 'https://example.com/#organization', url: 'https://example.com' }),
-      orgItem({ '@id': 'https://example.com/#organization', url: 'https://other.example.com' }),
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com' }),
+      orgItem({
+        '@id': 'https://good.example.com/#organization',
+        url: 'https://good.example.com/home',
+      }),
     ]);
     expect((await finding(ctx, 'aeo.entity-identity-consistent'))?.passed).toBe(false);
   });
 
-  it('passes when every Organization node agrees', async () => {
+  it('passes when every Organization node agrees, ignoring a trailing slash', async () => {
     const ctx = withOrgs([
-      orgItem({ '@id': 'https://example.com/#organization', url: 'https://example.com' }),
-      orgItem({ '@id': 'https://example.com/#organization', url: 'https://example.com/' }),
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com' }),
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com/' }),
     ]);
     expect((await finding(ctx, 'aeo.entity-identity-consistent'))?.passed).toBe(true);
   });
 
   it('does not fire on a single Organization node', async () => {
-    const ctx = withOrgs([orgItem({ '@id': 'https://example.com/#organization' })]);
+    const ctx = withOrgs([orgItem({ '@id': 'https://good.example.com/#organization' })]);
     expect((await finding(ctx, 'aeo.entity-identity-consistent'))?.passed).toBe(true);
+  });
+
+  it('ignores third-party Organization nodes on case-study pages', async () => {
+    // Regression: the first version of this rule failed advancelabs.dev because its /work/*
+    // case studies correctly mark up the CLIENT as an Organization. Any agency that shows its
+    // work would have hit the same false positive.
+    const ctx = withOrgs([
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com' }),
+      orgItem({ '@id': 'https://a-client.com#organization', url: 'https://a-client.com' }),
+      orgItem({ '@id': 'https://another-client.co#organization', url: 'https://another-client.co' }),
+    ]);
+    expect((await finding(ctx, 'aeo.entity-identity-consistent'))?.passed).toBe(true);
+  });
+
+  it('still catches a first-party split across a subdomain', async () => {
+    // The advancelabs.dev / aeo.advancelabs.dev case: same site, contradictory identities.
+    const ctx = withOrgs([
+      orgItem({ '@id': 'https://good.example.com/#organization', url: 'https://good.example.com' }),
+      orgItem({ '@id': 'https://aeo.good.example.com/#organization', url: 'https://good.example.com' }),
+    ]);
+    expect((await finding(ctx, 'aeo.entity-identity-consistent'))?.passed).toBe(false);
   });
 });

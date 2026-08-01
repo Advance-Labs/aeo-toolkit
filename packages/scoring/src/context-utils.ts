@@ -90,14 +90,20 @@ export function redirectLoops(ctx: ScoringContext): Url[] {
  * Falls back to the trimmed input when the value will not parse, so a malformed URL compares
  * as itself rather than throwing inside a rule.
  */
-export function normalizeUrl(raw: string): string {
+export function normalizeUrl(raw: string, options: { keepFragment?: boolean } = {}): string {
   const trimmed = raw.trim();
   try {
     const u = new URL(trimmed);
-    u.hash = '';
+    // Schema.org `@id` values are distinguished BY their fragment — `#organization` vs `#org`
+    // are two different nodes on one page. Dropping it would silently merge them, so callers
+    // comparing identifiers (rather than page addresses) must opt to keep it.
+    if (!options.keepFragment) u.hash = '';
     if (u.pathname.length > 1 && u.pathname.endsWith('/')) {
       u.pathname = u.pathname.slice(0, -1);
     }
+    // A bare origin renders as "https://host/" while "https://host#x" renders without the
+    // slash; unify so the two forms of the same id compare equal.
+    if (u.pathname === '/') u.pathname = '';
     return u.toString().toLowerCase();
   } catch {
     return trimmed.toLowerCase();

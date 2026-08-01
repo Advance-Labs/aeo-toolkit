@@ -17,7 +17,6 @@ import {
   longRedirectChains,
   meanOverPages,
   normalizeUrl,
-  okPages,
   pagesFailing,
   redirectLoops,
 } from './context-utils.js';
@@ -87,26 +86,31 @@ export const technicalSeoRules: Rule[] = [
       if (!isMultiPage(ctx)) return { passed: true, detail: 'Single page — coverage not applicable.' };
 
       const listed = new Set(ctx.crawl.sitemap.map((e) => normalizeUrl(e.loc)));
-      // A noindex page is meant to be absent from the sitemap, so excluding it here keeps the
-      // rule from penalizing a correct setup.
-      const noindexed = new Set(
-        ctx.pages.filter((p) => isNoindex(p)).map((p) => normalizeUrl(p.url)),
-      );
-      // Compare one-directionally. A sitemap URL we did not crawl is EXPECTED (the crawl is
-      // page-capped), so it is not a defect. A page we crawled that the sitemap omits is.
-      const indexable = okPages(ctx).filter((p) => !noindexed.has(normalizeUrl(p.url)));
-      const missing = indexable
-        .filter((p) => !listed.has(normalizeUrl(p.finalUrl)) && !listed.has(normalizeUrl(p.url)))
+
+      // Compare PARSED HTML pages, not `crawl.pages`. The crawl record also holds fonts, images,
+      // CSS and JS chunks, none of which belong in a sitemap — comparing against it reported
+      // .woff2 and .png files as "missing pages" on the first run against a real site.
+      const candidates = ctx.pages.filter((p) => !isNoindex(p));
+      if (candidates.length === 0) return { passed: true, detail: 'No HTML pages to compare.' };
+
+      // A page is covered if the sitemap lists it OR lists the canonical it points at. Tracking
+      // variants like ?src=home are the same page and canonicalize to a listed URL; counting
+      // them as missing would flag correct behavior.
+      const missing = candidates
+        .filter((p) => {
+          if (listed.has(normalizeUrl(p.url))) return false;
+          const canonical = p.meta.canonical?.trim();
+          if (canonical && listed.has(normalizeUrl(canonical))) return false;
+          return true;
+        })
         .map((p) => p.url);
 
-      const crawled = indexable.length;
-      if (crawled === 0) return { passed: true, detail: 'No fetchable pages to compare.' };
-      const covered = (crawled - missing.length) / crawled;
+      const covered = (candidates.length - missing.length) / candidates.length;
       if (covered >= SITEMAP_COVERAGE_MIN) return { passed: true };
       return {
         passed: false,
         affectedUrls: missing.slice(0, 20),
-        detail: `${missing.length} of ${crawled} crawled pages are absent from the sitemap.`,
+        detail: `${missing.length} of ${candidates.length} crawled pages are absent from the sitemap.`,
       };
     },
   },

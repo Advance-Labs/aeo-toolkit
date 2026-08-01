@@ -12,6 +12,35 @@ import { KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './con
 
 const ANSWERABLE_MIN_WORDS = 300;
 
+/** Host without a leading `www.`, or undefined when the value will not parse as a URL. */
+function hostOf(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  try {
+    return new URL(value).hostname.toLowerCase().replace(/^www\./, '');
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Whether a schema node's identifier points at the site being audited, rather than at some
+ * third party the site is describing.
+ *
+ * Subdomains count as the same site: `aeo.example.com` and `example.com` publishing
+ * contradictory Organization nodes is exactly the entity split worth flagging, whereas
+ * `someclient.com` on a case-study page is correct markup and must not be flagged.
+ *
+ * A node with no usable identifier is treated as first-party — it carries no evidence of being
+ * about anyone else, and an unidentified Organization on your own site is most likely yours.
+ */
+function describesSameSite(rootUrl: string, identifier: string | undefined): boolean {
+  const root = hostOf(rootUrl);
+  const target = hostOf(identifier);
+  if (root === undefined) return true; // cannot tell; do not silently drop nodes
+  if (target === undefined) return true;
+  return target === root || target.endsWith(`.${root}`) || root.endsWith(`.${target}`);
+}
+
 /** Aggregate booleans across all structured-data reports with OR semantics. */
 function anyStructured(
   ctx: ScoringContext,
@@ -133,17 +162,27 @@ export const aeoRules: Rule[] = [
       for (const report of ctx.structuredData) {
         for (const item of report.items) {
           if (item.type !== 'Organization') continue;
+          const id = typeof item.properties['@id'] === 'string' ? item.properties['@id'] : undefined;
+          const url = typeof item.properties['url'] === 'string' ? item.properties['url'] : undefined;
+
+          // Only compare Organization nodes that describe THIS site. A case study, client list,
+          // or partner page legitimately marks up other companies, and treating those as
+          // contradictions would fail every agency site that shows its work — advancelabs.dev
+          // included, which is how this was caught.
+          if (!describesSameSite(ctx.crawl.rootUrl, id ?? url)) continue;
+
           orgCount += 1;
-          const id = item.properties['@id'];
-          const url = item.properties['url'];
-          if (typeof id === 'string' && id.trim()) ids.add(normalizeUrl(id));
-          if (typeof url === 'string' && url.trim()) urls.add(normalizeUrl(url));
+          // keepFragment: an @id IS its fragment. `/#organization` and `/#org` are distinct
+          // nodes, and collapsing them would hide the most common form of this defect.
+          if (id?.trim()) ids.add(normalizeUrl(id, { keepFragment: true }));
+          if (url?.trim()) urls.add(normalizeUrl(url));
         }
       }
 
       // Presence is aeo.organization-schema's job. With none, or only one, there is no conflict
       // to find, and a missing @id is a weaker (separate) concern than a contradictory one.
-      if (orgCount < 2) return { passed: true, detail: 'Fewer than two Organization nodes to compare.' };
+      if (orgCount < 2)
+        return { passed: true, detail: 'Fewer than two first-party Organization nodes to compare.' };
 
       const conflicts: string[] = [];
       if (ids.size > 1) conflicts.push(`${ids.size} different @id values`);
