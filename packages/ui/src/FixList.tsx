@@ -15,6 +15,57 @@ export interface FixListProps {
   className?: string;
 }
 
+/** Show this many URLs before collapsing the rest behind a disclosure. */
+const URLS_SHOWN_INLINE = 3;
+
+/**
+ * The specific URLs a finding applies to.
+ *
+ * Previously this rendered as a bare count ("Affects 21 URLs"), which tells you a problem
+ * exists but not where — and rules like `tech.sitemap-covers-pages` are only actionable when
+ * you can see which pages are missing. Short lists render inline; longer ones collapse into a
+ * native <details> so a finding with twenty URLs cannot push the rest of the report off-screen.
+ *
+ * Deliberately makes no completeness claim: rules cap this list, and the finding's own
+ * description carries the true total (e.g. "21 of 45 crawled pages").
+ */
+function AffectedUrls({ urls }: { urls: readonly string[] }): JSX.Element {
+  const label = `${urls.length} affected URL${urls.length === 1 ? '' : 's'}`;
+  const list = (
+    <ul className="mt-1.5 flex flex-col gap-1">
+      {urls.map((url) => (
+        <li
+          key={url}
+          className="truncate font-mono text-[11px] leading-relaxed text-slate-400"
+          title={url}
+        >
+          {url}
+        </li>
+      ))}
+    </ul>
+  );
+
+  if (urls.length <= URLS_SHOWN_INLINE) {
+    return (
+      <div className="mt-2.5">
+        <p className="text-xs font-medium text-slate-300">{label}</p>
+        {list}
+      </div>
+    );
+  }
+
+  return (
+    <details className="group/urls mt-2.5">
+      <summary className="cursor-pointer list-none text-xs font-medium text-slate-300 underline-offset-2 hover:text-white hover:underline">
+        {label}
+        <span className="ml-1 text-slate-500 group-open/urls:hidden">(show)</span>
+        <span className="ml-1 hidden text-slate-500 group-open/urls:inline">(hide)</span>
+      </summary>
+      {list}
+    </details>
+  );
+}
+
 /**
  * Prioritized fix list: failed findings sorted by severity (critical → info)
  * then by descending weight, each rendered with a severity pill, title,
@@ -85,10 +136,7 @@ export function FixList({
             {finding.recommendation}
           </p>
           {finding.affectedUrls && finding.affectedUrls.length > 0 ? (
-            <p className="mt-2.5 text-xs text-slate-400">
-              Affects {finding.affectedUrls.length} URL
-              {finding.affectedUrls.length === 1 ? '' : 's'}
-            </p>
+            <AffectedUrls urls={finding.affectedUrls} />
           ) : null}
           {finding.docsUrl ? (
             <a
