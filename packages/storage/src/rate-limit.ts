@@ -176,9 +176,21 @@ export interface ResolveRateLimiterOptions {
   redisToken?: string;
 }
 
+/** Emit the production-fallback warning at most once per process, not once per resolve call. */
+let warnedInMemoryFallback = false;
+
 /**
  * Choose the production limiter when Upstash credentials are present, otherwise fall back to the
  * in-memory limiter (converting `windowSeconds` to `windowMs`).
+ *
+ * The fallback is a real limiter, but it is per-instance and resets on cold start. On a
+ * multi-instance serverless deploy that means the effective ceiling is roughly
+ * `limit × instance count`, and a traffic spike (which is exactly when the cap matters) also
+ * scales up instances — so protection is weakest precisely when it is most needed.
+ *
+ * That degradation used to be silent. It is now warned about once per process in production,
+ * because "the rate limit is quietly not what the constant says" is the kind of thing you want
+ * to discover from a log line rather than from a bill.
  */
 export function resolveRateLimiter(options: ResolveRateLimiterOptions): RateLimiter {
   const { redisUrl, redisToken, limit, windowSeconds } = options;
@@ -190,6 +202,15 @@ export function resolveRateLimiter(options: ResolveRateLimiterOptions): RateLimi
     redisToken.length > 0
   ) {
     return new UpstashRateLimiter({ redisUrl, redisToken, limit, windowSeconds });
+  }
+
+  if (process.env.NODE_ENV === 'production' && !warnedInMemoryFallback) {
+    warnedInMemoryFallback = true;
+    console.warn(
+      '[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN are not set — falling back to the in-memory ' +
+        `limiter (${limit} per ${windowSeconds}s). This is PER-INSTANCE and resets on cold start, ` +
+        'so the shared cap is not enforced across a multi-instance deployment.',
+    );
   }
 
   return new InMemoryRateLimiter({ limit, windowMs: windowSeconds * 1000 });
