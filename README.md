@@ -13,7 +13,11 @@
 
 </div>
 
-> Open-source 9-package TypeScript monorepo for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility.
+> Open-source TypeScript monorepo for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility.
+
+**Try it without installing anything:** the five tools run free in the browser at
+**[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
+Point the auditor at a URL and it returns a weighted, per-rule report in a few seconds.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -40,18 +44,35 @@ As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 | [`@aeo/google-api`](packages/google-api) | Google Search Console + GA4 client — list properties, fetch impressions, submit sitemaps |
 | [`@aeo/storage`](packages/storage) | Supabase token store with AES-256-GCM encryption, in-memory and Upstash rate limiters |
 | [`@aeo/mcp-core`](packages/mcp-core) | MCP (Model Context Protocol) transport helpers for exposing AEO tools to AI agents |
-| [`@aeo/ui`](packages/ui) | 7 React components for rendering AEO audit results — score rings, rule lists, diff views |
-| [`@aeo/llm-audit`](apps/llm-audit) | Next.js app that runs LLM-powered content audits against the scoring engine |
+| [`@aeo/ui`](packages/ui) | React components for rendering AEO audit results — score rings, rule lists, diff views |
+| [`@aeo/backlinks`](packages/backlinks) | Backlink graph building and link analysis |
+| [`@aeo/llm`](packages/llm) | Provider-agnostic LLM client used by the content audits |
+| [`@aeo/pdf`](packages/pdf) | Renders audit reports to PDF |
+
+Plus `blogging`, `net-guard`, `orchestrator`, `types` and `config`. Applications live in
+[`apps/console`](apps/console) (the Next.js app behind the hosted tools) and
+[`apps/chrome-extension`](apps/chrome-extension).
 
 ---
 
 ## Quick Start
 
-```bash
-# Install individual packages
-npm install @aeo/crawler @aeo/html-parser @aeo/scoring
+> **Note:** the `@aeo/*` packages are **not published to npm** yet — they are workspace-internal
+> (`private: true`) while the APIs settle. Clone and build to use them; the hosted tools at
+> [advancelabs.dev/tools](https://advancelabs.dev/tools) need no install at all.
 
-# Crawl a site and score every page
+```bash
+git clone https://github.com/Advance-Labs/aeo-toolkit.git
+cd aeo-toolkit
+pnpm install
+pnpm build          # turbo builds every package
+pnpm test           # 258 tests
+pnpm dev --filter=@aeo/console   # run the console locally
+```
+
+Once built, the packages compose like this:
+
+```ts
 import { crawl } from '@aeo/crawler'
 import { parseHtml } from '@aeo/html-parser'
 import { scorePage } from '@aeo/scoring'
@@ -83,9 +104,9 @@ AEO Toolkit automates auditing all of these.
 
 ```
 aeo-toolkit/
-├── packages/          # Shared libraries (crawler, parser, scorer, etc.)
-├── apps/              # Full applications (llm-audit Next.js app)
-└── tooling/           # Shared tsconfig, eslint, build configs
+├── packages/          # 16 shared libraries (crawler, parser, scorer, etc.)
+├── apps/console/      # Next.js app behind the hosted tools
+└── apps/chrome-extension/
 ```
 
 Built with [Turborepo](https://turbo.build) · TypeScript 5 · Vitest · React 19
