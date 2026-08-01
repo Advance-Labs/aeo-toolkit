@@ -53,6 +53,57 @@ export function longRedirectChains(ctx: ScoringContext, maxHops: number): Url[] 
   return out;
 }
 
+/**
+ * URLs whose redirect chain revisits a URL it has already been to.
+ *
+ * Distinct from {@link longRedirectChains}: a loop is not a long chain. A chain that cycles
+ * never terminates, so hop-count thresholds never fire on it — the request simply fails with
+ * "too many redirects" and the page is invisible to crawlers and users alike.
+ *
+ * Includes the requested URL in the visited set, which catches the self-referential case
+ * (a URL 3xx-ing to itself) that a chain-internal comparison alone would miss.
+ */
+export function redirectLoops(ctx: ScoringContext): Url[] {
+  const out: Url[] = [];
+  for (const page of ctx.crawl.pages) {
+    if (page.redirectChain.length === 0) continue;
+    const seen = new Set<string>([normalizeUrl(page.url)]);
+    for (const hop of page.redirectChain) {
+      const key = normalizeUrl(hop.url);
+      if (seen.has(key)) {
+        out.push(page.url);
+        break;
+      }
+      seen.add(key);
+    }
+  }
+  return out;
+}
+
+/**
+ * Canonical key for comparing two URLs that address the same resource.
+ *
+ * Lowercases the host, drops the fragment, and collapses a bare trailing slash so
+ * `https://Example.com/a/` and `https://example.com/a#x` compare equal. Deliberately KEEPS
+ * the query string: `?a=1` and `?a=2` are usually different resources.
+ *
+ * Falls back to the trimmed input when the value will not parse, so a malformed URL compares
+ * as itself rather than throwing inside a rule.
+ */
+export function normalizeUrl(raw: string): string {
+  const trimmed = raw.trim();
+  try {
+    const u = new URL(trimmed);
+    u.hash = '';
+    if (u.pathname.length > 1 && u.pathname.endsWith('/')) {
+      u.pathname = u.pathname.slice(0, -1);
+    }
+    return u.toString().toLowerCase();
+  } catch {
+    return trimmed.toLowerCase();
+  }
+}
+
 /** True when at least one parsed page or crawled page exists to evaluate. */
 export function hasAnyPage(ctx: ScoringContext): boolean {
   return ctx.pages.length > 0 || ctx.crawl.pages.length > 0;

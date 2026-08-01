@@ -2,7 +2,34 @@ import { describe, expect, it } from 'vitest';
 import { runRules } from './engine.js';
 import { technicalSeoRules } from './technical-seo-rules.js';
 import { aeoRules } from './aeo-rules.js';
+import { eeatSignalDefs } from './eeat-rules.js';
 import { emptyContext, goodContext, poorContext, singlePageContext } from './fixtures.js';
+
+describe('published rule counts', () => {
+  /**
+   * These numbers are QUOTED PUBLICLY — advancelabs.dev/services/aeo-audit sells the audit as an
+   * "N-rule engine" and breaks it down by family, right next to an invitation to read this
+   * MIT-licensed source. On 2026-08-01 that copy claimed 51 rules with a 16-rule E-E-A-T family
+   * when the real numbers were 49 and 14; it had been wrong since the copy was written, because
+   * nothing connected the claim to the code.
+   *
+   * So: if this test fails, the rule set changed and the marketing copy is now lying. Update
+   * BOTH, then this number. Known places to change (advance-labs repo):
+   *   - web/src/app/services/aeo-audit/page.js   (metadata, FAQ answer, ENGINE family cards)
+   *   - web/src/app/capabilities/page.js, web/src/app/services/page.js, web/src/app/page.js
+   *   - web/src/content/articles/*.js            (several reference the total)
+   *
+   * Note the two families are structurally different engines: technical + AEO are `Rule[]` run
+   * by `runRules`, while E-E-A-T is a separate signal-definition set. The public "N-rule" figure
+   * sums both, so both are pinned here.
+   */
+  it('matches the counts published on the marketing site', () => {
+    expect(technicalSeoRules.length).toBe(29);
+    expect(aeoRules.length).toBe(11);
+    expect(eeatSignalDefs.length).toBe(14);
+    expect(technicalSeoRules.length + aeoRules.length + eeatSignalDefs.length).toBe(54);
+  });
+});
 
 describe('technicalSeoRules', () => {
   it('ships 20+ rules with unique ids across the expected categories', () => {

@@ -8,7 +8,7 @@
  * structure (lists, decent word count). All accessors are defensive.
  */
 import type { Rule, ScoringContext } from '@aeo/types';
-import { KEY_AI_BOTS, firstStructured, meanOverPages } from './context-utils.js';
+import { KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './context-utils.js';
 
 const ANSWERABLE_MIN_WORDS = 300;
 
@@ -107,6 +107,53 @@ export const aeoRules: Rule[] = [
       const present =
         anyStructured(ctx, (r) => r.hasOrganization) || (sd?.hasOrganization ?? false);
       return present ? { passed: true } : { passed: false, detail: 'No Organization schema.' };
+    },
+  },
+  {
+    // Added 2026-08-01. advancelabs.dev and aeo.advancelabs.dev each published an Organization
+    // for the same company under a DIFFERENT @id, which `aeo.organization-schema` passes without
+    // complaint because both are present and well-formed. To an answer engine that is two
+    // unrelated companies that happen to share a name, so neither accumulates the other's
+    // corroboration — the precise signal this whole rule family exists to build.
+    id: 'aeo.entity-identity-consistent',
+    category: 'aeo',
+    severity: 'high',
+    weight: 6,
+    title: 'Organization identity is consistent across pages',
+    description:
+      'Every page should describe the same entity. Conflicting @id or url values on Organization nodes split one company into several the engine cannot merge.',
+    recommendation:
+      'Give Organization one stable @id (e.g. https://example.com/#organization) and one url, and reuse them verbatim on every page and property.',
+    docsUrl: 'https://schema.org/Organization',
+    evaluate: (ctx) => {
+      const ids = new Set<string>();
+      const urls = new Set<string>();
+      let orgCount = 0;
+
+      for (const report of ctx.structuredData) {
+        for (const item of report.items) {
+          if (item.type !== 'Organization') continue;
+          orgCount += 1;
+          const id = item.properties['@id'];
+          const url = item.properties['url'];
+          if (typeof id === 'string' && id.trim()) ids.add(normalizeUrl(id));
+          if (typeof url === 'string' && url.trim()) urls.add(normalizeUrl(url));
+        }
+      }
+
+      // Presence is aeo.organization-schema's job. With none, or only one, there is no conflict
+      // to find, and a missing @id is a weaker (separate) concern than a contradictory one.
+      if (orgCount < 2) return { passed: true, detail: 'Fewer than two Organization nodes to compare.' };
+
+      const conflicts: string[] = [];
+      if (ids.size > 1) conflicts.push(`${ids.size} different @id values`);
+      if (urls.size > 1) conflicts.push(`${urls.size} different url values`);
+      if (conflicts.length === 0) return { passed: true };
+
+      return {
+        passed: false,
+        detail: `Organization nodes disagree: ${conflicts.join(' and ')}.`,
+      };
     },
   },
   {

@@ -7,7 +7,7 @@
  * multi-page crawl data degrade gracefully in `single-page` mode (they pass
  * rather than penalize a context that physically cannot supply the data).
  */
-import type { Rule, ScoringContext } from '@aeo/types';
+import type { Rule, ScoringContext, Url } from '@aeo/types';
 import {
   brokenPages,
   everyPage,
@@ -16,7 +16,10 @@ import {
   isNoindex,
   longRedirectChains,
   meanOverPages,
+  normalizeUrl,
+  okPages,
   pagesFailing,
+  redirectLoops,
 } from './context-utils.js';
 
 const META_TITLE_MIN = 30;
@@ -25,6 +28,12 @@ const META_DESC_MIN = 70;
 const META_DESC_MAX = 160;
 const ALT_COVERAGE_MIN = 0.8;
 const MAX_REDIRECT_HOPS = 2;
+/** Share of crawled, indexable pages that must appear in the sitemap. */
+const SITEMAP_COVERAGE_MIN = 0.9;
+/** Below this many sitemap entries, a "stale lastmod" verdict is not statistically interesting. */
+const LASTMOD_MIN_SAMPLE = 3;
+/** A lastmod this far in the future is a clock/config error, not a fresh edit. */
+const LASTMOD_FUTURE_TOLERANCE_MS = 24 * 60 * 60 * 1000;
 
 /** Is this a multi-page context (vs the single-page extension mode)? */
 function isMultiPage(ctx: ScoringContext): boolean {
@@ -56,6 +65,124 @@ export const technicalSeoRules: Rule[] = [
     evaluate: (ctx) => ({
       passed: ctx.crawl.filePresence.sitemapXml || ctx.crawl.sitemap.length > 0,
     }),
+  },
+  {
+    // Added 2026-08-01 after advancelabs.dev passed `tech.sitemap-present` while 13 of its 24
+    // URLs had never been crawled by Google. Presence was never the question — the sitemap
+    // existed and was valid. Whether it actually lists the pages you publish is the question.
+    id: 'tech.sitemap-covers-pages',
+    category: 'crawlability',
+    severity: 'high',
+    weight: 6,
+    title: 'Sitemap lists the pages we found',
+    description:
+      'Pages missing from the sitemap rely on being reached by internal links alone, which on a low-authority site often means never getting crawled.',
+    recommendation:
+      'Add every indexable page to sitemap.xml. If your sitemap is generated, check the generator sees pages added since it was written.',
+    docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap',
+    evaluate: (ctx) => {
+      // Only meaningful when we have both a sitemap and a real crawl to compare it against.
+      if (ctx.crawl.sitemap.length === 0)
+        return { passed: true, detail: 'No sitemap to compare against.' };
+      if (!isMultiPage(ctx)) return { passed: true, detail: 'Single page — coverage not applicable.' };
+
+      const listed = new Set(ctx.crawl.sitemap.map((e) => normalizeUrl(e.loc)));
+      // A noindex page is meant to be absent from the sitemap, so excluding it here keeps the
+      // rule from penalizing a correct setup.
+      const noindexed = new Set(
+        ctx.pages.filter((p) => isNoindex(p)).map((p) => normalizeUrl(p.url)),
+      );
+      // Compare one-directionally. A sitemap URL we did not crawl is EXPECTED (the crawl is
+      // page-capped), so it is not a defect. A page we crawled that the sitemap omits is.
+      const indexable = okPages(ctx).filter((p) => !noindexed.has(normalizeUrl(p.url)));
+      const missing = indexable
+        .filter((p) => !listed.has(normalizeUrl(p.finalUrl)) && !listed.has(normalizeUrl(p.url)))
+        .map((p) => p.url);
+
+      const crawled = indexable.length;
+      if (crawled === 0) return { passed: true, detail: 'No fetchable pages to compare.' };
+      const covered = (crawled - missing.length) / crawled;
+      if (covered >= SITEMAP_COVERAGE_MIN) return { passed: true };
+      return {
+        passed: false,
+        affectedUrls: missing.slice(0, 20),
+        detail: `${missing.length} of ${crawled} crawled pages are absent from the sitemap.`,
+      };
+    },
+  },
+  {
+    // The build-time-timestamp antipattern. Regenerating every <lastmod> on every deploy makes
+    // the whole file look freshly changed each time, so crawlers learn the signal carries no
+    // information and stop using it to prioritize re-crawls — the opposite of the intent.
+    id: 'tech.sitemap-lastmod-trustworthy',
+    category: 'crawlability',
+    severity: 'medium',
+    weight: 4,
+    title: 'Sitemap lastmod dates are trustworthy',
+    description:
+      'lastmod should track real content changes. Future dates and whole-file timestamps regenerated on every deploy both train crawlers to ignore the signal.',
+    recommendation:
+      'Derive lastmod from content edit dates, not build time, and never emit a future date.',
+    docsUrl: 'https://developers.google.com/search/blog/2023/06/sitemaps-lastmod-ping',
+    evaluate: (ctx) => {
+      const entries = ctx.crawl.sitemap;
+      if (entries.length < LASTMOD_MIN_SAMPLE)
+        return { passed: true, detail: 'Too few sitemap entries to assess.' };
+
+      const parsed = entries
+        .map((e) => (e.lastmod ? Date.parse(e.lastmod) : Number.NaN))
+        .filter((t) => !Number.isNaN(t));
+      if (parsed.length === 0)
+        return {
+          passed: true,
+          detail: 'No lastmod values present — optional, so not penalized here.',
+        };
+
+      const now = Date.now();
+      const future = parsed.filter((t) => t > now + LASTMOD_FUTURE_TOLERANCE_MS);
+      if (future.length > 0)
+        return {
+          passed: false,
+          detail: `${future.length} sitemap entries carry a future lastmod date.`,
+        };
+
+      // Every entry sharing one timestamp, set to right about now, is the signature of
+      // `new Date()` at build time rather than per-page content dates.
+      const allSame = new Set(parsed).size === 1 && parsed.length === entries.length;
+      const first = parsed[0];
+      if (allSame && first !== undefined && now - first < LASTMOD_FUTURE_TOLERANCE_MS)
+        return {
+          passed: false,
+          detail:
+            'Every entry shares one lastmod set to build time, so the file looks wholly rewritten on each deploy.',
+        };
+
+      return { passed: true };
+    },
+  },
+  {
+    // Shipped one of these to production on 2026-08-01: /api/connection returned 308 with
+    // `location: /api/connection`. `tech.short-redirect-chains` cannot catch it — a cycle never
+    // terminates, so it has no length to exceed a hop threshold.
+    id: 'tech.no-redirect-loops',
+    category: 'crawlability',
+    severity: 'critical',
+    weight: 8,
+    title: 'No redirect loops',
+    description:
+      'A URL that redirects back to somewhere it has already been never resolves. Browsers abort it and crawlers drop the page entirely.',
+    recommendation:
+      'Find the cycle and make one hop terminal. Ordering bugs in rewrite/redirect rules are the usual cause.',
+    docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/301-redirects',
+    evaluate: (ctx) => {
+      const loops = redirectLoops(ctx);
+      if (loops.length === 0) return { passed: true };
+      return {
+        passed: false,
+        affectedUrls: loops.slice(0, 20),
+        detail: `${loops.length} URL(s) redirect in a cycle and never resolve.`,
+      };
+    },
   },
   {
     id: 'tech.llms-txt-present',
@@ -132,6 +259,71 @@ export const technicalSeoRules: Rule[] = [
     evaluate: (ctx) => {
       const missing = pagesFailing(ctx, (p) => Boolean(p.meta.canonical));
       return missing.length === 0 ? { passed: true } : { passed: false, affectedUrls: missing };
+    },
+  },
+  {
+    // `tech.canonical-present` only asks whether the tag exists. A canonical pointing at a URL
+    // that 404s, or at a malformed value, actively suppresses the page: the engine is told the
+    // real version lives somewhere that turns out not to exist.
+    //
+    // Deliberately does NOT flag cross-domain canonicals. Pointing at another host is a
+    // legitimate consolidation strategy (advancelabs.dev/tools does exactly this), so failing it
+    // would penalize a correct setup. Only unparseable targets and targets we crawled and found
+    // broken are treated as defects.
+    id: 'tech.canonical-resolves',
+    category: 'indexing',
+    severity: 'high',
+    weight: 6,
+    title: 'Canonical URLs point somewhere real',
+    description:
+      'A canonical naming a broken or malformed URL tells engines the authoritative copy is somewhere that does not load, which can drop the page from the index.',
+    recommendation:
+      'Point every canonical at an absolute URL that returns 200. Check it after any move or domain change.',
+    docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls',
+    evaluate: (ctx) => {
+      const brokenByUrl = new Map<string, number>();
+      for (const p of brokenPages(ctx)) brokenByUrl.set(normalizeUrl(p.url), p.status);
+
+      const bad: Url[] = [];
+      const relative: Url[] = [];
+      const statuses = new Set<number>();
+
+      for (const page of ctx.pages) {
+        const canonical = page.meta.canonical?.trim();
+        if (!canonical) continue; // absence is tech.canonical-present's job, not ours
+
+        // Absolute-ness has to be tested WITHOUT a base. Resolved against the page URL almost
+        // any string parses (as a relative path), so a base-relative parse can never tell us
+        // whether the author wrote a valid absolute canonical.
+        let absolute: string | undefined;
+        try {
+          absolute = new URL(canonical).toString();
+        } catch {
+          relative.push(page.url);
+          continue;
+        }
+
+        const status = brokenByUrl.get(normalizeUrl(absolute));
+        if (status !== undefined) {
+          bad.push(page.url);
+          statuses.add(status);
+        }
+      }
+
+      if (bad.length === 0 && relative.length === 0) return { passed: true };
+      const parts: string[] = [];
+      if (bad.length > 0) {
+        const codes = [...statuses].sort((a, b) => a - b).join('/');
+        parts.push(`${bad.length} point at a URL returning ${codes}`);
+      }
+      if (relative.length > 0) {
+        parts.push(`${relative.length} are relative or malformed rather than absolute URLs`);
+      }
+      return {
+        passed: false,
+        affectedUrls: [...bad, ...relative].slice(0, 20),
+        detail: `${parts.join('; ')}.`,
+      };
     },
   },
 
