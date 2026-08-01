@@ -6,6 +6,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 export default {
   reactStrictMode: true,
+  // These pages are also served from advancelabs.dev/tools/* via a rewrite in the marketing
+  // app. Without an absolute assetPrefix, the proxied HTML would request /_next/static/* from
+  // advancelabs.dev, where that path belongs to a DIFFERENT Next build — every chunk 404s (or,
+  // worse, silently resolves to a mismatched bundle). Pointing it at this origin makes assets
+  // load straight from here regardless of which domain rendered the page.
+  //
+  // Only applied in production: `next dev` serves assets from localhost.
+  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://aeo.advancelabs.dev' : undefined,
+
+  async headers() {
+    return [
+      {
+        // Cross-origin <script>/<link> loads don't need CORS, but font files fetched from CSS
+        // DO — next/font self-hosts under /_next/static/media, so without this the proxied
+        // pages render in fallback fonts.
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Access-Control-Allow-Origin', value: 'https://advancelabs.dev' }],
+      },
+    ];
+  },
   // Lint runs as its own Turbo task (`pnpm lint`); don't duplicate it during the build.
   eslint: { ignoreDuringBuilds: true },
   // We're an app inside a pnpm workspace. Point output file tracing at the monorepo root so Next's

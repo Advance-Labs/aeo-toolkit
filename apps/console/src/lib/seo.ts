@@ -23,11 +23,46 @@ export const SITE_DESCRIPTION =
 /** A schema.org node is just a JSON object with an `@type`; never `any`. */
 export type SchemaObject = Record<string, unknown>;
 
+/**
+ * Public marketing origin. The five free tools and the toolkit landing page are ALSO served
+ * from here, via a rewrite in the advancelabs.dev Next app (see its `next.config.mjs`).
+ *
+ * WHY: subdomains accrue ranking authority largely separately from the root domain. These tool
+ * pages are the most link-worthy things we publish, and we want that equity landing on the
+ * domain that actually sells the audit — not on a hostname that sells nothing.
+ */
+export const PUBLIC_ORIGIN = 'https://advancelabs.dev';
+
 /** Absolute URL helper that tolerates a trailing slash on `SITE_URL`. */
 export function absolute(path: string): string {
   const base = SITE_URL.replace(/\/$/, '');
   const suffix = path.startsWith('/') ? path : `/${path}`;
   return `${base}${suffix}`;
+}
+
+/**
+ * The URL a search engine should treat as the home of `path`.
+ *
+ * Only the surfaces that advancelabs.dev actually mirrors are remapped; everything else
+ * (/about, /pricing, /mcp, /account, auth) is served from this subdomain alone and keeps its
+ * own origin. Pointing a canonical at a URL that serves DIFFERENT content is a real ranking
+ * bug, so the mapping stays deliberately narrow rather than blanket-rewriting the host.
+ *
+ * We consolidate via cross-domain rel=canonical rather than a 301 because advancelabs.dev
+ * proxies TO this origin — redirecting back would make the proxy fetch its own redirect.
+ */
+export function publicUrl(path: string): string {
+  const suffix = path.startsWith('/') ? path : `/${path}`;
+
+  // The console serves the toolkit landing page at "/", but on the marketing domain that slot
+  // belongs to the company homepage, so it is mirrored at /tools. Its "#tools" anchor collapses
+  // to the same place, because on the marketing side /tools IS the tool index.
+  if (suffix === '/' || suffix === '/#tools') return `${PUBLIC_ORIGIN}/tools`;
+
+  if (suffix === '/tools' || suffix.startsWith('/tools/')) return `${PUBLIC_ORIGIN}${suffix}`;
+
+  // Subdomain-only surface — keep it on this origin.
+  return absolute(suffix);
 }
 
 /**
@@ -37,7 +72,7 @@ export function absolute(path: string): string {
  * pages stay consistent.
  */
 export const TOOLS_PARENT_PATH = '/#tools';
-export const TOOLS_PARENT_URL = absolute(TOOLS_PARENT_PATH);
+export const TOOLS_PARENT_URL = publicUrl(TOOLS_PARENT_PATH);
 
 /** One crumb in a breadcrumb trail: a label and the path it links to. */
 export interface Crumb {
@@ -57,7 +92,7 @@ export function breadcrumbSchema(trail: ReadonlyArray<Crumb>): SchemaObject {
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      item: absolute(crumb.path),
+      item: publicUrl(crumb.path),
     })),
   };
 }
@@ -100,13 +135,16 @@ export function toolMetadata({
   return {
     title,
     description,
-    alternates: { canonical: path },
+    // Absolute, and pointed at the marketing domain: these pages are mirrored there and that
+    // is the copy we want ranking. A relative value would resolve against `metadataBase`
+    // (this subdomain) and keep the two copies competing with each other.
+    alternates: { canonical: publicUrl(path) },
     openGraph: {
       type: 'website',
       siteName: SITE_NAME,
       title: shareTitle,
       description: cardDescription,
-      url: absolute(path),
+      url: publicUrl(path),
     },
     twitter: {
       card: 'summary_large_image',
@@ -124,14 +162,19 @@ export function organizationSchema(): SchemaObject {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    '@id': `${SITE_URL.replace(/\/$/, '')}/#organization`,
+    // Deliberately the MARKETING domain's node id, not this subdomain's. advancelabs.dev
+    // publishes an Organization under exactly this @id; emitting a second one keyed to
+    // aeo.advancelabs.dev would describe Advance Labs as two unrelated entities and split the
+    // entity signal that AEO depends on. Same id on both properties = one corroborated entity.
+    // Keep in sync with ORG_ID in the marketing app's src/content/site.js.
+    '@id': `${PUBLIC_ORIGIN}/#organization`,
     name: ORG_NAME,
     legalName: ORG_LEGAL_NAME,
     // The org's canonical home is the company site, not this product subdomain. Pointing url +
     // sameAs at advancelabs.dev (and the shared GitHub org / LinkedIn) makes this "Advance Labs"
     // node resolve to the SAME entity the main site declares it `owns` — so answer/search engines
     // treat aeo.advancelabs.dev as a trusted property of the established brand, not a stray site.
-    url: 'https://advancelabs.dev',
+    url: PUBLIC_ORIGIN,
     logo: {
       '@type': 'ImageObject',
       url: absolute('/icon.svg'),
@@ -156,17 +199,20 @@ export function websiteSchema(): SchemaObject {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE_URL.replace(/\/$/, '')}/#website`,
+    // The toolkit's public home is advancelabs.dev/tools, so the WebSite node and its
+    // SearchAction describe that origin — otherwise the sitelinks search box and any engine
+    // following this template would send users to the copy we're trying to de-duplicate.
+    '@id': `${publicUrl('/')}#website`,
     name: SITE_NAME,
-    url: SITE_URL,
+    url: publicUrl('/'),
     description: SITE_DESCRIPTION,
     inLanguage: 'en',
-    publisher: { '@id': `${SITE_URL.replace(/\/$/, '')}/#organization` },
+    publisher: { '@id': `${PUBLIC_ORIGIN}/#organization` },
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${absolute('/tools/audit')}?url={search_term_string}`,
+        urlTemplate: `${publicUrl('/tools/audit')}?url={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },

@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { publicUrl } from '@/lib/seo';
 import {
   CtaBand,
   Faq,
@@ -23,13 +24,12 @@ import {
  * and the `<main>` wrapper, so this page renders only its section content.
  */
 
-const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
-
 export const metadata: Metadata = {
   title: 'AEO Toolkit — Get cited by ChatGPT, Claude & Perplexity',
   description:
     'Audit, optimize, and track your visibility across AI answer engines. Technical SEO + AEO scoring, E-E-A-T scanning, llms.txt generation, GA4/GSC chat, and a 3D backlink graph — one free console.',
-  alternates: { canonical: '/' },
+  // This page is mirrored at advancelabs.dev/tools, which is the copy we want indexed.
+  alternates: { canonical: publicUrl('/') },
 };
 
 /** `SoftwareApplication` schema makes the toolkit eligible for tool/product answers. */
@@ -41,7 +41,7 @@ const softwareApplicationLd: Record<string, unknown> = {
   operatingSystem: 'Web',
   description:
     'A free console to audit, optimize, and track your visibility across AI answer engines — technical SEO + AEO audits, E-E-A-T scoring, llms.txt generation, GA4/GSC chat, and a 3D backlink graph.',
-  url: SITE_URL,
+  url: publicUrl('/'),
   offers: {
     '@type': 'Offer',
     price: '0',
