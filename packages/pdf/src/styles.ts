@@ -144,16 +144,46 @@ export const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     color: palette.ink,
   },
+  categoryBlock: {
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: palette.border,
+  },
   categoryRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: palette.border,
   },
   categoryLabel: {
     width: '40%',
     fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+  },
+  categoryDescription: {
+    fontSize: 8.5,
+    color: palette.muted,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  categoryMissing: {
+    fontSize: 8.5,
+    color: palette.ink,
+    marginTop: 1,
+  },
+  categoryMissingLabel: {
+    fontFamily: 'Helvetica-Bold',
+    color: palette.critical,
+  },
+  categoryMissingItem: {
+    fontSize: 8.5,
+    color: palette.muted,
+    marginLeft: 8,
+    marginTop: 1,
+  },
+  categoryAllGood: {
+    fontSize: 8.5,
+    color: palette.good,
+    fontFamily: 'Helvetica-Bold',
+    marginTop: 1,
   },
   categoryBarTrack: {
     width: '40%',
@@ -201,6 +231,17 @@ export const styles = StyleSheet.create({
     fontSize: 9,
     color: palette.accent,
     marginTop: 2,
+  },
+  fixDocsLink: {
+    fontSize: 8,
+    color: palette.brand,
+    marginTop: 2,
+    textDecoration: 'none',
+  },
+  sectionIntro: {
+    fontSize: 8.5,
+    color: palette.muted,
+    marginBottom: 8,
   },
   empty: {
     fontSize: 9,

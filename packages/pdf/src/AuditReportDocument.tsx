@@ -14,6 +14,7 @@ import {
   ADVANCE_LABS_WEBSITE,
   ADVANCE_LABS_WEBSITE_LABEL,
 } from './brand.js';
+import { categoryDescription } from './category-info.js';
 import { scoreColor, severityColor, styles } from './styles.js';
 
 export interface AuditReportDocumentProps {
@@ -57,19 +58,54 @@ function BrandLockup(): JSX.Element {
 function CategoryRow({ category }: { category: ScoreCategory }): JSX.Element {
   const pct = clampPercent(category.score);
   const fill = scoreColor(pct);
+  // `category.findings` includes both passed and failed rules; surface only what's failing so
+  // the reader sees, at a glance, what this category is missing — not just a bare score.
+  const missing = category.findings.filter((f) => !f.passed);
+
   return (
-    <View style={styles.categoryRow} wrap={false}>
-      <Text style={styles.categoryLabel}>{category.label}</Text>
-      <View style={styles.categoryBarTrack}>
-        <View style={[styles.categoryBarFill, { width: `${pct}%`, backgroundColor: fill }]} />
+    <View style={styles.categoryBlock} wrap={false}>
+      <View style={styles.categoryRow}>
+        <Text style={styles.categoryLabel}>{category.label}</Text>
+        <View style={styles.categoryBarTrack}>
+          <View style={[styles.categoryBarFill, { width: `${pct}%`, backgroundColor: fill }]} />
+        </View>
+        <Text style={[styles.categoryScore, { color: fill }]}>{Math.round(pct)}</Text>
+        <Text style={styles.categoryCounts}>
+          {category.passedCount}/{category.passedCount + category.failedCount} ok
+        </Text>
       </View>
-      <Text style={[styles.categoryScore, { color: fill }]}>{Math.round(pct)}</Text>
-      <Text style={styles.categoryCounts}>
-        {category.passedCount}/{category.passedCount + category.failedCount} ok
-      </Text>
+      <Text style={styles.categoryDescription}>{categoryDescription(category.key)}</Text>
+      {missing.length > 0 ? (
+        <>
+          <Text style={styles.categoryMissing}>
+            <Text style={styles.categoryMissingLabel}>Missing: </Text>
+            {missing.length} issue{missing.length === 1 ? '' : 's'} found in this category — see
+            &quot;Top fixes&quot; below for full detail.
+          </Text>
+          {missing.slice(0, 4).map((f) => (
+            <Text key={f.id} style={styles.categoryMissingItem}>
+              • {f.title}
+            </Text>
+          ))}
+          {missing.length > 4 ? (
+            <Text style={styles.categoryMissingItem}>+ {missing.length - 4} more</Text>
+          ) : null}
+        </>
+      ) : (
+        <Text style={styles.categoryAllGood}>Nothing missing — every check in this category passes.</Text>
+      )}
     </View>
   );
 }
+
+/** Plain-English gloss for each severity level, shown once as a legend above the fix list. */
+const SEVERITY_EXPLAINER: Record<Finding['severity'], string> = {
+  critical: 'blocks visibility outright — fix first',
+  high: 'a major, direct hit to ranking or AI-citation odds',
+  medium: 'a real gap worth closing this cycle',
+  low: 'minor polish, low urgency',
+  info: 'informational — no action required',
+};
 
 function FixItem({ finding }: { finding: Finding }): JSX.Element {
   const color = severityColor(finding.severity);
@@ -78,15 +114,21 @@ function FixItem({ finding }: { finding: Finding }): JSX.Element {
     <View style={[styles.fix, { borderLeftColor: color }]} wrap={false}>
       <Text style={styles.fixTitle}>{finding.title}</Text>
       <Text style={styles.fixMeta}>
-        {finding.severity.toUpperCase()} · {finding.category} · weight {finding.weight}
+        {finding.severity.toUpperCase()} ({SEVERITY_EXPLAINER[finding.severity]}) · {finding.category} ·
+        weight {finding.weight}
       </Text>
-      <Text style={styles.fixBody}>{finding.description}</Text>
+      <Text style={styles.fixBody}>What this means: {finding.description}</Text>
       <Text style={styles.fixRecommendation}>Fix: {finding.recommendation}</Text>
       {affected.length > 0 ? (
         <Text style={styles.fixMeta}>
           Affected: {affected.slice(0, 3).join(', ')}
           {affected.length > 3 ? ` (+${affected.length - 3} more)` : ''}
         </Text>
+      ) : null}
+      {finding.docsUrl ? (
+        <Link style={styles.fixDocsLink} src={finding.docsUrl}>
+          Learn more about this check
+        </Link>
       ) : null}
     </View>
   );
@@ -139,6 +181,12 @@ export function AuditReportDocument({ report }: AuditReportDocumentProps): JSX.E
         </View>
 
         <Text style={styles.sectionTitle}>Category breakdown</Text>
+        <Text style={styles.sectionIntro}>
+          Each category below is one facet of how findable this site is to search engines and AI
+          answer engines. The score is how many of that category&apos;s checks pass; the text
+          under each bar explains what the category covers and, if anything failed, exactly what
+          is missing.
+        </Text>
         {score.categories.length > 0 ? (
           score.categories.map((category) => <CategoryRow key={category.key} category={category} />)
         ) : (
@@ -147,7 +195,17 @@ export function AuditReportDocument({ report }: AuditReportDocumentProps): JSX.E
 
         <Text style={styles.sectionTitle}>Top fixes</Text>
         {report.topFixes.length > 0 ? (
-          report.topFixes.map((finding) => <FixItem key={finding.id} finding={finding} />)
+          <>
+            <Text style={styles.sectionIntro}>
+              Every failed check, most urgent first. Each item explains what was found
+              (&quot;What this means&quot;), the exact change to make (&quot;Fix&quot;), and
+              which pages it affects. Severity in parentheses tells you how much it&apos;s
+              costing this site.
+            </Text>
+            {report.topFixes.map((finding) => (
+              <FixItem key={finding.id} finding={finding} />
+            ))}
+          </>
         ) : (
           <Text style={styles.empty}>No outstanding fixes — nice work.</Text>
         )}
