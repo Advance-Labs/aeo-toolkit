@@ -56,6 +56,38 @@ export function fakeCrawl(rootUrl: string, n = 1): CrawlResult {
   };
 }
 
+/**
+ * A crawl holding `htmlCount` real HTML pages plus the static assets a real site returns
+ * alongside them — fonts, a stylesheet, a JS chunk. Every asset has `ok: true` and a string
+ * `body`, which is exactly why an `ok && typeof body === 'string'` filter used to admit them
+ * as scoreable pages.
+ */
+export function fakeCrawlWithAssets(rootUrl: string, htmlCount = 2): CrawlResult {
+  const base = fakeCrawl(rootUrl, htmlCount);
+  const asset = (path: string, contentType: string) => ({
+    url: `${rootUrl}${path}`,
+    finalUrl: `${rootUrl}${path}`,
+    status: 200,
+    ok: true,
+    contentType,
+    headers: {},
+    body: 'BINARY-OR-TEXT-ASSET-BODY',
+    timingMs: 1,
+    redirectChain: [],
+    depth: 1,
+  });
+
+  const pages = [
+    ...base.pages,
+    asset('/_next/static/media/a.woff2', 'font/woff2'),
+    asset('/_next/static/css/a.css', 'text/css; charset=utf-8'),
+    asset('/_next/static/chunks/a.js', 'application/javascript; charset=utf-8'),
+    asset('/favicon.ico', 'image/x-icon'),
+  ];
+
+  return { ...base, pages, pageCount: pages.length };
+}
+
 /** A trivial `ParsedHtml` — enough to satisfy the type; content is unused by these tests. */
 export function fakeParsed(url: string): ParsedHtml {
   return {

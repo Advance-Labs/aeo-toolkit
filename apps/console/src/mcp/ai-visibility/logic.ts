@@ -35,11 +35,31 @@ import {
   type AeoSummary,
 } from './shared.js';
 
+/**
+ * True when the crawl fetched HTML we can meaningfully score.
+ *
+ * The content-type check is the load-bearing part. `crawl.pages` contains every fetched
+ * resource, not just documents — fonts, CSS and JS all come back with `ok: true` and a string
+ * `body`, so an `ok && typeof body === 'string'` filter admits them as "pages". They then get
+ * scored for having a title tag, a meta description, an H1 and a viewport, and fail all of it,
+ * which drags every metadata rule toward zero.
+ *
+ * Measured on converg3nce.com (2 HTML pages, 8 asset requests): unfiltered scored 61/D,
+ * filtered scored 100/A. A 39-point swing that is entirely an artifact.
+ *
+ * Mirrors `isParseablePage` in lib/audit-pipeline.ts, which already got this right — this path
+ * is the MCP tool, so it is the one agents and customers hit.
+ */
+function isScoreablePage(page: CrawledPage): page is CrawledPage & { body: string } {
+  if (!page.ok || typeof page.body !== 'string' || page.body.length === 0) return false;
+  const ct = page.contentType;
+  // Permissive when the server omitted a content-type; otherwise require an HTML-ish one.
+  return ct === undefined || /text\/html|application\/xhtml\+xml/i.test(ct);
+}
+
 /** Build a single-URL `ScoringContext` from a crawl by parsing each HTML page. */
 function toScoringContext(deps: ToolDeps, crawl: CrawlResult): ScoringContext {
-  const htmlPages = crawl.pages.filter(
-    (p): p is CrawledPage & { body: string } => p.ok && typeof p.body === 'string',
-  );
+  const htmlPages = crawl.pages.filter(isScoreablePage);
 
   const pages: ParsedHtml[] = htmlPages.map((p) => deps.parseHtml(p.body, p.finalUrl));
   const structuredData: StructuredDataReport[] = htmlPages.map((p) =>
@@ -50,7 +70,11 @@ function toScoringContext(deps: ToolDeps, crawl: CrawlResult): ScoringContext {
     crawl,
     pages,
     structuredData,
-    mode: crawl.pageCount <= 1 ? 'single-page' : 'full-site',
+    // Counted from HTML pages, not `crawl.pageCount` — that is `crawl.pages.length`, every
+    // fetched resource. A genuinely single-page site that loads a few fonts and a stylesheet
+    // reported as 'full-site', which switches on the multi-page rules (unique titles across
+    // pages, internal linking, sitemap coverage) for a site that has one page to compare.
+    mode: htmlPages.length <= 1 ? 'single-page' : 'full-site',
   };
 }
 

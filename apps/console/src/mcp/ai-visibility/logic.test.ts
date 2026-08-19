@@ -19,7 +19,7 @@ import {
   discoverRankingPrompts,
   getVisibilityReport,
 } from './logic.js';
-import { fakeCrawl, fakeDeps } from './test-fixtures.js';
+import { fakeCrawl, fakeCrawlWithAssets, fakeDeps } from './test-fixtures.js';
 
 const cite = (url: string): Citation => ({ url });
 
@@ -34,6 +34,46 @@ describe('analyzeWebsiteAeo', () => {
     expect(result.summary.aeoCategoryScore).toBe(65);
     expect(result.aiBotsAllowed).toContainEqual({ bot: 'PerplexityBot', allowed: false });
     expect(result.filePresence.llmsTxt).toBe(false);
+  });
+
+  it('scores only HTML pages, never the assets fetched alongside them', async () => {
+    // Regression: this filtered on `ok && typeof body === 'string'`, which every font,
+    // stylesheet and JS chunk also satisfies. They were parsed as pages and then scored for
+    // having a title tag, a meta description, an H1 and a viewport — failing all of it.
+    // Measured against converg3nce.com the artifact was worth 39 points: 61/D unfiltered
+    // versus 100/A filtered.
+    const { deps } = fakeDeps({ crawl: fakeCrawlWithAssets('https://example.com', 2) });
+    const parsedUrls: string[] = [];
+    const recording = {
+      ...deps,
+      parseHtml: (html: string, url: string) => {
+        parsedUrls.push(url);
+        return deps.parseHtml(html, url);
+      },
+    };
+
+    await analyzeWebsiteAeo(recording, { url: 'https://example.com' });
+
+    expect(parsedUrls).toEqual(['https://example.com/p0', 'https://example.com/p1']);
+  });
+
+  it('calls a site single-page from its HTML count, not its fetched-resource count', async () => {
+    // `crawl.pageCount` is `crawl.pages.length` — every fetched resource. One HTML page plus a
+    // few assets used to read as 'full-site', switching on rules that compare pages against
+    // each other (unique titles, internal linking, sitemap coverage) for a one-page site.
+    const { deps } = fakeDeps({ crawl: fakeCrawlWithAssets('https://example.com', 1) });
+    const parsedUrls: string[] = [];
+    const recording = {
+      ...deps,
+      parseHtml: (html: string, url: string) => {
+        parsedUrls.push(url);
+        return deps.parseHtml(html, url);
+      },
+    };
+
+    await analyzeWebsiteAeo(recording, { url: 'https://example.com' });
+
+    expect(parsedUrls).toEqual(['https://example.com/p0']);
   });
 
   it('throws a structured error when the crawl returns no pages', async () => {
