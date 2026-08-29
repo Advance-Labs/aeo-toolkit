@@ -11,6 +11,9 @@ import {
   gscTopQueries,
   listGa4Properties,
   listGscSites,
+  gscTrafficDrop,
+  gscCannibalization,
+  gscDecay,
 } from './handlers.js';
 
 /** Narrow a `ToolResult` to its success arm, failing the test if it is an error. */
@@ -216,5 +219,151 @@ describe('BYOK request token precedence', () => {
     };
     await listGa4Properties(ctx);
     expect(resolveAccessToken).toHaveBeenCalledWith('u1', 'byok-abc');
+  });
+});
+
+/** A GSC row builder for the diagnostic-handler tests. */
+function gscRow(keys: string[], clicks: number, impressions: number, position = 5) {
+  return { keys, clicks, impressions, ctr: impressions > 0 ? clicks / impressions : 0, position };
+}
+
+describe('gscTrafficDrop', () => {
+  it('attributes the decline to the worst page and names it in the summary', async () => {
+    const query = vi.fn<GscLike['query']>(async ({ startDate }): Promise<GscReport> => {
+      // Baseline range fetched first; the handler distinguishes them only by date.
+      return startDate === '2026-01-01'
+        ? { rows: [gscRow(['/a'], 100, 1000, 3), gscRow(['/b'], 50, 500, 6)] }
+        : { rows: [gscRow(['/a'], 20, 900, 9), gscRow(['/b'], 50, 500, 6)] };
+    });
+    const { ctx } = makeCtx({ gsc: { query } });
+    const res = expectSuccess(
+      await gscTrafficDrop(ctx, {
+        siteUrl: 'https://a.com/',
+        rangeA: { startDate: '2026-01-01', endDate: '2026-01-28' },
+        rangeB: { startDate: '2026-02-01', endDate: '2026-02-28' },
+        dimension: 'page',
+        limit: 20,
+      }),
+    );
+    expect(query).toHaveBeenCalledTimes(2);
+    expect(res.structuredContent).toMatchObject({
+      totalClicksLost: 80,
+      decliningKeyCount: 1,
+      contributors: [{ key: '/a', clicksDelta: -80, shareOfDecline: 1 }],
+    });
+    expect(res.content[0]?.text).toContain('/a');
+  });
+
+  it('says so plainly when nothing declined', async () => {
+    const query = vi.fn<GscLike['query']>(async (): Promise<GscReport> => ({ rows: [] }));
+    const { ctx } = makeCtx({ gsc: { query } });
+    const res = expectSuccess(
+      await gscTrafficDrop(ctx, {
+        siteUrl: 'https://a.com/',
+        rangeA: { startDate: '2026-01-01', endDate: '2026-01-28' },
+        rangeB: { startDate: '2026-02-01', endDate: '2026-02-28' },
+        dimension: 'page',
+        limit: 20,
+      }),
+    );
+    expect(res.content[0]?.text).toContain('No page lost clicks');
+  });
+
+  it('folds on queries when asked', async () => {
+    const query = vi.fn<GscLike['query']>(async (): Promise<GscReport> => ({ rows: [] }));
+    const { ctx } = makeCtx({ gsc: { query } });
+    await gscTrafficDrop(ctx, {
+      siteUrl: 'https://a.com/',
+      rangeA: { startDate: '2026-01-01', endDate: '2026-01-28' },
+      rangeB: { startDate: '2026-02-01', endDate: '2026-02-28' },
+      dimension: 'query',
+      limit: 20,
+    });
+    expect(query.mock.calls[0]?.[0]).toMatchObject({ dimensions: ['query'] });
+  });
+});
+
+describe('gscCannibalization', () => {
+  it('requests both dimensions and returns competing pages', async () => {
+    const query = vi.fn<GscLike['query']>(
+      async (): Promise<GscReport> => ({
+        rows: [gscRow(['shoes', '/guide'], 5, 400, 12), gscRow(['shoes', '/shop'], 30, 600, 4)],
+      }),
+    );
+    const { ctx } = makeCtx({ gsc: { query } });
+    const res = expectSuccess(
+      await gscCannibalization(ctx, {
+        siteUrl: 'https://a.com/',
+        days: 28,
+        minImpressions: 50,
+        limit: 25,
+      }),
+    );
+    expect(query.mock.calls[0]?.[0]).toMatchObject({ dimensions: ['query', 'page'] });
+    expect(res.structuredContent).toMatchObject({
+      groups: [{ query: 'shoes', strongestPage: '/shop' }],
+    });
+  });
+
+  it('frames overlap as evidence rather than a verdict', async () => {
+    const { ctx } = makeCtx({});
+    const res = expectSuccess(
+      await gscCannibalization(ctx, {
+        siteUrl: 'https://a.com/',
+        days: 28,
+        minImpressions: 50,
+        limit: 25,
+      }),
+    );
+    expect(res.content[0]?.text).toContain('not a verdict');
+  });
+});
+
+describe('gscDecay', () => {
+  it('compares two adjacent non-overlapping windows', async () => {
+    const query = vi.fn<GscLike['query']>(async (): Promise<GscReport> => ({ rows: [] }));
+    const { ctx } = makeCtx({ gsc: { query } });
+    const res = expectSuccess(
+      await gscDecay(ctx, {
+        siteUrl: 'https://a.com/',
+        windowDays: 28,
+        minImpressions: 100,
+        minDeclinePct: 0.2,
+        limit: 25,
+      }),
+    );
+    const structured = res.structuredContent as {
+      recentWindow: { startDate: string };
+      baselineWindow: { endDate: string };
+    };
+    // The baseline must end strictly before the recent window begins, or the
+    // comparison damps the very decline it is meant to detect.
+    expect(structured.baselineWindow.endDate < structured.recentWindow.startDate).toBe(true);
+    expect(query).toHaveBeenCalledTimes(2);
+  });
+
+  it('flags a decaying page and reports whether it also lost rank', async () => {
+    let call = 0;
+    const query = vi.fn<GscLike['query']>(async (): Promise<GscReport> => {
+      call += 1;
+      // First call is the baseline window, second is the recent window.
+      return call === 1
+        ? { rows: [gscRow(['/old'], 100, 1000, 4)] }
+        : { rows: [gscRow(['/old'], 20, 800, 11)] };
+    });
+    const { ctx } = makeCtx({ gsc: { query } });
+    const res = expectSuccess(
+      await gscDecay(ctx, {
+        siteUrl: 'https://a.com/',
+        windowDays: 28,
+        minImpressions: 100,
+        minDeclinePct: 0.2,
+        limit: 25,
+      }),
+    );
+    expect(res.structuredContent).toMatchObject({
+      decaying: [{ key: '/old', declinePct: 0.8, lostRank: true }],
+    });
+    expect(res.content[0]?.text).toContain('seasonality');
   });
 });
