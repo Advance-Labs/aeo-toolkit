@@ -34,3 +34,25 @@ export function lastNDays(days: number, opts: { today?: Date; lagDays?: number }
   const start = subtractDays(end, Math.max(0, days - 1));
   return { startDate: toIsoDate(start), endDate: toIsoDate(end) };
 }
+
+/** Whole days spanned by a range, inclusive of both endpoints (min 1). */
+export function rangeLengthDays(range: DateRange): number {
+  const start = new Date(`${range.startDate}T00:00:00Z`).getTime();
+  const end = new Date(`${range.endDate}T00:00:00Z`).getTime();
+  const days = Math.round((end - start) / 86_400_000) + 1;
+  return Math.max(1, days);
+}
+
+/**
+ * The window of equal length ending the day before `range` starts.
+ *
+ * Used to build a like-for-like baseline for decay detection: comparing the last 28
+ * days against the 28 before it, with no gap and no overlap. An overlap would damp
+ * the very decline the comparison is meant to detect.
+ */
+export function precedingWindow(range: DateRange): DateRange {
+  const length = rangeLengthDays(range);
+  const end = subtractDays(new Date(`${range.startDate}T00:00:00Z`), 1);
+  const start = subtractDays(end, length - 1);
+  return { startDate: toIsoDate(start), endDate: toIsoDate(end) };
+}

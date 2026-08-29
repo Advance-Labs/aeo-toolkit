@@ -9,7 +9,7 @@ import type { DateRange } from '@aeo/types';
 
 import { ga4For, gscFor, type ToolContext } from './context.js';
 import { jsonResult, pct } from './format.js';
-import { lastNDays } from './dates.js';
+import { lastNDays, precedingWindow } from './dates.js';
 import {
   aggregate,
   comparePeriods,
@@ -18,12 +18,16 @@ import {
   toQueryStats,
   topQueriesByClicks,
 } from './analytics.js';
+import { attributeDecline, findCannibalization, findDecay, keyedDeltas } from './diagnostics.js';
 import type {
   ComparePeriodsInput,
   Ga4RunReportInput,
   GscCtrGapsInput,
   GscSearchAnalyticsInput,
   GscTopQueriesInput,
+  GscTrafficDropInput,
+  GscCannibalizationInput,
+  GscDecayInput,
 } from './schemas.js';
 
 /** `list_ga4_properties()` — GA4 Admin listing (currently a stub in @aeo/google-api). */
@@ -175,6 +179,115 @@ export async function comparePeriodsTool(
       totalsA,
       totalsB,
       comparison,
+    },
+  );
+}
+
+/** `gsc_traffic_drop({ siteUrl, rangeA, rangeB, dimension, limit })`. */
+export async function gscTrafficDrop(
+  ctx: ToolContext,
+  input: GscTrafficDropInput,
+): Promise<ToolResult> {
+  const gsc = await gscFor(ctx);
+  const fetchRange = (range: DateRange) =>
+    gsc.query({
+      siteUrl: input.siteUrl,
+      startDate: range.startDate,
+      endDate: range.endDate,
+      dimensions: [input.dimension],
+      rowLimit: 25_000,
+    });
+  const [before, after] = await Promise.all([fetchRange(input.rangeA), fetchRange(input.rangeB)]);
+
+  const deltas = keyedDeltas(before.rows, after.rows);
+  const attribution = attributeDecline(deltas, input.limit);
+
+  const top = attribution.contributors[0];
+  const headline =
+    attribution.contributors.length === 0
+      ? `No ${input.dimension} lost clicks between the two periods.`
+      : `${attribution.decliningKeyCount} ${input.dimension}s lost clicks ` +
+        `(${attribution.totalClicksLost} total). Biggest: ${top?.key} ` +
+        `(${top?.clicksDelta}, ${pct(top?.shareOfDecline ?? 0)} of the decline).`;
+
+  return jsonResult(
+    `Traffic-drop attribution for ${input.siteUrl} by ${input.dimension}. ${headline}`,
+    {
+      siteUrl: input.siteUrl,
+      dimension: input.dimension,
+      rangeA: input.rangeA,
+      rangeB: input.rangeB,
+      ...attribution,
+    },
+  );
+}
+
+/** `gsc_cannibalization({ siteUrl, days, minImpressions, limit })`. */
+export async function gscCannibalization(
+  ctx: ToolContext,
+  input: GscCannibalizationInput,
+): Promise<ToolResult> {
+  const range = lastNDays(input.days);
+  const gsc = await gscFor(ctx);
+  const report = await gsc.query({
+    siteUrl: input.siteUrl,
+    startDate: range.startDate,
+    endDate: range.endDate,
+    dimensions: ['query', 'page'],
+    rowLimit: 25_000,
+  });
+
+  const groups = findCannibalization(report.rows, {
+    minImpressions: input.minImpressions,
+    limit: input.limit,
+  });
+
+  return jsonResult(
+    `${groups.length} queries with more than one competing page on ${input.siteUrl} ` +
+      `over the last ${input.days} days (${range.startDate}…${range.endDate}). ` +
+      'Overlap is evidence, not a verdict: two pages ranking for one broad query is often fine.',
+    {
+      siteUrl: input.siteUrl,
+      range,
+      criteria: { minImpressions: input.minImpressions },
+      groups,
+    },
+  );
+}
+
+/** `gsc_decay({ siteUrl, windowDays, minImpressions, minDeclinePct, limit })`. */
+export async function gscDecay(ctx: ToolContext, input: GscDecayInput): Promise<ToolResult> {
+  const recent = lastNDays(input.windowDays);
+  const baseline = precedingWindow(recent);
+  const gsc = await gscFor(ctx);
+  const fetchRange = (range: DateRange) =>
+    gsc.query({
+      siteUrl: input.siteUrl,
+      startDate: range.startDate,
+      endDate: range.endDate,
+      dimensions: ['page'],
+      rowLimit: 25_000,
+    });
+  const [before, after] = await Promise.all([fetchRange(baseline), fetchRange(recent)]);
+
+  const decaying = findDecay(keyedDeltas(before.rows, after.rows), {
+    minImpressions: input.minImpressions,
+    minDeclinePct: input.minDeclinePct,
+    limit: input.limit,
+  });
+
+  const slipped = decaying.filter((d) => d.lostRank === true).length;
+  return jsonResult(
+    `${decaying.length} decaying pages on ${input.siteUrl}: recent window ` +
+      `(${recent.startDate}…${recent.endDate}) vs baseline ` +
+      `(${baseline.startDate}…${baseline.endDate}). ${slipped} of them also lost rank. ` +
+      'Search Console cannot rule out seasonality, so confirm before acting.',
+    {
+      siteUrl: input.siteUrl,
+      recentWindow: recent,
+      baselineWindow: baseline,
+      criteria: { minImpressions: input.minImpressions, minDeclinePct: input.minDeclinePct },
+      decaying,
     },
   );
 }

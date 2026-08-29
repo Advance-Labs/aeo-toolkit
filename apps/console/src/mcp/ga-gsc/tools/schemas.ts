@@ -89,6 +89,56 @@ export const comparePeriodsShape = {
   rangeB: dateRange.describe('Comparison period.'),
 } as const;
 
+/** `gsc_traffic_drop({ siteUrl, rangeA, rangeB, dimension })`. */
+export const gscTrafficDropShape = {
+  siteUrl: z.string().min(1).describe('GSC property URL.'),
+  rangeA: dateRange.describe('Baseline period (the "before").'),
+  rangeB: dateRange.describe('Comparison period (the "after").'),
+  dimension: z
+    .enum(['page', 'query'])
+    .default('page')
+    .describe('Attribute the change to pages or to queries.'),
+  limit: z.number().int().positive().max(1000).default(20).describe('Max contributors to return.'),
+} as const;
+
+/** `gsc_cannibalization({ siteUrl, days, minImpressions, limit })`. */
+export const gscCannibalizationShape = {
+  siteUrl: z.string().min(1).describe('GSC property URL.'),
+  days: z.number().int().positive().max(480).default(28).describe('Look-back window in days.'),
+  minImpressions: z
+    .number()
+    .int()
+    .nonnegative()
+    .default(50)
+    .describe('A page needs at least this many impressions on a query to count as competing.'),
+  limit: z.number().int().positive().max(1000).default(25).describe('Max query groups to return.'),
+} as const;
+
+/** `gsc_decay({ siteUrl, windowDays, minImpressions, minDeclinePct, limit })`. */
+export const gscDecayShape = {
+  siteUrl: z.string().min(1).describe('GSC property URL.'),
+  windowDays: z
+    .number()
+    .int()
+    .positive()
+    .max(240)
+    .default(28)
+    .describe('Length of each window; the recent window is compared to the one before it.'),
+  minImpressions: z
+    .number()
+    .int()
+    .nonnegative()
+    .default(100)
+    .describe('Ignore pages with fewer baseline-window impressions than this.'),
+  minDeclinePct: z
+    .number()
+    .min(0)
+    .max(1)
+    .default(0.2)
+    .describe('Flag pages whose clicks fell by at least this fraction (0..1).'),
+  limit: z.number().int().positive().max(1000).default(25).describe('Max decaying pages.'),
+} as const;
+
 /** Empty-input tools (`list_ga4_properties`, `list_gsc_sites`). */
 export const emptyShape = {} as const;
 
@@ -97,3 +147,6 @@ export type GscSearchAnalyticsInput = z.infer<z.ZodObject<typeof gscSearchAnalyt
 export type GscTopQueriesInput = z.infer<z.ZodObject<typeof gscTopQueriesShape>>;
 export type GscCtrGapsInput = z.infer<z.ZodObject<typeof gscCtrGapsShape>>;
 export type ComparePeriodsInput = z.infer<z.ZodObject<typeof comparePeriodsShape>>;
+export type GscTrafficDropInput = z.infer<z.ZodObject<typeof gscTrafficDropShape>>;
+export type GscCannibalizationInput = z.infer<z.ZodObject<typeof gscCannibalizationShape>>;
+export type GscDecayInput = z.infer<z.ZodObject<typeof gscDecayShape>>;
