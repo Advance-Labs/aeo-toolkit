@@ -1,0 +1,18 @@
+# Keeping the build context small matters here: node_modules alone is GBs, and a
+# fat context is copied to the daemon on every build before any layer is cached.
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/coverage
+.git
+.github
+**/*.tsbuildinfo
+**/.env
+**/.env.*
+!**/.env.example
+**/.DS_Store
+docs
+brand
+*.md
+!README.md

@@ -6,6 +6,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 export default {
   reactStrictMode: true,
+
+  // `standalone` emits a self-contained server bundle with only the traced runtime deps,
+  // which is what makes a sane Docker image possible (no pnpm store, no workspace symlinks
+  // to resolve at runtime). Opt-in via env so the Vercel build path is untouched.
+  ...(process.env.BUILD_STANDALONE === '1' ? { output: 'standalone' } : {}),
   // These pages are also served from advancelabs.dev/tools/* via a rewrite in the marketing
   // app. Without an absolute assetPrefix, the proxied HTML would request /_next/static/* from
   // advancelabs.dev, where that path belongs to a DIFFERENT Next build — every chunk 404s (or,
@@ -13,7 +18,17 @@ export default {
   // load straight from here regardless of which domain rendered the page.
   //
   // Only applied in production: `next dev` serves assets from localhost.
-  assetPrefix: process.env.NODE_ENV === 'production' ? 'https://aeo.advancelabs.dev' : undefined,
+  // Overridable so a SELF-HOSTED instance serves its own assets. Without this, a
+  // self-hoster's container would fetch every chunk from aeo.advancelabs.dev — someone
+  // else's origin, which is both a hard dependency and a privacy problem. Set
+  // `NEXT_PUBLIC_ASSET_PREFIX=` (empty) to serve from the instance's own origin; the
+  // Docker image does exactly that. Unset keeps the hosted deployment's behaviour.
+  assetPrefix:
+    process.env.NEXT_PUBLIC_ASSET_PREFIX !== undefined
+      ? process.env.NEXT_PUBLIC_ASSET_PREFIX || undefined
+      : process.env.NODE_ENV === 'production'
+        ? 'https://aeo.advancelabs.dev'
+        : undefined,
 
   async headers() {
     return [

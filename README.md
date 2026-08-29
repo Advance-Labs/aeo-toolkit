@@ -70,9 +70,17 @@ git clone https://github.com/Advance-Labs/aeo-toolkit.git
 cd aeo-toolkit
 pnpm install
 pnpm build          # turbo builds every package
-pnpm test           # 803 tests
+pnpm test           # 848 tests
 pnpm dev --filter=@aeo/console   # run the console locally
 ```
+
+Or run the whole console in Docker with no accounts and no keys:
+
+```bash
+docker compose up --build   # then open http://localhost:3000
+```
+
+See [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md) for the full self-hosting guide.
 
 Once built, the packages compose like this:
 

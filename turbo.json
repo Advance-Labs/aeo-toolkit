@@ -5,6 +5,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["BUILD_STANDALONE", "NEXT_PUBLIC_ASSET_PREFIX", "NODE_ENV"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "build/**"]
     },
     "dev": {

@@ -1,0 +1,36 @@
+# Self-hosting the AEO Toolkit console.
+#
+#   docker compose up --build
+#   open http://localhost:3000
+#
+# Runs with no accounts and no keys. Everything below is optional; see
+# docs/SELF_HOSTING.md for what each variable turns on.
+
+services:
+  console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aeo-toolkit:local
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      # Serve assets from this instance rather than aeo.advancelabs.dev.
+      NEXT_PUBLIC_ASSET_PREFIX: ""
+      NODE_ENV: production
+
+      # --- Optional: Google Search Console / Analytics via the ga-gsc MCP server ---
+      # Without these the console runs and the audit tools work; only the GSC/GA4
+      # tools are unavailable. See docs/SELF_HOSTING.md.
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
+      GOOGLE_REDIRECT_URI: "${GOOGLE_REDIRECT_URI:-}"
+
+      # --- Optional: durable, encrypted OAuth token storage ---
+      # WITHOUT these, tokens live in memory and are lost on every restart, which
+      # means reconnecting Google after each `docker compose restart`. Fine for a
+      # single-user trial, not for anything left running.
+      SUPABASE_URL: "${SUPABASE_URL:-}"
+      SUPABASE_SERVICE_ROLE_KEY: "${SUPABASE_SERVICE_ROLE_KEY:-}"
+      TOKEN_ENCRYPTION_KEY: "${TOKEN_ENCRYPTION_KEY:-}"
+    restart: unless-stopped
