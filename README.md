@@ -19,6 +19,10 @@
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in a few seconds.
 
+Those five are the browser tools. The full suite is **nine**: these five, plus three
+MCP servers (`ga-gsc`, `backlink`, `ai-visibility`) that plug into Claude or any MCP
+client, plus one GitHub Actions content agent ([`@aeo/blogging`](packages/blogging)).
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Made by Advance Labs](https://img.shields.io/badge/Made%20by-Advance%20Labs-7C3AED?style=flat-square)](https://advancelabs.dev)
@@ -66,7 +70,7 @@ git clone https://github.com/Advance-Labs/aeo-toolkit.git
 cd aeo-toolkit
 pnpm install
 pnpm build          # turbo builds every package
-pnpm test           # 258 tests
+pnpm test           # 803 tests
 pnpm dev --filter=@aeo/console   # run the console locally
 ```
 
