@@ -21,7 +21,8 @@ const SITE_FILES: ReadonlyArray<{ path: string; key: keyof SiteFilePresence }> =
 /**
  * Detect which key crawl-hint / trust files exist at a site root. Probes each path with a HEAD
  * request first (cheap); if the server rejects HEAD (405 / 501) it retries with GET. A file is
- * "present" when the final response is a 2xx. Runs all probes concurrently.
+ * "present" when the final response is a 2xx AND is not an HTML page. Runs all probes
+ * concurrently.
  */
 export async function detectSiteFiles(
   rootUrl: Url,
@@ -49,6 +50,24 @@ export async function detectSiteFiles(
   return presence;
 }
 
+/**
+ * Whether a 2xx response is actually the requested file rather than an HTML page.
+ *
+ * Single-page apps routinely serve a catch-all route: every unmatched path returns 200
+ * with the app shell. A status-only check therefore reports llms.txt, robots.txt and
+ * sitemap.xml as PRESENT on any such site, which is the opposite of the truth and is
+ * silent — the audit reports a pass for a file that does not exist.
+ *
+ * None of these files is ever legitimately served as HTML, so rejecting `text/html` fixes
+ * the false positive without risking a false negative. A missing content-type is treated
+ * as present: some static hosts omit it on HEAD, and refusing those would trade this bug
+ * for the opposite one.
+ */
+function isNotHtml(contentType: string | undefined): boolean {
+  if (contentType === undefined) return true;
+  return !contentType.toLowerCase().includes('text/html');
+}
+
 /** HEAD-probe a URL, falling back to GET when the server does not support HEAD. */
 async function probe(
   url: Url,
@@ -63,7 +82,7 @@ async function probe(
     userAgent,
     includeBody: false,
   });
-  if (head.ok) return true;
+  if (head.ok) return isNotHtml(head.contentType);
   // Some servers reject HEAD; retry with a bodyless GET before concluding "absent".
   if (head.status === 405 || head.status === 501 || head.status === 0) {
     const get = await fetchResource(url, {
@@ -73,7 +92,7 @@ async function probe(
       userAgent,
       includeBody: false,
     });
-    return get.ok;
+    return get.ok && isNotHtml(get.contentType);
   }
   return false;
 }
