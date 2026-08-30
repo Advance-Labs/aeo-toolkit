@@ -81,7 +81,7 @@ git clone https://github.com/Advance-Labs/aeo-toolkit.git
 cd aeo-toolkit
 pnpm install
 pnpm build          # turbo builds every package
-pnpm test           # 852 tests
+pnpm test           # 860 tests
 pnpm dev --filter=@advance-labs/console   # run the console locally
 ```
 

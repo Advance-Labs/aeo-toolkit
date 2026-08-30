@@ -19,7 +19,7 @@ engines under [`../packages`](../packages); these apps are the thin composition 
 | `/` | Dashboard |
 | `/tools/audit` · `/tools/eeat` · `/tools/llms-txt` · `/tools/chat` · `/tools/graph` | the 5 web tools |
 | `/api/audit/*` · `/api/generate` · `/api/chat` · `/api/auth/google/*` · `/api/graph/*` | tool APIs (Node runtime) |
-| `/api/mcp/{ai-visibility,ga-gsc,backlink}` + `/.well-known/*` | MCP servers (via `mcp-handler`) for Claude connectors |
+| `/api/mcp/{ai-visibility,ga-gsc,backlink}/mcp` + `/.well-known/*` | MCP servers (via `mcp-handler`) for Claude connectors |
 | `/api/cron/blogging` | blogging agent, invoked by a Vercel Cron (`apps/console/vercel.json`) |
 
 ## Running
