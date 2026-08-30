@@ -14,7 +14,7 @@ code may break the currently-live free tools.
 
 ## PART A — MCP connection page (`/mcp`) — independent, ships live
 
-The footer links (`/api/mcp/ai-visibility`, `/ga-gsc`, `/backlink`) point at MCP Streamable-HTTP
+The footer links (`/api/mcp/<slug>/mcp` for each server) point at MCP Streamable-HTTP
 protocol endpoints — they 404 in a browser. Build a human page that documents and connects them.
 
 ### A1. Shared tool metadata — `apps/console/src/lib/mcp-catalog.ts` (owner: mcp-page builder)
@@ -25,7 +25,7 @@ export interface McpServerMeta {
   slug: 'ai-visibility' | 'ga-gsc' | 'backlink';
   name: string;            // "AI Visibility MCP"
   blurb: string;           // one sentence
-  endpoint: string;        // `${SITE_URL}/api/mcp/<slug>` — build from seo.ts SITE_URL
+  endpoint: string;        // `${SITE_URL}/api/mcp/<slug>/mcp` — build from seo.ts SITE_URL
   auth: 'none' | 'google-byok';
   status: 'live' | 'needs-google';
   tools: McpToolMeta[];

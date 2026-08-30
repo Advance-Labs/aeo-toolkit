@@ -71,8 +71,9 @@ const TOTAL_TOOLS = MCP_SERVERS.reduce((n, s) => n + s.tools.length, 0);
  * MCP connection page. Server component: ships an answer-first explainer, one `SpotlightCard` per
  * server with a copyable connection URL, "Add to Claude.ai" steps, a Cursor `mcp.json` snippet, the
  * tool list, and example prompts — plus `SoftwareApplication` + per-server `ItemList` JSON-LD so answer
- * engines can resolve the integration. The raw `/api/mcp/*` endpoints remain reachable for real MCP
- * clients; humans land here.
+ * engines can resolve the integration. Machine clients connect to `/api/mcp/<slug>/mcp`; humans land
+ * here. The connection strings come from `mcpEndpoint()` in `@/lib/mcp-catalog`, which owns the
+ * transport-path detail so this page cannot drift from it.
  */
 export default function McpPage(): JSX.Element {
   const breadcrumb = breadcrumbSchema(TRAIL);

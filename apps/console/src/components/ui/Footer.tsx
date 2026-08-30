@@ -10,8 +10,9 @@ const TOOLS = [
   { href: '/tools/graph', label: 'Backlink Graph' },
 ];
 
-// Point humans at the `/mcp` connection page (anchored to each server). The raw `/api/mcp/*`
-// Streamable-HTTP endpoints stay reachable for real MCP clients; they 404 in a browser.
+// Point humans at the `/mcp` connection page (anchored to each server). The machine endpoints
+// live at `/api/mcp/<slug>/mcp` and are for MCP clients only; the bare `/api/mcp/<slug>` always
+// 404s, which is mcp-handler's own response and not a routing fault.
 const RESOURCES = [
   { href: '/mcp#ai-visibility', label: 'AI Visibility MCP' },
   { href: '/mcp#ga-gsc', label: 'GA4 + GSC MCP' },
