@@ -35,8 +35,12 @@ The packaged `manifest.json` is generated from
 [`manifest.config.ts`](./manifest.config.ts). Confirm:
 
 - `manifest_version` is `3`.
-- `name` is `AEO/GEO Auditor` and the `description` is store-appropriate
-  (max 132 chars — keep the one-line summary short).
+- `name` is `AEO/GEO Auditor` and the `description` is **at most 132 characters**. The store
+  rejects longer ones. Check it rather than assuming:
+  ```bash
+  node -e "console.log(require('./dist/manifest.json').description.length)"
+  ```
+  (The shipped description was 162 characters until 2026-08-30 and would have been rejected.)
 - `version` is bumped from the previously published version. The store rejects
   re-uploads of an already-published version number. Bump the `version` field in
   [`package.json`](./package.json); `manifest.config.ts` derives the manifest
