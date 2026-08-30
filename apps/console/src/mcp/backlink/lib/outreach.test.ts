@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import {
   buildOutreachMessages,
   splitEmail,

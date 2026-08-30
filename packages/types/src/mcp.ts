@@ -1,4 +1,4 @@
-/** MCP domain — shared shapes for `@aeo/mcp-core` and the three MCP servers. */
+/** MCP domain — shared shapes for `@advance-labs/mcp-core` and the three MCP servers. */
 import type { Url } from './crawl.js';
 import type { Citation } from './llm.js';
 

@@ -9,7 +9,7 @@
  * Everything here is pure — no clock, no I/O. Callers pass the period in (derive it from an injected
  * clock with {@link periodOf}), so the logic is exhaustively unit-testable.
  */
-import type { CustomerProfile, JobKind } from '@aeo/types';
+import type { CustomerProfile, JobKind } from '@advance-labs/types';
 
 /** A job that is due to run for one customer in one period. */
 export interface DueJob {

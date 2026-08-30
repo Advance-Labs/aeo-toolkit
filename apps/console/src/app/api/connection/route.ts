@@ -6,7 +6,7 @@
  */
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { Ga4Client, GscClient } from '@aeo/google-api';
+import { Ga4Client, GscClient } from '@advance-labs/google-api';
 import type { ConnectionResponse } from '@/components/chat/chat-types';
 import { getValidAccessToken, USER_COOKIE } from '@/lib/oauth';
 

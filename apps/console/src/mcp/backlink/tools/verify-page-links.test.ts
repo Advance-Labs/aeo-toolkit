@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import type { PageResource } from '@aeo/types';
-import type { ToolResult } from '@aeo/mcp-core';
-import type { HttpClient, TextResponse } from '@aeo/backlinks';
+import type { PageResource } from '@advance-labs/types';
+import type { ToolResult } from '@advance-labs/mcp-core';
+import type { HttpClient, TextResponse } from '@advance-labs/backlinks';
 import { verifyPageLinksTool } from './verify-page-links.js';
 import type { ToolDeps } from '../deps.js';
 import type { OutreachClient } from '../lib/outreach.js';

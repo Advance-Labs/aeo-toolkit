@@ -5,7 +5,7 @@
  * computes a composite health score in [0,1] for each published post. Pure-ish: both Google calls
  * are injected as typed seams, so tests run with no network and no OAuth.
  */
-import type { Ga4Report, Ga4ReportRequest, GscQueryRequest, GscReport, GscRow } from '@aeo/types';
+import type { Ga4Report, Ga4ReportRequest, GscQueryRequest, GscReport, GscRow } from '@advance-labs/types';
 import type { Ga4ReportFn } from '../google/ga4.js';
 import type { GscQueryFn } from '../google/gsc.js';
 import type { Post, PostHealth } from '../types.js';

@@ -1,11 +1,11 @@
 /**
  * Strategy agent — one-time competitor / content-pillar research.
  *
- * Uses the stronger reasoning model (via `@aeo/llm`) to turn a seed description of the site into
+ * Uses the stronger reasoning model (via `@advance-labs/llm`) to turn a seed description of the site into
  * a structured `Strategy` (pillars, competitors, audience, voice). Pure-ish: the only effect is
  * the injected `complete` call, which tests mock.
  */
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import type { ModelChoice, Strategy } from '../types.js';
 

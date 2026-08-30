@@ -1,6 +1,6 @@
 /** Top-level HTML parse: orchestrates every extractor into a `ParsedHtml`. */
 import * as cheerio from 'cheerio';
-import type { ParsedHtml } from '@aeo/types';
+import type { ParsedHtml } from '@advance-labs/types';
 
 import { computeContentSignals } from './content.js';
 import { extractHeadings, isHeadingHierarchyValid } from './headings.js';

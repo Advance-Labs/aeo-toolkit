@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { Ga4Report, Ga4ReportRequest, GscQueryRequest, GscReport } from '@aeo/types';
+import type { Ga4Report, Ga4ReportRequest, GscQueryRequest, GscReport } from '@advance-labs/types';
 import type { Ga4ReportFn } from '../google/ga4.js';
 import type { GscQueryFn } from '../google/gsc.js';
 import type { Post } from '../types.js';

@@ -6,8 +6,8 @@
  * checking whether a once-placed link still existed at a point in time.
  */
 import { z } from 'zod';
-import type { McpToolDef } from '@aeo/mcp-core';
-import { fetchHistory } from '@aeo/backlinks';
+import type { McpToolDef } from '@advance-labs/mcp-core';
+import { fetchHistory } from '@advance-labs/backlinks';
 import { jsonResult, type Json } from '../lib/result.js';
 import type { ToolDeps } from '../deps.js';
 

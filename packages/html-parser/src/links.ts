@@ -1,6 +1,6 @@
 /** Link extraction with internal/external and nofollow classification. */
 import type { CheerioAPI } from 'cheerio';
-import type { LinkInfo } from '@aeo/types';
+import type { LinkInfo } from '@advance-labs/types';
 
 import { isInternalLink, resolveUrl } from './url-utils.js';
 

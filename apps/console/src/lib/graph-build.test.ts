@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { BacklinkGraph, BuildBacklinkGraphOptions, HttpClient } from '@aeo/backlinks';
-import type * as BacklinksModule from '@aeo/backlinks';
+import type { BacklinkGraph, BuildBacklinkGraphOptions, HttpClient } from '@advance-labs/backlinks';
+import type * as BacklinksModule from '@advance-labs/backlinks';
 import { buildGraph, DEFAULT_BACKLINK_GRAPH_LIMIT, type GraphBuilder } from './graph-build.js';
 
 // Keep the live/rate-limited HTTP client factories network-free in tests: the
 // engine builder is injected directly, so these only need to return a typed stub.
-vi.mock('@aeo/backlinks', async (importOriginal) => {
+vi.mock('@advance-labs/backlinks', async (importOriginal) => {
   const actual = await importOriginal<typeof BacklinksModule>();
   const stubHttp: HttpClient = {
     getText: () => Promise.resolve({ ok: false, status: 0, body: '', url: '' }),

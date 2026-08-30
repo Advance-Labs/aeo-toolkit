@@ -1,5 +1,5 @@
 import robotsParser from 'robots-parser';
-import type { AiBotDirective, AiBotName, RobotsGroup, RobotsTxt, Url } from '@aeo/types';
+import type { AiBotDirective, AiBotName, RobotsGroup, RobotsTxt, Url } from '@advance-labs/types';
 import { AI_BOT_NAMES } from './constants.js';
 
 /**

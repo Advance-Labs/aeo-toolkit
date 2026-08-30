@@ -1,5 +1,5 @@
 /**
- * @aeo/html-parser — pure HTML extraction (no network, no filesystem).
+ * @advance-labs/html-parser — pure HTML extraction (no network, no filesystem).
  *
  * `parseHtml(html, url)` returns the full `ParsedHtml` shape. The individual
  * extractor helpers are also exported as string-in convenience functions so a
@@ -15,7 +15,7 @@ import type {
   OpenGraph,
   RawStructuredDataBlock,
   TwitterCard,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 import { computeContentSignals as computeContentSignalsFromDom } from './content.js';
 import { extractHeadings as extractHeadingsFromDom } from './headings.js';

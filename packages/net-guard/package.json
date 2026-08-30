@@ -1,9 +1,8 @@
 {
-  "name": "@aeo/net-guard",
+  "name": "@advance-labs/net-guard",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "SSRF-guarded HTTP fetch seam — DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding.",
+  "description": "SSRF-guarded HTTP fetch seam \u2014 DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,14 +25,23 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*"
+    "@advance-labs/types": "workspace:*"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/node": "^22.10.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/net-guard"
+  },
+  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
 }

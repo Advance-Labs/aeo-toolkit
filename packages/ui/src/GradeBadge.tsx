@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { ScoreGrade } from '@aeo/types';
+import type { ScoreGrade } from '@advance-labs/types';
 import { cx, gradeClasses } from './utils.js';
 
 export interface GradeBadgeProps {

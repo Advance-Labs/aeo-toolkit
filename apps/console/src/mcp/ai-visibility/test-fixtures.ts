@@ -9,7 +9,7 @@ import type {
   ParsedHtml,
   Score,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 import type { ToolDeps } from './deps.js';
 

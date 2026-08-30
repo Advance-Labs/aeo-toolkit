@@ -13,9 +13,9 @@ import {
   type OrchestratorDeps,
   type SupabaseLike,
   type LiveContentRunnerConfig,
-} from '@aeo/orchestrator';
-import { createLiveHttpClient } from '@aeo/backlinks';
-import { createLiveSafeFetchDeps } from '@aeo/net-guard';
+} from '@advance-labs/orchestrator';
+import { createLiveHttpClient } from '@advance-labs/backlinks';
+import { createLiveSafeFetchDeps } from '@advance-labs/net-guard';
 
 type ModelChoice = LiveContentRunnerConfig['draftModel'];
 

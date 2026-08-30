@@ -10,7 +10,7 @@ export default defineConfig({
   // statement as dead code and removes it. With it off, the directive below survives the build.
   treeshake: false,
   // The design system is bundled into one module; some components use React hooks. Bundlers strip
-  // per-file "use client" directives, so re-assert it for the whole bundle. This makes @aeo/ui a
+  // per-file "use client" directives, so re-assert it for the whole bundle. This makes @advance-labs/ui a
   // client module — Server Components can still import it across the normal server→client boundary.
   banner: { js: "'use client';" },
 });

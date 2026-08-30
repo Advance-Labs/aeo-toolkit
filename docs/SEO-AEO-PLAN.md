@@ -88,7 +88,7 @@ Why it matters for AEO: `FAQPage`/`HowTo` give answer engines pre-extracted Q→
   ("llms.txt generator", "E-E-A-T checker") with intro + FAQ + how-to.
 - **Glossary:** `/glossary/*` definition pages (great for AI definitional citations).
 - **Comparisons:** `/compare/aeo-vs-seo`, `/compare/*`.
-- **Blog:** driven by `@aeo/blogging` (the cron) once LLM keys are set — query-gap-targeted posts.
+- **Blog:** driven by `@advance-labs/blogging` (the cron) once LLM keys are set — query-gap-targeted posts.
 
 ---
 

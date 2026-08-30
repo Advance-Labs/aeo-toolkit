@@ -3,7 +3,7 @@
  *
  * Wires each tool's zod input schema + handler onto an `McpServer` (the object
  * `mcp-handler`'s `createMcpHandler` setup callback hands us) via
- * `@aeo/mcp-core#registerTool`, which itself wraps each handler with structured
+ * `@advance-labs/mcp-core#registerTool`, which itself wraps each handler with structured
  * errors. Handlers call the pure logic in `logic.ts`, then shape the result into
  * an MCP `ToolResult` carrying both a human-readable text block and
  * machine-readable `structuredContent`.
@@ -13,7 +13,7 @@
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { registerTool, type ToolResult } from '@aeo/mcp-core';
+import { registerTool, type ToolResult } from '@advance-labs/mcp-core';
 
 import { defaultDeps, type ToolDeps } from './deps.js';
 import {
@@ -40,7 +40,7 @@ const perplexityKeySchema = z
 
 /**
  * Register all five visibility tools onto `server`. `deps` defaults to the real
- * `@aeo/*` functions; tests pass a fake `ToolDeps`.
+ * `@advance-labs/*` functions; tests pass a fake `ToolDeps`.
  */
 export function registerAiVisibilityTools(server: McpServer, deps: ToolDeps = defaultDeps): void {
   registerTool(server, {

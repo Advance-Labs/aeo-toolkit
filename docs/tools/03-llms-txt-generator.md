@@ -1,7 +1,7 @@
 # Tool 3 — llms.txt Generator (`apps/llms-txt-generator`)
 
 **Type:** Next.js (App Router) · **Deploy:** Vercel
-**Depends on:** `@aeo/crawler`, `@aeo/html-parser`, `@aeo/ui`, `@aeo/types`
+**Depends on:** `@advance-labs/crawler`, `@advance-labs/html-parser`, `@advance-labs/ui`, `@advance-labs/types`
 
 ## What it does
 Accepts a URL, crawls the site structure (sitemap + key pages), extracts titles/descriptions, and
@@ -17,7 +17,7 @@ optional contact/license. Output renders in a `<textarea>` with one-click downlo
 
 ## Config
 - No external API needed (titles/descriptions come from the crawl, not an LLM). If a summarizer is
-  desired later, route it through `@aeo/llm` (BYOK) and mark the seam.
+  desired later, route it through `@advance-labs/llm` (BYOK) and mark the seam.
 
 ## Notes
 - Keep a version-aware template (the spec is evolving). Document the spec version in the output header comment.

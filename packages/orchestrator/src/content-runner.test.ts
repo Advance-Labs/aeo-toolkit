@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import type { GscReport, LlmCompletionRequest, LlmCompletionResponse } from '@aeo/types';
-import type { CompleteFn, GscQueryFn, ModelChoice } from '@aeo/blogging';
-import type { CustomerProfile } from '@aeo/types';
+import type { GscReport, LlmCompletionRequest, LlmCompletionResponse } from '@advance-labs/types';
+import type { CompleteFn, GscQueryFn, ModelChoice } from '@advance-labs/blogging';
+import type { CustomerProfile } from '@advance-labs/types';
 import {
   ContentRunnerImpl,
   scoreConfidence,
   validateContentPayload,
 } from './content-runner.js';
-import type { EditReport } from '@aeo/blogging';
+import type { EditReport } from '@advance-labs/blogging';
 
 const MODEL: ModelChoice = { provider: 'groq', model: 'test-model', apiKey: 'byok-test' };
 

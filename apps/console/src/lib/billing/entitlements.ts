@@ -27,7 +27,7 @@
  * and the existing token-store convention. The anon/cookie client is used only to identify the user.
  */
 
-import { createSupabaseClient } from '@aeo/storage';
+import { createSupabaseClient } from '@advance-labs/storage';
 
 import { BILLING_ENABLED } from './stripe';
 import { PLANS, planFor, type PlanId } from './plans';

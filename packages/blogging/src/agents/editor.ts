@@ -6,7 +6,7 @@
  * is provided, the editor asks it to fix flagged issues and returns the revised markdown. Pure-ish:
  * the LLM call is injected and optional, so the lint path is fully testable with no network.
  */
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import { fingerprint } from './dedup.js';
 import type { ModelChoice, Post } from '../types.js';

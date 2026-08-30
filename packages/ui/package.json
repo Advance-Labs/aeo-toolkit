@@ -1,5 +1,5 @@
 {
-  "name": "@aeo/ui",
+  "name": "@advance-labs/ui",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -26,13 +26,13 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*"
+    "@advance-labs/types": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.2",

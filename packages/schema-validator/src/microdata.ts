@@ -9,7 +9,7 @@
  */
 import type { CheerioAPI, Cheerio } from 'cheerio';
 import type { Element } from 'domhandler';
-import type { StructuredDataItem } from '@aeo/types';
+import type { StructuredDataItem } from '@advance-labs/types';
 import { normalizeTypes } from './types-map.js';
 import { finalizeItem } from './validation.js';
 

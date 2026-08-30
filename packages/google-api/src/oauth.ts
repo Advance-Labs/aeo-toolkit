@@ -5,7 +5,7 @@
  * token. Token endpoint HTTP flows through an injectable {@link Fetcher}. Defaults to read-only
  * GA4 + GSC scopes so the toolkit never requests more access than it needs.
  */
-import type { GoogleOAuthTokens } from '@aeo/types';
+import type { GoogleOAuthTokens } from '@advance-labs/types';
 import { asNumber, asRecord, asString, defaultFetcher, requestForm, type Fetcher } from './http.js';
 import { DEFAULT_READONLY_SCOPES } from './scopes.js';
 

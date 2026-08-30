@@ -2,7 +2,7 @@
  * Rate-limited `HttpClient` decorator.
  *
  * Wraps an inner {@link HttpClient} with a configurable {@link RateLimiter}
- * (resolved by `@aeo/storage`'s `resolveRateLimiter`: Upstash Redis when its creds
+ * (resolved by `@advance-labs/storage`'s `resolveRateLimiter`: Upstash Redis when its creds
  * are present, an in-memory fixed-window limiter otherwise). Every outbound
  * scrape/fetch passes through the limiter first, so the raw request rate to the
  * free sources (DuckDuckGo, Wayback CDX, CommonCrawl) stays polite even when a
@@ -15,8 +15,8 @@
  * (distributed) limiter backend errors, we fail *open* rather than blocking the
  * tool, since over-limiting is worse than a missed throttle here.
  */
-import type { RateLimiter } from '@aeo/storage';
-import type { PageResource } from '@aeo/types';
+import type { RateLimiter } from '@advance-labs/storage';
+import type { PageResource } from '@advance-labs/types';
 import type { HttpClient, TextResponse } from './http.js';
 
 /**

@@ -12,7 +12,7 @@
  * It does NOT execute/publish: every proposal is written `pending`. Whether a content proposal may
  * later auto-publish is decided by {@link shouldAutoExecute} in the console execution layer.
  */
-import type { CustomerProfile, JobResult } from '@aeo/types';
+import type { CustomerProfile, JobResult } from '@advance-labs/types';
 import type { ProposalStore } from './proposal-store.js';
 import type { ContentRunner } from './content-runner.js';
 import type { OutreachRunner } from './outreach-runner.js';

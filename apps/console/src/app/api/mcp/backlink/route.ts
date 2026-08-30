@@ -3,7 +3,7 @@
  *
  * Built from the re-homed tool registry in `@/mcp/backlink/server` via the Vercel
  * `mcp-handler` adapter. A per-caller distributed rate-limit gate runs before the
- * transport hand-off (reusing `@aeo/storage`'s limiter via `@/mcp/shared`); a
+ * transport hand-off (reusing `@advance-labs/storage`'s limiter via `@/mcp/shared`); a
  * second, finer scrape limiter inside the live HTTP client throttles outbound GETs
  * to the free sources (DuckDuckGo, Wayback, CommonCrawl).
  *
@@ -13,7 +13,7 @@
  * Node runtime: the tools scrape pages and call upstream APIs over the network.
  */
 import { createMcpHandler } from 'mcp-handler';
-import { enforceWebRateLimit } from '@aeo/mcp-core';
+import { enforceWebRateLimit } from '@advance-labs/mcp-core';
 
 import { buildBacklinkDeps, registerBacklinkTools } from '@/mcp/backlink/server.js';
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/backlink/config.js';

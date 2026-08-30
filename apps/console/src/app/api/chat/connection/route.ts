@@ -2,13 +2,13 @@
  * GET /api/chat/connection — report whether the current browser session is connected to Google, and
  * if so, list the GSC sites and GA4 properties the token can access for the pickers.
  *
- * GA4 property listing is a stub in `@aeo/google-api` (returns `[]` until the Admin API is wired),
+ * GA4 property listing is a stub in `@advance-labs/google-api` (returns `[]` until the Admin API is wired),
  * so the UI falls back to manual property-id entry. GSC `listSites()` is live. Node runtime only.
  */
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { Ga4Client, GscClient } from '@aeo/google-api';
-import type { Ga4Property, GscSite } from '@aeo/types';
+import { Ga4Client, GscClient } from '@advance-labs/google-api';
+import type { Ga4Property, GscSite } from '@advance-labs/types';
 import { getValidAccessToken, USER_COOKIE } from '@/lib/oauth';
 
 export const runtime = 'nodejs';

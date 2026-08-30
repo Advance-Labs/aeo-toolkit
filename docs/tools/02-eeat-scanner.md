@@ -1,7 +1,7 @@
 # Tool 2 — E-E-A-T Website Scanner (`apps/eeat-scanner`)
 
 **Type:** Next.js (App Router) · **Deploy:** Vercel
-**Depends on:** `@aeo/crawler`, `@aeo/html-parser`, `@aeo/schema-validator`, `@aeo/scoring` (`eeatScore`), `@aeo/ui`, `@aeo/types`
+**Depends on:** `@advance-labs/crawler`, `@advance-labs/html-parser`, `@advance-labs/schema-validator`, `@advance-labs/scoring` (`eeatScore`), `@advance-labs/ui`, `@advance-labs/types`
 
 ## What it does
 Samples up to 12 pages and scores the four E-E-A-T pillars heuristically:
@@ -18,8 +18,8 @@ Returns an `EeatReport` (overall /100, grade, 4 pillars with signals, improvemen
 - `/` page: `UrlInputForm` → pillar cards (one per pillar with its signals) + improvement list.
 
 ## Config
-- `transpilePackages` for the `@aeo/*` deps. Reuses the same crawl/parse engine as Tool 1.
+- `transpilePackages` for the `@advance-labs/*` deps. Reuses the same crawl/parse engine as Tool 1.
 
 ## Notes
-- The scoring rubric maps to the CORE-EEAT 80-item benchmark; weights are calibrated in `@aeo/scoring`.
+- The scoring rubric maps to the CORE-EEAT 80-item benchmark; weights are calibrated in `@advance-labs/scoring`.
 - Can share a route group / components with `llm-audit` later; kept separate for independent deploy.

@@ -2,10 +2,10 @@
  * Writer agent — turns a topic brief into a full markdown article.
  *
  * Cost-split: drafting is bulk work, so it runs on the cheap high-throughput model (Groq via
- * `@aeo/llm`). The agent injects internal links from the brief and produces front-matter plus a
+ * `@advance-labs/llm`). The agent injects internal links from the brief and produces front-matter plus a
  * structured body. Pure-ish: the LLM call is injected as `CompleteFn`.
  */
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import { fingerprint } from './dedup.js';
 import type { ModelChoice, Post, Strategy, TopicBrief } from '../types.js';

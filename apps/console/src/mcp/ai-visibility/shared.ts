@@ -4,7 +4,7 @@
  * These are deliberately I/O-free so the tool logic (citation matching, ranking,
  * AEO summarisation) can be unit-tested with plain fixtures.
  */
-import type { Citation, CompetitorVisibility, Finding, Score, VisibilityCheck } from '@aeo/types';
+import type { Citation, CompetitorVisibility, Finding, Score, VisibilityCheck } from '@advance-labs/types';
 
 /**
  * Normalise a URL to a comparable host+path key so citations and the target URL

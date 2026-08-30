@@ -6,9 +6,9 @@
  * tool throughput, but on stateless serverless (Vercel) each invocation can be a
  * fresh process — so it cannot enforce a *per-caller* budget across the fleet.
  * This module adds that layer using a structural {@link WebRateLimiter} seam that
- * `@aeo/storage`'s `RateLimiter` satisfies (an Upstash sliding window in prod, an
- * in-memory fixed window in dev/tests). It is kept structural so `@aeo/mcp-core`
- * does not depend on `@aeo/storage`; consumers inject the concrete limiter.
+ * `@advance-labs/storage`'s `RateLimiter` satisfies (an Upstash sliding window in prod, an
+ * in-memory fixed window in dev/tests). It is kept structural so `@advance-labs/mcp-core`
+ * does not depend on `@advance-labs/storage`; consumers inject the concrete limiter.
  *
  * Pure of any Node `http` types: it derives the caller key from the standard
  * `Headers` and returns a structured `Response` (HTTP 429) when the budget is
@@ -26,7 +26,7 @@ export interface WebRateLimitResult {
 }
 
 /**
- * Structural rate-limiter seam. `@aeo/storage`'s `RateLimiter` conforms to this
+ * Structural rate-limiter seam. `@advance-labs/storage`'s `RateLimiter` conforms to this
  * exactly, so a console route can pass `resolveRateLimiter(...)` straight in.
  */
 export interface WebRateLimiter {

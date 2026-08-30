@@ -1,5 +1,5 @@
 /**
- * @aeo/crawler — a polite, bounded HTTP crawler.
+ * @advance-labs/crawler — a polite, bounded HTTP crawler.
  *
  * Sitemap-first discovery, BFS link-following, robots.txt-aware, per-host rate limited, with
  * redirect-chain capture and well-known site-file detection. All network I/O routes through an

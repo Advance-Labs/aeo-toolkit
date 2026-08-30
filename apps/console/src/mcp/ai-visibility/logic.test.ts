@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { Citation } from '@aeo/types';
+import type { Citation } from '@advance-labs/types';
 
 // Mock the scoring package so `analyze_website_aeo` does not run the real rule
 // engine — we only assert that the crawl → parse → score → summarize wiring
 // passes our fake crawl through and surfaces the score. The fake `Score` lives
 // in test-fixtures.
-vi.mock('@aeo/scoring', () => ({
+vi.mock('@advance-labs/scoring', () => ({
   auditScore: vi.fn(async () => {
     const { fakeScore } = await import('./test-fixtures.js');
     return fakeScore();

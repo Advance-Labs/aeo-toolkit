@@ -8,7 +8,7 @@
  * The `getPostStore` factory picks Supabase when its env vars are present, else the JSON/in-memory
  * fallback, so local dev and tests run with no secrets.
  */
-import { createSupabaseClient } from '@aeo/storage';
+import { createSupabaseClient } from '@advance-labs/storage';
 import type { DedupCandidate } from '../agents/dedup.js';
 import type { Post, PostHealth, PostStatus } from '../types.js';
 import type { Env } from '../config.js';
@@ -172,7 +172,7 @@ function clone<T>(value: T): T {
  * snake_case columns; `fingerprint` and `health` are stored as JSON-compatible columns (text[]/jsonb).
  * The Supabase SDK is reached only through the small structural {@link SupabaseLike} seam, so tests
  * inject a fake with the same chainable shape and never touch the network. Build the real client
- * with `@aeo/storage`'s `createSupabaseClient` and pass it in (see {@link getPostStore}).
+ * with `@advance-labs/storage`'s `createSupabaseClient` and pass it in (see {@link getPostStore}).
  *
  * Expected `posts` table columns:
  *   slug (text, pk), title, primary_keyword, status, markdown, fingerprint (text[]), created_at,
@@ -358,7 +358,7 @@ export function rowToPost(row: PostRow): Post {
 /**
  * Env-gated PostStore factory.
  *
- * Returns a {@link SupabasePostStore} (real client built via `@aeo/storage`) when both
+ * Returns a {@link SupabasePostStore} (real client built via `@advance-labs/storage`) when both
  * `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are present; otherwise the durable
  * {@link JsonFilePostStore} (or {@link InMemoryPostStore} when no `FileIO`/path is available),
  * so local dev and tests run with no secrets. An optional `client` override lets tests inject a

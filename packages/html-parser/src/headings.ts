@@ -1,6 +1,6 @@
 /** Heading-tree extraction and hierarchy validation. */
 import type { CheerioAPI } from 'cheerio';
-import type { HeadingNode } from '@aeo/types';
+import type { HeadingNode } from '@advance-labs/types';
 
 const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6';
 

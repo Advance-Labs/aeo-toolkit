@@ -1,5 +1,5 @@
 /**
- * @aeo/pdf — server-side PDF audit report renderer.
+ * @advance-labs/pdf — server-side PDF audit report renderer.
  *
  * Public surface:
  * - {@link AuditReportDocument} — the `@react-pdf/renderer` component (score + grade, category

@@ -21,7 +21,7 @@
  * Node runtime (the engine does network I/O), force-dynamic (never cached).
  */
 import { NextResponse } from 'next/server';
-import type { BacklinkGraph, GraphEdge, GraphNode } from '@aeo/backlinks';
+import type { BacklinkGraph, GraphEdge, GraphNode } from '@advance-labs/backlinks';
 import { validateGraphRequest } from '@/lib/graph-validate';
 import { buildGraph } from '@/lib/graph-build';
 import { checkEntitlement } from '@/lib/billing/entitlements';

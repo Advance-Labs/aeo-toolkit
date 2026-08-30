@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { ScoreCategory } from '@aeo/types';
+import type { ScoreCategory } from '@advance-labs/types';
 import { clamp, cx, gradeForScore, gradeStrokeColor } from './utils.js';
 
 export interface CategoryBreakdownProps {

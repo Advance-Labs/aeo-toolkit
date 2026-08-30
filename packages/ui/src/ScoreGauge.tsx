@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { Score } from '@aeo/types';
+import type { Score } from '@advance-labs/types';
 import { GradeBadge } from './GradeBadge.js';
 import { clamp, cx, gradeStrokeColor } from './utils.js';
 

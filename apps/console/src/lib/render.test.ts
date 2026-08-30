@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { LlmsTxtManifest, ParsedHtml } from '@aeo/types';
+import type { LlmsTxtManifest, ParsedHtml } from '@advance-labs/types';
 import { LLMS_TXT_SPEC_VERSION, renderLlmsFullTxt, renderLlmsTxt } from './render.js';
 
 function manifest(overrides: Partial<LlmsTxtManifest> = {}): LlmsTxtManifest {

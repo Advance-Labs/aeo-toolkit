@@ -1,5 +1,5 @@
 /**
- * OutreachRunner — composes `@aeo/backlinks` discovery + contact extraction into vetted
+ * OutreachRunner — composes `@advance-labs/backlinks` discovery + contact extraction into vetted
  * {@link LinkOutreachProposal}s. ALWAYS human-gated; never auto-executed (see {@link shouldAutoExecute}).
  *
  * Pipeline per customer:
@@ -8,25 +8,25 @@
  *
  * Security:
  *   - SSRF (invariant 1): every prospect-page fetch goes through the INJECTED {@link SafeFetchFn}
- *     (`@aeo/net-guard.safeFetch`), never a raw HTTP client. A blocked fetch is skipped, never turned
+ *     (`@advance-labs/net-guard.safeFetch`), never a raw HTTP client. A blocked fetch is skipped, never turned
  *     into a proposal.
  *   - Target allowlist (invariant 6): the outreach copy is built from a fixed template; its single
  *     anchor is the customer's own agreed `siteUrl`, and the send target (`contactEmail`) comes only
  *     from contacts extracted off the prospect page — never a model-derived URL/address. No LLM is
  *     involved here, so there is no prompt-injection surface in the drafting step.
  */
-import { extractContacts } from '@aeo/backlinks';
-import type { HttpClient, SearchOutcome } from '@aeo/backlinks';
-import { search } from '@aeo/backlinks';
-import { safeFetch } from '@aeo/net-guard';
-import type { SafeFetchDeps, SafeFetchOptions } from '@aeo/net-guard';
-import type { CustomerProfile, LinkOutreachProposal, LinkOutreachPayload, SafeFetchResult } from '@aeo/types';
+import { extractContacts } from '@advance-labs/backlinks';
+import type { HttpClient, SearchOutcome } from '@advance-labs/backlinks';
+import { search } from '@advance-labs/backlinks';
+import { safeFetch } from '@advance-labs/net-guard';
+import type { SafeFetchDeps, SafeFetchOptions } from '@advance-labs/net-guard';
+import type { CustomerProfile, LinkOutreachProposal, LinkOutreachPayload, SafeFetchResult } from '@advance-labs/types';
 import { randomUUID } from 'node:crypto';
 
-/** Discovery seam — wraps `@aeo/backlinks.search`. Returns candidate prospect results. */
+/** Discovery seam — wraps `@advance-labs/backlinks.search`. Returns candidate prospect results. */
 export type DiscoverFn = (query: string, limit: number) => Promise<SearchOutcome>;
 
-/** SSRF-guarded fetch seam — wraps `@aeo/net-guard.safeFetch` with its deps bound. */
+/** SSRF-guarded fetch seam — wraps `@advance-labs/net-guard.safeFetch` with its deps bound. */
 export type SafeFetchFn = (url: string, options?: SafeFetchOptions) => Promise<SafeFetchResult>;
 
 export interface OutreachRunnerDeps {
@@ -136,12 +136,12 @@ export class OutreachRunnerImpl implements OutreachRunner {
   }
 }
 
-/** Build a {@link DiscoverFn} from a `@aeo/backlinks` HTTP client (search hits a fixed endpoint). */
+/** Build a {@link DiscoverFn} from a `@advance-labs/backlinks` HTTP client (search hits a fixed endpoint). */
 export function createBacklinksDiscover(http: HttpClient): DiscoverFn {
   return (query, limit) => search(http, query, limit);
 }
 
-/** Bind `@aeo/net-guard.safeFetch` to its live deps, producing a {@link SafeFetchFn}. */
+/** Bind `@advance-labs/net-guard.safeFetch` to its live deps, producing a {@link SafeFetchFn}. */
 export function createSafeFetch(deps: SafeFetchDeps): SafeFetchFn {
   return (url, options) => safeFetch(url, options ?? {}, deps);
 }

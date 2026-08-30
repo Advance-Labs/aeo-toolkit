@@ -1,4 +1,4 @@
-import type { PageResource, RedirectHop, Url } from '@aeo/types';
+import type { PageResource, RedirectHop, Url } from '@advance-labs/types';
 import { type Fetcher, resolveFetcher, CrawlerError } from './fetcher.js';
 import { DEFAULT_REQUEST_TIMEOUT_MS, DEFAULT_USER_AGENT, MAX_REDIRECT_HOPS } from './constants.js';
 

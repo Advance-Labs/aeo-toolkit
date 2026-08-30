@@ -3,7 +3,7 @@
  * `gsc_ctr_gaps`). GSC data lags ~2 days, so a "last N days" window ends a couple
  * of days before today by default. Time is injectable for deterministic tests.
  */
-import type { DateRange } from '@aeo/types';
+import type { DateRange } from '@advance-labs/types';
 
 /** GSC freshness lag: data for the most recent ~2 days is typically incomplete. */
 export const GSC_DATA_LAG_DAYS = 2;

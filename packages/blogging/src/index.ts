@@ -1,5 +1,5 @@
 /**
- * @aeo/blogging — the autonomous multi-agent blogging pipeline, as a reusable package.
+ * @advance-labs/blogging — the autonomous multi-agent blogging pipeline, as a reusable package.
  *
  * Public surface: a top-level {@link runBloggingPipeline} that resolves all seams from the
  * environment and runs one pass, the dependency-injected {@link runPipeline} core, the agents,

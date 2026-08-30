@@ -1,4 +1,4 @@
-# @aeo/scoring
+# @advance-labs/scoring
 
 ## 0.1.0
 

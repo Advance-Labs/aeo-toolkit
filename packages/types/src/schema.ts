@@ -1,4 +1,4 @@
-/** Structured-data domain — output of `@aeo/schema-validator`. */
+/** Structured-data domain — output of `@advance-labs/schema-validator`. */
 
 export type StructuredDataFormat = 'json-ld' | 'microdata' | 'rdfa';
 

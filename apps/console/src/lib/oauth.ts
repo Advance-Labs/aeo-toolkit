@@ -1,12 +1,12 @@
 /**
  * Google OAuth helper factory + session-cookie utilities.
  *
- * `GoogleOAuth` from `@aeo/google-api` is pure config — we build it per request from the server
+ * `GoogleOAuth` from `@advance-labs/google-api` is pure config — we build it per request from the server
  * environment. The signed-in user is identified by an opaque id stored in an httpOnly cookie; the
  * OAuth `state` parameter carries a CSRF nonce that the callback verifies.
  */
-import { GoogleOAuth } from '@aeo/google-api';
-import type { GoogleOAuthTokens } from '@aeo/types';
+import { GoogleOAuth } from '@advance-labs/google-api';
+import type { GoogleOAuthTokens } from '@advance-labs/types';
 import { googleEnv } from './google-env.js';
 import { getTokenStore } from './token-store.js';
 

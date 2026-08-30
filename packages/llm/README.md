@@ -1,4 +1,4 @@
-# @aeo/llm
+# @advance-labs/llm
 
 Provider-agnostic, **bring-your-own-key (BYOK)** LLM client for the AEO Toolkit. A single
 `complete()` call fans out to Anthropic, OpenAI, Groq, Perplexity Sonar, or the Vercel AI Gateway
@@ -9,8 +9,8 @@ are request-scoped and are never logged or persisted.
 ## Usage
 
 ```ts
-import { complete } from '@aeo/llm';
-import type { LlmCompletionRequest } from '@aeo/types';
+import { complete } from '@advance-labs/llm';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 
 const req: LlmCompletionRequest = {
   provider: 'anthropic', // 'openai' | 'groq' | 'perplexity' | 'gateway'
@@ -63,7 +63,7 @@ await complete(req, { fetcher: myFetcher });
 | `LlmRequestError`                                      | class    | Malformed request (missing key, unknown provider).               |
 
 All domain types (`LlmCompletionRequest`, `LlmCompletionResponse`, `LlmMessage`, `Citation`, …) are
-imported from `@aeo/types`.
+imported from `@advance-labs/types`.
 
 ## Status
 

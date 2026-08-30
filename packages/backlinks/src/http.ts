@@ -5,12 +5,12 @@
  * network access through this small typed interface so handlers stay pure and
  * fully unit-testable: tests inject a fake `HttpClient`, no live network needed.
  *
- * For page fetches we reuse `@aeo/crawler`'s `fetchResource`, which already gives
+ * For page fetches we reuse `@advance-labs/crawler`'s `fetchResource`, which already gives
  * us redirect-chain capture, timing, and a normalised `PageResource`. For the
  * search/archive HTML+JSON endpoints we expose a thin `getText` helper.
  */
-import { fetchResource } from '@aeo/crawler';
-import type { PageResource } from '@aeo/types';
+import { fetchResource } from '@advance-labs/crawler';
+import type { PageResource } from '@advance-labs/types';
 
 export interface TextResponse {
   ok: boolean;
@@ -39,7 +39,7 @@ export interface LiveHttpClientOptions {
 }
 
 /**
- * The production `HttpClient`. `getResource` delegates to `@aeo/crawler`;
+ * The production `HttpClient`. `getResource` delegates to `@advance-labs/crawler`;
  * `getText` uses the runtime global `fetch` with an abort timeout. Both swallow
  * transport errors into a non-ok response so tools degrade instead of throwing.
  */

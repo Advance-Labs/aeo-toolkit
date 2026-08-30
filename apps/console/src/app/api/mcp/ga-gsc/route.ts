@@ -13,7 +13,7 @@
  * Node runtime: the tools call the Google Analytics + Search Console APIs.
  */
 import { createMcpHandler } from 'mcp-handler';
-import { enforceWebRateLimit } from '@aeo/mcp-core';
+import { enforceWebRateLimit } from '@advance-labs/mcp-core';
 
 import {
   buildGaGscContext,

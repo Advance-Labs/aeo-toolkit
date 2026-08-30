@@ -12,7 +12,7 @@
  * (ai-visibility, backlink) or as the `Authorization` bearer (ga-gsc) and are
  * never read from the environment, persisted, or logged.
  */
-import { resolveRateLimiter, type RateLimiter } from '@aeo/storage';
+import { resolveRateLimiter, type RateLimiter } from '@advance-labs/storage';
 
 /** Per-caller budget applied at each MCP route entry (one window per caller). */
 export const MCP_DISTRIBUTED_RATE_LIMIT = { limit: 60, windowSeconds: 60 } as const;

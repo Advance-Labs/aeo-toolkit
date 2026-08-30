@@ -3,7 +3,7 @@
  * results up into a `StructuredDataReport` with AEO-relevant presence flags.
  */
 import * as cheerio from 'cheerio';
-import type { AeoSchemaType, StructuredDataItem, StructuredDataReport } from '@aeo/types';
+import type { AeoSchemaType, StructuredDataItem, StructuredDataReport } from '@advance-labs/types';
 import { extractJsonLd } from './json-ld.js';
 import { extractMicrodata } from './microdata.js';
 import { extractRdfa } from './rdfa.js';

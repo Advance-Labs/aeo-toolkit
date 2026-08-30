@@ -3,17 +3,17 @@
  *
  * `registerBacklinkTools(server, deps)` binds every backlink tool's zod schema +
  * handler onto an `McpServer` (the object `mcp-handler`'s `createMcpHandler` setup
- * callback gives us) via `@aeo/mcp-core#registerTool`. `buildBacklinkDeps()`
- * assembles the live HTTP seam (rate-limited) + the `@aeo/llm`-backed outreach
+ * callback gives us) via `@advance-labs/mcp-core#registerTool`. `buildBacklinkDeps()`
+ * assembles the live HTTP seam (rate-limited) + the `@advance-labs/llm`-backed outreach
  * client from the environment; tests inject fakes instead.
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ZodRawShape } from 'zod';
-import { registerTool, type McpToolDef } from '@aeo/mcp-core';
-import { complete } from '@aeo/llm';
-import { resolveRateLimiter } from '@aeo/storage';
-import type { LlmCompletionRequest } from '@aeo/types';
-import { createLiveHttpClient, createRateLimitedHttpClient, type HttpClient } from '@aeo/backlinks';
+import { registerTool, type McpToolDef } from '@advance-labs/mcp-core';
+import { complete } from '@advance-labs/llm';
+import { resolveRateLimiter } from '@advance-labs/storage';
+import type { LlmCompletionRequest } from '@advance-labs/types';
+import { createLiveHttpClient, createRateLimitedHttpClient, type HttpClient } from '@advance-labs/backlinks';
 
 import { resolveConfig, type ServerConfig } from './config.js';
 import type { OutreachClient } from './lib/outreach.js';
@@ -63,7 +63,7 @@ export function registerBacklinkTools(server: McpServer, deps: ToolDeps): void {
   }
 }
 
-/** Live outreach client backed by `@aeo/llm.complete`. */
+/** Live outreach client backed by `@advance-labs/llm.complete`. */
 const liveOutreachClient: OutreachClient = {
   complete: (req: LlmCompletionRequest) => complete(req),
 };
@@ -72,14 +72,14 @@ export interface BuildBacklinkDepsOptions {
   config?: ServerConfig;
   /** Override the HTTP seam (tests inject a fake; the route uses the live one). */
   http?: HttpClient;
-  /** Override the LLM seam (tests inject a fake; the route uses `@aeo/llm`). */
+  /** Override the LLM seam (tests inject a fake; the route uses `@advance-labs/llm`). */
   outreach?: OutreachClient;
 }
 
 /**
  * Build the live `ToolDeps` from the environment: an honest-UA HTTP client wrapped
  * with the configurable scrape limiter (`resolveRateLimiter` → Upstash when its
- * REST creds are present, in-memory otherwise) plus the `@aeo/llm` outreach client.
+ * REST creds are present, in-memory otherwise) plus the `@advance-labs/llm` outreach client.
  * Tests pass `opts.http` / `opts.outreach` to bypass the live path entirely.
  */
 export function buildBacklinkDeps(opts: BuildBacklinkDepsOptions = {}): ToolDeps {

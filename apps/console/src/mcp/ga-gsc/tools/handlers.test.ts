@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ToolResult, ToolSuccessResult } from '@aeo/mcp-core';
-import type { Ga4Report, GscReport, GscSite, Ga4Property } from '@aeo/types';
+import type { ToolResult, ToolSuccessResult } from '@advance-labs/mcp-core';
+import type { Ga4Report, GscReport, GscSite, Ga4Property } from '@advance-labs/types';
 
 import type { ClientFactory, Ga4Like, GscLike, ToolContext } from './context.js';
 import {

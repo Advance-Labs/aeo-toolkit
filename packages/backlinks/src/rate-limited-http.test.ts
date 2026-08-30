@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { RateLimiter, RateLimitResult } from '@aeo/storage';
-import type { PageResource } from '@aeo/types';
+import type { RateLimiter, RateLimitResult } from '@advance-labs/storage';
+import type { PageResource } from '@advance-labs/types';
 import { createRateLimitedHttpClient } from './rate-limited-http.js';
 import type { HttpClient, TextResponse } from './http.js';
 

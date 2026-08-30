@@ -1,4 +1,4 @@
-# @aeo/crawler
+# @advance-labs/crawler
 
 ## 0.1.0
 

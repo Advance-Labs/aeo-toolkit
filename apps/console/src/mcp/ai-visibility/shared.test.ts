@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Citation, VisibilityCheck } from '@aeo/types';
+import type { Citation, VisibilityCheck } from '@advance-labs/types';
 
 import {
   buildCompetitorVisibility,

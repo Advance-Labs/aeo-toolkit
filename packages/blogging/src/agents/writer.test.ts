@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { LlmCompletionRequest, LlmCompletionResponse } from '@aeo/types';
+import type { LlmCompletionRequest, LlmCompletionResponse } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import type { ModelChoice, Strategy, TopicBrief } from '../types.js';
 import { runWriter, WriterEmptyDraftError, withFrontMatter } from './writer.js';
@@ -29,7 +29,7 @@ const BRIEF: TopicBrief = {
   opportunityScore: 0.8,
 };
 
-/** A mock that records the request and returns canned markdown — no @aeo/llm, no network. */
+/** A mock that records the request and returns canned markdown — no @advance-labs/llm, no network. */
 function mockComplete(text: string): { fn: CompleteFn; calls: LlmCompletionRequest[] } {
   const calls: LlmCompletionRequest[] = [];
   const fn = vi.fn((req: LlmCompletionRequest): Promise<LlmCompletionResponse> => {

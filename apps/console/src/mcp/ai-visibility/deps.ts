@@ -1,28 +1,28 @@
 /**
  * Dependency seam for the ai-visibility tool handlers.
  *
- * Tools take a `ToolDeps` object instead of importing `@aeo/crawler` / `@aeo/llm`
+ * Tools take a `ToolDeps` object instead of importing `@advance-labs/crawler` / `@advance-labs/llm`
  * directly, so unit tests can inject fakes without touching the network. The
  * production wiring (`defaultDeps`) binds the real package functions.
  */
-import { crawl as realCrawl } from '@aeo/crawler';
-import { parseHtml as realParseHtml } from '@aeo/html-parser';
-import { analyzeStructuredData as realAnalyzeStructuredData } from '@aeo/schema-validator';
-import { complete as realComplete } from '@aeo/llm';
-import type { CrawlResult, ParsedHtml, StructuredDataReport } from '@aeo/types';
-import type { LlmCompletionRequest, LlmCompletionResponse } from '@aeo/types';
-import type { CrawlRuntimeOptions } from '@aeo/crawler';
+import { crawl as realCrawl } from '@advance-labs/crawler';
+import { parseHtml as realParseHtml } from '@advance-labs/html-parser';
+import { analyzeStructuredData as realAnalyzeStructuredData } from '@advance-labs/schema-validator';
+import { complete as realComplete } from '@advance-labs/llm';
+import type { CrawlResult, ParsedHtml, StructuredDataReport } from '@advance-labs/types';
+import type { LlmCompletionRequest, LlmCompletionResponse } from '@advance-labs/types';
+import type { CrawlRuntimeOptions } from '@advance-labs/crawler';
 
-/** Crawl a URL into a `CrawlResult`. Mirrors `@aeo/crawler#crawl`. */
+/** Crawl a URL into a `CrawlResult`. Mirrors `@advance-labs/crawler#crawl`. */
 export type CrawlFn = (url: string, opts: CrawlRuntimeOptions) => Promise<CrawlResult>;
 
-/** Parse one HTML string into `ParsedHtml`. Mirrors `@aeo/html-parser#parseHtml`. */
+/** Parse one HTML string into `ParsedHtml`. Mirrors `@advance-labs/html-parser#parseHtml`. */
 export type ParseHtmlFn = (html: string, url: string) => ParsedHtml;
 
-/** Analyze structured data from raw HTML. Mirrors `@aeo/schema-validator#analyzeStructuredData`. */
+/** Analyze structured data from raw HTML. Mirrors `@advance-labs/schema-validator#analyzeStructuredData`. */
 export type AnalyzeStructuredDataFn = (html: string, url: string) => StructuredDataReport;
 
-/** Run one LLM completion. Mirrors `@aeo/llm#complete`. */
+/** Run one LLM completion. Mirrors `@advance-labs/llm#complete`. */
 export type CompleteFn = (req: LlmCompletionRequest) => Promise<LlmCompletionResponse>;
 
 export interface ToolDeps {
@@ -32,7 +32,7 @@ export interface ToolDeps {
   complete: CompleteFn;
 }
 
-/** Production dependencies bound to the real `@aeo/*` package functions. */
+/** Production dependencies bound to the real `@advance-labs/*` package functions. */
 export const defaultDeps: ToolDeps = {
   crawl: realCrawl,
   parseHtml: realParseHtml,

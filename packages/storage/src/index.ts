@@ -1,5 +1,5 @@
 /**
- * @aeo/storage — production storage and rate-limit adapters shared across the toolkit's apps.
+ * @advance-labs/storage — production storage and rate-limit adapters shared across the toolkit's apps.
  *
  * Two seams:
  *  - A Supabase-backed {@link SupabaseTokenStore} (implements the shared `TokenStore` contract) with

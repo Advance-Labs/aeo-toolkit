@@ -5,9 +5,9 @@
  * MUST authorize in app code (see {@link assertCanDecide}) before mutating. Returns `null` when
  * Supabase env is absent (dormant), so routes degrade to closed rather than throwing.
  */
-import { createSupabaseClient } from '@aeo/storage';
-import { rowToProposal, type ProposalRow } from '@aeo/orchestrator';
-import type { CustomerProfile, Proposal, JobResult } from '@aeo/types';
+import { createSupabaseClient } from '@advance-labs/storage';
+import { rowToProposal, type ProposalRow } from '@advance-labs/orchestrator';
+import type { CustomerProfile, Proposal, JobResult } from '@advance-labs/types';
 
 type ServiceClient = NonNullable<ReturnType<typeof createSupabaseClient>>;
 

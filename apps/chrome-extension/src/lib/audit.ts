@@ -2,15 +2,15 @@
  * The client-side audit pipeline.
  *
  * DOM html + same-origin site files ──▶ ScoringContext (mode: 'single-page')
- *                                   ──▶ @aeo/scoring buildAuditReport ──▶ AuditPayload
+ *                                   ──▶ @advance-labs/scoring buildAuditReport ──▶ AuditPayload
  *
  * Everything here is pure given its inputs: `parseHtml`, `analyzeStructuredData`,
  * and `buildAuditReport` are all dependency-free, and the only I/O (site files)
  * is injected as already-fetched values. This makes the whole audit unit-testable.
  */
-import { parseHtml } from '@aeo/html-parser';
-import { analyzeStructuredData } from '@aeo/schema-validator';
-import { buildAuditReport } from '@aeo/scoring';
+import { parseHtml } from '@advance-labs/html-parser';
+import { analyzeStructuredData } from '@advance-labs/schema-validator';
+import { buildAuditReport } from '@advance-labs/scoring';
 import type {
   CrawledPage,
   CrawlResult,
@@ -19,7 +19,7 @@ import type {
   ScoringContext,
   SiteFilePresence,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 import { parseRobotsTxt } from './robots.js';
 import { parseSitemap } from './sitemap.js';

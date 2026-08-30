@@ -4,7 +4,7 @@
  * Wraps `searchAnalytics.query` and `sites.list`. All HTTP flows through an injectable
  * {@link Fetcher} so the logic is unit-testable without a live network.
  */
-import type { GscQueryRequest, GscReport, GscRow, GscSite } from '@aeo/types';
+import type { GscQueryRequest, GscReport, GscRow, GscSite } from '@advance-labs/types';
 import {
   asNumber,
   asRecord,

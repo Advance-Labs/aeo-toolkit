@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Proposal } from '@aeo/types';
+import type { Proposal } from '@advance-labs/types';
 
 /** Short, human-readable summary of a proposal for the inbox row. */
 function summarize(p: Proposal): string {

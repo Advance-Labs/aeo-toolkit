@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { createSupabaseClient } from '@aeo/storage';
+import { createSupabaseClient } from '@advance-labs/storage';
 import { Badge, Button, GradientText, Section, SpotlightCard } from '@/components/ui';
 import { AUTH_ENABLED } from '@/lib/auth';
 import { getUser } from '@/lib/auth/server';

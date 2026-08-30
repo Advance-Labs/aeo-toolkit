@@ -1,4 +1,4 @@
-import type { GoogleOAuthTokens } from '@aeo/types';
+import type { GoogleOAuthTokens } from '@advance-labs/types';
 import { describe, expect, it } from 'vitest';
 import { decrypt } from './crypto.js';
 import { createManagedTokenStore, SupabaseTokenStore, TokenStoreError } from './token-store.js';

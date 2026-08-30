@@ -6,7 +6,7 @@
  * revised too many times are archived instead. Pure-ish: the LLM call is injected; selection logic
  * is fully testable with no network.
  */
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import { fingerprint } from './dedup.js';
 import { stripFrontMatter } from './editor.js';

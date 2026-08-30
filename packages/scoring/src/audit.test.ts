@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Finding } from '@aeo/types';
+import type { Finding } from '@advance-labs/types';
 import { auditScore, buildAuditReport, prioritizeFixes } from './audit.js';
 import { goodContext, poorContext, singlePageContext } from './fixtures.js';
 
@@ -81,7 +81,7 @@ describe('buildAuditReport', () => {
     expect(report.pagesCrawled).toBe(3);
     expect(report.meta.durationMs).toBe(4200);
     expect(report.meta.version).toBe('9.9.9');
-    expect(report.meta.crawler).toBe('@aeo/crawler');
+    expect(report.meta.crawler).toBe('@advance-labs/crawler');
 
     // poor site is missing robots/llms/sitemap -> templates generated
     const filenames = report.templates.map((t) => t.filename).sort();

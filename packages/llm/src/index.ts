@@ -1,5 +1,5 @@
 /**
- * @aeo/llm — provider-agnostic, BYOK LLM client.
+ * @advance-labs/llm — provider-agnostic, BYOK LLM client.
  *
  * One `complete()` call fans out to Anthropic, OpenAI, Groq, Perplexity Sonar, or the Vercel AI
  * Gateway based on `req.provider`. No provider SDKs; all I/O goes through an injectable `Fetcher`

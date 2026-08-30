@@ -1,6 +1,6 @@
 /** Safe JSON parsing utilities used by the provider adapters. */
 
-import type { LlmProvider } from '@aeo/types';
+import type { LlmProvider } from '@advance-labs/types';
 import { LlmResponseError } from './errors.js';
 
 /** Parse a response body to `unknown`, raising a typed error (never a raw SyntaxError) on failure. */

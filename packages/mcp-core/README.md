@@ -1,4 +1,4 @@
-# @aeo/mcp-core
+# @advance-labs/mcp-core
 
 Shared kit for the AEO Toolkit's three MCP servers (`ai-visibility-mcp`, `ga-gsc-mcp`,
 `backlink-mcp`), built on the official [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk).
@@ -18,7 +18,7 @@ import {
   wellKnownOAuthMetadata,
   wellKnownProtectedResource,
   toToolError,
-} from '@aeo/mcp-core';
+} from '@advance-labs/mcp-core';
 
 const created = createServer({
   name: 'ai-visibility-mcp',

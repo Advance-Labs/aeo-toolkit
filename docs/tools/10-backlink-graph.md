@@ -1,7 +1,7 @@
 # Tool 10 — Backlink Graph (3D) (`apps/backlink-graph`)
 
 **Type:** Next.js (App Router) + WebGL · **Deploy:** Vercel (Node runtime for build, client WebGL canvas)
-**Depends on:** `@aeo/backlinks` (new), `@aeo/crawler`, `@aeo/ui`, `@aeo/types`, optionally `@aeo/llm`
+**Depends on:** `@advance-labs/backlinks` (new), `@advance-labs/crawler`, `@advance-labs/ui`, `@advance-labs/types`, optionally `@advance-labs/llm`
 
 ## What it does
 The user enters **one URL**. The tool gathers that site's backlinks, mentions, references, and competitor
@@ -12,14 +12,14 @@ zoom, click a node to inspect it and **expand its own backlinks**, exploring the
 
 ## Architecture (reuse thesis)
 The backlink-gathering providers already exist in `apps/backlink-mcp`. **Extract them once** into a shared
-`@aeo/backlinks` package so both the MCP server (Tool 8) and this graph app consume the same engine — the
+`@advance-labs/backlinks` package so both the MCP server (Tool 8) and this graph app consume the same engine — the
 MCP tools become thin wrappers over it.
 
-- **New package `@aeo/backlinks`**
+- **New package `@advance-labs/backlinks`**
   - Providers (injectable-fetch, rate-limited, graceful-degrading): DuckDuckGo HTML, CommonCrawl index,
     Wayback CDX, `verifyPageLinks`, contact extraction.
   - `buildBacklinkGraph(rootUrl, opts): Promise<BacklinkGraph>` — runs providers in parallel (bounded +
-    rate-limited via the existing `@aeo/mcp-core` / `@aeo/storage` limiter), normalizes + dedups by
+    rate-limited via the existing `@advance-labs/mcp-core` / `@advance-labs/storage` limiter), normalizes + dedups by
     canonical URL/domain, aggregates to a **domain layer** with **page-level detail on demand**.
 - **New app `apps/backlink-graph`** (Next.js)
   - `GET /api/graph/stream` (SSE) streams nodes/edges as discovered, so the web *grows live*.
@@ -27,7 +27,7 @@ MCP tools become thin wrappers over it.
   - `POST /api/graph/expand` fetches a single node's backlinks for progressive exploration.
   - Client page renders with `react-force-graph-3d` (dynamic import, `ssr: false`).
 
-## Types (in `@aeo/types` or `@aeo/backlinks`)
+## Types (in `@advance-labs/types` or `@advance-labs/backlinks`)
 ```ts
 type GraphNodeType = 'root' | 'referring-domain' | 'backlink-page' | 'mention' | 'competitor';
 interface GraphNode { id: string; type: GraphNodeType; domain: string; url?: string; title?: string;
@@ -46,7 +46,7 @@ interface BacklinkGraph { root: string; nodes: GraphNode[]; edges: GraphEdge[]; 
 | Node color | type (referring domain · backlink page · unlinked mention · competitor) |
 | Edge | directional **particles** flowing source→target (link direction shown as motion) |
 | Edge style | dofollow = bright/solid · nofollow = dim/dashed |
-| Clustering | force grouping by domain; optional topic clusters (via `@aeo/llm`) |
+| Clustering | force grouping by domain; optional topic clusters (via `@advance-labs/llm`) |
 | Aesthetic | bloom/glow post-processing for the "web" look |
 
 **Interaction:** hover → tooltip (domain, #links, anchor, authority); click → side panel (title, anchor
@@ -67,7 +67,7 @@ The UI labels results "discovered backlinks from open indexes" and exposes a plu
 (e.g. Ahrefs free tier) for completeness.
 
 ## Build sequence
-1. Extract `@aeo/backlinks` engine + `buildBacklinkGraph` + graph types (mocked-fetch tests); refactor
+1. Extract `@advance-labs/backlinks` engine + `buildBacklinkGraph` + graph types (mocked-fetch tests); refactor
    `backlink-mcp` tools to consume it.
 2. `apps/backlink-graph`: `/api/graph` returns static graph JSON.
 3. Wire `react-force-graph-3d` (dynamic import): nodes/edges + orbit/zoom.

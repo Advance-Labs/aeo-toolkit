@@ -1,7 +1,6 @@
 {
-  "name": "@aeo/schema-validator",
+  "name": "@advance-labs/schema-validator",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Detect and validate JSON-LD, Microdata, and RDFa structured data from raw HTML, mapped to schema.org types with AEO-relevant required-property validation.",
   "license": "MIT",
@@ -26,15 +25,24 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "cheerio": "^1.0.0",
     "domhandler": "^5.0.3"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/schema-validator"
+  },
+  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
 }

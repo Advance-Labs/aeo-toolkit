@@ -1,5 +1,5 @@
 /**
- * @aeo/schema-validator — detect and validate all structured-data formats from raw HTML.
+ * @advance-labs/schema-validator — detect and validate all structured-data formats from raw HTML.
  *
  * Rebuilds the behavior of `structured-data-testing-tool` in TypeScript: extract JSON-LD,
  * Microdata, and RDFa, normalize each to schema.org short types, validate required

@@ -2,11 +2,11 @@
  * Shared tool context + small helpers used by every GA4/GSC tool handler.
  *
  * Tools are written as pure-ish functions over an injected {@link ToolContext} so
- * they can be unit-tested with a mocked `@aeo/google-api` client factory and a
+ * they can be unit-tested with a mocked `@advance-labs/google-api` client factory and a
  * fake token resolver — no live network, no global state.
  */
-import { Ga4Client, GscClient } from '@aeo/google-api';
-import type { GscDimension } from '@aeo/types';
+import { Ga4Client, GscClient } from '@advance-labs/google-api';
+import type { GscDimension } from '@advance-labs/types';
 import type { TokenResolver } from '../auth.js';
 import { DEFAULT_USER_ID } from '../auth.js';
 
@@ -28,7 +28,7 @@ export interface ClientFactory {
   gsc(accessToken: string): GscLike;
 }
 
-/** The real factory: constructs the live `@aeo/google-api` clients. */
+/** The real factory: constructs the live `@advance-labs/google-api` clients. */
 export const defaultClientFactory: ClientFactory = {
   ga4: (accessToken) => new Ga4Client({ accessToken }),
   gsc: (accessToken) => new GscClient({ accessToken }),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { LlmsTxtEntry } from '@aeo/types';
+import type { LlmsTxtEntry } from '@advance-labs/types';
 import { classifyUrl, groupIntoSections } from './sections.js';
 
 describe('classifyUrl', () => {

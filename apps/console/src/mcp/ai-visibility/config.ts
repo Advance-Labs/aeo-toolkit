@@ -3,7 +3,7 @@
  *
  * BYOK note: Perplexity (and any other LLM) keys are NEVER read from the
  * environment — they arrive per request as a tool argument and are passed
- * straight through to `@aeo/llm`.
+ * straight through to `@advance-labs/llm`.
  */
 
 export const SERVER_NAME = 'ai-visibility-mcp';

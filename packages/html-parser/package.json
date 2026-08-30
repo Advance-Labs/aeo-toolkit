@@ -1,9 +1,8 @@
 {
-  "name": "@aeo/html-parser",
+  "name": "@advance-labs/html-parser",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
+  "description": "Pure HTML extraction for the AEO Toolkit \u2014 meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,14 +25,23 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "cheerio": "^1.0.0"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/html-parser"
+  },
+  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
 }

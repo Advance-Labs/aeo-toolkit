@@ -1,11 +1,11 @@
-# @aeo/types
+# @advance-labs/types
 
 The single source of truth for shared domain types across the AEO Toolkit. No runtime dependencies.
 
 ## Usage
 
 ```ts
-import type { AuditReport, Score, ScoringContext, CrawlResult, ParsedHtml } from '@aeo/types';
+import type { AuditReport, Score, ScoringContext, CrawlResult, ParsedHtml } from '@advance-labs/types';
 ```
 
 ## Domains

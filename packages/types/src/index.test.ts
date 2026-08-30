@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { TYPES_VERSION } from './index.js';
 import type { AuditReport, EeatReport, Score, ScoringContext } from './index.js';
 
-describe('@aeo/types', () => {
+describe('@advance-labs/types', () => {
   it('exports a version marker', () => {
     expect(TYPES_VERSION).toBe('0.1.0');
   });
@@ -24,7 +24,7 @@ describe('@aeo/types', () => {
       pagesCrawled: 1,
       topFixes: [],
       templates: [],
-      meta: { durationMs: 12, crawler: '@aeo/crawler', version: TYPES_VERSION },
+      meta: { durationMs: 12, crawler: '@advance-labs/crawler', version: TYPES_VERSION },
     };
     expect(report.score.grade).toBe('A');
 

@@ -3,7 +3,7 @@
  *
  * The webhook (Stripe-signed, no user session) and the checkout/portal routes (server actions on
  * behalf of a signed-in user) all mutate the `profiles` and `subscriptions` tables. Those writes
- * MUST bypass RLS, so they go through the **service-role** client (`@aeo/storage`
+ * MUST bypass RLS, so they go through the **service-role** client (`@advance-labs/storage`
  * `createSupabaseClient`), exactly as the existing token-store does. This module wraps that client
  * behind a tiny, fully-typed {@link BillingStore} interface so the webhook's pure
  * `handleStripeEvent` can be unit-tested against an in-memory fake with no network.
@@ -12,7 +12,7 @@
  * `SUPABASE_SERVICE_ROLE_KEY` are absent, so the routes degrade gracefully instead of throwing on a
  * half-configured deploy. Tables match `supabase/schema-billing.sql` (owned by the auth builder).
  */
-import { createSupabaseClient } from '@aeo/storage';
+import { createSupabaseClient } from '@advance-labs/storage';
 
 import type { PlanId } from './plans';
 

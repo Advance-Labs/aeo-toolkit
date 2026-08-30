@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { CustomerProfile, SafeFetchResult } from '@aeo/types';
+import type { CustomerProfile, SafeFetchResult } from '@advance-labs/types';
 import { OutreachRunnerImpl, draftOutreachEmail } from './outreach-runner.js';
 import type { DiscoverFn, SafeFetchFn } from './outreach-runner.js';
 

@@ -1,5 +1,5 @@
 /** Request/response contract for `POST /api/generate`. */
-import type { LlmsTxtManifest } from '@aeo/types';
+import type { LlmsTxtManifest } from '@advance-labs/types';
 
 export interface GenerateRequest {
   url: string;

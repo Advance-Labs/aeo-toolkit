@@ -11,7 +11,7 @@
  * hoisted, so `buildMessages` is used only to merge multiple system turns into one.
  */
 
-import type { LlmCompletionRequest, LlmCompletionResponse, LlmUsage } from '@aeo/types';
+import type { LlmCompletionRequest, LlmCompletionResponse, LlmUsage } from '@advance-labs/types';
 import type { Fetcher } from '../fetcher.js';
 import { buildMessages, extractCitations } from '../helpers.js';
 import { LlmHttpError, LlmResponseError } from '../errors.js';

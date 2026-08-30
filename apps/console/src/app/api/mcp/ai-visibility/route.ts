@@ -4,7 +4,7 @@
  * Built from the re-homed tool registry in `@/mcp/ai-visibility/server` via the
  * Vercel `mcp-handler` adapter, which exposes the MCP Streamable-HTTP transport
  * as GET/POST handlers. A per-caller distributed rate-limit gate runs before the
- * transport hand-off (reusing `@aeo/storage`'s limiter via `@/mcp/shared`).
+ * transport hand-off (reusing `@advance-labs/storage`'s limiter via `@/mcp/shared`).
  *
  * BYOK: every tool that calls Perplexity takes the API key as a request-scoped
  * tool argument — keys are never read from the environment, persisted, or logged.
@@ -12,7 +12,7 @@
  * Node runtime: the tools crawl sites and call upstream APIs over the network.
  */
 import { createMcpHandler } from 'mcp-handler';
-import { enforceWebRateLimit } from '@aeo/mcp-core';
+import { enforceWebRateLimit } from '@advance-labs/mcp-core';
 
 import { registerAiVisibilityTools } from '@/mcp/ai-visibility/server.js';
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/ai-visibility/config.js';

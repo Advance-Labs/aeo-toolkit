@@ -6,7 +6,7 @@
  */
 import { writeFileSync } from "node:fs";
 import { auditSite, ENGINE_VERSION } from "./lib/audit-site.mjs";
-import { renderAuditReportPdf } from "@aeo/pdf";
+import { renderAuditReportPdf } from "@advance-labs/pdf";
 
 function parseArgs(argv) {
   const args = { site: null, max: 25, out: "audit.pdf" };

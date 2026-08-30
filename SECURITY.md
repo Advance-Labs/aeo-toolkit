@@ -12,7 +12,7 @@ Report vulnerabilities privately to the Advance Labs maintainers rather than ope
   they are read from the request and discarded.
 - **OAuth tokens are encrypted at rest** via a pluggable `TokenStore` interface (the production Supabase
   adapter encrypts refresh tokens; the default in-memory store is for local/dev only).
-- **MCP servers enforce rate limiting** (token bucket via `@aeo/mcp-core`) and return structured errors
+- **MCP servers enforce rate limiting** (token bucket via `@advance-labs/mcp-core`) and return structured errors
   rather than leaking stack traces.
 - **The crawler is polite:** respects `robots.txt`, identifies itself via User-Agent, and rate-limits per host.
 - **GitHub Actions** never interpolate untrusted input into `run:` steps; secrets come from Actions secrets.

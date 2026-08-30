@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { Score } from '@aeo/types';
+import type { Score } from '@advance-labs/types';
 
 const SIZE = 120;
 const STROKE = 12;

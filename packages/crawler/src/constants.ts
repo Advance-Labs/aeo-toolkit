@@ -1,8 +1,8 @@
-import type { AiBotName } from '@aeo/types';
+import type { AiBotName } from '@advance-labs/types';
 
 /**
  * Known AI / LLM crawler user-agents we probe for in robots.txt. Mirrors the `AiBotName`
- * union in `@aeo/types` exactly — kept as a runtime constant so callers can iterate.
+ * union in `@advance-labs/types` exactly — kept as a runtime constant so callers can iterate.
  */
 export const AI_BOT_NAMES: readonly AiBotName[] = [
   'GPTBot',

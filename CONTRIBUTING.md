@@ -20,8 +20,8 @@ Requires Node ≥ 20 (see `.nvmrc`) and pnpm ≥ 9.
 
 ## Monorepo rules
 
-- Shared types live in `@aeo/types` — never duplicate a type that belongs there.
-- Cross-package imports use the package name (`@aeo/crawler`), never relative paths across packages.
+- Shared types live in `@advance-labs/types` — never duplicate a type that belongs there.
+- Cross-package imports use the package name (`@advance-labs/crawler`), never relative paths across packages.
 - Libraries export **named** symbols only; no default exports.
 - Keep network/filesystem I/O behind small adapters so logic stays unit-testable.
 - See [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md) for the full package template and code style.
@@ -29,7 +29,7 @@ Requires Node ≥ 20 (see `.nvmrc`) and pnpm ≥ 9.
 ## Adding a scoring rule
 
 This is the best first contribution to the repo: it is self-contained, unit-testable, and
-the rule set is never finished. A rule lives in one of three arrays in `@aeo/scoring`:
+the rule set is never finished. A rule lives in one of three arrays in `@advance-labs/scoring`:
 
 | File | Array | What belongs there |
 |---|---|---|
@@ -73,12 +73,12 @@ the public claim and the code from disagreeing again.
 
 Then: add a test in the matching `*-rules.test.ts` exercising both branches against the
 fixtures in `fixtures.ts` (`goodContext`, `poorContext`, `emptyContext`, `singlePageContext`),
-and run `pnpm test --filter=@aeo/scoring`.
+and run `pnpm test --filter=@advance-labs/scoring`.
 
 ## Adding a package
 
 1. Create `packages/<name>/` following the template in `docs/CONVENTIONS.md`.
-2. Name it `@aeo/<name>`; the `packages/*` workspace glob picks it up automatically.
+2. Name it `@advance-labs/<name>`; the `packages/*` workspace glob picks it up automatically.
 3. Add `README.md`, tests, and a `CHANGELOG.md` stub.
 
 ## Security

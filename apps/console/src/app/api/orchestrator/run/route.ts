@@ -10,8 +10,8 @@
  *  - POST — external/manual worker. Authorized by the constant-time `x-orchestrator-secret` (H1).
  */
 import { NextResponse } from 'next/server';
-import { runCadence, type SupabaseLike } from '@aeo/orchestrator';
-import { createManagedTokenStore } from '@aeo/storage';
+import { runCadence, type SupabaseLike } from '@advance-labs/orchestrator';
+import { createManagedTokenStore } from '@advance-labs/storage';
 import { verifyJobSecret } from '@/lib/managed/jobSecret';
 import { managedEnabled } from '@/lib/managed/staff';
 import { buildDepsForCustomer, managedModelsFromEnv } from '@/lib/managed/deps';

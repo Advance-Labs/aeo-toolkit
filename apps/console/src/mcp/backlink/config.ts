@@ -5,14 +5,14 @@
  * DuckDuckGo and the Wayback CDX endpoint both throttle/block aggressive
  * scraping, so we identify the client honestly and stay polite by default.
  */
-import type { RateLimitConfig } from '@aeo/types';
+import type { RateLimitConfig } from '@advance-labs/types';
 
 /**
  * Configuration for the distributed scrape rate limiter that throttles outbound
  * GETs to the free sources (DuckDuckGo, Wayback CDX, CommonCrawl). This is a
- * *second*, finer limiter on top of `@aeo/mcp-core`'s per-tool-call token bucket:
+ * *second*, finer limiter on top of `@advance-labs/mcp-core`'s per-tool-call token bucket:
  * it caps the raw request rate per source so a single tool call that fans out to
- * several sources still stays polite. `resolveRateLimiter` from `@aeo/storage`
+ * several sources still stays polite. `resolveRateLimiter` from `@advance-labs/storage`
  * uses Upstash Redis when its creds are present (shared across serverless
  * instances) and falls back to an in-memory fixed-window limiter otherwise.
  */
@@ -30,7 +30,7 @@ export interface ScrapeRateLimitConfig {
 export interface ServerConfig {
   name: string;
   version: string;
-  /** Token-bucket rate limit applied to every tool call by `@aeo/mcp-core`. */
+  /** Token-bucket rate limit applied to every tool call by `@advance-labs/mcp-core`. */
   rateLimit: RateLimitConfig;
   /** Distributed/in-memory limiter around raw outbound scrape requests. */
   scrapeRateLimit: ScrapeRateLimitConfig;

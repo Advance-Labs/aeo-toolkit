@@ -6,7 +6,7 @@
  * reply is reassembled by joining every `content[].text` block of type `text`.
  */
 
-import type { LlmCompletionRequest, LlmCompletionResponse, LlmUsage } from '@aeo/types';
+import type { LlmCompletionRequest, LlmCompletionResponse, LlmUsage } from '@advance-labs/types';
 import type { Fetcher } from '../fetcher.js';
 import { buildMessages } from '../helpers.js';
 import { LlmHttpError, LlmResponseError } from '../errors.js';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Ga4ReportRequest } from '@aeo/types';
+import type { Ga4ReportRequest } from '@advance-labs/types';
 import { Ga4Client } from './ga4.js';
 import { GoogleApiError, type Fetcher } from './http.js';
 import { errorFetcher, jsonFetcher, parseBody, type RecordedCall } from './test-helpers.js';

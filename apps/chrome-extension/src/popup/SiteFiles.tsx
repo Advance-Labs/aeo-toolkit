@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { SiteFilePresence } from '@aeo/types';
+import type { SiteFilePresence } from '@advance-labs/types';
 
 export interface SiteFilesProps {
   presence: SiteFilePresence;

@@ -1,5 +1,5 @@
 /**
- * The declarative weighted rule engine — the heart of `@aeo/scoring`.
+ * The declarative weighted rule engine — the heart of `@advance-labs/scoring`.
  *
  * `runRules` evaluates every {@link Rule} against a {@link ScoringContext},
  * turns each outcome into a {@link Finding}, groups findings by category, and
@@ -20,7 +20,7 @@ import type {
   ScoreCategory,
   ScoreCategoryKey,
   ScoringContext,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { clampScore, scoreToGrade } from './grade.js';
 
 /** Human-readable labels for each category key, used in `ScoreCategory.label`. */

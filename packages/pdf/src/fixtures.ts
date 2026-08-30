@@ -2,7 +2,7 @@
  * Test fixtures — a minimal, fully-typed `AuditReport` used by the unit tests. Kept out of the
  * test file so it can be reused and so the test stays focused on assertions.
  */
-import type { AuditReport, Finding, ScoreCategory } from '@aeo/types';
+import type { AuditReport, Finding, ScoreCategory } from '@advance-labs/types';
 
 const sampleCategory: ScoreCategory = {
   key: 'crawlability',
@@ -43,7 +43,7 @@ export function makeTinyReport(): AuditReport {
     },
     topFixes: [sampleFix],
     templates: [],
-    meta: { durationMs: 1234, crawler: '@aeo/crawler', version: '0.1.0' },
+    meta: { durationMs: 1234, crawler: '@advance-labs/crawler', version: '0.1.0' },
   };
 }
 
@@ -63,6 +63,6 @@ export function makeEmptyReport(): AuditReport {
     },
     topFixes: [],
     templates: [],
-    meta: { durationMs: 0, crawler: '@aeo/crawler', version: '0.1.0' },
+    meta: { durationMs: 0, crawler: '@advance-labs/crawler', version: '0.1.0' },
   };
 }

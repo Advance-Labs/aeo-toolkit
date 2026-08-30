@@ -4,7 +4,7 @@
  * route handlers, so a testable helper has to live here in `lib/`.
  */
 import { NextResponse } from 'next/server';
-import type { AuditReport } from '@aeo/types';
+import type { AuditReport } from '@advance-labs/types';
 import { runAudit } from './audit-pipeline.js';
 import { toErrorBody } from './audit-errors.js';
 import { parseAuditRequest } from './audit-validate.js';

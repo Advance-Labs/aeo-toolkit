@@ -12,7 +12,7 @@ import type {
   ScoringMode,
   SiteFilePresence,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { KEY_AI_BOTS } from './context-utils.js';
 
 function crawledPage(url: string, overrides: Partial<CrawledPage> = {}): CrawledPage {

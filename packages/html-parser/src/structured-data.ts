@@ -2,13 +2,13 @@
  * Raw structured-data extraction.
  *
  * This package only *collects* blocks; full schema.org validation is the job of
- * `@aeo/schema-validator`. We:
+ * `@advance-labs/schema-validator`. We:
  *   - parse every `<script type="application/ld+json">` as JSON (skip on error),
  *   - emit a lightweight marker for microdata (`itemscope` present),
  *   - emit a lightweight marker for RDFa (`typeof`/`vocab` present).
  */
 import type { CheerioAPI } from 'cheerio';
-import type { RawStructuredDataBlock } from '@aeo/types';
+import type { RawStructuredDataBlock } from '@advance-labs/types';
 
 /** Recursively collect every `@type` value found in a parsed JSON-LD value. */
 export function collectJsonLdTypes(value: unknown, acc: Set<string> = new Set()): Set<string> {

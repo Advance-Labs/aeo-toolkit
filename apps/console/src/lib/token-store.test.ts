@@ -1,7 +1,7 @@
 /**
  * Tests for the env-gated token-store factory.
  *
- * All I/O is mocked: `@aeo/storage` (Supabase client + token store) and `@aeo/google-api`
+ * All I/O is mocked: `@advance-labs/storage` (Supabase client + token store) and `@advance-labs/google-api`
  * (in-memory store) are stubbed so no network or real SDK runs. We assert that `getTokenStore()`
  * picks the Supabase adapter when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are set, and the
  * in-memory store otherwise, and that the encryption key is threaded through only when present.
@@ -37,12 +37,12 @@ class FakeInMemoryTokenStore {
   async delete(): Promise<void> {}
 }
 
-vi.mock('@aeo/storage', () => ({
+vi.mock('@advance-labs/storage', () => ({
   createSupabaseClient,
   SupabaseTokenStore: FakeSupabaseTokenStore,
 }));
 
-vi.mock('@aeo/google-api', () => ({
+vi.mock('@advance-labs/google-api', () => ({
   InMemoryTokenStore: FakeInMemoryTokenStore,
 }));
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Rule, ScoringContext } from '@aeo/types';
+import type { Rule, ScoringContext } from '@advance-labs/types';
 import { aggregateScore, runRules } from './engine.js';
 import { emptyContext, goodContext } from './fixtures.js';
 

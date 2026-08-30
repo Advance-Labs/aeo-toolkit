@@ -2,7 +2,7 @@
  * Default model suggestions per provider for the BYOK picker. These are convenience defaults only;
  * the user can type any model string. Plain data, no side effects.
  */
-import type { LlmProvider } from '@aeo/types';
+import type { LlmProvider } from '@advance-labs/types';
 
 export interface ProviderOption {
   provider: LlmProvider;

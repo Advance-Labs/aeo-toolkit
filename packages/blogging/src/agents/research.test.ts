@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { GscQueryRequest, GscReport, GscRow } from '@aeo/types';
+import type { GscQueryRequest, GscReport, GscRow } from '@advance-labs/types';
 import type { GscQueryFn } from '../google/gsc.js';
 import type { Strategy } from '../types.js';
 import { fingerprint } from './dedup.js';

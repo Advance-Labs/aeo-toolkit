@@ -1,5 +1,5 @@
 /**
- * Pure mapping layer between the `@aeo/backlinks` engine shapes and the data
+ * Pure mapping layer between the `@advance-labs/backlinks` engine shapes and the data
  * `react-force-graph-3d` consumes. Kept free of React and WebGL so the logic is
  * unit-testable in a plain Node environment (the canvas wrapper stays thin).
  *
@@ -16,7 +16,7 @@ import type {
   GraphNode,
   GraphNodeType,
   MentionType,
-} from '@aeo/backlinks';
+} from '@advance-labs/backlinks';
 
 /** Brand palette keyed by node type. Mirrors the spec's 3D-scene encoding. */
 export const NODE_COLORS: Readonly<Record<GraphNodeType, string>> = {

@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { Finding } from '@aeo/types';
+import type { Finding } from '@advance-labs/types';
 import { cx, severityClasses, severityRank } from './utils.js';
 
 export interface FixListProps {

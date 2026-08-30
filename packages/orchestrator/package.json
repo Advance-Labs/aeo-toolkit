@@ -1,9 +1,9 @@
 {
-  "name": "@aeo/orchestrator",
+  "name": "@advance-labs/orchestrator",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Autopilot v1 managed-layer spine: per-customer cadence, an idempotent proposal store, the content + outreach runners (composed from @aeo/blogging and @aeo/backlinks), the graduated auto-publish gate, and runCadence. All I/O is injected, so it is fully testable with no network.",
+  "description": "Autopilot v1 managed-layer spine: per-customer cadence, an idempotent proposal store, the content + outreach runners (composed from @advance-labs/blogging and @advance-labs/backlinks), the graduated auto-publish gate, and runCadence. All I/O is injected, so it is fully testable with no network.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,14 +26,14 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/backlinks": "workspace:*",
-    "@aeo/blogging": "workspace:*",
-    "@aeo/net-guard": "workspace:*",
-    "@aeo/storage": "workspace:*",
-    "@aeo/types": "workspace:*"
+    "@advance-labs/backlinks": "workspace:*",
+    "@advance-labs/blogging": "workspace:*",
+    "@advance-labs/net-guard": "workspace:*",
+    "@advance-labs/storage": "workspace:*",
+    "@advance-labs/types": "workspace:*"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/node": "^22.10.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",

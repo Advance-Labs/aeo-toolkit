@@ -1,17 +1,17 @@
-# @aeo/html-parser
+# @advance-labs/html-parser
 
 Pure, synchronous HTML extraction for the AEO Toolkit. Given an HTML string and the
 URL it came from, it produces the shared `ParsedHtml` shape: document meta, OpenGraph
 and Twitter cards, the heading tree, images with alt coverage, internal/external links,
 content-quality signals (word count, FAQ/HowTo, question headings, structure counts),
 and raw structured-data blocks. **No network and no filesystem access** — fetching is
-the job of `@aeo/crawler`, and full schema.org validation is the job of
-`@aeo/schema-validator`; this package only collects the raw blocks they need.
+the job of `@advance-labs/crawler`, and full schema.org validation is the job of
+`@advance-labs/schema-validator`; this package only collects the raw blocks they need.
 
 ## Usage
 
 ```ts
-import { parseHtml } from '@aeo/html-parser';
+import { parseHtml } from '@advance-labs/html-parser';
 
 const parsed = parseHtml(htmlString, 'https://example.com/page');
 
@@ -26,7 +26,7 @@ Each extractor is also exported standalone (accepting an HTML string), so a cons
 can pull a single signal without parsing the whole document:
 
 ```ts
-import { extractMeta, extractHeadings } from '@aeo/html-parser';
+import { extractMeta, extractHeadings } from '@advance-labs/html-parser';
 
 const meta = extractMeta(htmlString, url);
 const headings = extractHeadings(htmlString);
@@ -51,7 +51,7 @@ const headings = extractHeadings(htmlString);
 | `isQuestionHeading` | `(text: string) => boolean` | Whether a heading reads as a question. |
 | `jsonLdHasType` / `collectJsonLdTypes` | see source | JSON-LD `@type` inspection helpers. |
 
-All shapes are imported from `@aeo/types`; this package never redefines them.
+All shapes are imported from `@advance-labs/types`; this package never redefines them.
 
 ## Notes
 

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LogoMark } from '@aeo/ui';
+import { LogoMark } from '@advance-labs/ui';
 import { Container } from './Container';
 
 const TOOLS = [

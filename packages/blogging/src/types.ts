@@ -1,10 +1,10 @@
 /**
  * Internal domain types for the blogging agent.
  *
- * Shapes that cross package boundaries (GSC/GA4 rows, LLM requests) come from `@aeo/types`.
+ * Shapes that cross package boundaries (GSC/GA4 rows, LLM requests) come from `@advance-labs/types`.
  * Everything here is agent-local: posts, topic briefs, strategy, and the pipeline config.
  */
-import type { LlmProvider } from '@aeo/types';
+import type { LlmProvider } from '@advance-labs/types';
 
 /** Lifecycle of a post as it moves through the pipeline. */
 export type PostStatus =

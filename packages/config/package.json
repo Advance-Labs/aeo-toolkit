@@ -1,5 +1,5 @@
 {
-  "name": "@aeo/config",
+  "name": "@advance-labs/config",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "lint": "eslint eslint",
-    "typecheck": "echo \"@aeo/config: no typecheck (config-only package)\""
+    "typecheck": "echo \"@advance-labs/config: no typecheck (config-only package)\""
   },
   "dependencies": {
     "@eslint/js": "^9.17.0",

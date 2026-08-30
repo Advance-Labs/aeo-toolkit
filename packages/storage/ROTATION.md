@@ -1,6 +1,6 @@
 # Token encryption — key versioning & rotation runbook
 
-`@aeo/storage` encrypts OAuth/refresh tokens at rest with AES-256-GCM (`src/crypto.ts`). Every
+`@advance-labs/storage` encrypts OAuth/refresh tokens at rest with AES-256-GCM (`src/crypto.ts`). Every
 ciphertext is stamped with a **key-version tag** so the at-rest format can evolve and the encryption
 key can be rotated without a flag-day re-encrypt.
 

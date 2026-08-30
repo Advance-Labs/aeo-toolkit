@@ -1,9 +1,8 @@
 {
-  "name": "@aeo/crawler",
+  "name": "@advance-labs/crawler",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
+  "description": "Polite, bounded HTTP crawler \u2014 sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,17 +25,26 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "fast-xml-parser": "^4.5.0",
     "p-limit": "^6.1.0",
     "robots-parser": "^3.0.1"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/node": "^22.10.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/crawler"
+  },
+  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
 }

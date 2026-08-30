@@ -4,7 +4,7 @@
  * The system prompt forces the model to answer ONLY from the supplied GA4 + GSC context and to
  * return a numbered, prioritized fix list — matching the tool's contract.
  */
-import type { LlmMessage } from '@aeo/types';
+import type { LlmMessage } from '@advance-labs/types';
 
 export const SYSTEM_PROMPT = [
   'You are an SEO analyst. You are given real Google Analytics 4 and Google Search Console data for a',
@@ -22,7 +22,7 @@ export interface BuildPromptInput {
   question: string;
 }
 
-/** Assemble the message array for `@aeo/llm` `complete()`. */
+/** Assemble the message array for `@advance-labs/llm` `complete()`. */
 export function buildMessages(input: BuildPromptInput): LlmMessage[] {
   const userContent = ['DATA:', input.dataContext, '', `QUESTION: ${input.question}`].join('\n');
 

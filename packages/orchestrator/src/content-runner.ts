@@ -1,5 +1,5 @@
 /**
- * ContentRunner — composes the `@aeo/blogging` sub-agents into a draft, then STOPS before
+ * ContentRunner — composes the `@advance-labs/blogging` sub-agents into a draft, then STOPS before
  * schedule/publish and emits a {@link ContentProposal}.
  *
  * It does NOT wrap `runBloggingPipeline`/`runPipeline` (which is single-tenant and publishes as its
@@ -27,7 +27,7 @@ import {
   defaultComplete,
   makeGscQuery,
   DEFAULT_GAP_THRESHOLDS,
-} from '@aeo/blogging';
+} from '@advance-labs/blogging';
 import type {
   CompleteFn,
   GscQueryFn,
@@ -36,8 +36,8 @@ import type {
   TopicBrief,
   EditReport,
   DedupCandidate,
-} from '@aeo/blogging';
-import type { ContentProposal, ContentProposalPayload, CustomerProfile } from '@aeo/types';
+} from '@advance-labs/blogging';
+import type { ContentProposal, ContentProposalPayload, CustomerProfile } from '@advance-labs/types';
 import { randomUUID } from 'node:crypto';
 
 /** Per-customer dependencies for one content run (all injected; zero global env). */
@@ -224,7 +224,7 @@ export interface LiveContentRunnerConfig {
 }
 
 /**
- * Production {@link ContentRunner}: wires `@aeo/blogging`'s real LLM (`defaultComplete`) and a
+ * Production {@link ContentRunner}: wires `@advance-labs/blogging`'s real LLM (`defaultComplete`) and a
  * GSC seam bound to the customer's access token. Built per customer from injected secrets — it does
  * not read a global env. `now`/`newId` default to live wall-clock + UUID (this is the live edge,
  * not a pure core).

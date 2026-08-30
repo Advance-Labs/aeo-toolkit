@@ -6,9 +6,9 @@
  * types. We collapse all of these into the short PascalCase name so downstream validation
  * and AEO detection only ever deal with one canonical form.
  */
-import type { AeoSchemaType } from '@aeo/types';
+import type { AeoSchemaType } from '@advance-labs/types';
 
-/** The closed set of AEO-relevant schema.org types, mirrored from `@aeo/types`. */
+/** The closed set of AEO-relevant schema.org types, mirrored from `@advance-labs/types`. */
 const AEO_SCHEMA_TYPES = [
   'FAQPage',
   'QAPage',

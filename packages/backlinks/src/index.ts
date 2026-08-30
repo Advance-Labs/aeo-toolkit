@@ -1,5 +1,5 @@
 /**
- * @aeo/backlinks — a free-source backlink engine.
+ * @advance-labs/backlinks — a free-source backlink engine.
  *
  * Provider adapters over the public, no-key sources (DuckDuckGo HTML search,
  * CommonCrawl's URL index, the Wayback Machine CDX API) plus pure contact

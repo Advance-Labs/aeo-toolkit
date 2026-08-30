@@ -12,7 +12,7 @@
  * All three read already-fetched {@link GscRow}s and do no I/O, so they unit-test
  * against fixed arrays. The handlers in `handlers.ts` supply the rows.
  */
-import type { GscRow } from '@aeo/types';
+import type { GscRow } from '@advance-labs/types';
 import { round } from './format.js';
 
 /** Running totals for one dimension key within a single period. */

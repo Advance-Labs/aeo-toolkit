@@ -1,5 +1,5 @@
 /**
- * Server-side wrapper over `@aeo/backlinks#buildBacklinkGraph`.
+ * Server-side wrapper over `@advance-labs/backlinks#buildBacklinkGraph`.
  *
  * Owns the production wiring the engine leaves to the caller: a polite,
  * rate-limited `HttpClient`, a per-build page `limit` resolved from `opts` then
@@ -19,8 +19,8 @@ import {
   buildBacklinkGraph,
   createLiveHttpClient,
   createRateLimitedHttpClient,
-} from '@aeo/backlinks';
-import type { BacklinkGraph, BuildBacklinkGraphOptions } from '@aeo/backlinks';
+} from '@advance-labs/backlinks';
+import type { BacklinkGraph, BuildBacklinkGraphOptions } from '@advance-labs/backlinks';
 
 /** Default per-source page cap when neither `opts` nor env supplies one. */
 export const DEFAULT_BACKLINK_GRAPH_LIMIT = 25;

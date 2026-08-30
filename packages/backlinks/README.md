@@ -1,4 +1,4 @@
-# @aeo/backlinks
+# @advance-labs/backlinks
 
 A free-source backlink engine for the AEO Toolkit. It gathers backlink and brand-mention signals
 from the public, no-key sources — DuckDuckGo's HTML results page, CommonCrawl's URL index, and the
@@ -13,7 +13,7 @@ becomes a `warnings[]` entry, never a thrown error. All network I/O routes throu
 ## Usage
 
 ```ts
-import { buildBacklinkGraph, search, queryIndex, fetchHistory } from '@aeo/backlinks';
+import { buildBacklinkGraph, search, queryIndex, fetchHistory } from '@advance-labs/backlinks';
 
 // Build a sampled backlink graph (uses the package's live HTTP client by default).
 const graph = await buildBacklinkGraph('https://example.com', { limit: 25 });
@@ -40,14 +40,14 @@ const history = await fetchHistory(http, 'https://example.com/');
 | `queryIndex(http, domain, opts?)` | `Promise<CommonCrawlOutcome>` | CommonCrawl URL-index adapter. |
 | `fetchHistory(http, url, limit?)` | `Promise<WaybackOutcome>` | Wayback Machine CDX timeline adapter. |
 | `extractContacts(html, baseUrl)` | `ContactInfo` | Pure emails + social-handle extraction from page HTML. |
-| `createLiveHttpClient(opts)` | `HttpClient` | The production HTTP seam (delegates page fetches to `@aeo/crawler`). |
-| `createRateLimitedHttpClient(inner, limiter, key?)` | `HttpClient` | Rate-limited decorator over an inner client (uses `@aeo/storage`'s `RateLimiter`). |
+| `createLiveHttpClient(opts)` | `HttpClient` | The production HTTP seam (delegates page fetches to `@advance-labs/crawler`). |
+| `createRateLimitedHttpClient(inner, limiter, key?)` | `HttpClient` | Rate-limited decorator over an inner client (uses `@advance-labs/storage`'s `RateLimiter`). |
 | `canonicalUrl`, `normalizeDomain` | helpers | URL/domain canonicalisation used by the graph builder. |
 | `parseResults`, `parseNdjson`, `parseCdx`, `extractEmails`, `extractSocials`, … | pure parsers | Exported for direct, network-free unit testing. |
 | `BacklinkGraph`, `GraphNode`, `GraphEdge`, `BacklinkGraphStats`, `HttpClient`, … | types | Graph shapes and the injectable I/O seam. |
 
-`PageResource` and the LLM/types shapes come from `@aeo/types`; the rate limiter comes from
-`@aeo/storage`; page fetches delegate to `@aeo/crawler`. This package never redefines them.
+`PageResource` and the LLM/types shapes come from `@advance-labs/types`; the rate limiter comes from
+`@advance-labs/storage`; page fetches delegate to `@advance-labs/crawler`. This package never redefines them.
 
 ## Status
 

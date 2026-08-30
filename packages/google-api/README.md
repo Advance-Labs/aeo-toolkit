@@ -1,4 +1,4 @@
-# @aeo/google-api
+# @advance-labs/google-api
 
 GA4 Data API + Google Search Console clients and a Google OAuth 2.0 helper for the AEO Toolkit.
 All network I/O flows through an **injectable `Fetcher`** (default: the platform global `fetch`),
@@ -16,7 +16,7 @@ import {
   InMemoryTokenStore,
   GA4_READONLY_SCOPE,
   GSC_READONLY_SCOPE,
-} from '@aeo/google-api';
+} from '@advance-labs/google-api';
 
 // 1. OAuth: send the user to consent, then exchange the returned code.
 const oauth = new GoogleOAuth({
@@ -76,7 +76,7 @@ structural subset of the DOM `fetch`.
 | `GoogleOAuth` | class | `getAuthUrl(state)`, `exchangeCode(code)`, `refresh(refreshToken)`. Defaults to read-only scopes, offline access. |
 | `GoogleOAuthConfig` | type | `{ clientId; clientSecret; redirectUri; scopes?; fetcher? }`. |
 | `InMemoryTokenStore` | class | `TokenStore` implementation for tests/local dev; clones on read & write. |
-| `TokenStore` | type | Re-exported from `@aeo/types` — implement for an encrypted/durable adapter. |
+| `TokenStore` | type | Re-exported from `@advance-labs/types` — implement for an encrypted/durable adapter. |
 | `GA4_READONLY_SCOPE` | const | `analytics.readonly`. |
 | `GA4_ADMIN_READONLY_SCOPE` | const | `analytics.readonly` — the Admin `accountSummaries` surface is covered by the same scope. |
 | `GSC_READONLY_SCOPE` | const | `webmasters.readonly`. |
@@ -86,7 +86,7 @@ structural subset of the DOM `fetch`.
 | `Fetcher`, `FetchInit`, `FetchResponse` | types | The injectable HTTP seam. |
 
 Shared data shapes (`Ga4ReportRequest`, `Ga4Report`, `Ga4Row`, `GscQueryRequest`, `GscReport`,
-`GscRow`, `GscSite`, `Ga4Property`, `GoogleOAuthTokens`) come from `@aeo/types`.
+`GscRow`, `GscSite`, `Ga4Property`, `GoogleOAuthTokens`) come from `@advance-labs/types`.
 
 ## Status
 

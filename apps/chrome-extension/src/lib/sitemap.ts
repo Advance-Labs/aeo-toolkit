@@ -3,7 +3,7 @@
  * the `SitemapEntry[]` in the `CrawlResult`; full sitemap-index recursion is a
  * crawler concern, not an extension one.
  */
-import type { SitemapEntry } from '@aeo/types';
+import type { SitemapEntry } from '@advance-labs/types';
 
 /** Extract `<loc>` (and optional `<lastmod>`) entries from sitemap XML. */
 export function parseSitemap(xml: string | null): SitemapEntry[] {

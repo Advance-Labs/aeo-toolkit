@@ -6,9 +6,9 @@ import type {
   ParsedHtml,
   ScoringContext,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
-// --- Mock every @aeo/* engine so the pipeline is tested in isolation. ---
+// --- Mock every @advance-labs/* engine so the pipeline is tested in isolation. ---
 // vi.mock factories are hoisted above module init, so the mock fns must be created inside
 // vi.hoisted() (not as plain top-level consts) to avoid "Cannot access X before initialization".
 
@@ -19,10 +19,10 @@ const mocks = vi.hoisted(() => ({
   crawl: vi.fn(),
 }));
 
-vi.mock('@aeo/crawler', () => ({ crawl: mocks.crawl }));
-vi.mock('@aeo/html-parser', () => ({ parseHtml: mocks.parseHtml }));
-vi.mock('@aeo/schema-validator', () => ({ analyzeStructuredData: mocks.analyzeStructuredData }));
-vi.mock('@aeo/scoring', () => ({ eeatScore: mocks.eeatScore }));
+vi.mock('@advance-labs/crawler', () => ({ crawl: mocks.crawl }));
+vi.mock('@advance-labs/html-parser', () => ({ parseHtml: mocks.parseHtml }));
+vi.mock('@advance-labs/schema-validator', () => ({ analyzeStructuredData: mocks.analyzeStructuredData }));
+vi.mock('@advance-labs/scoring', () => ({ eeatScore: mocks.eeatScore }));
 
 const { parseHtml, analyzeStructuredData, eeatScore } = mocks;
 

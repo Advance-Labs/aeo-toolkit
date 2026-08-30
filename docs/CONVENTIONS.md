@@ -9,7 +9,7 @@ adhere to this document exactly so the 20 independently-authored units integrate
    (`packages/<name>/` or `apps/<name>/`). Never edit root files, another package, or `pnpm-lock.yaml`.
 2. **Never run `pnpm install`, `pnpm build`, or `turbo`.** Dependencies are not installed during your run;
    the lead runs one central install/build pass afterward. Write code as if deps exist.
-3. **Depend only on packages listed in your brief.** Reference shared types from `@aeo/types`, never redefine them.
+3. **Depend only on packages listed in your brief.** Reference shared types from `@advance-labs/types`, never redefine them.
 4. **Write tests and a README.** Every package ships `*.test.ts` (Vitest) and a `README.md`.
 
 ## Package layout (libraries under `packages/`)
@@ -21,7 +21,7 @@ packages/<name>/
 ├── tsup.config.ts          # build config (libraries only)
 ├── vitest.config.ts
 ├── README.md
-├── CHANGELOG.md            # "# @aeo/<name>\n\nInitial release." stub
+├── CHANGELOG.md            # "# @advance-labs/<name>\n\nInitial release." stub
 └── src/
     ├── index.ts            # public surface — re-export only what consumers need
     ├── <feature>.ts
@@ -32,7 +32,7 @@ packages/<name>/
 
 ```jsonc
 {
-  "name": "@aeo/<name>",
+  "name": "@advance-labs/<name>",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -51,10 +51,10 @@ packages/<name>/
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*"
+    "@advance-labs/types": "workspace:*"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8",
@@ -94,7 +94,7 @@ export default defineConfig({ test: { environment: 'node', include: ['src/**/*.t
 
 - **Next.js apps** (`llm-audit`, `eeat-scanner`, `llms-txt-generator`, `ga-gsc-chat`): App Router,
   `src/app/`, route handlers under `src/app/api/.../route.ts`, server-only crawl logic, `next.config.mjs`
-  with `transpilePackages` for the `@aeo/*` deps. Scripts: `dev`, `build`, `start`, `lint`, `typecheck`.
+  with `transpilePackages` for the `@advance-labs/*` deps. Scripts: `dev`, `build`, `start`, `lint`, `typecheck`.
 - **MCP servers** (`ai-visibility-mcp`, `ga-gsc-mcp`, `backlink-mcp`): Node entry `src/server.ts`,
   tool definitions under `src/tools/`, build with `tsup`. Provide both a local run script and a
   Vercel function entry where the spec requires hosted/remote operation.

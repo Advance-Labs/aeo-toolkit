@@ -6,8 +6,8 @@
  * blocks, structured errors) lives in `server.ts`; these functions are pure of
  * the SDK and fully unit-testable.
  */
-import { auditScore } from '@aeo/scoring';
-import { McpToolError } from '@aeo/mcp-core';
+import { auditScore } from '@advance-labs/scoring';
+import { McpToolError } from '@advance-labs/mcp-core';
 import type {
   CompetitorVisibility,
   CrawledPage,
@@ -16,7 +16,7 @@ import type {
   ScoringContext,
   StructuredDataReport,
   VisibilityCheck,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 import type { ToolDeps } from './deps.js';
 import {

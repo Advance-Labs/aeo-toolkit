@@ -1,1 +1,1 @@
-export { default } from '@aeo/config/eslint/react';
+export { default } from '@advance-labs/config/eslint/react';

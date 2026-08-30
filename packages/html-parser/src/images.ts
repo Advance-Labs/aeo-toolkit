@@ -1,6 +1,6 @@
 /** Image extraction with alt-text coverage. */
 import type { CheerioAPI } from 'cheerio';
-import type { ImageInfo } from '@aeo/types';
+import type { ImageInfo } from '@advance-labs/types';
 
 import { resolveUrl } from './url-utils.js';
 

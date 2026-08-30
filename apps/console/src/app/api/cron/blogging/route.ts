@@ -11,7 +11,7 @@
  * or logged here. Errors are surfaced as a 500 with only the error message (never a secret).
  */
 import { NextResponse } from 'next/server';
-import { runBloggingPipeline } from '@aeo/blogging';
+import { runBloggingPipeline } from '@advance-labs/blogging';
 
 // Network + crawl + LLM work needs the Node runtime, not Edge.
 export const runtime = 'nodejs';

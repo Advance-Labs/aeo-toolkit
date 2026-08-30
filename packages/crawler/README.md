@@ -1,4 +1,4 @@
-# @aeo/crawler
+# @advance-labs/crawler
 
 A polite, bounded HTTP crawler for the AEO Toolkit. It discovers a site's pages sitemap-first,
 then follows on-site links breadth-first up to a hard page cap. It is robots.txt-aware, rate-limits
@@ -10,7 +10,7 @@ live network.
 ## Usage
 
 ```ts
-import { crawl, fetchResource, parseRobotsTxt, parseSitemap, AI_BOT_NAMES } from '@aeo/crawler';
+import { crawl, fetchResource, parseRobotsTxt, parseSitemap, AI_BOT_NAMES } from '@advance-labs/crawler';
 
 // Crawl up to 50 pages, respecting robots.txt and spacing requests 500ms per host.
 const result = await crawl('https://example.com/', {
@@ -50,7 +50,7 @@ await crawl('https://example.com/', { maxPages: 10, fetcher: myFakeFetch });
 | `DEFAULT_*`, `MAX_REDIRECT_HOPS` | constants | Tunable defaults (user-agent, concurrency, timeout, depth, redirect cap). |
 
 All domain shapes (`CrawlResult`, `PageResource`, `RobotsTxt`, `SitemapEntry`, `SiteFilePresence`,
-`AiBotName`, `CrawlOptions`, …) are imported from `@aeo/types`; this package never redefines them.
+`AiBotName`, `CrawlOptions`, …) are imported from `@advance-labs/types`; this package never redefines them.
 
 ## Status
 

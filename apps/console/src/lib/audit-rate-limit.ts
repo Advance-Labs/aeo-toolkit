@@ -1,7 +1,7 @@
 /**
  * Per-IP rate limiting for the public technical-audit endpoint.
  *
- * The limiter is resolved by `@aeo/storage#resolveRateLimiter`, which returns a distributed
+ * The limiter is resolved by `@advance-labs/storage#resolveRateLimiter`, which returns a distributed
  * Upstash Redis sliding-window limiter when `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`
  * are configured, and otherwise falls back to a real (but single-instance, cold-start-resetting)
  * in-memory fixed-window limiter. This keeps local dev and the offline unit tests credential-free
@@ -9,10 +9,10 @@
  *
  * Credentials come only from the environment — never hard-coded, never logged.
  */
-import { resolveRateLimiter } from '@aeo/storage';
-import type { RateLimiter } from '@aeo/storage';
+import { resolveRateLimiter } from '@advance-labs/storage';
+import type { RateLimiter } from '@advance-labs/storage';
 
-export type { RateLimiter, RateLimitResult } from '@aeo/storage';
+export type { RateLimiter, RateLimitResult } from '@advance-labs/storage';
 
 /** Max audits allowed per IP within {@link AUDIT_WINDOW_SECONDS}. */
 export const AUDIT_RATE_LIMIT = 10;

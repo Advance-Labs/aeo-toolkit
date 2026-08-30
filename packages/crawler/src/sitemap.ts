@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import type { SitemapEntry, Url } from '@aeo/types';
+import type { SitemapEntry, Url } from '@advance-labs/types';
 
 /**
  * Parses a sitemap XML document into a flat list of `SitemapEntry`. Supports both:

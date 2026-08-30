@@ -8,7 +8,7 @@ importers:
 
   .:
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:packages/config
       '@changesets/cli':
@@ -35,16 +35,16 @@ importers:
 
   apps/chrome-extension:
     dependencies:
-      '@aeo/html-parser':
+      '@advance-labs/html-parser':
         specifier: workspace:*
         version: link:../../packages/html-parser
-      '@aeo/schema-validator':
+      '@advance-labs/schema-validator':
         specifier: workspace:*
         version: link:../../packages/schema-validator
-      '@aeo/scoring':
+      '@advance-labs/scoring':
         specifier: workspace:*
         version: link:../../packages/scoring
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../../packages/types
       jspdf:
@@ -90,49 +90,49 @@ importers:
 
   apps/console:
     dependencies:
-      '@aeo/backlinks':
+      '@advance-labs/backlinks':
         specifier: workspace:*
         version: link:../../packages/backlinks
-      '@aeo/blogging':
+      '@advance-labs/blogging':
         specifier: workspace:*
         version: link:../../packages/blogging
-      '@aeo/crawler':
+      '@advance-labs/crawler':
         specifier: workspace:*
         version: link:../../packages/crawler
-      '@aeo/google-api':
+      '@advance-labs/google-api':
         specifier: workspace:*
         version: link:../../packages/google-api
-      '@aeo/html-parser':
+      '@advance-labs/html-parser':
         specifier: workspace:*
         version: link:../../packages/html-parser
-      '@aeo/llm':
+      '@advance-labs/llm':
         specifier: workspace:*
         version: link:../../packages/llm
-      '@aeo/mcp-core':
+      '@advance-labs/mcp-core':
         specifier: workspace:*
         version: link:../../packages/mcp-core
-      '@aeo/net-guard':
+      '@advance-labs/net-guard':
         specifier: workspace:*
         version: link:../../packages/net-guard
-      '@aeo/orchestrator':
+      '@advance-labs/orchestrator':
         specifier: workspace:*
         version: link:../../packages/orchestrator
-      '@aeo/pdf':
+      '@advance-labs/pdf':
         specifier: workspace:*
         version: link:../../packages/pdf
-      '@aeo/schema-validator':
+      '@advance-labs/schema-validator':
         specifier: workspace:*
         version: link:../../packages/schema-validator
-      '@aeo/scoring':
+      '@advance-labs/scoring':
         specifier: workspace:*
         version: link:../../packages/scoring
-      '@aeo/storage':
+      '@advance-labs/storage':
         specifier: workspace:*
         version: link:../../packages/storage
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@aeo/ui':
+      '@advance-labs/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@modelcontextprotocol/sdk':
@@ -178,7 +178,7 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -211,20 +211,20 @@ importers:
 
   packages/backlinks:
     dependencies:
-      '@aeo/crawler':
+      '@advance-labs/crawler':
         specifier: workspace:*
         version: link:../crawler
-      '@aeo/storage':
+      '@advance-labs/storage':
         specifier: workspace:*
         version: link:../storage
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -245,20 +245,20 @@ importers:
 
   packages/blogging:
     dependencies:
-      '@aeo/google-api':
+      '@advance-labs/google-api':
         specifier: workspace:*
         version: link:../google-api
-      '@aeo/llm':
+      '@advance-labs/llm':
         specifier: workspace:*
         version: link:../llm
-      '@aeo/storage':
+      '@advance-labs/storage':
         specifier: workspace:*
         version: link:../storage
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -303,7 +303,7 @@ importers:
 
   packages/crawler:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       fast-xml-parser:
@@ -316,7 +316,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -337,11 +337,11 @@ importers:
 
   packages/google-api:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -362,14 +362,14 @@ importers:
 
   packages/html-parser:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       rimraf:
@@ -387,11 +387,11 @@ importers:
 
   packages/llm:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -412,7 +412,7 @@ importers:
 
   packages/mcp-core:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       '@modelcontextprotocol/sdk':
@@ -422,7 +422,7 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -443,11 +443,11 @@ importers:
 
   packages/net-guard:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -468,23 +468,23 @@ importers:
 
   packages/orchestrator:
     dependencies:
-      '@aeo/backlinks':
+      '@advance-labs/backlinks':
         specifier: workspace:*
         version: link:../backlinks
-      '@aeo/blogging':
+      '@advance-labs/blogging':
         specifier: workspace:*
         version: link:../blogging
-      '@aeo/net-guard':
+      '@advance-labs/net-guard':
         specifier: workspace:*
         version: link:../net-guard
-      '@aeo/storage':
+      '@advance-labs/storage':
         specifier: workspace:*
         version: link:../storage
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -505,7 +505,7 @@ importers:
 
   packages/pdf:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       '@react-pdf/renderer':
@@ -515,7 +515,7 @@ importers:
         specifier: ^19.0.0
         version: 19.2.7
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/react':
@@ -536,7 +536,7 @@ importers:
 
   packages/schema-validator:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       cheerio:
@@ -546,7 +546,7 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       rimraf:
@@ -564,11 +564,11 @@ importers:
 
   packages/scoring:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       rimraf:
@@ -586,7 +586,7 @@ importers:
 
   packages/storage:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
       '@supabase/supabase-js':
@@ -599,7 +599,7 @@ importers:
         specifier: ^1.34.3
         version: 1.38.0
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -620,7 +620,7 @@ importers:
 
   packages/types:
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       rimraf:
@@ -638,11 +638,11 @@ importers:
 
   packages/ui:
     dependencies:
-      '@aeo/types':
+      '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
     devDependencies:
-      '@aeo/config':
+      '@advance-labs/config':
         specifier: workspace:*
         version: link:../config
       '@testing-library/jest-dom':

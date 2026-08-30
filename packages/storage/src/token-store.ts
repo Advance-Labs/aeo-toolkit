@@ -20,7 +20,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { GoogleOAuthTokens, TokenProvider, TokenStore } from '@aeo/types';
+import type { GoogleOAuthTokens, TokenProvider, TokenStore } from '@advance-labs/types';
 import { decrypt, encrypt } from './crypto.js';
 
 /** Shape of `{ data, error }` returned by terminal PostgREST builders. */

@@ -1,4 +1,4 @@
-/** Crawl domain — inputs and outputs of `@aeo/crawler`. */
+/** Crawl domain — inputs and outputs of `@advance-labs/crawler`. */
 
 /** A fully-qualified URL string. Kept as a branded-ish alias for readability. */
 export type Url = string;

@@ -1,11 +1,11 @@
 /**
- * @aeo/scoring — the keystone weighted rule engine + three rule sets + report
+ * @advance-labs/scoring — the keystone weighted rule engine + three rule sets + report
  * builders for the AEO Toolkit.
  *
  * Consumers (the audit app, E-E-A-T scanner, AI-visibility MCP, and Chrome
  * extension) import everything they need from this surface. All domain shapes
  * (`Score`, `Finding`, `ScoringContext`, `AuditReport`, `EeatReport`, …) live
- * in `@aeo/types` and are re-exported by consumers from there, not here.
+ * in `@advance-labs/types` and are re-exported by consumers from there, not here.
  */
 
 // Rule engine + grading.

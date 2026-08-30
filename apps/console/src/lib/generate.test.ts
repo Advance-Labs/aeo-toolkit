@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { CrawledPage, CrawlResult } from '@aeo/types';
+import type { CrawledPage, CrawlResult } from '@advance-labs/types';
 import { generateLlmsTxt } from './generate.js';
 
-// Mock @aeo/html-parser so the test exercises the pipeline without cheerio/HTML parsing.
-vi.mock('@aeo/html-parser', () => ({
+// Mock @advance-labs/html-parser so the test exercises the pipeline without cheerio/HTML parsing.
+vi.mock('@advance-labs/html-parser', () => ({
   parseHtml: (html: string, url: string) => {
     // Title encoded in the fake body as `TITLE:<text>`; description as `DESC:<text>`.
     const title = /TITLE:([^\n]+)/.exec(html)?.[1]?.trim();

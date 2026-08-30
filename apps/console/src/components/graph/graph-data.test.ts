@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { BacklinkGraph } from '@aeo/backlinks';
+import type { BacklinkGraph } from '@advance-labs/backlinks';
 import {
   NODE_COLORS,
   colorForType,

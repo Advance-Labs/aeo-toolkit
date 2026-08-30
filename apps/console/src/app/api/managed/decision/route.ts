@@ -13,7 +13,7 @@
  *  - M1: 404s when the managed tier is dormant.
  */
 import { NextResponse } from 'next/server';
-import { SupabaseProposalStore, type SupabaseLike } from '@aeo/orchestrator';
+import { SupabaseProposalStore, type SupabaseLike } from '@advance-labs/orchestrator';
 import { getUser } from '@/lib/auth/server';
 import { managedEnabled } from '@/lib/managed/staff';
 import { assertCanDecide } from '@/lib/managed/authz';

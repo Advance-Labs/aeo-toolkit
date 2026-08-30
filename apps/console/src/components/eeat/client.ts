@@ -1,5 +1,5 @@
 /** Browser-side client for the E-E-A-T audit endpoint. Typed, no `any`. */
-import type { EeatReport } from '@aeo/types';
+import type { EeatReport } from '@advance-labs/types';
 
 /** Narrow an unknown JSON value to the `{ error: string }` shape. */
 function readError(value: unknown): string | null {

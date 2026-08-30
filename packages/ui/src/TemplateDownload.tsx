@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import type { JSX } from 'react';
-import type { GeneratedTemplate } from '@aeo/types';
+import type { GeneratedTemplate } from '@advance-labs/types';
 import { cx } from './utils.js';
 
 export interface TemplateDownloadProps {

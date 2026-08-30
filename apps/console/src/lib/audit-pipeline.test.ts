@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { CrawledPage, CrawlResult, RobotsTxt, SiteFilePresence } from '@aeo/types';
+import type { CrawledPage, CrawlResult, RobotsTxt, SiteFilePresence } from '@advance-labs/types';
 import { AuditError } from './audit-errors.js';
 import { analyzeCrawledPages, runAudit, type CrawlFn } from './audit-pipeline.js';
 

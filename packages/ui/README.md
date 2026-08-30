@@ -1,16 +1,16 @@
-# @aeo/ui
+# @advance-labs/ui
 
 Shared React design-system components for the AEO Toolkit web apps (`llm-audit`,
 `eeat-scanner`, `llms-txt-generator`, `ga-gsc-chat`). Every component is
-**presentational**: it accepts typed data via props (from `@aeo/types`), renders
+**presentational**: it accepts typed data via props (from `@advance-labs/types`), renders
 semantic HTML with Tailwind class strings, and contains no application logic.
 There is no Tailwind build in this package — consumers provide it.
 
 ## Usage
 
 ```tsx
-import { ScoreGauge, CategoryBreakdown, FixList, UrlInputForm } from '@aeo/ui';
-import type { AuditReport } from '@aeo/types';
+import { ScoreGauge, CategoryBreakdown, FixList, UrlInputForm } from '@advance-labs/ui';
+import type { AuditReport } from '@advance-labs/types';
 
 export function AuditView({ report }: { report: AuditReport }) {
   return (

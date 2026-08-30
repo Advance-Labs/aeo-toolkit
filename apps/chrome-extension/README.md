@@ -1,6 +1,6 @@
 <p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
 
-# @aeo/chrome-extension
+# @advance-labs/chrome-extension
 
 A Chrome MV3 extension (Vite + `@crxjs/vite-plugin`) that runs a **client-side AEO/GEO
 audit** on the active tab and returns a 0–100 AI-readiness score. It inspects the live
@@ -20,15 +20,15 @@ background service worker  ──READ_DOM──▶  content script (active tab �
   │                        ◀───────────
   │  fetch robots.txt / sitemap.xml / llms.txt (same-origin)
   ▼
-@aeo/html-parser · @aeo/schema-validator  ──▶  single-page ScoringContext
+@advance-labs/html-parser · @advance-labs/schema-validator  ──▶  single-page ScoringContext
   ▼
-@aeo/scoring buildAuditReport  ──▶  Score + topFixes + templates
+@advance-labs/scoring buildAuditReport  ──▶  Score + topFixes + templates
   ▼
 popup: score gauge · site-file grid · checklist · Export PDF (jsPDF)
 ```
 
 The audit assembles a synthetic single-page `ScoringContext` (`mode: 'single-page'`) so the
-shared `@aeo/scoring` rule engine evaluates the one page without penalizing it for missing
+shared `@advance-labs/scoring` rule engine evaluates the one page without penalizing it for missing
 multi-page-crawl signals (e.g. title uniqueness). The same engine that powers the web audit
 tool drives the extension — only the I/O layer differs.
 
@@ -36,7 +36,7 @@ tool drives the extension — only the I/O layer differs.
 
 ```bash
 pnpm install            # from the monorepo root (run by the lead)
-pnpm --filter @aeo/chrome-extension dev
+pnpm --filter @advance-labs/chrome-extension dev
 ```
 
 Then load the unpacked extension:
@@ -54,7 +54,7 @@ Then load the unpacked extension:
 | `build` | `vite build` → production `dist/` (the loadable/zippable extension). |
 | `package` | `icons`, then `build`, then zip `dist/` into a store-uploadable `aeo-extension.zip` (manifest at the archive root). |
 | `typecheck` | `tsc --noEmit` under strict mode. |
-| `test` | `vitest run` — unit tests for the pure pipeline (mocks `@aeo/*` + I/O). |
+| `test` | `vitest run` — unit tests for the pure pipeline (mocks `@advance-labs/*` + I/O). |
 
 ## Permissions & privacy
 
@@ -78,14 +78,14 @@ pipeline is fully runnable and testable without the network.
 ## Status
 
 **Implemented.** The full audit flow is real and runnable: live-DOM extraction, same-origin
-crawl-hint file fetching, single-page scoring via `@aeo/scoring`, the React popup (score
+crawl-hint file fetching, single-page scoring via `@advance-labs/scoring`, the React popup (score
 gauge, site-file grid, filterable checklist), and PDF export via jsPDF. No live credentials
 are required.
 
 ## Packaging for the Chrome Web Store
 
 ```bash
-pnpm --filter @aeo/chrome-extension package
+pnpm --filter @advance-labs/chrome-extension package
 ```
 
 This first generates the brand icons, then builds `dist/` and zips its **contents** (so

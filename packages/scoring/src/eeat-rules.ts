@@ -14,7 +14,7 @@
  *     links; internal linking.
  *   - Trust: HTTPS; contact/privacy/terms pages; canonical coverage; OG completeness.
  */
-import type { EeatPillar, EeatPillarKey, EeatReport, EeatSignal, ScoringContext } from '@aeo/types';
+import type { EeatPillar, EeatPillarKey, EeatReport, EeatSignal, ScoringContext } from '@advance-labs/types';
 import { clampScore, scoreToGrade } from './grade.js';
 import { firstStructured, meanOverPages } from './context-utils.js';
 

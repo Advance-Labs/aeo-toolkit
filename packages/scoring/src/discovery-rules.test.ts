@@ -7,7 +7,7 @@
  * (cross-domain canonicals, page-capped crawls, noindex pages) and must not penalize them.
  */
 import { describe, expect, it } from 'vitest';
-import type { CrawledPage, ScoringContext, StructuredDataItem } from '@aeo/types';
+import type { CrawledPage, ScoringContext, StructuredDataItem } from '@advance-labs/types';
 import { runRules } from './engine.js';
 import { technicalSeoRules } from './technical-seo-rules.js';
 import { aeoRules } from './aeo-rules.js';

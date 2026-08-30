@@ -1,9 +1,9 @@
 {
-  "name": "@aeo/blogging",
+  "name": "@advance-labs/blogging",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Autonomous multi-agent blogging pipeline: research GSC query gaps, draft with Groq, edit, dedup via Jaccard fingerprints, schedule, publish, and self-correct underperformers. Built on @aeo/google-api and @aeo/llm (BYOK). All I/O is injected, so it is fully testable with no network.",
+  "description": "Autonomous multi-agent blogging pipeline: research GSC query gaps, draft with Groq, edit, dedup via Jaccard fingerprints, schedule, publish, and self-correct underperformers. Built on @advance-labs/google-api and @advance-labs/llm (BYOK). All I/O is injected, so it is fully testable with no network.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,13 +26,13 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/google-api": "workspace:*",
-    "@aeo/llm": "workspace:*",
-    "@aeo/storage": "workspace:*",
-    "@aeo/types": "workspace:*"
+    "@advance-labs/google-api": "workspace:*",
+    "@advance-labs/llm": "workspace:*",
+    "@advance-labs/storage": "workspace:*",
+    "@advance-labs/types": "workspace:*"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/node": "^22.10.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
