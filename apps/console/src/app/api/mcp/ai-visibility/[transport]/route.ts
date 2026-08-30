@@ -10,6 +10,13 @@
  * tool argument — keys are never read from the environment, persisted, or logged.
  *
  * Node runtime: the tools crawl sites and call upstream APIs over the network.
+*
+ * ROUTE SHAPE: this file MUST live under a `[transport]` segment. `mcp-handler`
+ * derives its endpoints from `basePath` as `${basePath}/mcp`, `${basePath}/sse` and
+ * `${basePath}/message`, then compares the request pathname against them. Mounted
+ * directly at the basePath it answers every request with its own plain-text
+ * "Not found" — a 404 that looks like a routing bug and is not. The dynamic segment
+ * is what makes those transport paths exist. Clients connect to `<basePath>/mcp`.
  */
 import { createMcpHandler } from 'mcp-handler';
 import { enforceWebRateLimit } from '@advance-labs/mcp-core';

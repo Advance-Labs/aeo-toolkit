@@ -26,7 +26,7 @@ export interface McpServerMeta {
   name: string;
   /** One-sentence description of the server's purpose. */
   blurb: string;
-  /** Streamable-HTTP endpoint an MCP client connects to (`${SITE_URL}/api/mcp/<slug>`). */
+  /** Streamable-HTTP endpoint an MCP client connects to (`${SITE_URL}/api/mcp/<slug>/mcp`). */
   endpoint: string;
   /** Authentication model: open, or bring-your-own Google account (OAuth at connect time). */
   auth: 'none' | 'google-byok';
@@ -38,9 +38,16 @@ export interface McpServerMeta {
   tools: McpToolMeta[];
 }
 
-/** Build a server's Streamable-HTTP endpoint URL from the deployed origin, tolerating a trailing slash. */
+/**
+ * Build a server's Streamable-HTTP endpoint URL from the deployed origin, tolerating a trailing slash.
+ *
+ * The trailing `/mcp` is REQUIRED, not decoration. `mcp-handler` derives its transport
+ * endpoints from `basePath` as `${basePath}/mcp` and only answers there; the bare
+ * `/api/mcp/<slug>` it is mounted at returns the handler's own "Not found". This page
+ * previously advertised that bare URL, so every published connection string was dead.
+ */
 function mcpEndpoint(slug: McpServerMeta['slug']): string {
-  return `${SITE_URL.replace(/\/$/, '')}/api/mcp/${slug}`;
+  return `${SITE_URL.replace(/\/$/, '')}/api/mcp/${slug}/mcp`;
 }
 
 /**
