@@ -23,7 +23,7 @@ export const palette = {
 
 /**
  * Map a 0..100 score to a display color so the gauge reads at a glance.
- * Thresholds mirror the A–F grade bands used by `@aeo/scoring`.
+ * Thresholds mirror the A–F grade bands used by `@advance-labs/scoring`.
  */
 export function scoreColor(score: number): string {
   if (score >= 80) return palette.good;

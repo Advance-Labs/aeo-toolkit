@@ -1,5 +1,5 @@
 /**
- * Outreach-email generation via `@aeo/llm` (BYOK).
+ * Outreach-email generation via `@advance-labs/llm` (BYOK).
  *
  * The handler collects a contact + context object, builds a focused prompt, and
  * routes it through the provider-agnostic `complete()` client. The API key is
@@ -12,7 +12,7 @@ import type {
   LlmCompletionResponse,
   LlmMessage,
   LlmProvider,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 export interface OutreachContact {
   name?: string;
@@ -41,13 +41,13 @@ export interface OutreachRequest {
   context: OutreachContext;
   provider: LlmProvider;
   model: string;
-  /** BYOK — request-scoped, forwarded to `@aeo/llm`, never persisted. */
+  /** BYOK — request-scoped, forwarded to `@advance-labs/llm`, never persisted. */
   apiKey: string;
   temperature?: number;
   maxTokens?: number;
 }
 
-/** The single seam onto `@aeo/llm.complete` so handlers stay testable. */
+/** The single seam onto `@advance-labs/llm.complete` so handlers stay testable. */
 export interface OutreachClient {
   complete: (req: LlmCompletionRequest) => Promise<LlmCompletionResponse>;
 }
@@ -115,7 +115,7 @@ export function splitEmail(raw: string): { subject: string; body: string } {
 
 /**
  * Generate an outreach email. Routes the prompt through the injected
- * `OutreachClient` (default: `@aeo/llm.complete`) and parses the result.
+ * `OutreachClient` (default: `@advance-labs/llm.complete`) and parses the result.
  */
 export async function generateOutreach(
   client: OutreachClient,

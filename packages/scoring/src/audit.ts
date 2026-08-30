@@ -7,7 +7,7 @@
  * `topFixes` list (failed findings sorted by severity then weight), and any
  * generated templates for missing crawl-hint files.
  */
-import type { AuditReport, Finding, FindingSeverity, Score, ScoringContext } from '@aeo/types';
+import type { AuditReport, Finding, FindingSeverity, Score, ScoringContext } from '@advance-labs/types';
 import { runRules } from './engine.js';
 import { technicalSeoRules } from './technical-seo-rules.js';
 import { aeoRules } from './aeo-rules.js';
@@ -76,7 +76,7 @@ export async function buildAuditReport(
     templates,
     meta: {
       durationMs: opts.durationMs,
-      crawler: opts.crawler ?? '@aeo/crawler',
+      crawler: opts.crawler ?? '@advance-labs/crawler',
       version: opts.version,
     },
   };

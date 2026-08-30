@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AuditReport, ParsedHtml, ScoringContext, StructuredDataReport } from '@aeo/types';
+import type { AuditReport, ParsedHtml, ScoringContext, StructuredDataReport } from '@advance-labs/types';
 import type { SiteFiles } from './site-files.js';
 
-// --- Mock the @aeo/* packages so the test exercises THIS app's wiring only. ---
+// --- Mock the @advance-labs/* packages so the test exercises THIS app's wiring only. ---
 const parseHtmlMock = vi.fn<(html: string, url: string) => ParsedHtml>();
 const analyzeMock = vi.fn<(html: string, url: string) => StructuredDataReport>();
 const buildAuditReportMock =
@@ -10,11 +10,11 @@ const buildAuditReportMock =
     (ctx: ScoringContext, opts: { durationMs: number; version: string }) => Promise<AuditReport>
   >();
 
-vi.mock('@aeo/html-parser', () => ({ parseHtml: (h: string, u: string) => parseHtmlMock(h, u) }));
-vi.mock('@aeo/schema-validator', () => ({
+vi.mock('@advance-labs/html-parser', () => ({ parseHtml: (h: string, u: string) => parseHtmlMock(h, u) }));
+vi.mock('@advance-labs/schema-validator', () => ({
   analyzeStructuredData: (h: string, u: string) => analyzeMock(h, u),
 }));
-vi.mock('@aeo/scoring', () => ({
+vi.mock('@advance-labs/scoring', () => ({
   buildAuditReport: (ctx: ScoringContext, opts: { durationMs: number; version: string }) =>
     buildAuditReportMock(ctx, opts),
 }));

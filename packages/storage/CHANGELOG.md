@@ -1,4 +1,4 @@
-# @aeo/storage
+# @advance-labs/storage
 
 ## 0.1.0
 

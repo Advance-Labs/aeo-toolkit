@@ -21,7 +21,7 @@ vi.mock('next/server', () => ({
 
 // Mock the pipeline so the auth gate is tested in isolation — no network, no LLM, no Google.
 const runBloggingPipeline = vi.fn();
-vi.mock('@aeo/blogging', () => ({
+vi.mock('@advance-labs/blogging', () => ({
   runBloggingPipeline: (...args: unknown[]): unknown => runBloggingPipeline(...args),
 }));
 

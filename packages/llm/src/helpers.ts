@@ -1,6 +1,6 @@
 /** Pure helpers shared across provider adapters. No I/O — trivially unit-testable. */
 
-import type { Citation, LlmMessage, LlmRole, Url } from '@aeo/types';
+import type { Citation, LlmMessage, LlmRole, Url } from '@advance-labs/types';
 
 /**
  * Split a flat `LlmMessage[]` into the OpenAI-style chat array plus a hoisted system prompt.

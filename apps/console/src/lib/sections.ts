@@ -5,7 +5,7 @@
  * We bucket each page by inspecting its URL path segments (docs / blog /
  * product / other) and render sections in a stable, intuitive order.
  */
-import type { LlmsTxtEntry, LlmsTxtSection } from '@aeo/types';
+import type { LlmsTxtEntry, LlmsTxtSection } from '@advance-labs/types';
 
 /** Canonical section keys, in render order. */
 export type SectionKey = 'docs' | 'blog' | 'product' | 'other';

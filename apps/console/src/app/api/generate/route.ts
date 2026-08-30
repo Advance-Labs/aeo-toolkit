@@ -5,7 +5,7 @@
  * Runs on the Node runtime (the crawler uses Node `fetch` + needs no edge limits).
  */
 import { NextResponse } from 'next/server';
-import { CrawlerError } from '@aeo/crawler';
+import { CrawlerError } from '@advance-labs/crawler';
 import { generateLlmsTxt } from '@/lib/generate';
 import { checkEntitlement } from '@/lib/billing/entitlements';
 import type {

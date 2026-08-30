@@ -3,34 +3,34 @@
  *
  * This is the real, runnable core flow. It reuses the shared engines exactly as
  * the architecture intends:
- *   1. `@aeo/crawler.crawl` discovers up to `maxPages` pages over real HTTP.
- *   2. `@aeo/html-parser.parseHtml` extracts the `ParsedHtml` shape per page.
- *   3. `@aeo/schema-validator.analyzeStructuredData` builds a `StructuredDataReport` per page.
+ *   1. `@advance-labs/crawler.crawl` discovers up to `maxPages` pages over real HTTP.
+ *   2. `@advance-labs/html-parser.parseHtml` extracts the `ParsedHtml` shape per page.
+ *   3. `@advance-labs/schema-validator.analyzeStructuredData` builds a `StructuredDataReport` per page.
  *   4. The three are assembled into a `ScoringContext` and handed to
- *      `@aeo/scoring.eeatScore`, which returns the four-pillar `EeatReport`.
+ *      `@advance-labs/scoring.eeatScore`, which returns the four-pillar `EeatReport`.
  *
  * The single external-I/O seam is the injectable `Crawler` interface below. In
- * production it is the real network-backed `@aeo/crawler.crawl`; tests inject a
+ * production it is the real network-backed `@advance-labs/crawler.crawl`; tests inject a
  * fake so the whole pipeline runs without any live network.
  */
-import { crawl } from '@aeo/crawler';
-import { parseHtml } from '@aeo/html-parser';
-import { analyzeStructuredData } from '@aeo/schema-validator';
-import { eeatScore } from '@aeo/scoring';
+import { crawl } from '@advance-labs/crawler';
+import { parseHtml } from '@advance-labs/html-parser';
+import { analyzeStructuredData } from '@advance-labs/schema-validator';
+import { eeatScore } from '@advance-labs/scoring';
 import type {
   CrawlResult,
   EeatReport,
   ParsedHtml,
   ScoringContext,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 /** Hard page cap for an E-E-A-T scan (per the tool spec). */
 export const EEAT_MAX_PAGES = 12;
 
 /**
  * The injectable crawl seam. The real implementation hits the network via
- * `@aeo/crawler`; tests provide a deterministic fake. Keeping this as a typed
+ * `@advance-labs/crawler`; tests provide a deterministic fake. Keeping this as a typed
  * interface means the surrounding pipeline is fully exercised either way.
  */
 export interface Crawler {
@@ -38,7 +38,7 @@ export interface Crawler {
 }
 
 // STUB-SEAM: live HTTP crawling. Not a stub of business logic — it is the real
-// `@aeo/crawler.crawl` with E-E-A-T-appropriate defaults. Tests swap it out so
+// `@advance-labs/crawler.crawl` with E-E-A-T-appropriate defaults. Tests swap it out so
 // no network is required to run the pipeline.
 const defaultCrawler: Crawler = (rootUrl, opts) =>
   crawl(rootUrl, {

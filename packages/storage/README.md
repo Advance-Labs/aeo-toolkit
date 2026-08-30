@@ -1,7 +1,7 @@
-# @aeo/storage
+# @advance-labs/storage
 
 Production storage and rate-limit adapters shared by the toolkit's MCP servers and web apps. It
-provides a Supabase-backed OAuth token store (implementing the shared `@aeo/types` `TokenStore`
+provides a Supabase-backed OAuth token store (implementing the shared `@advance-labs/types` `TokenStore`
 contract, with optional AES-256-GCM encryption at rest) and two rate limiters — an in-process
 fixed-window fallback and an Upstash Redis sliding-window adapter — behind a single
 `resolveRateLimiter` chooser. Every external SDK call (Supabase, Upstash) is isolated behind a small
@@ -16,7 +16,7 @@ import {
   createSupabaseClient,
   SupabaseTokenStore,
   resolveRateLimiter,
-} from '@aeo/storage';
+} from '@advance-labs/storage';
 
 // Encrypted, Supabase-backed token store.
 const supabase = createSupabaseClient({
@@ -43,7 +43,7 @@ await tokens.set('user-123', redditTokens, 'reddit');
 const reddit = await tokens.get('user-123', 'reddit');
 
 // Managed (done-for-you) tier: no plaintext fallback — omitting encryptionKey throws (§H4).
-import { createManagedTokenStore } from '@aeo/storage';
+import { createManagedTokenStore } from '@advance-labs/storage';
 const managed = createManagedTokenStore(supabase, {
   encryptionKey: process.env.TOKEN_ENCRYPTION_KEY!, // required; throws if missing
 });
@@ -79,7 +79,7 @@ if (!allowed) {
 | `TokenCryptoError` | class | Thrown on malformed ciphertext or authentication failure. |
 | `SupabaseLike`, `UpstashLimiterLike` | types | The injectable I/O seams that let tests substitute fakes. |
 
-Domain shapes (`TokenStore`, `GoogleOAuthTokens`) are imported from `@aeo/types`; this package never
+Domain shapes (`TokenStore`, `GoogleOAuthTokens`) are imported from `@advance-labs/types`; this package never
 redefines them.
 
 ### Expected table schema (`oauth_tokens`)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Ga4Report, GscReport } from '@aeo/types';
+import type { Ga4Report, GscReport } from '@advance-labs/types';
 import { buildDataContext, formatGa4Table, formatGscTable } from './data-context.js';
 
 const gsc: GscReport = {

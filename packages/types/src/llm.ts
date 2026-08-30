@@ -1,4 +1,4 @@
-/** LLM domain — provider-agnostic BYOK client shapes for `@aeo/llm`. */
+/** LLM domain — provider-agnostic BYOK client shapes for `@advance-labs/llm`. */
 import type { Url } from './crawl.js';
 
 export type LlmProvider = 'anthropic' | 'openai' | 'groq' | 'perplexity' | 'gateway';

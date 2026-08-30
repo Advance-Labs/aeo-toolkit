@@ -1,8 +1,8 @@
 /**
- * @aeo/ui — shared React design-system components for the AEO Toolkit web apps.
+ * @advance-labs/ui — shared React design-system components for the AEO Toolkit web apps.
  *
  * All components are presentational: they accept typed data via props (from
- * `@aeo/types`), render semantic HTML with Tailwind class strings, and contain
+ * `@advance-labs/types`), render semantic HTML with Tailwind class strings, and contain
  * no application logic. Consumers provide the Tailwind build.
  */
 export { ScoreGauge } from './ScoreGauge.js';

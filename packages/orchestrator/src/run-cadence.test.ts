@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ContentProposal, CustomerProfile, LinkOutreachProposal } from '@aeo/types';
+import type { ContentProposal, CustomerProfile, LinkOutreachProposal } from '@advance-labs/types';
 import { InMemoryProposalStore } from './proposal-store.js';
 import { runCadence } from './run-cadence.js';
 import type { OrchestratorDeps } from './run-cadence.js';

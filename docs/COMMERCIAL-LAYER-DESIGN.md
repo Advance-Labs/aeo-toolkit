@@ -2,7 +2,7 @@
 
 Binding contract for two workstreams on `apps/console`. Builders implement against this; where a
 builder disagrees, this doc wins. Grounded in the existing patterns: Supabase is reached **service-role
-only** (`@aeo/storage` `createSupabaseClient({ url, serviceKey })`), RLS is on with no permissive
+only** (`@advance-labs/storage` `createSupabaseClient({ url, serviceKey })`), RLS is on with no permissive
 policies, tool API routes are `runtime='nodejs'` `dynamic='force-dynamic'` POST handlers returning JSON.
 
 Guiding principle (matches the repo's "lights up when creds are added" convention, e.g. ga-gsc):
@@ -153,8 +153,8 @@ public routes. Keep matcher tight.
 Sequencing: mcp-page ∥ (auth → billing → gating). gating reads auth + billing APIs, so it runs after both.
 
 ## Quality gates (every builder runs its slice; assembly runs all)
-- `pnpm --filter @aeo/console typecheck` clean · `pnpm --filter @aeo/console build` green
-- `pnpm --filter @aeo/console test` — entitlement pure-core + plan-resolution + webhook-handler unit tests pass
+- `pnpm --filter @advance-labs/console typecheck` clean · `pnpm --filter @advance-labs/console build` green
+- `pnpm --filter @advance-labs/console test` — entitlement pure-core + plan-resolution + webhook-handler unit tests pass
 - Dormant proof: with NO new env, `checkEntitlement` returns ok for every feature; `/mcp`, `/pricing`
   render; tool routes behave exactly as today. (A test asserts this.)
 - `/mcp` and `/pricing` mobile 375px: `scrollWidth === 375`, zero console errors (playwright in verify).

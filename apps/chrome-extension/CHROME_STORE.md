@@ -12,7 +12,7 @@ ever leaves the browser**, and there are no server calls, accounts, or API keys.
 ## 1. Build the store archive
 
 ```bash
-pnpm --filter @aeo/chrome-extension package
+pnpm --filter @advance-labs/chrome-extension package
 ```
 
 This generates the brand icons (`pnpm icons`), runs `vite build` (producing `dist/`),
@@ -101,4 +101,4 @@ The store requires a privacy section. Use these answers:
 4. Submit for review. MV3 extensions that request `<all_urls>` typically receive
    extra scrutiny; the local-only privacy posture above is the key justification.
 5. After approval, bump the `version` in `package.json` for the next release and
-   re-run `pnpm --filter @aeo/chrome-extension package` to produce the next zip.
+   re-run `pnpm --filter @advance-labs/chrome-extension package` to produce the next zip.

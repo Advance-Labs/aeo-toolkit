@@ -1,12 +1,12 @@
 /**
  * `generate_outreach_email` — AI-drafted cold outreach (BYOK).
  *
- * Pipes a contact + context object through `@aeo/llm` via the injected
+ * Pipes a contact + context object through `@advance-labs/llm` via the injected
  * `OutreachClient`. The API key is request-scoped: it is read from the tool input,
  * forwarded to the LLM client, and never logged or persisted by this server.
  */
 import { z } from 'zod';
-import type { McpToolDef } from '@aeo/mcp-core';
+import type { McpToolDef } from '@advance-labs/mcp-core';
 import { jsonResult } from '../lib/result.js';
 import { generateOutreach, type OutreachRequest } from '../lib/outreach.js';
 import type { ToolDeps } from '../deps.js';
@@ -42,7 +42,7 @@ const inputSchema = {
   context: contextSchema,
   provider: z
     .enum(['anthropic', 'openai', 'groq', 'perplexity', 'gateway'])
-    .describe('LLM provider for @aeo/llm.'),
+    .describe('LLM provider for @advance-labs/llm.'),
   model: z.string().min(1).describe('Model id (e.g. claude-sonnet-4-20250514).'),
   apiKey: z.string().min(1).describe('BYOK API key — request-scoped, never persisted or logged.'),
   temperature: z.number().min(0).max(2).optional(),

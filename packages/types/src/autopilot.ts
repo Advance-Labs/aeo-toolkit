@@ -1,5 +1,5 @@
 /**
- * @aeo/types — Autopilot managed-layer domain types.
+ * @advance-labs/types — Autopilot managed-layer domain types.
  *
  * Shared shapes for the done-for-you "Managed" tier: per-customer cadence, the proposal/approval
  * model, job results, and the security primitives (guarded-fetch result, token-provider key).
@@ -118,7 +118,7 @@ export type Proposal =
 /** Discriminator for the hardened `(user_id, provider)` token-store key (security §H4). */
 export type TokenProvider = 'google' | 'reddit' | 'cms';
 
-/** Result of a guarded fetch from `@aeo/net-guard` (security §C1, SSRF). */
+/** Result of a guarded fetch from `@advance-labs/net-guard` (security §C1, SSRF). */
 export interface SafeFetchResult {
   ok: boolean;
   status: number;

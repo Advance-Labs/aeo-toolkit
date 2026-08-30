@@ -6,7 +6,7 @@ import type {
   GscReport,
   LlmCompletionRequest,
   LlmCompletionResponse,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import type { Ga4ReportFn } from './google/ga4.js';
 import type { GscQueryFn } from './google/gsc.js';
 import type { CompleteFn } from './llm/client.js';

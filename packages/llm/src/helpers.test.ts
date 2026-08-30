@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { LlmMessage } from '@aeo/types';
+import type { LlmMessage } from '@advance-labs/types';
 import { buildMessages, extractCitations } from './helpers.js';
 
 describe('buildMessages', () => {

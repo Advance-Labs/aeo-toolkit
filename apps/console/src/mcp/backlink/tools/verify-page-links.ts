@@ -7,7 +7,7 @@
  * live and whether it passes SEO equity.
  */
 import { z } from 'zod';
-import type { McpToolDef } from '@aeo/mcp-core';
+import type { McpToolDef } from '@advance-labs/mcp-core';
 import { jsonResult, type Json } from '../lib/result.js';
 import { verifyLinks } from '../lib/links.js';
 import type { ToolDeps } from '../deps.js';

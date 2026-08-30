@@ -2,13 +2,13 @@
  * `AuditReportDocument` — a `@react-pdf/renderer` document that renders an `AuditReport`
  * (overall score + grade, per-category breakdown, and the prioritized top fixes).
  *
- * Pure presentation: it takes a fully-computed `AuditReport` (produced by `@aeo/scoring` and
+ * Pure presentation: it takes a fully-computed `AuditReport` (produced by `@advance-labs/scoring` and
  * assembled by the audit app) and turns it into PDF primitives. No I/O happens here — the actual
  * byte rendering lives in `renderAuditReportPdf`, which keeps this component trivially testable.
  */
 import { Document, Image, Link, Page, Text, View } from '@react-pdf/renderer';
 import type { JSX } from 'react';
-import type { AuditReport, Finding, ScoreCategory } from '@aeo/types';
+import type { AuditReport, Finding, ScoreCategory } from '@advance-labs/types';
 import {
   ADVANCE_LABS_MOON_DATA_URI,
   ADVANCE_LABS_WEBSITE,
@@ -143,8 +143,8 @@ export function AuditReportDocument({ report }: AuditReportDocumentProps): JSX.E
     <Document
       title={`AEO Audit — ${report.url}`}
       author="AEO Toolkit"
-      creator="@aeo/pdf"
-      producer="@aeo/pdf"
+      creator="@advance-labs/pdf"
+      producer="@advance-labs/pdf"
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>

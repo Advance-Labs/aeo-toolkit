@@ -7,7 +7,7 @@
  * the data is read as directional rather than exhaustive.
  */
 import type { JSX } from 'react';
-import type { BacklinkGraphStats } from '@aeo/backlinks';
+import type { BacklinkGraphStats } from '@advance-labs/backlinks';
 
 export interface StatsSidebarProps {
   stats: BacklinkGraphStats;

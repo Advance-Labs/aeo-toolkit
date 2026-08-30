@@ -1,4 +1,4 @@
-# @aeo/llm
+# @advance-labs/llm
 
 ## 0.1.0
 

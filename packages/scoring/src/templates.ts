@@ -6,7 +6,7 @@
  * audit UI can offer a one-click "you're missing this, here's a starter" file.
  * Output is deterministic given the same context, which keeps tests stable.
  */
-import type { GeneratedTemplate, ScoringContext, Url } from '@aeo/types';
+import type { GeneratedTemplate, ScoringContext, Url } from '@advance-labs/types';
 
 /** Best-effort extraction of the bare host (no scheme/path) from a URL. */
 function hostOf(url: Url): string {

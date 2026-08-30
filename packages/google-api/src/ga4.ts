@@ -4,7 +4,7 @@
  * Thin wrapper over the `runReport` endpoint that maps Google's positional row/header shape into
  * the named {@link Ga4Row} contract. All HTTP flows through an injectable {@link Fetcher}.
  */
-import type { Ga4Property, Ga4Report, Ga4ReportRequest, Ga4Row } from '@aeo/types';
+import type { Ga4Property, Ga4Report, Ga4ReportRequest, Ga4Row } from '@advance-labs/types';
 import {
   asNumber,
   asRecord,

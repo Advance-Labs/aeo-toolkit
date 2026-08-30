@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { GscQueryRequest } from '@aeo/types';
+import type { GscQueryRequest } from '@advance-labs/types';
 import { GscClient } from './gsc.js';
 import { GoogleApiError } from './http.js';
 import { errorFetcher, jsonFetcher, parseBody } from './test-helpers.js';

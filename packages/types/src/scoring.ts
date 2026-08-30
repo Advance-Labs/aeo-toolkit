@@ -1,4 +1,4 @@
-/** Scoring domain — the keystone shapes produced by `@aeo/scoring`. */
+/** Scoring domain — the keystone shapes produced by `@advance-labs/scoring`. */
 import type { Url } from './crawl.js';
 import type { CrawlResult } from './crawl.js';
 import type { ParsedHtml } from './html.js';

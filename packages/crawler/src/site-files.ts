@@ -1,4 +1,4 @@
-import type { SiteFilePresence, Url } from '@aeo/types';
+import type { SiteFilePresence, Url } from '@advance-labs/types';
 import type { Fetcher } from './fetcher.js';
 import { fetchResource } from './fetch-resource.js';
 import { DEFAULT_REQUEST_TIMEOUT_MS, DEFAULT_USER_AGENT } from './constants.js';

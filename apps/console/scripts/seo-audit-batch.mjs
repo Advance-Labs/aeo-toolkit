@@ -1,10 +1,10 @@
 /**
  * seo-audit-batch.mjs — run the Advance Labs AEO scoring engine across a LIST of sites and render a
- * one-page PDF "scorecard" per site via @aeo/pdf. This is the outreach-hook generator: feed it a
+ * one-page PDF "scorecard" per site via @advance-labs/pdf. This is the outreach-hook generator: feed it a
  * target list, get back N branded PDF scorecards plus an index.csv ranking them by score, so the
  * worst-scoring (best-prospect) sites float to the top of the cold-email queue.
  *
- * Lives in apps/console because @aeo/* workspace packages resolve from here (pnpm symlinks in
+ * Lives in apps/console because @advance-labs/* workspace packages resolve from here (pnpm symlinks in
  * apps/console/node_modules). Run it from this directory.
  *
  * Usage:
@@ -21,7 +21,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { renderAuditReportPdf } from "@aeo/pdf";
+import { renderAuditReportPdf } from "@advance-labs/pdf";
 import { auditSite, ENGINE_VERSION } from "./lib/audit-site.mjs";
 import { parseTargets, slugify, summaryRow, toCsv } from "./lib/batch-core.mjs";
 

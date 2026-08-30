@@ -5,8 +5,8 @@
  * All external collaborators (GA4 client, GSC client, LLM `complete`) are injected so the pipeline
  * is unit-testable without live network or credentials. The route handler supplies the real ones.
  */
-import { Ga4Client, GscClient } from '@aeo/google-api';
-import { complete } from '@aeo/llm';
+import { Ga4Client, GscClient } from '@advance-labs/google-api';
+import { complete } from '@advance-labs/llm';
 import type {
   Ga4Report,
   Ga4ReportRequest,
@@ -15,7 +15,7 @@ import type {
   GscReport,
   LlmCompletionRequest,
   LlmCompletionResponse,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import type { ChatRequestBody, ChatResponseBody } from './chat-types.js';
 import { buildDataContext } from './data-context.js';
 import { trailingWindow, type DateWindow } from './dates.js';

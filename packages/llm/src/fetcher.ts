@@ -34,7 +34,7 @@ export const defaultFetcher: Fetcher = (url, init) => {
   const g = globalThis as { fetch?: unknown };
   if (typeof g.fetch !== 'function') {
     throw new Error(
-      '@aeo/llm: no global `fetch` available in this runtime; pass `opts.fetcher` explicitly.',
+      '@advance-labs/llm: no global `fetch` available in this runtime; pass `opts.fetcher` explicitly.',
     );
   }
   const f = g.fetch as (input: string, init: unknown) => Promise<FetchResponse>;

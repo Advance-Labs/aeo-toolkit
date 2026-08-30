@@ -6,7 +6,7 @@ import type {
   GscReport,
   LlmCompletionRequest,
   LlmCompletionResponse,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { answerQuestion, type AnswerDeps } from './answer.js';
 import type { ChatRequestBody } from './chat-types.js';
 

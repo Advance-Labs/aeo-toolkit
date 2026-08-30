@@ -3,7 +3,7 @@
  * tools (`gsc_top_queries`, `gsc_ctr_gaps`, `compare_periods`). No network, no
  * clients: these take already-fetched {@link GscRow}s and produce derived shapes.
  */
-import type { GscRow } from '@aeo/types';
+import type { GscRow } from '@advance-labs/types';
 import { round } from './format.js';
 
 /** A query row flattened to its single dimension key (used by top-queries). */

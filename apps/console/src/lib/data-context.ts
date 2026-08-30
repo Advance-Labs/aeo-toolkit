@@ -5,7 +5,7 @@
  * The context is deliberately tabular and bounded (top-N rows) so the prompt stays small and the
  * model is anchored to real numbers rather than guessing.
  */
-import type { Ga4Report, Ga4Row, GscReport, GscRow } from '@aeo/types';
+import type { Ga4Report, Ga4Row, GscReport, GscRow } from '@advance-labs/types';
 
 /** How many rows of each table to surface to the model. Keeps the prompt compact. */
 export const DEFAULT_TOP_N = 15;

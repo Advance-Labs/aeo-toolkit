@@ -6,7 +6,7 @@
  * scores each gap, drops ones that collide with existing posts (via the dedup fingerprint), and
  * emits ranked `TopicBrief`s. Pure-ish: GSC access is injected as `GscQueryFn`.
  */
-import type { GscQueryRequest, GscReport, GscRow } from '@aeo/types';
+import type { GscQueryRequest, GscReport, GscRow } from '@advance-labs/types';
 import type { GscQueryFn } from '../google/gsc.js';
 import { checkDuplicate, fingerprint } from './dedup.js';
 import type { DedupCandidate } from './dedup.js';

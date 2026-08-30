@@ -1,4 +1,4 @@
-# @aeo/config
+# @advance-labs/config
 
 Shared toolchain configuration for the AEO Toolkit monorepo: ESLint (flat), TypeScript presets, Prettier.
 
@@ -7,8 +7,8 @@ Shared toolchain configuration for the AEO Toolkit monorepo: ESLint (flat), Type
 **ESLint** — the root `eslint.config.js` imports from here; packages need no local config:
 
 ```js
-import { baseConfig } from '@aeo/config/eslint';      // node libraries
-import { reactConfig } from '@aeo/config/eslint/react'; // React / UI
+import { baseConfig } from '@advance-labs/config/eslint';      // node libraries
+import { reactConfig } from '@advance-labs/config/eslint/react'; // React / UI
 ```
 
 **TypeScript** — extend a preset in a package `tsconfig.json`:

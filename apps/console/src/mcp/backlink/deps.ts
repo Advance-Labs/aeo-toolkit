@@ -4,9 +4,9 @@
  * Keeping the `HttpClient` and `OutreachClient` injectable here is what makes the
  * whole tool layer unit-testable: tests build a registry with fake clients; the
  * real route builds one with the live clients. No tool reaches for `fetch` or
- * `@aeo/llm` directly.
+ * `@advance-labs/llm` directly.
  */
-import type { HttpClient } from '@aeo/backlinks';
+import type { HttpClient } from '@advance-labs/backlinks';
 import type { OutreachClient } from './lib/outreach.js';
 
 export interface ToolDeps {

@@ -7,7 +7,7 @@
  * while keeping its full property bag for validation.
  */
 import type { CheerioAPI } from 'cheerio';
-import type { StructuredDataItem } from '@aeo/types';
+import type { StructuredDataItem } from '@advance-labs/types';
 import { normalizeTypes } from './types-map.js';
 import { finalizeItem } from './validation.js';
 

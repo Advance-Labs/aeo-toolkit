@@ -1,5 +1,5 @@
 {
-  "name": "@aeo/chrome-extension",
+  "name": "@advance-labs/chrome-extension",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aeo/scoring": "workspace:*",
-    "@aeo/schema-validator": "workspace:*",
-    "@aeo/html-parser": "workspace:*",
-    "@aeo/types": "workspace:*",
+    "@advance-labs/scoring": "workspace:*",
+    "@advance-labs/schema-validator": "workspace:*",
+    "@advance-labs/html-parser": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "jspdf": "^4.2.1"

@@ -10,7 +10,7 @@ import type {
   Score,
   ScoreCategory,
   ScoreGrade,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { Badge, Button, Input, Reveal, SpotlightCard } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import {
@@ -23,7 +23,7 @@ import {
 type Status = 'idle' | 'auditing' | 'done' | 'error';
 
 /* -------------------------------------------------------------------------- */
-/* Presentational helpers (dark-theme variants of the @aeo/ui scoring utils).  */
+/* Presentational helpers (dark-theme variants of the @advance-labs/ui scoring utils).  */
 /* These mirror the package helpers but tint for the console's dark surface.   */
 /* -------------------------------------------------------------------------- */
 
@@ -894,7 +894,7 @@ const URLS_SHOWN_INLINE = 3;
  * Makes no completeness claim — rules cap this list, and the finding's own description carries
  * the true total (e.g. "21 of 45 crawled pages").
  *
- * Mirrors `FixList` in @aeo/ui, which this component deliberately duplicates for its
+ * Mirrors `FixList` in @advance-labs/ui, which this component deliberately duplicates for its
  * dark-theme variant; keep the two in step.
  */
 function AffectedUrls({ urls }: { urls: readonly string[] }): JSX.Element {

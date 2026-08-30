@@ -1,11 +1,11 @@
 /**
- * audit-to-pdf.mjs — crawl + score a live site and export the co-branded @aeo/pdf report.
+ * audit-to-pdf.mjs — crawl + score a live site and export the co-branded @advance-labs/pdf report.
  * Usage: node scripts/audit-to-pdf.mjs --site https://advancelabs.dev --max 25 --out <file.pdf>
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { auditSite, ENGINE_VERSION } from "./lib/audit-site.mjs";
-import { renderAuditReportPdf } from "@aeo/pdf";
+import { renderAuditReportPdf } from "@advance-labs/pdf";
 
 const argv = process.argv.slice(2);
 const args = { site: "https://advancelabs.dev", max: 25, out: "advancelabs-audit.pdf" };

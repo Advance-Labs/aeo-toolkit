@@ -3,7 +3,7 @@
  *
  * This is the cookie-aware, anon-key client used in Server Components, Route Handlers, and Server
  * Actions to read the signed-in user's session. It is SEPARATE from the service-role client in
- * `@aeo/storage` (`createSupabaseClient`), which bypasses RLS for webhooks and is untouched here.
+ * `@advance-labs/storage` (`createSupabaseClient`), which bypasses RLS for webhooks and is untouched here.
  *
  * Dormant-safe: when {@link AUTH_ENABLED} is false (no Supabase auth env), the factory returns null
  * and {@link getSession}/{@link getUser} resolve to null — the site behaves exactly as today.

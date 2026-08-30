@@ -1,6 +1,6 @@
 /**
  * Request-body validation for the technical-audit endpoint. Kept dependency-free (no zod) so the
- * app's only runtime deps are the @aeo/* packages + Next/React, per the spec.
+ * app's only runtime deps are the @advance-labs/* packages + Next/React, per the spec.
  */
 import { AuditError } from './audit-errors.js';
 

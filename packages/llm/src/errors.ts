@@ -1,6 +1,6 @@
 /** Typed error subclasses so callers can branch on failure mode without string matching. */
 
-import type { LlmProvider } from '@aeo/types';
+import type { LlmProvider } from '@advance-labs/types';
 
 /** Base class for every error this package throws. */
 export class LlmError extends Error {
@@ -19,7 +19,7 @@ export class LlmHttpError extends LlmError {
     /** Raw upstream body, truncated. Never contains the BYOK key (it lives only in request headers). */
     readonly body: string,
   ) {
-    super(`@aeo/llm: ${provider} request failed with HTTP ${status} ${statusText}`);
+    super(`@advance-labs/llm: ${provider} request failed with HTTP ${status} ${statusText}`);
   }
 }
 
@@ -29,7 +29,7 @@ export class LlmResponseError extends LlmError {
     readonly provider: LlmProvider,
     message: string,
   ) {
-    super(`@aeo/llm: ${provider} returned an unexpected response — ${message}`);
+    super(`@advance-labs/llm: ${provider} returned an unexpected response — ${message}`);
   }
 }
 

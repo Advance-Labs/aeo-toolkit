@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { BacklinkGraph } from '@aeo/backlinks';
+import type { BacklinkGraph } from '@advance-labs/backlinks';
 
 // Mock the build seam so the route is exercised without any network or real engine.
 // The route imports `buildGraph` from `@/lib/graph-build`, so the mock must target that exact

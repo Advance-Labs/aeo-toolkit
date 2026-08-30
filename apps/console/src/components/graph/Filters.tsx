@@ -7,7 +7,7 @@
  * logic is testable and the component stays a thin control surface.
  */
 import type { JSX } from 'react';
-import type { GraphNodeType } from '@aeo/backlinks';
+import type { GraphNodeType } from '@advance-labs/backlinks';
 import type { FgLink, FgNode, ForceGraphData } from './graph-data.js';
 
 /** Node types the user can toggle on/off (root is always shown). */

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { LlmCompletionRequest, LlmCompletionResponse } from '@aeo/types';
+import type { LlmCompletionRequest, LlmCompletionResponse } from '@advance-labs/types';
 import type { CompleteFn } from '../llm/client.js';
 import type { Post } from '../types.js';
 import { lint, runEditor, stripFrontMatter } from './editor.js';

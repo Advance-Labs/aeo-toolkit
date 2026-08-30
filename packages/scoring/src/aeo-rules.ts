@@ -7,7 +7,7 @@
  * markup, organization identity, AI-bot crawl permission, and extractable
  * structure (lists, decent word count). All accessors are defensive.
  */
-import type { Rule, ScoringContext } from '@aeo/types';
+import type { Rule, ScoringContext } from '@advance-labs/types';
 import { KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './context-utils.js';
 
 const ANSWERABLE_MIN_WORDS = 300;

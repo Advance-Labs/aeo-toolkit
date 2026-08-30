@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CustomerProfile } from '@aeo/types';
+import type { CustomerProfile } from '@advance-labs/types';
 import { dedupeKey, periodOf, dueJobs, inCadenceKinds } from './cadence.js';
 
 function profile(overrides: Partial<CustomerProfile> = {}): CustomerProfile {

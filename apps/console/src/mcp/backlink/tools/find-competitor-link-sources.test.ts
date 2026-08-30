@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { ToolResult } from '@aeo/mcp-core';
-import type { HttpClient, TextResponse } from '@aeo/backlinks';
+import type { ToolResult } from '@advance-labs/mcp-core';
+import type { HttpClient, TextResponse } from '@advance-labs/backlinks';
 import { findCompetitorLinkSourcesTool } from './find-competitor-link-sources.js';
 import type { ToolDeps } from '../deps.js';
 import type { OutreachClient } from '../lib/outreach.js';

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo } from '@aeo/ui';
+import { Logo } from '@advance-labs/ui';
 import { Button } from './ui/Button';
 import { cn } from '@/lib/cn';
 

@@ -7,7 +7,7 @@
  * the bytes back to the browser as an `application/pdf` download.
  */
 import { renderToBuffer } from '@react-pdf/renderer';
-import type { AuditReport } from '@aeo/types';
+import type { AuditReport } from '@advance-labs/types';
 import { AuditReportDocument } from './AuditReportDocument.js';
 
 /**

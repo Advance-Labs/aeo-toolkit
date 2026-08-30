@@ -1,5 +1,5 @@
 /**
- * @aeo/orchestrator — the spine of the Autopilot v1 managed layer.
+ * @advance-labs/orchestrator — the spine of the Autopilot v1 managed layer.
  *
  * Composes the existing reuse layer into a per-customer "done-for-you" cadence that produces
  * reviewable proposals (never silent side effects):
@@ -8,15 +8,15 @@
  *     `customerId:jobKind:period`.
  *   - {@link ProposalStore}: idempotent-create proposal persistence ({@link InMemoryProposalStore} +
  *     {@link SupabaseProposalStore}).
- *   - {@link ContentRunner}: composes `@aeo/blogging` sub-agents (research → write → edit), stops
+ *   - {@link ContentRunner}: composes `@advance-labs/blogging` sub-agents (research → write → edit), stops
  *     before publish, emits a {@link ContentProposal}.
- *   - {@link OutreachRunner}: `@aeo/backlinks` discovery + contact extraction over SSRF-guarded
- *     `@aeo/net-guard` fetches, emits {@link LinkOutreachProposal}s (always human-gated).
+ *   - {@link OutreachRunner}: `@advance-labs/backlinks` discovery + contact extraction over SSRF-guarded
+ *     `@advance-labs/net-guard` fetches, emits {@link LinkOutreachProposal}s (always human-gated).
  *   - {@link shouldAutoExecute}: the graduated-autonomy gate (content above a threshold only).
  *   - {@link runCadence}: ties it together for one customer/pass.
  *
  * Every seam (network/clock/storage/LLM/ids) is injected, so the whole package is offline-testable.
- * It depends only on the reuse layer + `@aeo/types`; it must NOT import from `apps/console`.
+ * It depends only on the reuse layer + `@advance-labs/types`; it must NOT import from `apps/console`.
  */
 
 // Cadence core (pure)

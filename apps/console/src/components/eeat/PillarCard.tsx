@@ -1,7 +1,7 @@
 import type { JSX, ReactNode } from 'react';
-import type { EeatPillar, EeatPillarKey } from '@aeo/types';
-import { GradeBadge } from '@aeo/ui';
-import { scoreToGrade } from '@aeo/scoring';
+import type { EeatPillar, EeatPillarKey } from '@advance-labs/types';
+import { GradeBadge } from '@advance-labs/ui';
+import { scoreToGrade } from '@advance-labs/scoring';
 import { SpotlightCard } from '@/components/ui';
 import { cn } from '@/lib/cn';
 

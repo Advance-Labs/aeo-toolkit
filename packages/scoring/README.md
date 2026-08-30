@@ -1,8 +1,8 @@
-# @aeo/scoring
+# @advance-labs/scoring
 
 The keystone scorer of the AEO Toolkit: a declarative, weighted rule engine plus three rule
 sets (technical SEO, AEO, E-E-A-T) and the report builders that four downstream tools render.
-It is pure TypeScript with no runtime dependencies beyond `@aeo/types` — all crawl, parse, and
+It is pure TypeScript with no runtime dependencies beyond `@advance-labs/types` — all crawl, parse, and
 schema data arrives via an injected `ScoringContext`, so every function is unit-testable without
 any network or filesystem access.
 
@@ -18,10 +18,10 @@ import {
   aeoRules,
   runRules,
   generateTemplates,
-} from '@aeo/scoring';
-import type { ScoringContext } from '@aeo/types';
+} from '@advance-labs/scoring';
+import type { ScoringContext } from '@advance-labs/types';
 
-// `ctx` is assembled by @aeo/crawler + @aeo/html-parser + @aeo/schema-validator.
+// `ctx` is assembled by @advance-labs/crawler + @advance-labs/html-parser + @advance-labs/schema-validator.
 declare const ctx: ScoringContext;
 
 const score = await auditScore(ctx); // combined technical + AEO Score
@@ -65,7 +65,7 @@ const { categories, score: custom } = await runRules(ctx, [...technicalSeoRules,
 | `KEY_AI_BOTS` | array | The AI user-agents whose access matters most |
 
 All domain shapes (`Score`, `Finding`, `ScoreCategory`, `ScoringContext`, `AuditReport`,
-`EeatReport`, `GeneratedTemplate`, …) come from `@aeo/types` — never redefined here.
+`EeatReport`, `GeneratedTemplate`, …) come from `@advance-labs/types` — never redefined here.
 
 ## Status
 

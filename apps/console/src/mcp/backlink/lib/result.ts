@@ -6,9 +6,9 @@
  * machine-readable data while text-only clients still see the JSON. Soft failures
  * (a blocked scrape, an empty parse) are surfaced as a `warnings[]` array inside
  * the payload — never as a thrown error or an MCP error result. Hard, structured
- * errors still use `toToolError` from `@aeo/mcp-core`.
+ * errors still use `toToolError` from `@advance-labs/mcp-core`.
  */
-import type { ToolResult } from '@aeo/mcp-core';
+import type { ToolResult } from '@advance-labs/mcp-core';
 
 /** A JSON-serialisable value. */
 export type Json = string | number | boolean | null | Json[] | { [key: string]: Json | undefined };

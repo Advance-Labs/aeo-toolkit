@@ -4,7 +4,7 @@
  * SEO/AEO cycle, automated: crawl -> parse -> structured-data -> score (40+ technical-SEO,
  * AEO, and E-E-A-T rules) -> prioritized P0/P1/P2 fix list.
  *
- * Lives in apps/console because @aeo/* workspace packages resolve from here (pnpm
+ * Lives in apps/console because @advance-labs/* workspace packages resolve from here (pnpm
  * symlinks in apps/console/node_modules). Run it from this directory.
  *
  * Usage:
@@ -45,7 +45,7 @@ function toMarkdown(report, site) {
   lines.push(`- **Overall score:** ${score.overall}/100 (grade ${score.grade})`);
   lines.push(`- **Pages crawled:** ${report.pagesCrawled}`);
   lines.push(`- **Passed / failed:** ${score.passedCount} / ${score.failedCount} (critical: ${score.criticalCount})`);
-  lines.push(`- **Engine:** @aeo/scoring v${VERSION}`);
+  lines.push(`- **Engine:** @advance-labs/scoring v${VERSION}`);
   lines.push("");
 
   lines.push(`## Category scores`);

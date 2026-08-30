@@ -1,9 +1,8 @@
 {
-  "name": "@aeo/scoring",
+  "name": "@advance-labs/scoring",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "description": "Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit.",
+  "description": "Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders \u2014 the keystone scorer of the AEO Toolkit.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,13 +25,22 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*"
+    "@advance-labs/types": "workspace:*"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitest": "^3.2.6"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/scoring"
+  },
+  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
 }

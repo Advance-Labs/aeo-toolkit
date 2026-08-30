@@ -3,7 +3,7 @@
  * These keep Tailwind class strings consistent (color ramps, severity styling) without
  * pulling in a class-merge dependency — consumers supply the Tailwind build.
  */
-import type { FindingSeverity, ScoreGrade } from '@aeo/types';
+import type { FindingSeverity, ScoreGrade } from '@advance-labs/types';
 
 /** Join conditional class names, dropping falsy values. */
 export function cx(...parts: Array<string | false | null | undefined>): string {

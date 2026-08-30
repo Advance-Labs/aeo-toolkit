@@ -1,9 +1,9 @@
 {
-  "name": "@aeo/storage",
+  "name": "@advance-labs/storage",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Production storage and rate-limit adapters — Supabase-backed encrypted token store plus in-memory and Upstash rate limiters, behind small injectable seams.",
+  "description": "Production storage and rate-limit adapters \u2014 Supabase-backed encrypted token store plus in-memory and Upstash rate limiters, behind small injectable seams.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -26,13 +26,13 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "@supabase/supabase-js": "^2.47.10",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.34.3"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/node": "^22.10.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",

@@ -1,4 +1,4 @@
-# @aeo/google-api
+# @advance-labs/google-api
 
 ## 0.1.0
 

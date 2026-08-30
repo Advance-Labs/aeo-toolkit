@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@aeo/console",
+  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@advance-labs/console",
   "crons": [
     { "path": "/api/cron/blogging", "schedule": "0 13 * * *" },
     { "path": "/api/cron/indexnow", "schedule": "0 8 * * *" },

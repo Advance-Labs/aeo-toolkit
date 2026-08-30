@@ -1,4 +1,4 @@
-/** HTML parsing domain — output of `@aeo/html-parser`. */
+/** HTML parsing domain — output of `@advance-labs/html-parser`. */
 import type { Url } from './crawl.js';
 import type { StructuredDataFormat } from './schema.js';
 
@@ -69,7 +69,7 @@ export interface ContentSignals {
   tableCount: number;
 }
 
-/** A raw structured-data block extracted from HTML, handed to `@aeo/schema-validator`. */
+/** A raw structured-data block extracted from HTML, handed to `@advance-labs/schema-validator`. */
 export interface RawStructuredDataBlock {
   format: StructuredDataFormat;
   /** JSON-LD: parsed JSON. Microdata/RDFa: extracted item tree. */

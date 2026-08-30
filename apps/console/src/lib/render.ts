@@ -15,7 +15,7 @@
  *
  * Both functions are pure (string in, string out) and never touch the network.
  */
-import type { LlmsTxtEntry, LlmsTxtManifest, ParsedHtml } from '@aeo/types';
+import type { LlmsTxtEntry, LlmsTxtManifest, ParsedHtml } from '@advance-labs/types';
 
 /** llmstxt.org spec revision this renderer targets; surfaced as an HTML comment header. */
 export const LLMS_TXT_SPEC_VERSION = '2024-09';

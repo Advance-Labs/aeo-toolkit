@@ -6,8 +6,8 @@
  * pages into sections, and assembles the manifest. The actual network crawl
  * lives in `generate.ts` (the I/O seam) so this stays unit-testable without a fetch.
  */
-import type { CrawlResult, LlmsTxtEntry, LlmsTxtManifest, ParsedHtml } from '@aeo/types';
-import { parseHtml } from '@aeo/html-parser';
+import type { CrawlResult, LlmsTxtEntry, LlmsTxtManifest, ParsedHtml } from '@advance-labs/types';
+import { parseHtml } from '@advance-labs/html-parser';
 import { groupIntoSections } from './sections.js';
 
 export interface BuildManifestResult {

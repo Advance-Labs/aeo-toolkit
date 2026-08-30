@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
-import type { EeatReport } from '@aeo/types';
-import { GradeBadge } from '@aeo/ui';
+import type { EeatReport } from '@advance-labs/types';
+import { GradeBadge } from '@advance-labs/ui';
 import { requestEeatAudit } from '@/components/eeat/client.js';
 import { EeatUrlForm } from '@/components/eeat/EeatUrlForm.js';
 import { PillarCard } from '@/components/eeat/PillarCard.js';

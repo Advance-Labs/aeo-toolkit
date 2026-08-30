@@ -1,5 +1,5 @@
 {
-  "name": "@aeo/pdf",
+  "name": "@advance-labs/pdf",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -26,12 +26,12 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@aeo/types": "workspace:*",
+    "@advance-labs/types": "workspace:*",
     "@react-pdf/renderer": "^4.1.6",
     "react": "^19.0.0"
   },
   "devDependencies": {
-    "@aeo/config": "workspace:*",
+    "@advance-labs/config": "workspace:*",
     "@types/react": "^19.0.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.3.5",

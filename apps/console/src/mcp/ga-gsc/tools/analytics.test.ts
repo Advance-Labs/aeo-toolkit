@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { GscRow } from '@aeo/types';
+import type { GscRow } from '@advance-labs/types';
 import {
   aggregate,
   comparePeriods,

@@ -1,13 +1,13 @@
 /**
  * Publish-on-approve for the Managed tier.
  *
- * Turns an approved {@link ContentProposal} into a sanitized `@aeo/blogging` `Post` and pushes it
+ * Turns an approved {@link ContentProposal} into a sanitized `@advance-labs/blogging` `Post` and pushes it
  * through the env-gated `Publisher`: a real `CmsPublisher` when `PUBLISH_WEBHOOK_URL` is set, else a
  * dry-run `NoopPublisher` (no credentials, no I/O). Sanitization (security H3) happens HERE, at the
  * publish boundary — the only surviving link is the customer's own site.
  */
-import { getPublisher, type Post, type Publisher, type PublishResult } from '@aeo/blogging';
-import type { ContentProposal } from '@aeo/types';
+import { getPublisher, type Post, type Publisher, type PublishResult } from '@advance-labs/blogging';
+import type { ContentProposal } from '@advance-labs/types';
 import { sanitizeForPublish } from './sanitize.js';
 
 /** Map an approved content proposal to a sanitized `Post` (pure). */

@@ -2,12 +2,12 @@
 
 /**
  * The single-URL entry point that sits above the 3D scene. Wraps the shared
- * `@aeo/ui` UrlInputForm (which normalizes the scheme and validates the URL) in
+ * `@advance-labs/ui` UrlInputForm (which normalizes the scheme and validates the URL) in
  * a glassy, themed bar. The page hero owns the single `<h1>`, so this is a plain
  * control surface (no heading) — it just labels the input for assistive tech.
  */
 import type { JSX } from 'react';
-import { UrlInputForm } from '@aeo/ui';
+import { UrlInputForm } from '@advance-labs/ui';
 
 export interface UrlBarProps {
   /** Called with the normalized, validated URL when submitted. */

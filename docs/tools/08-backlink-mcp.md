@@ -1,7 +1,7 @@
 # Tool 8 — Backlink MCP (`apps/backlink-mcp`)
 
 **Type:** stdio + remote MCP server (Node) · **Deploy:** npm (stdio, Claude Desktop/Cursor) + Vercel (remote)
-**Depends on:** `@aeo/mcp-core`, `@aeo/llm`, `@aeo/crawler` (for fetch/verify), `@aeo/types`
+**Depends on:** `@advance-labs/mcp-core`, `@advance-labs/llm`, `@advance-labs/crawler` (for fetch/verify), `@advance-labs/types`
 
 ## What it does
 A free alternative to paid link-index SaaS. Finds brand mentions, prospects, and contacts using free
@@ -14,10 +14,10 @@ sources (DuckDuckGo HTML, Wayback CDX, direct fetches), with polite rate limitin
 - `verify_page_links({ url, targetDomain })` — fetch + confirm link presence/attributes.
 - `extract_contact_info({ url })` — emails + social handles from a page.
 - `check_page_history({ url })` — Wayback CDX timeline.
-- `generate_outreach_email({ contact, context })` — pipes contact info + context through `@aeo/llm` (BYOK).
+- `generate_outreach_email({ contact, context })` — pipes contact info + context through `@advance-labs/llm` (BYOK).
 
 ## Server
-- `@aeo/mcp-core` with a configurable `rate_limit` (token bucket — DuckDuckGo blocks aggressive scraping).
+- `@advance-labs/mcp-core` with a configurable `rate_limit` (token bucket — DuckDuckGo blocks aggressive scraping).
 - Provide both `src/server.ts` (stdio) and a Vercel HTTP entry (remote variant).
 
 ## Notes / stubs

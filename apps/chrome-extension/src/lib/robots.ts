@@ -1,14 +1,14 @@
 /**
  * Minimal, dependency-free robots.txt parser.
  *
- * In the full toolkit this is `@aeo/crawler`'s job, but the extension has no
+ * In the full toolkit this is `@advance-labs/crawler`'s job, but the extension has no
  * Node runtime and only ever inspects a single origin, so we parse the raw text
  * into the shared {@link RobotsTxt} shape here. Pure and synchronous — fully
  * unit-testable without any network.
  */
-import type { AiBotDirective, AiBotName, RobotsGroup, RobotsTxt, Url } from '@aeo/types';
+import type { AiBotDirective, AiBotName, RobotsGroup, RobotsTxt, Url } from '@advance-labs/types';
 
-/** AI / LLM crawler user-agents we report on, mirroring `@aeo/types` `AiBotName`. */
+/** AI / LLM crawler user-agents we report on, mirroring `@advance-labs/types` `AiBotName`. */
 const AI_BOTS: readonly AiBotName[] = [
   'GPTBot',
   'ChatGPT-User',

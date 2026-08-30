@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { InMemoryRateLimiter, UpstashRateLimiter } from '@aeo/storage';
+import { InMemoryRateLimiter, UpstashRateLimiter } from '@advance-labs/storage';
 import {
   AUDIT_RATE_LIMIT,
   AUDIT_WINDOW_SECONDS,

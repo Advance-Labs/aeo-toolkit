@@ -5,7 +5,7 @@
  *   scheme allowlist → DNS resolve → reject if ANY resolved IP is private (rebind defense) →
  *   fetch with manual redirects → re-run the whole check on every redirect target → body/time caps.
  */
-import type { SafeFetchResult, SafeFetchBlockReason } from '@aeo/types';
+import type { SafeFetchResult, SafeFetchBlockReason } from '@advance-labs/types';
 import { isBlockedAddress } from './address.js';
 
 /** Minimal response the injected fetch must return (decoupled from the global `fetch`/`Response`). */

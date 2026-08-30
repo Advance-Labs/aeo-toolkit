@@ -1,8 +1,8 @@
 /**
- * Sample `@aeo/types` data used by the component tests. Kept out of the public
+ * Sample `@advance-labs/types` data used by the component tests. Kept out of the public
  * surface (not re-exported from index.ts) so it never ships to consumers.
  */
-import type { Finding, GeneratedTemplate, Score, ScoreCategory } from '@aeo/types';
+import type { Finding, GeneratedTemplate, Score, ScoreCategory } from '@advance-labs/types';
 
 export const sampleCategories: ScoreCategory[] = [
   {

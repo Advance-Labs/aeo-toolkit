@@ -12,7 +12,7 @@ The mark is a rounded app-tile holding an **"A"** drawn as an upward peak — An
 | [`logo.svg`](logo.svg) | Horizontal lockup (mark + wordmark) for **light** backgrounds. |
 | [`logo-dark.svg`](logo-dark.svg) | Horizontal lockup for **dark** backgrounds. |
 
-In a React app, prefer the `<Logo />` / `<LogoMark />` components from `@aeo/ui` (themeable, no asset fetch).
+In a React app, prefer the `<Logo />` / `<LogoMark />` components from `@advance-labs/ui` (themeable, no asset fetch).
 
 ## Palette
 

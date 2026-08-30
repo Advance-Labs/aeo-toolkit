@@ -8,7 +8,7 @@
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { z, ZodRawShape } from 'zod';
-import type { McpServerOptions } from '@aeo/types';
+import type { McpServerOptions } from '@advance-labs/types';
 
 import { RateLimiter } from './rate-limit.js';
 import { toToolError, type ToolErrorResult } from './errors.js';
@@ -31,7 +31,7 @@ export type ToolResult = ToolSuccessResult | ToolErrorResult;
 /**
  * A registry-friendly tool definition.
  *
- * Unlike the loosely-typed `McpToolDefinition` in `@aeo/types` (whose `inputSchema`
+ * Unlike the loosely-typed `McpToolDefinition` in `@advance-labs/types` (whose `inputSchema`
  * is `unknown`), this carries a concrete Zod raw shape so the handler receives
  * fully-typed, validated arguments. `TShape` is the object of zod fields the SDK
  * validates against (e.g. `{ url: z.string() }`).

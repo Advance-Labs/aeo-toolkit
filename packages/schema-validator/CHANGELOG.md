@@ -1,4 +1,4 @@
-# @aeo/schema-validator
+# @advance-labs/schema-validator
 
 ## 0.1.0
 

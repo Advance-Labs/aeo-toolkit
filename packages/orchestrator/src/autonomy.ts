@@ -8,7 +8,7 @@
  *
  * Pure and total: no clock, no I/O. The console execution layer consults this before publishing.
  */
-import type { Proposal } from '@aeo/types';
+import type { Proposal } from '@advance-labs/types';
 
 /** Tunable autonomy policy. v1 has a single knob: the content auto-publish confidence bar. */
 export interface AutonomyPolicy {

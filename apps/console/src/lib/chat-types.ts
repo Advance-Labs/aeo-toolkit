@@ -2,7 +2,7 @@
  * Request/response shapes for `POST /api/chat`, shared between the route handler and the client.
  * Kept local to the app (not a domain type) since they are transport DTOs specific to this tool.
  */
-import type { LlmProvider } from '@aeo/types';
+import type { LlmProvider } from '@advance-labs/types';
 
 export interface ChatRequestBody {
   question: string;

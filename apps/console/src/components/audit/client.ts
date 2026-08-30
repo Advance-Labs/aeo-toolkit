@@ -6,7 +6,7 @@
  *   - POST `/api/audit/technical`      body `{ url, maxPages? }` → {@link AuditReport}.
  *   - POST `/api/audit/technical/pdf`  body `{ report }`         → PDF Blob.
  */
-import type { AuditReport } from '@aeo/types';
+import type { AuditReport } from '@advance-labs/types';
 
 /** Structured error body the audit routes return on a non-2xx response. */
 interface AuditErrorBody {

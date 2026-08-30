@@ -1,4 +1,4 @@
-# @aeo/schema-validator
+# @advance-labs/schema-validator
 
 Detect and validate **all three** structured-data encodings — JSON-LD, Microdata, and RDFa —
 from a raw HTML string, then map every item to its schema.org short type and check the required
@@ -9,7 +9,7 @@ parsed in-process with `cheerio`, so it is fully unit-testable without live HTTP
 ## Usage
 
 ```ts
-import { analyzeStructuredData } from '@aeo/schema-validator';
+import { analyzeStructuredData } from '@advance-labs/schema-validator';
 
 const html = await fetchHtmlSomehow(url); // I/O is the caller's responsibility
 const report = analyzeStructuredData(html, url);
@@ -25,7 +25,7 @@ The low-level extractors operate on a loaded `cheerio` document if you need fine
 
 ```ts
 import * as cheerio from 'cheerio';
-import { extractJsonLd, extractMicrodata, extractRdfa, validateItem } from '@aeo/schema-validator';
+import { extractJsonLd, extractMicrodata, extractRdfa, validateItem } from '@advance-labs/schema-validator';
 
 const $ = cheerio.load(html);
 const items = [...extractJsonLd($), ...extractMicrodata($), ...extractRdfa($)];
@@ -46,7 +46,7 @@ const result = validateItem('FAQPage', { mainEntity: [/* ... */] });
 | `isAeoSchemaType` | `(shortType: string) => shortType is AeoSchemaType` | Narrow to the AEO-relevant schema.org type set. |
 
 All report/item shapes (`StructuredDataReport`, `StructuredDataItem`, `StructuredDataFormat`,
-`AeoSchemaType`) are imported from `@aeo/types` and never redefined here.
+`AeoSchemaType`) are imported from `@advance-labs/types` and never redefined here.
 
 ### Validated types
 

@@ -4,10 +4,10 @@
  * crawl -> parse -> structured-data -> score. The only I/O here is the network crawl; everything
  * downstream is pure scoring, so callers decide how to render the resulting `AuditReport`.
  */
-import { crawl } from "@aeo/crawler";
-import { parseHtml } from "@aeo/html-parser";
-import { analyzeStructuredData } from "@aeo/schema-validator";
-import { buildAuditReport } from "@aeo/scoring";
+import { crawl } from "@advance-labs/crawler";
+import { parseHtml } from "@advance-labs/html-parser";
+import { analyzeStructuredData } from "@advance-labs/schema-validator";
+import { buildAuditReport } from "@advance-labs/scoring";
 
 export const ENGINE_VERSION = "0.1.0";
 
@@ -23,7 +23,7 @@ function isParseable(page) {
  *
  * @param {string} site - Origin URL to audit (e.g. "https://example.com").
  * @param {{ max?: number, version?: string }} [opts]
- * @returns {Promise<import("@aeo/types").AuditReport>}
+ * @returns {Promise<import("@advance-labs/types").AuditReport>}
  * @throws if the crawler reaches zero pages (site unreachable / blocking the crawler).
  */
 export async function auditSite(site, { max = 25, version = ENGINE_VERSION } = {}) {
@@ -32,7 +32,7 @@ export async function auditSite(site, { max = 25, version = ENGINE_VERSION } = {
     maxPages: max,
     respectRobotsTxt: true,
     followSitemap: true,
-    userAgent: `@aeo/seo-audit/${version}`,
+    userAgent: `@advance-labs/seo-audit/${version}`,
   });
 
   if (crawlResult.pageCount === 0) {

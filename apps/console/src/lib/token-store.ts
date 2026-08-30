@@ -3,8 +3,8 @@
  *
  * The OAuth callback persists Google refresh tokens here and `/api/chat` reads them back to mint a
  * fresh access token per request. In production we use the durable, encrypted Supabase-backed
- * {@link SupabaseTokenStore} from `@aeo/storage`; for local/dev (no Supabase credentials) we fall
- * back to the process-wide {@link InMemoryTokenStore} from `@aeo/google-api`.
+ * {@link SupabaseTokenStore} from `@advance-labs/storage`; for local/dev (no Supabase credentials) we fall
+ * back to the process-wide {@link InMemoryTokenStore} from `@advance-labs/google-api`.
  *
  * Selection is env-gated: when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are both set, the
  * Supabase store is used (tokens encrypted at rest when `TOKEN_ENCRYPTION_KEY` is also present).
@@ -13,12 +13,12 @@
  * in a serverless / multi-instance deployment it is NOT durable — which is exactly why the Supabase
  * adapter is the production seam.
  */
-import { InMemoryTokenStore } from '@aeo/google-api';
-import { createSupabaseClient, SupabaseTokenStore } from '@aeo/storage';
-import type { TokenStore } from '@aeo/types';
+import { InMemoryTokenStore } from '@advance-labs/google-api';
+import { createSupabaseClient, SupabaseTokenStore } from '@advance-labs/storage';
+import type { TokenStore } from '@advance-labs/types';
 
 /**
- * Table holding the per-user OAuth token rows. Matches the `@aeo/storage` default schema
+ * Table holding the per-user OAuth token rows. Matches the `@advance-labs/storage` default schema
  * (`user_id`, `access_token`, `refresh_token`, `expires_at`, `scope`).
  */
 const TOKEN_TABLE = 'oauth_tokens';

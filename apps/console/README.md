@@ -15,11 +15,11 @@
 | `/.well-known/*` | MCP OAuth discovery for Claude.ai connectors |
 | `/api/cron/blogging` | the autonomous blogging agent, run by a **Vercel Cron** (see `vercel.ts`) |
 
-All logic lives in the shared `@aeo/*` packages; this app is the thin composition layer.
+All logic lives in the shared `@advance-labs/*` packages; this app is the thin composition layer.
 
 ## Run
 ```bash
-pnpm --filter @aeo/console dev
+pnpm --filter @advance-labs/console dev
 ```
 
 ## Deploy (single Vercel project)

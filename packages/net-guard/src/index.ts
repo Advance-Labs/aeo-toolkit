@@ -1,5 +1,5 @@
 /**
- * @aeo/net-guard — an SSRF-guarded HTTP fetch seam.
+ * @advance-labs/net-guard — an SSRF-guarded HTTP fetch seam.
  *
  * Use {@link safeFetch} for ANY request to a user-supplied or otherwise untrusted URL (outreach
  * prospect fetches, link-placement verification). It resolves DNS and refuses private/loopback/
@@ -14,7 +14,7 @@ import type { SafeFetchDeps, GuardResponse } from './safe-fetch.js';
 export { safeFetch } from './safe-fetch.js';
 export type { SafeFetchDeps, GuardResponse, SafeFetchOptions } from './safe-fetch.js';
 export { isBlockedAddress } from './address.js';
-export type { SafeFetchResult, SafeFetchBlockReason } from '@aeo/types';
+export type { SafeFetchResult, SafeFetchBlockReason } from '@advance-labs/types';
 
 /**
  * Live deps for {@link safeFetch} using Node DNS + global `fetch` (manual redirects).

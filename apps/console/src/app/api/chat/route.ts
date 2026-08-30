@@ -2,13 +2,13 @@
  * POST /api/chat — answer a natural-language SEO question grounded in the user's GA4 + GSC data.
  *
  * Flow: validate body → resolve a fresh Google access token for the session → fetch GA4 + GSC →
- * build a compact data context → call the user's own LLM (BYOK) via `@aeo/llm`. The BYOK key is
+ * build a compact data context → call the user's own LLM (BYOK) via `@advance-labs/llm`. The BYOK key is
  * read from the request body, used once, and never persisted or logged. Node runtime only.
  */
 import { NextResponse, type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
-import { GoogleApiError } from '@aeo/google-api';
-import { LlmHttpError, LlmRequestError } from '@aeo/llm';
+import { GoogleApiError } from '@advance-labs/google-api';
+import { LlmHttpError, LlmRequestError } from '@advance-labs/llm';
 import { answerQuestion, liveDeps } from '@/lib/answer';
 import { parseChatRequest, type ChatResponseBody, type ChatErrorBody } from '@/lib/chat-types';
 import { getValidAccessToken, USER_COOKIE } from '@/lib/oauth';

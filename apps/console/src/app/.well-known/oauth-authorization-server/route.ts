@@ -2,14 +2,14 @@
  * `/.well-known/oauth-authorization-server` — RFC 8414 authorization-server
  * metadata, shaped for OAuth 2.1 + PKCE.
  *
- * Served via `@aeo/mcp-core#wellKnownOAuthMetadata` with the issuer based on
+ * Served via `@advance-labs/mcp-core#wellKnownOAuthMetadata` with the issuer based on
  * `OAUTH_ISSUER` (falling back to `MCP_PUBLIC_URL`, resolved in `@/mcp/shared`).
  * Claude.ai fetches this to learn where to start the authorization flow for the
  * deployment's MCP endpoints.
  *
  * Node runtime for parity with the MCP routes; the document itself is pure.
  */
-import { wellKnownOAuthMetadata } from '@aeo/mcp-core';
+import { wellKnownOAuthMetadata } from '@advance-labs/mcp-core';
 
 import { mcpPublicUrl } from '@/mcp/shared.js';
 

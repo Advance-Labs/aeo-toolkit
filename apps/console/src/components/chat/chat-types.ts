@@ -6,7 +6,7 @@
  *   - `POST /api/chat`        body {@link ChatRequestBody} → {@link ChatResponseBody} | {@link ChatErrorBody}.
  *   - `GET  /api/connection`                              → {@link ConnectionResponse}.
  */
-import type { Ga4Property, GscSite, LlmProvider } from '@aeo/types';
+import type { Ga4Property, GscSite, LlmProvider } from '@advance-labs/types';
 
 export interface ChatRequestBody {
   question: string;

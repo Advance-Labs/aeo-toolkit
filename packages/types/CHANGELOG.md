@@ -1,4 +1,4 @@
-# @aeo/types
+# @advance-labs/types
 
 ## 0.1.0
 

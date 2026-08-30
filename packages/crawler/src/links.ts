@@ -1,7 +1,7 @@
-import type { Url } from '@aeo/types';
+import type { Url } from '@advance-labs/types';
 
 /**
- * Independent, dependency-free href extraction. Deliberately does NOT use `@aeo/html-parser`:
+ * Independent, dependency-free href extraction. Deliberately does NOT use `@advance-labs/html-parser`:
  * the crawler only needs to discover navigable links for its BFS frontier, and a tolerant regex
  * avoids a parse-tree dependency (and a dependency cycle) at this layer. Rich extraction
  * (meta, headings, structured data) is the html-parser's job, run later on captured bodies.

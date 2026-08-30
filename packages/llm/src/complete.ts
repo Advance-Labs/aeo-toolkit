@@ -6,7 +6,7 @@
  * BYOK: `req.apiKey` is read straight into the request headers and is never logged or persisted.
  */
 
-import type { LlmCompletionRequest, LlmCompletionResponse } from '@aeo/types';
+import type { LlmCompletionRequest, LlmCompletionResponse } from '@advance-labs/types';
 import type { Fetcher } from './fetcher.js';
 import { defaultFetcher } from './fetcher.js';
 import { LlmRequestError } from './errors.js';
@@ -24,11 +24,11 @@ export function complete(
 ): Promise<LlmCompletionResponse> {
   if (typeof req.apiKey !== 'string' || req.apiKey.length === 0) {
     throw new LlmRequestError(
-      '@aeo/llm: `apiKey` is required (BYOK) and must be a non-empty string.',
+      '@advance-labs/llm: `apiKey` is required (BYOK) and must be a non-empty string.',
     );
   }
   if (typeof req.model !== 'string' || req.model.length === 0) {
-    throw new LlmRequestError('@aeo/llm: `model` is required and must be a non-empty string.');
+    throw new LlmRequestError('@advance-labs/llm: `model` is required and must be a non-empty string.');
   }
 
   const fetcher = opts.fetcher ?? defaultFetcher;
@@ -44,7 +44,7 @@ export function complete(
     default: {
       // Exhaustiveness guard: if `LlmProvider` gains a member, this fails to compile.
       const exhaustive: never = req.provider;
-      throw new LlmRequestError(`@aeo/llm: unsupported provider "${String(exhaustive)}".`);
+      throw new LlmRequestError(`@advance-labs/llm: unsupported provider "${String(exhaustive)}".`);
     }
   }
 }

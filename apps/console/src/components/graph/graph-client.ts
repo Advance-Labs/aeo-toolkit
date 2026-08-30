@@ -11,7 +11,7 @@
  * Secrets are never handled here: any BYOK key lives server-side in env. These
  * helpers only ever send a URL.
  */
-import type { BacklinkGraph, BacklinkGraphStats, GraphEdge, GraphNode } from '@aeo/backlinks';
+import type { BacklinkGraph, BacklinkGraphStats, GraphEdge, GraphNode } from '@advance-labs/backlinks';
 
 /** Thrown when the API responds with a non-2xx, structured error body. */
 export class GraphApiError extends Error {

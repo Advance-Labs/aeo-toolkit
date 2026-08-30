@@ -1,5 +1,5 @@
 /**
- * @aeo/types — the single source of truth for cross-package domain types.
+ * @advance-labs/types — the single source of truth for cross-package domain types.
  *
  * Every package imports its shared shapes from here. Never redefine a type that lives in this package.
  */

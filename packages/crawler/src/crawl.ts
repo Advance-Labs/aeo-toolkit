@@ -6,7 +6,7 @@ import type {
   RobotsTxt,
   SitemapEntry,
   Url,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { type Fetcher, resolveFetcher } from './fetcher.js';
 import { fetchResource } from './fetch-resource.js';
 import { parseRobotsTxt, emptyRobotsTxt } from './robots.js';

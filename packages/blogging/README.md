@@ -1,4 +1,4 @@
-# @aeo/blogging
+# @advance-labs/blogging
 
 An autonomous, multi-agent blogging pipeline for the AEO Toolkit. It mines Search Console for query
 gaps, drafts articles, edits and de-duplicates them, schedules and publishes on a cadence, monitors
@@ -24,7 +24,7 @@ credentials**.
 ### Env-driven (the deployment / cron path)
 
 ```ts
-import { runBloggingPipeline } from '@aeo/blogging';
+import { runBloggingPipeline } from '@advance-labs/blogging';
 
 // Resolves every seam from process.env (BYOK keys, Google token, Supabase, publish webhook),
 // runs one pass, and returns a log-safe summary that contains no secrets.
@@ -42,7 +42,7 @@ The env-driven wiring chooses adapters automatically:
 ### Dependency-injected (tests and custom hosts)
 
 ```ts
-import { runPipeline, InMemoryPostStore, NoopPublisher } from '@aeo/blogging';
+import { runPipeline, InMemoryPostStore, NoopPublisher } from '@advance-labs/blogging';
 
 const summary = await runPipeline({
   config,
@@ -80,4 +80,4 @@ persisted and never logged. The returned `RunSummary` is log-safe.
 
 ## Built on
 
-`@aeo/google-api` (GSC + GA4), `@aeo/llm` (BYOK completions), `@aeo/storage` (Supabase), `@aeo/types`.
+`@advance-labs/google-api` (GSC + GA4), `@advance-labs/llm` (BYOK completions), `@advance-labs/storage` (Supabase), `@advance-labs/types`.

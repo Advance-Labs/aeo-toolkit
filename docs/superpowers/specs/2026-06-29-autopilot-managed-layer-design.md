@@ -18,14 +18,14 @@ Four independent reviews converged on the same core conclusions. Net effect: **v
 and positioned differently** than v1.0 proposed.
 
 ### 0.1 Business + compliance converged: cut the two risky subsystems from v1
-- **`@aeo/link-exchange` (marketplace) → DEFERRED to v1.5.** Two independent reasons: (a) *compliance* — an
+- **`@advance-labs/link-exchange` (marketplace) → DEFERRED to v1.5.** Two independent reasons: (a) *compliance* — an
   organized link-exchange is a Google link-scheme **by intent**, regardless of relevance/consent; and the
   followed-vs-`nofollow` squeeze means the "compliant" version is either non-compliant (followed) or
   near-worthless to the customer (`nofollow`/`sponsored`). (b) *business* — a two-sided, two-approval,
   relevance-gated network has a brutal **cold-start** (zero participants vs. BLG's 4,000) and won't produce
   value for months. **Replace it in v1 with done-for-you link *outreach*** built on the already-shipped
-  `@aeo/backlinks` discovery/outreach engine — placements on day one, no network effect, fully compliant.
-- **`@aeo/community` (Reddit) → DEFERRED to v1.5.** Listening is genuinely safe (LOW risk); posting is
+  `@advance-labs/backlinks` discovery/outreach engine — placements on day one, no network effect, fully compliant.
+- **`@advance-labs/community` (Reddit) → DEFERRED to v1.5.** Listening is genuinely safe (LOW risk); posting is
   MEDIUM (coordinated-promotion patterns + FTC disclosure aren't cured by "a human clicks post"), and
   multi-customer polling is **commercial use** that likely exceeds Reddit's free API tier (a cost/ToS item
   v1.0 ignored). It also just generates more inbox items for uncertain payoff. Defer until the core loop is proven.
@@ -59,19 +59,19 @@ SMBs/agencies with a brand to protect), not BLG's cheapest-growth-hack founder. 
   **legal layer** v1.0 lacked entirely: ToS/MSA with assumption-of-risk, limitation-of-liability, indemnification.
 
 ### 0.5 Feasibility corrections (two v1.0 claims were FALSE)
-- **"Reuse `@aeo/scoring` for relevance" — FALSE.** `@aeo/scoring` is a rule engine; it has no
+- **"Reuse `@advance-labs/scoring` for relevance" — FALSE.** `@advance-labs/scoring` is a rule engine; it has no
   similarity/cosine. A `RelevanceScorer` is **net-new**. (Only relevant to the deferred marketplace.)
-- **"Embeddings over declared topics/content" — embeddings DON'T EXIST in the repo** (`@aeo/llm` is chat-only;
-  no pgvector). New dependency + per-call cost. Fallback when needed: `@aeo/blogging` already exports
+- **"Embeddings over declared topics/content" — embeddings DON'T EXIST in the repo** (`@advance-labs/llm` is chat-only;
+  no pgvector). New dependency + per-call cost. Fallback when needed: `@advance-labs/blogging` already exports
   `tokenize`/`jaccard` dedup primitives → cheap token-overlap relevance first, defer embeddings. (Deferred-scope only.)
 - **`ContentRunner` cannot wrap `runBloggingPipeline`** (single-tenant; publishes as its last step). It must
   compose the sub-agents `research→write→edit`, **stop before schedule/publish**, emit the draft as a
   `ContentProposal`, and publish only on approval — building `PipelineDeps` *per customer* with that
   customer's BYOK key + Google token.
 - **Dependency-direction trap:** `ai-visibility` logic lives in `apps/console`, not a package. The console
-  managed tier may use it; **`@aeo/orchestrator` must NOT import from `apps/console`.** `ProposalStore` and
+  managed tier may use it; **`@advance-labs/orchestrator` must NOT import from `apps/console`.** `ProposalStore` and
   `RedditReadProvider` are net-new on `createSupabaseClient` + the existing Google-OAuth pattern (like
-  `@aeo/blogging`'s `SupabasePostStore`). The commercial layer is **real and implemented**, not a doc.
+  `@advance-labs/blogging`'s `SupabasePostStore`). The commercial layer is **real and implemented**, not a doc.
 
 ### 0.6 Security controls now mandatory in v1 (designed-in, not bolted-on)
 From the security review (severities verified against code):
@@ -106,12 +106,12 @@ From the security review (severities verified against code):
   (no update/delete policy, service-role writes).
 
 ### 0.7 Revised v1 scope (binding)
-**Build in v1:** `@aeo/orchestrator` (cadence + ProposalStore + ContentRunner + OutreachRunner, graduated
+**Build in v1:** `@advance-labs/orchestrator` (cadence + ProposalStore + ContentRunner + OutreachRunner, graduated
 auto-publish, injection-hardened drafting) · a guarded HTTP seam (C1) · TokenStore hardening (H4) · the
 console **Managed tier** (entitlements extension, internal staff approval inbox with C2 authz, onboarding via
 existing audit + `findQueryGaps` + `ai-visibility` baseline, out-of-band scheduler trigger H1, guarantee
 baseline) · the **legal layer** (ToS/MSA + guarantee T&Cs — human/legal task, tracked here).
-**Defer to v1.5:** `@aeo/link-exchange` marketplace, `@aeo/community` Reddit, branded infographics,
+**Defer to v1.5:** `@advance-labs/link-exchange` marketplace, `@advance-labs/community` Reddit, branded infographics,
 multi-language. Sections 3–5 below describe the *eventual* subsystems; for v1, only the orchestrator +
 outreach + managed-tier portions are in scope.
 
@@ -126,10 +126,10 @@ A gap analysis against this repo shows **~80% already exists**:
 
 | BLG service | Existing equivalent in repo | Status |
 |---|---|---|
-| SEO/LLM content (30/mo, CMS publish) | `@aeo/blogging` (strategy→research→writer→editor→dedup→scheduler→monitor→self-correct + `publish/`) | Built |
-| Technical GEO audit | `@aeo/scoring`, `apps/llm-audit`, `apps/console` | Built |
+| SEO/LLM content (30/mo, CMS publish) | `@advance-labs/blogging` (strategy→research→writer→editor→dedup→scheduler→monitor→self-correct + `publish/`) | Built |
+| Technical GEO audit | `@advance-labs/scoring`, `apps/llm-audit`, `apps/console` | Built |
 | LLM-visibility tracking | `ai-visibility` MCP (`check_ai_visibility`, `get_visibility_report`), `docs/VISIBILITY-TRACKING.md` | Built |
-| Automated backlinks | `@aeo/backlinks` — **discovery/outreach** (find prospects, contacts, outreach), NOT an exchange network | Partial |
+| Automated backlinks | `@advance-labs/backlinks` — **discovery/outreach** (find prospects, contacts, outreach), NOT an exchange network | Partial |
 | Reddit visibility engine | — | Missing |
 | $99 done-for-you offer | `docs/COMMERCIAL-LAYER-DESIGN.md` (free/pro/agency, Stripe, Supabase auth) — **self-serve only** | Partial |
 
@@ -138,13 +138,13 @@ the existing reuse layer. This spec defines them.
 
 ### Non-goals (v1)
 - No blind 3-way link farm; no autonomous Reddit posting bot (compliance decision — see §4, §5).
-- Branded infographics + 50-language content are **deferred to v1.5** (additive to `@aeo/blogging`).
+- Branded infographics + 50-language content are **deferred to v1.5** (additive to `@advance-labs/blogging`).
 - No new brand/product; the offer is a tier inside the existing console.
 
 ### Guiding constraints (inherited from the repo)
 - **One package, one purpose.** New risky surfaces are isolated in their own packages.
 - **Injected I/O.** Every new package is fully testable offline (no network in unit tests), matching
-  `@aeo/blogging`'s "all I/O is injected" design.
+  `@advance-labs/blogging`'s "all I/O is injected" design.
 - **Env-gated, ships dormant.** With no new env set, the site behaves exactly as today. New subsystems
   light up only when their credentials/flags are present (matches `COMMERCIAL-LAYER-DESIGN.md`).
 - **BYOK.** No third-party keys shipped or billed; request-scoped, never persisted beyond encrypted tokens.
@@ -158,20 +158,20 @@ reuse layer (existing):
   crawler · html-parser · schema-validator · scoring · llm · google-api · storage · backlinks · pdf · ui · types
 
 new packages:
-  @aeo/link-exchange      consent-based contextual link marketplace (compliant ABC alternative)
-  @aeo/community          Reddit/forum listening + assisted-reply (compliant Reddit-engine alternative)
-  @aeo/orchestrator       per-customer autopilot scheduler/queue + approval-inbox model
+  @advance-labs/link-exchange      consent-based contextual link marketplace (compliant ABC alternative)
+  @advance-labs/community          Reddit/forum listening + assisted-reply (compliant Reddit-engine alternative)
+  @advance-labs/orchestrator       per-customer autopilot scheduler/queue + approval-inbox model
 
 console (apps/console) additions:
   Managed/Autopilot plan tier · onboarding flow · approval inbox · guarantee-baseline dashboard
 ```
 
-Data flows one direction: new packages depend only on the reuse layer + `@aeo/types`; the console
+Data flows one direction: new packages depend only on the reuse layer + `@advance-labs/types`; the console
 depends on the new packages. No new package depends on the console.
 
 ---
 
-## 3. `@aeo/orchestrator` — the autopilot brain
+## 3. `@advance-labs/orchestrator` — the autopilot brain
 
 Sequences the per-customer "done-for-you" cadence and routes all outputs to a human approval inbox.
 
@@ -182,7 +182,7 @@ Sequences the per-customer "done-for-you" cadence and routes all outputs to a hu
   corresponding existing/new pipeline with injected dependencies and produces a **proposal**.
 - Every proposal lands in the **approval inbox** as a typed record (`ContentProposal`, `LinkProposal`,
   `CommunityReplyProposal`) with status `pending → approved → executed | rejected`.
-- Approved proposals trigger execution (publish via `@aeo/blogging/publish`, record a link placement,
+- Approved proposals trigger execution (publish via `@advance-labs/blogging/publish`, record a link placement,
   surface a reply for the human to post). Nothing executes without human approval in v1.
 
 ### Shape (injected I/O)
@@ -190,9 +190,9 @@ Sequences the per-customer "done-for-you" cadence and routes all outputs to a hu
 export interface OrchestratorDeps {
   store: ProposalStore;            // Supabase-backed in console; in-memory in tests
   clock: () => Date;               // injected for deterministic tests
-  content: ContentRunner;          // wraps @aeo/blogging run()
-  link: LinkMatcher;               // wraps @aeo/link-exchange
-  community: CommunityScanner;     // wraps @aeo/community
+  content: ContentRunner;          // wraps @advance-labs/blogging run()
+  link: LinkMatcher;               // wraps @advance-labs/link-exchange
+  community: CommunityScanner;     // wraps @advance-labs/community
 }
 export function runCadence(profile: CustomerProfile, deps: OrchestratorDeps): Promise<JobResult[]>;
 ```
@@ -202,7 +202,7 @@ export function runCadence(profile: CustomerProfile, deps: OrchestratorDeps): Pr
 
 ---
 
-## 4. `@aeo/link-exchange` — compliant contextual link marketplace
+## 4. `@advance-labs/link-exchange` — compliant contextual link marketplace
 
 The compliant alternative to BLG's blind ABC exchange. The compliance line: links must be **topically
 relevant, consented to by both parties, editorially placed in real content, and disclosed** — never
@@ -210,11 +210,11 @@ inserted purely to manipulate ranking, never a closed reciprocal farm.
 
 ### Model
 - Each participant registers a **site profile**: domain, declared topics/niche, an authority signal
-  (reuse `@aeo/backlinks` graph + any available DR proxy), and **link inventory** — specific existing
+  (reuse `@advance-labs/backlinks` graph + any available DR proxy), and **link inventory** — specific existing
   articles where a contextual outbound link could be added with editorial justification.
 - A **matching engine** pairs a requester with candidate hosts by topical relevance (reuse
-  `@aeo/scoring` relevance heuristics + embeddings over declared topics/content) and proposes a placement:
-  target URL, host article, suggested anchor + surrounding sentence (drafted by `@aeo/llm`), and an
+  `@advance-labs/scoring` relevance heuristics + embeddings over declared topics/content) and proposes a placement:
+  target URL, host article, suggested anchor + surrounding sentence (drafted by `@advance-labs/llm`), and an
   **editorial rationale** ("this host article on X genuinely benefits from linking to your resource on X").
 - **Two-sided approval.** Host must approve the placement in their own content; requester approves the
   anchor/target. Only then is the placement recorded in the ledger as `placed`.
@@ -225,15 +225,15 @@ inserted purely to manipulate ranking, never a closed reciprocal farm.
 ```ts
 export interface LinkExchangeDeps {
   store: ExchangeLedger;   // participants, inventory, proposals, placements
-  relevance: RelevanceScorer;  // from @aeo/scoring + embeddings, injected
-  draft: AnchorDrafter;        // @aeo/llm, injected
+  relevance: RelevanceScorer;  // from @advance-labs/scoring + embeddings, injected
+  draft: AnchorDrafter;        // @advance-labs/llm, injected
   http: HttpSeam;              // verify a placement is live (reuse backlinks rate-limited http)
 }
 export function proposePlacements(req: PlacementRequest, deps: LinkExchangeDeps): Promise<LinkProposal[]>;
 export function verifyPlacement(placementId: string, deps: LinkExchangeDeps): Promise<PlacementStatus>;
 ```
 - Matching/scoring core is pure and unit-tested; HTTP verification behind the same seam pattern as
-  `@aeo/backlinks` `rate-limited-http`.
+  `@advance-labs/backlinks` `rate-limited-http`.
 
 ### Risk controls (must ship in v1)
 - Relevance threshold gate (reject low-relevance matches outright).
@@ -242,7 +242,7 @@ export function verifyPlacement(placementId: string, deps: LinkExchangeDeps): Pr
 
 ---
 
-## 5. `@aeo/community` — Reddit/forum listening + assisted-reply
+## 5. `@advance-labs/community` — Reddit/forum listening + assisted-reply
 
 The compliant alternative to BLG's Reddit posting agent. **Listening + drafting, human posts.** No
 autonomous posting, no mass automation — both to respect Reddit's API terms and to avoid account bans
@@ -252,7 +252,7 @@ that would harm customers.
 - **Listen:** official Reddit OAuth (read scope) polls configured subreddits + keyword queries for
   high-intent threads (questions in the customer's domain). Pluggable provider seam so other communities
   (forums, HN) can be added later.
-- **Classify:** `@aeo/llm` scores each thread for intent + fit, filters noise, and ranks.
+- **Classify:** `@advance-labs/llm` scores each thread for intent + fit, filters noise, and ranks.
 - **Draft:** for top threads, draft a **genuinely helpful, non-promotional** reply grounded in the
   customer's own content (cite their resource only where it actually answers the question). Output flags
   whether a brand mention is even appropriate (many threads → "engage, don't promote").
@@ -265,8 +265,8 @@ that would harm customers.
 ```ts
 export interface CommunityDeps {
   reddit: RedditReadProvider;  // injected; real client uses official OAuth read
-  classify: ThreadClassifier;  // @aeo/llm, injected
-  draft: ReplyDrafter;         // @aeo/llm, injected
+  classify: ThreadClassifier;  // @advance-labs/llm, injected
+  draft: ReplyDrafter;         // @advance-labs/llm, injected
   clock: () => Date;
 }
 export function scanCommunities(cfg: CommunityConfig, deps: CommunityDeps): Promise<CommunityReplyProposal[]>;
@@ -287,7 +287,7 @@ Extends `docs/COMMERCIAL-LAYER-DESIGN.md` (do not break its dormant-by-default c
 - **Plan:** add `managed` to `PlanId` and `PLANS` in `apps/console/src/lib/billing/plans.ts`
   (done-for-you; price is an editable default). Reuses the existing Stripe + entitlements path.
 - **Onboarding flow** (`/onboarding`): runs the existing audit + GSC query-gap analysis (reuse
-  `@aeo/blogging`'s research + `@aeo/google-api`) to produce the initial topic clusters + a 30-day
+  `@advance-labs/blogging`'s research + `@advance-labs/google-api`) to produce the initial topic clusters + a 30-day
   content calendar — BLG's "business analysis" step, reusing what already exists.
 - **Approval inbox** (`/inbox`): lists `pending` proposals (content / link / community) with approve/reject/
   edit actions; approval triggers the orchestrator's execution path. New RLS tables (additive, same
@@ -303,10 +303,10 @@ Extends `docs/COMMERCIAL-LAYER-DESIGN.md` (do not break its dormant-by-default c
 
 | New piece | Reuses |
 |---|---|
-| `@aeo/orchestrator` | `@aeo/blogging` (content), `@aeo/storage` (proposal store), `@aeo/types` |
-| `@aeo/link-exchange` | `@aeo/backlinks` (graph + rate-limited http), `@aeo/scoring` (relevance), `@aeo/llm` (anchor draft), `@aeo/storage` |
-| `@aeo/community` | `@aeo/llm` (classify + draft), `@aeo/types`; new Reddit read provider |
-| Console managed tier | existing commercial layer, `@aeo/google-api`, `ai-visibility`, `@aeo/blogging` research |
+| `@advance-labs/orchestrator` | `@advance-labs/blogging` (content), `@advance-labs/storage` (proposal store), `@advance-labs/types` |
+| `@advance-labs/link-exchange` | `@advance-labs/backlinks` (graph + rate-limited http), `@advance-labs/scoring` (relevance), `@advance-labs/llm` (anchor draft), `@advance-labs/storage` |
+| `@advance-labs/community` | `@advance-labs/llm` (classify + draft), `@advance-labs/types`; new Reddit read provider |
+| Console managed tier | existing commercial layer, `@advance-labs/google-api`, `ai-visibility`, `@advance-labs/blogging` research |
 
 ---
 
@@ -316,7 +316,7 @@ Extends `docs/COMMERCIAL-LAYER-DESIGN.md` (do not break its dormant-by-default c
   immutable audit log. No placement without recorded approval from both sides.
 - **Community:** read-only Reddit in v1; package contains no posting capability; per-subreddit gates;
   PII-safe (store thread ids/urls, not scraped personal data).
-- **Reddit OAuth tokens & any CMS tokens:** encrypted at rest via the existing `@aeo/storage` `TokenStore`
+- **Reddit OAuth tokens & any CMS tokens:** encrypted at rest via the existing `@advance-labs/storage` `TokenStore`
   (AES-256-GCM), never logged.
 - **Orchestrator:** idempotent jobs; all customer-scoped data behind RLS; service-role only for writes.
 - **Everything env-gated and dormant** until creds present; a test asserts the no-env baseline is unchanged.
@@ -326,7 +326,7 @@ Extends `docs/COMMERCIAL-LAYER-DESIGN.md` (do not break its dormant-by-default c
 ## 9. Testing strategy
 
 - Each new package: pure-core unit tests with injected deps + fixtures, **zero network** (matches
-  `@aeo/blogging`'s `run.test.ts` pattern).
+  `@advance-labs/blogging`'s `run.test.ts` pattern).
 - Orchestrator: deterministic cadence tests via injected `clock`; idempotency test (double-run = no dupes).
 - Link-exchange: relevance-gate + cap + disclosure-required tests; placement-verify behind http seam.
 - Community: classify/draft/“do-not-engage” path tests via fixtures; assert no posting API exists.

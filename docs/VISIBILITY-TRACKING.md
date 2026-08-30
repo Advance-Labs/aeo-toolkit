@@ -65,7 +65,7 @@ is the obvious next adapter.
 ## The join point: `audit_score`
 
 The tracker's schema reserves an `audit_score` column specifically to bridge the two
-systems. A future enhancement runs this toolkit's `@aeo/scoring` (via its CLI or hosted
+systems. A future enhancement runs this toolkit's `@advance-labs/scoring` (via its CLI or hosted
 `ai-visibility` MCP) on each tracked client per run and logs the **on-page score** next to
 the **off-page citation result**. That single table then tells the whole story in one place:
 

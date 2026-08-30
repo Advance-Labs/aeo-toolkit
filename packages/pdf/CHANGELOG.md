@@ -1,4 +1,4 @@
-# @aeo/pdf
+# @advance-labs/pdf
 
 ## 0.1.0
 

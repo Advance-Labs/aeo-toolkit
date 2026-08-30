@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ContentProposal, LinkOutreachProposal } from '@aeo/types';
+import type { ContentProposal, LinkOutreachProposal } from '@advance-labs/types';
 import { shouldAutoExecute, DEFAULT_AUTONOMY_POLICY } from './autonomy.js';
 
 function content(confidence: number): ContentProposal {

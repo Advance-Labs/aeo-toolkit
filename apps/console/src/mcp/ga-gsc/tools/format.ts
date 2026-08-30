@@ -6,7 +6,7 @@
  * structured payload is wrapped so the SDK's structured-content channel always
  * receives an object, never a bare array.
  */
-import type { ToolResult } from '@aeo/mcp-core';
+import type { ToolResult } from '@advance-labs/mcp-core';
 
 /** Wrap a JSON-serialisable payload into a success `ToolResult`. */
 export function jsonResult(summary: string, structured: Record<string, unknown>): ToolResult {

@@ -6,7 +6,7 @@ repo, shipped via the Web Store). One domain, one env set.
 | Piece | Target | How |
 |-------|--------|-----|
 | `apps/console` — all tools + MCP + blogging cron | **Vercel** (one project) | Root Directory = `apps/console`, framework Next.js, install/build at repo root with pnpm + Turbo |
-| `apps/chrome-extension` | Chrome Web Store | `pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload |
+| `apps/chrome-extension` | Chrome Web Store | `pnpm --filter @advance-labs/chrome-extension build` → zip `dist/` → upload |
 
 ---
 
@@ -47,12 +47,12 @@ curl -X PATCH "https://api.vercel.com/v9/projects/<projectId>?teamId=<teamId>" \
 ```
 
 The monorepo install/build is declared in [`apps/console/vercel.json`](../apps/console/vercel.json) — Turbo
-builds the `@aeo/*` workspace packages (their `dist/`) **before** the Next build, or Next can't resolve them:
+builds the `@advance-labs/*` workspace packages (their `dist/`) **before** the Next build, or Next can't resolve them:
 
 ```jsonc
 {
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@aeo/console",
+  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@advance-labs/console",
   "crons": [{ "path": "/api/cron/blogging", "schedule": "0 13 * * *" }]
 }
 ```
@@ -100,7 +100,7 @@ Marketplace database options for this team:
 | Redis / KV | Redis (`redis`), Upstash for Redis (`upstash/upstash-kv`) |
 | NoSQL / reactive | DynamoDB (`aws/aws-dynamodb`), Convex (`convex`) |
 
-> **Code compatibility:** `@aeo/storage` talks to Supabase via **`@supabase/supabase-js`** (PostgREST +
+> **Code compatibility:** `@advance-labs/storage` talks to Supabase via **`@supabase/supabase-js`** (PostgREST +
 > service-role key). Supabase drops in with **no code change**. A raw-SQL Postgres (Neon / Prisma) needs a
 > small adapter — implement `TokenStore` / `PostStore` (the existing interfaces) against `@neondatabase/serverless`.
 > Redis/KV is a natural fit for the token store (get/set/delete by key).
@@ -152,7 +152,7 @@ Desktop isn't part of the Vercel deployment; re-add it later from a thin package
 
 ## 5. Chrome extension
 
-`pnpm --filter @aeo/chrome-extension build` → zip `dist/` → upload to the Chrome Web Store (icons are
+`pnpm --filter @advance-labs/chrome-extension build` → zip `dist/` → upload to the Chrome Web Store (icons are
 generated; analysis is 100% local). See `apps/chrome-extension/CHROME_STORE.md`.
 
 ## 6. CI / previews

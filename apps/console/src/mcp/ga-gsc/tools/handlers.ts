@@ -1,11 +1,11 @@
 /**
  * Tool handler implementations. Each takes a {@link ToolContext} + validated args
- * and returns an MCP `ToolResult`. They orchestrate the `@aeo/google-api` clients
+ * and returns an MCP `ToolResult`. They orchestrate the `@advance-labs/google-api` clients
  * and the pure transforms in `analytics.ts` / `dates.ts`; they perform no I/O of
  * their own beyond the injected clients, so they unit-test with a mocked factory.
  */
-import type { ToolResult } from '@aeo/mcp-core';
-import type { DateRange } from '@aeo/types';
+import type { ToolResult } from '@advance-labs/mcp-core';
+import type { DateRange } from '@advance-labs/types';
 
 import { ga4For, gscFor, type ToolContext } from './context.js';
 import { jsonResult, pct } from './format.js';
@@ -30,13 +30,13 @@ import type {
   GscDecayInput,
 } from './schemas.js';
 
-/** `list_ga4_properties()` — GA4 Admin listing (currently a stub in @aeo/google-api). */
+/** `list_ga4_properties()` — GA4 Admin listing (currently a stub in @advance-labs/google-api). */
 export async function listGa4Properties(ctx: ToolContext): Promise<ToolResult> {
   const ga4 = await ga4For(ctx);
   const properties = await ga4.listProperties();
   const note =
     properties.length === 0
-      ? 'No properties returned. NOTE: GA4 Admin listing is a stub in @aeo/google-api ' +
+      ? 'No properties returned. NOTE: GA4 Admin listing is a stub in @advance-labs/google-api ' +
         '(0.1.0); pass an explicit propertyId to ga4_run_report meanwhile.'
       : `Found ${properties.length} GA4 properties.`;
   return jsonResult(note, { properties });

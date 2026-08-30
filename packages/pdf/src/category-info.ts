@@ -1,10 +1,10 @@
 /**
  * Human-readable descriptions for each `ScoreCategoryKey`, shown under the category bar in the
  * PDF so a non-technical reader understands what the category measures — not just its score.
- * Presentation-only: kept here (rather than on `@aeo/scoring`) so the scoring engine's rule
+ * Presentation-only: kept here (rather than on `@advance-labs/scoring`) so the scoring engine's rule
  * definitions stay free of report-copy concerns.
  */
-import type { ScoreCategoryKey } from '@aeo/types';
+import type { ScoreCategoryKey } from '@advance-labs/types';
 
 export const CATEGORY_DESCRIPTIONS: Record<ScoreCategoryKey, string> = {
   crawlability:

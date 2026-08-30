@@ -10,7 +10,7 @@ engines under [`../packages`](../packages); these apps are the thin composition 
 
 > The former standalone tool apps (llm-audit, eeat-scanner, llms-txt-generator, ga-gsc-chat,
 > backlink-graph, ai-visibility-mcp, ga-gsc-mcp, backlink-mcp, blogging-agent) were **consolidated into
-> `console`** — their logic was preserved in the `@aeo/*` packages and re-homed as routes/handlers.
+> `console`** — their logic was preserved in the `@advance-labs/*` packages and re-homed as routes/handlers.
 
 ## Console surface
 
@@ -25,8 +25,8 @@ engines under [`../packages`](../packages); these apps are the thin composition 
 ## Running
 
 ```bash
-pnpm --filter @aeo/console dev          # the whole suite
-pnpm --filter @aeo/chrome-extension build
+pnpm --filter @advance-labs/console dev          # the whole suite
+pnpm --filter @advance-labs/chrome-extension build
 ```
 
 See [`../docs/DEPLOYMENT.md`](../docs/DEPLOYMENT.md) for the single-deployment runbook.

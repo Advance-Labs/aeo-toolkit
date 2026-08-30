@@ -7,7 +7,7 @@
  * multi-page crawl data degrade gracefully in `single-page` mode (they pass
  * rather than penalize a context that physically cannot supply the data).
  */
-import type { Rule, ScoringContext, Url } from '@aeo/types';
+import type { Rule, ScoringContext, Url } from '@advance-labs/types';
 import {
   brokenPages,
   everyPage,

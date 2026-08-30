@@ -10,7 +10,7 @@
  */
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import type { EeatReport } from '@aeo/types';
+import type { EeatReport } from '@advance-labs/types';
 import { runEeatAudit } from '@/lib/eeat-pipeline';
 import { validateAuditBody } from '@/lib/eeat-validate';
 import { checkEntitlement } from '@/lib/billing/entitlements';

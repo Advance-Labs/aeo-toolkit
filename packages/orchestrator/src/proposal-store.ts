@@ -5,7 +5,7 @@
  *   - {@link InMemoryProposalStore}: zero-dependency, deterministic; used by every unit test.
  *   - {@link SupabaseProposalStore}: durable cross-run persistence against a `proposals` table,
  *     reached only through the small structural {@link SupabaseLike} seam (mirrors
- *     `@aeo/blogging`'s `SupabasePostStore`), so it needs no live network to type/build.
+ *     `@advance-labs/blogging`'s `SupabasePostStore`), so it needs no live network to type/build.
  *
  * Idempotency is keyed on the job dedupe key `customerId:jobKind:period`: {@link ProposalStore.createForJob}
  * persists a whole job's batch once, and a second call with the same key creates nothing. Re-running
@@ -16,8 +16,8 @@
  * calling `setStatus`/`delete`. This store deliberately does not embed that check — it is an
  * application-layer authorization control, not a storage concern.
  */
-import { createSupabaseClient } from '@aeo/storage';
-import type { Proposal, ProposalKind, ProposalStatus } from '@aeo/types';
+import { createSupabaseClient } from '@advance-labs/storage';
+import type { Proposal, ProposalKind, ProposalStatus } from '@advance-labs/types';
 
 /** Fields an inbox decision sets on a proposal. */
 export interface ProposalStatusPatch {
@@ -171,7 +171,7 @@ export class InMemoryProposalStore implements ProposalStore {
   }
 }
 
-// --- Supabase-backed implementation (mirrors @aeo/blogging's SupabasePostStore) ---
+// --- Supabase-backed implementation (mirrors @advance-labs/blogging's SupabasePostStore) ---
 
 /** Shape of `{ data, error }` returned by terminal PostgREST builders. */
 interface PostgrestResult<T> {
@@ -270,7 +270,7 @@ export function rowToProposal(row: ProposalRow): Proposal {
 
 /**
  * Supabase-backed ProposalStore. Untested against a live DB (per the build plan); the in-memory
- * store is the unit-tested reference. Build the real client with `@aeo/storage`'s
+ * store is the unit-tested reference. Build the real client with `@advance-labs/storage`'s
  * `createSupabaseClient` and pass it via {@link getProposalStore}.
  */
 export class SupabaseProposalStore implements ProposalStore {
@@ -375,7 +375,7 @@ export class SupabaseProposalStore implements ProposalStore {
 
 /**
  * Env-gated ProposalStore factory. Returns a {@link SupabaseProposalStore} (real client via
- * `@aeo/storage`) when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are present; otherwise the
+ * `@advance-labs/storage`) when `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are present; otherwise the
  * provided `fallback` (typically an {@link InMemoryProposalStore}), so local/dev/test run with no
  * secrets. An optional `client` override lets tests inject a fake Supabase seam without env.
  */

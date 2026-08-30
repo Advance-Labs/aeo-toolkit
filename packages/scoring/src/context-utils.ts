@@ -13,7 +13,7 @@ import type {
   ScoringContext,
   StructuredDataReport,
   Url,
-} from '@aeo/types';
+} from '@advance-labs/types';
 
 /** The AI bots whose access matters most for answer-engine visibility. */
 export const KEY_AI_BOTS: readonly AiBotName[] = [

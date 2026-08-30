@@ -6,7 +6,7 @@
  * custom check for nested shapes — e.g. an `FAQPage.mainEntity` must contain `Question`
  * items that each carry an `acceptedAnswer`.
  */
-import type { StructuredDataItem } from '@aeo/types';
+import type { StructuredDataItem } from '@advance-labs/types';
 import { normalizeTypes } from './types-map.js';
 
 /** Outcome of validating a single normalized item against its type rule(s). */

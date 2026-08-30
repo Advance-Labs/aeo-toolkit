@@ -4,10 +4,10 @@
  * unit-testable function. The single I/O seam (the crawl) is injectable via
  * `deps.crawl`, so tests run with a mocked crawler and zero network.
  */
-import { crawl as defaultCrawl } from '@aeo/crawler';
-import { parseHtml } from '@aeo/html-parser';
-import { analyzeStructuredData } from '@aeo/schema-validator';
-import { buildAuditReport } from '@aeo/scoring';
+import { crawl as defaultCrawl } from '@advance-labs/crawler';
+import { parseHtml } from '@advance-labs/html-parser';
+import { analyzeStructuredData } from '@advance-labs/schema-validator';
+import { buildAuditReport } from '@advance-labs/scoring';
 import type {
   AuditReport,
   CrawledPage,
@@ -15,17 +15,17 @@ import type {
   ParsedHtml,
   ScoringContext,
   StructuredDataReport,
-} from '@aeo/types';
+} from '@advance-labs/types';
 import { AuditError } from './audit-errors.js';
 
 /** Identifier surfaced in report metadata and used as the crawl user-agent label. */
 export const AUDIT_VERSION = '0.1.0';
 
-/** The crawl seam: same shape as `@aeo/crawler#crawl`, injectable for tests. */
+/** The crawl seam: same shape as `@advance-labs/crawler#crawl`, injectable for tests. */
 export type CrawlFn = typeof defaultCrawl;
 
 export interface RunAuditDeps {
-  /** Defaults to `@aeo/crawler#crawl`; tests inject a fake so no network is hit. */
+  /** Defaults to `@advance-labs/crawler#crawl`; tests inject a fake so no network is hit. */
   crawl?: CrawlFn;
   /** Injectable clock for deterministic duration measurement in tests. */
   now?: () => number;
@@ -85,7 +85,7 @@ export async function runAudit(
       maxPages: options.maxPages,
       respectRobotsTxt: true,
       followSitemap: true,
-      userAgent: `@aeo/llm-audit/${AUDIT_VERSION}`,
+      userAgent: `@advance-labs/llm-audit/${AUDIT_VERSION}`,
     });
   } catch (err) {
     const reason = err instanceof Error ? err.message : 'unknown crawl error';

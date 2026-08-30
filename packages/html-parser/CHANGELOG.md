@@ -1,4 +1,4 @@
-# @aeo/html-parser
+# @advance-labs/html-parser
 
 ## 0.1.0
 

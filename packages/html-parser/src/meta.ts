@@ -1,6 +1,6 @@
 /** Meta-tag, canonical, and document-level attribute extraction. */
 import type { CheerioAPI } from 'cheerio';
-import type { MetaTags, OpenGraph, TwitterCard } from '@aeo/types';
+import type { MetaTags, OpenGraph, TwitterCard } from '@advance-labs/types';
 
 import { resolveUrl } from './url-utils.js';
 

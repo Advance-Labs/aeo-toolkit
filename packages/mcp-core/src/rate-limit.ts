@@ -5,7 +5,7 @@
  * Time is injectable so refill/exhaustion behaviour can be unit-tested without
  * real clocks or timers.
  */
-import type { RateLimitConfig } from '@aeo/types';
+import type { RateLimitConfig } from '@advance-labs/types';
 
 /** A monotonic clock returning milliseconds. Injectable for deterministic tests. */
 export type Clock = () => number;

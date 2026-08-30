@@ -14,9 +14,9 @@
 ```
 existing reuse layer (unchanged): types · crawler · html-parser · scoring · llm · google-api · storage · backlinks · blogging
         │
-Phase 0 (lead) ── lock @aeo/types additions · security conventions · ownership map · legal stubs
+Phase 0 (lead) ── lock @advance-labs/types additions · security conventions · ownership map · legal stubs
         │
-Phase 1 (parallel) ── @aeo/net-guard (C1)   @aeo/storage hardening (H4)   @aeo/orchestrator (core)
+Phase 1 (parallel) ── @advance-labs/net-guard (C1)   @advance-labs/storage hardening (H4)   @advance-labs/orchestrator (core)
         │                     └──────────── verify barrier (lead) ────────────┘
         │
 Phase 2 (sequenced) ── (2a entitlements ∥ 2b schema/auth) → 2c managed routes+inbox+trigger → 2d guarantee/pricing UI
@@ -25,8 +25,8 @@ Phase 2 (sequenced) ── (2a entitlements ∥ 2b schema/auth) → 2c managed r
 Phase 3 (lead + human) ── legal layer review · dormant/security/e2e proof · docs · PR
 ```
 
-**Keystone:** `@aeo/types` additions (the proposal/customer/job shapes) — lock these in Phase 0 before any
-agent builds against them, exactly as `@aeo/scoring`'s `Score`/`Finding` shapes were locked in the original build.
+**Keystone:** `@advance-labs/types` additions (the proposal/customer/job shapes) — lock these in Phase 0 before any
+agent builds against them, exactly as `@advance-labs/scoring`'s `Score`/`Finding` shapes were locked in the original build.
 
 ---
 
@@ -34,7 +34,7 @@ agent builds against them, exactly as `@aeo/scoring`'s `Score`/`Finding` shapes 
 
 Removes write-contention and locks contracts. Deliverables:
 
-1. **`@aeo/types` additions** (single source of truth; lock before Phase 1):
+1. **`@advance-labs/types` additions** (single source of truth; lock before Phase 1):
    - `CustomerProfile` (siteUrl, niche/topics[], cadence targets, connected integrations, ownerId).
    - `Proposal` discriminated union: `ContentProposal | LinkOutreachProposal` (v1); `LinkPlacementProposal |
      CommunityReplyProposal` typed but marked `@deferred`. Each: `id, customerId, ownerId, kind, status
@@ -59,7 +59,7 @@ Removes write-contention and locks contracts. Deliverables:
 | `apps/console/supabase/schema-managed.sql`, `src/lib/auth/*` additions, OAuth `state` | **schema-auth** |
 | `apps/console/src/app/(internal)/inbox/**`, `app/onboarding/**`, `app/api/orchestrator/**`, `app/api/managed/**` | **managed-routes** |
 | `apps/console/src/app/account/**` (guarantee), `app/pricing/**` (managed card) | **guarantee-ui** |
-| `@aeo/types`, root docs, `.env.example`, deps, CI | **lead** |
+| `@advance-labs/types`, root docs, `.env.example`, deps, CI | **lead** |
 
 ---
 
@@ -84,19 +84,19 @@ A tiny, ruthlessly-tested package: `safeFetch(url, opts, deps)` with injected DN
   round-trip across key versions and the no-key throw.
 
 ### Agent `orchestrator` → `packages/orchestrator` (new) — the product spine
-Depends on `@aeo/blogging`, `@aeo/backlinks`, `@aeo/storage`, `@aeo/net-guard`, `@aeo/types`. **Must not
+Depends on `@advance-labs/blogging`, `@advance-labs/backlinks`, `@advance-labs/storage`, `@advance-labs/net-guard`, `@advance-labs/types`. **Must not
 import from `apps/console`** (dependency-direction trap).
 - **Cadence core (pure):** `dueJobs(profile, now)` → which jobs are due this period; deterministic via
   injected `clock`; idempotent dedupe key `customer+jobKind+period`. Exhaustive unit tests.
 - **`ProposalStore`** interface + `SupabaseProposalStore` impl on `createSupabaseClient` (mirrors
-  `@aeo/blogging`'s `SupabasePostStore`). In-memory impl for tests.
-- **`ContentRunner`:** composes `@aeo/blogging` sub-agents `findQueryGaps → gapToBrief → runResearch →
+  `@advance-labs/blogging`'s `SupabasePostStore`). In-memory impl for tests.
+- **`ContentRunner`:** composes `@advance-labs/blogging` sub-agents `findQueryGaps → gapToBrief → runResearch →
   runWriter → runEditor`, **stops before schedule/publish**, emits a `ContentProposal` (draft `Post`).
   Builds `PipelineDeps` per customer (their BYOK key + Google token from the hardened `TokenStore`).
   **Injection hardening:** scraped research text delimited as data; editor/writer output schema-validated.
-- **`OutreachRunner`:** wraps `@aeo/backlinks` discovery/outreach (`find_prospects`, `extract_contact_info`,
+- **`OutreachRunner`:** wraps `@advance-labs/backlinks` discovery/outreach (`find_prospects`, `extract_contact_info`,
   `generate_outreach_email`) → emits `LinkOutreachProposal`. Any prospect-page fetch goes through
-  `@aeo/net-guard.safeFetch`. Drafted outreach email schema-validated; no model-derived send targets.
+  `@advance-labs/net-guard.safeFetch`. Drafted outreach email schema-validated; no model-derived send targets.
 - **Graduated-autonomy gate (pure):** `shouldAutoExecute(proposal, policy)` — content above a confidence
   threshold may auto-publish (first-party CMS only); outreach always returns `false` (human-gated). Unit-tested.
 - **`runCadence(profile, deps)`** ties it together; returns `JobResult[]`; writes proposals to the store.
@@ -131,13 +131,13 @@ Sequencing inside the phase: **(2a ∥ 2b) → 2c → 2d** (2c reads the new tab
 ### Agent `managed-routes` → `app/(internal)/inbox`, `app/onboarding`, `app/api/orchestrator`, `app/api/managed` — closes **C2 (authz), H1, H3**
 - **Internal staff approval inbox** (`(internal)` — staff-role gated, not customer-facing): list `pending`
   proposals, approve/reject/edit. **Every action:** resolve session → load proposal → assert staff role OR
-  `proposal.owner_id === session.user.id` → execute. Approving content → publish via `@aeo/blogging`
+  `proposal.owner_id === session.user.id` → execute. Approving content → publish via `@advance-labs/blogging`
   `Publisher` with **sanitized** output (escape, single allowlisted `href`); approving outreach → mark sent.
-- **Onboarding** (`/onboarding`): runs existing audit + `@aeo/blogging` `findQueryGaps` + `ai-visibility`
+- **Onboarding** (`/onboarding`): runs existing audit + `@advance-labs/blogging` `findQueryGaps` + `ai-visibility`
   baseline (console-local) → topic clusters + 30-day calendar + captured guarantee baseline.
 - **Orchestrator trigger** (`/api/orchestrator/run`): out-of-band worker auth — constant-time job secret
   (distinct from Stripe's); per-`customer_id` scoping; service-role module isolated from request handlers.
-  Calls `@aeo/orchestrator.runCadence`.
+  Calls `@advance-labs/orchestrator.runCadence`.
 
 ### Agent `guarantee-ui` → `app/account` + `app/pricing` — supports §0.4
 - `/account` managed panel: baseline vs. current (citation coverage on target prompts + GSC), delivery
@@ -146,7 +146,7 @@ Sequencing inside the phase: **(2a ∥ 2b) → 2c → 2d** (2c reads the new tab
 - `/pricing`: add the Managed card (per-site, 3-mo min, "human-vetted, penalty-safe, guaranteed"), CTA →
   contact/checkout. Positioning copy per spec §0.3 (not "compliant BLG").
 
-**Verify barrier (lead):** `pnpm --filter @aeo/console typecheck && build && test`; **dormant proof**
+**Verify barrier (lead):** `pnpm --filter @advance-labs/console typecheck && build && test`; **dormant proof**
 (no managed env → managed routes inert, existing free tools identical — asserted test); **security tests**
 (cross-tenant inbox approve rejected; SSRF set blocked through the outreach path; injection payload in
 research/thread text doesn't alter `href`/output schema); 375px mobile + zero console errors on
@@ -166,12 +166,12 @@ research/thread text doesn't alter `href`/output schema); 375px mobile + zero co
 ## 5. Deferred to v1.5 (separate spec → swarm cycle each)
 
 Not built now; each gets its own brainstorm → spec → swarm pass when triggered:
-- **`@aeo/link-exchange`** — only after the followed-vs-`nofollow` lane is decided (spec §0.1), with
+- **`@advance-labs/link-exchange`** — only after the followed-vs-`nofollow` lane is decided (spec §0.1), with
   domain-ownership verification (M2), append-only consent log, and **seeded from the existing customer base**
   (solve cold-start internally before opening externally).
-- **`@aeo/community`** — after confirming Reddit commercial API licensing/cost, with read-only access, FTC
+- **`@advance-labs/community`** — after confirming Reddit commercial API licensing/cost, with read-only access, FTC
   affiliation-disclosure prompts, cross-customer rate/diversity gates, and no posting capability in the package.
-- **Infographics + multi-language** content add-ons to `@aeo/blogging`.
+- **Infographics + multi-language** content add-ons to `@advance-labs/blogging`.
 
 ---
 

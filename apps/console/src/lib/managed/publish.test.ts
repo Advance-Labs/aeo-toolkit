@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { ContentProposal } from '@aeo/types';
-import type { Post, PublishResult } from '@aeo/blogging';
+import type { ContentProposal } from '@advance-labs/types';
+import type { Post, PublishResult } from '@advance-labs/blogging';
 import { buildPostFromProposal, publishApprovedContent } from './publish.js';
 
 const NOW = (): Date => new Date('2026-06-29T00:00:00.000Z');

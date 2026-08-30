@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { GoogleOAuthTokens } from '@aeo/types';
+import type { GoogleOAuthTokens } from '@advance-labs/types';
 import { InMemoryTokenStore } from './token-store.js';
 
 const tokens: GoogleOAuthTokens = {

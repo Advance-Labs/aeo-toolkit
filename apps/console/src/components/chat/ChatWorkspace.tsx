@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent, JSX } from 'react';
-import type { Ga4Property, GscSite, LlmProvider } from '@aeo/types';
+import type { Ga4Property, GscSite, LlmProvider } from '@advance-labs/types';
 import type {
   ChatRequestBody,
   ChatResponseBody,

@@ -6,7 +6,7 @@
 ## The seven invariants
 
 1. **SSRF-guarded fetch only.** Any fetch of a user-supplied/external URL goes through
-   `@aeo/net-guard.safeFetch`. Never call the raw `@aeo/crawler` / `@aeo/backlinks` HTTP seam on a
+   `@advance-labs/net-guard.safeFetch`. Never call the raw `@advance-labs/crawler` / `@advance-labs/backlinks` HTTP seam on a
    user-controlled URL. The guard: scheme allowlist, DNS-resolve + reject private/loopback/link-local/
    CGNAT/metadata (v4+v6), re-validate every redirect hop, timeout + body cap, host-pin (anti-rebind).
 
@@ -35,7 +35,7 @@
 ## Package conventions (match the existing repo)
 
 - ESM, `"type": "module"`; relative imports carry the `.js` extension.
-- `tsup` build, `vitest` tests, `tsconfig` extends `@aeo/config`'s `node-library.json`.
+- `tsup` build, `vitest` tests, `tsconfig` extends `@advance-labs/config`'s `node-library.json`.
 - Workspace deps as `"workspace:*"`.
 - **Injected I/O.** All network/clock/storage is injected; unit tests run with zero network and a fake
   clock. No `Date.now()` / `Math.random()` in pure cores.

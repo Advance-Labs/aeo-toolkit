@@ -9,11 +9,11 @@
  *
  * Re-homed into the console: the standalone app parsed the DOM with `cheerio`
  * directly, but the console shell does not declare `cheerio` as a dependency, so
- * this uses `@aeo/html-parser#extractLinks` (which owns the cheerio parse) instead.
+ * this uses `@advance-labs/html-parser#extractLinks` (which owns the cheerio parse) instead.
  * The extractor yields resolved absolute hrefs + `rel` tokens, which is everything
  * link verification needs.
  */
-import { extractLinks } from '@aeo/html-parser';
+import { extractLinks } from '@advance-labs/html-parser';
 
 export interface FoundLink {
   href: string;

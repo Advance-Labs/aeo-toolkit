@@ -3,7 +3,7 @@
  *
  * `registerGaGscTools(server, ctx)` binds every tool's zod schema + handler onto
  * an `McpServer` (the object `mcp-handler`'s `createMcpHandler` setup callback
- * gives us) via `@aeo/mcp-core#registerTool`. The `ctx` carries the request-scoped
+ * gives us) via `@advance-labs/mcp-core#registerTool`. The `ctx` carries the request-scoped
  * BYOK bearer token, so the route builds a fresh server per request.
  *
  * `buildGaGscRuntime()` assembles the process-shared store + token resolver from
@@ -11,8 +11,8 @@
  * service-role key and any tokens are read only here and never logged.
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { registerTool } from '@aeo/mcp-core';
-import type { TokenStore } from '@aeo/types';
+import { registerTool } from '@advance-labs/mcp-core';
+import type { TokenStore } from '@advance-labs/types';
 
 import { loadConfig, type ServerConfig } from './config.js';
 import {

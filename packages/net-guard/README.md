@@ -1,4 +1,4 @@
-# @aeo/net-guard
+# @advance-labs/net-guard
 
 SSRF-guarded HTTP fetch seam. Closes finding **C1** of the Autopilot security review: the existing
 crawler/backlinks HTTP layer follows redirects with no private-IP guard, so a user-supplied URL can
@@ -7,7 +7,7 @@ reach `169.254.169.254` (cloud metadata), `localhost`, or RFC-1918 hosts.
 ## Use it for any untrusted URL
 
 ```ts
-import { safeFetch, createLiveSafeFetchDeps } from '@aeo/net-guard';
+import { safeFetch, createLiveSafeFetchDeps } from '@advance-labs/net-guard';
 
 const deps = createLiveSafeFetchDeps();
 const res = await safeFetch('https://prospect.example/', {}, deps);

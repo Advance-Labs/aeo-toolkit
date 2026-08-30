@@ -1,4 +1,4 @@
-/** Google data domain — shapes for `@aeo/google-api` (GA4 + Search Console). */
+/** Google data domain — shapes for `@advance-labs/google-api` (GA4 + Search Console). */
 
 export interface Ga4Property {
   propertyId: string;

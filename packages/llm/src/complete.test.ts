@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { LlmCompletionRequest } from '@aeo/types';
+import type { LlmCompletionRequest } from '@advance-labs/types';
 import type { Fetcher, FetchResponse } from './fetcher.js';
 import { complete } from './complete.js';
 import { LlmHttpError, LlmRequestError, LlmResponseError } from './errors.js';

@@ -1,4 +1,4 @@
-# @aeo/mcp-core
+# @advance-labs/mcp-core
 
 ## 0.1.0
 

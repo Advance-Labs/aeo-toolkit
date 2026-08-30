@@ -1,4 +1,4 @@
-import type { ScoreGrade } from '@aeo/types';
+import type { ScoreGrade } from '@advance-labs/types';
 
 /**
  * Map a 0..100 numeric score to a letter grade.

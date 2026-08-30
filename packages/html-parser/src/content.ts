@@ -1,6 +1,6 @@
 /** Visible-text content signals: word count, FAQ/HowTo, question headings, structure counts. */
 import type { CheerioAPI } from 'cheerio';
-import type { ContentSignals, HeadingNode, RawStructuredDataBlock } from '@aeo/types';
+import type { ContentSignals, HeadingNode, RawStructuredDataBlock } from '@advance-labs/types';
 
 import { jsonLdHasType } from './structured-data.js';
 

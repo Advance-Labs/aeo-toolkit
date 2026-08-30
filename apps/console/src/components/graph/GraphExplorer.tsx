@@ -30,7 +30,7 @@ import {
 } from '@/components/graph/graph-client.js';
 import { mergeGraph, toForceGraphData } from '@/components/graph/graph-data.js';
 import type { FgNode, ForceGraphData } from '@/components/graph/graph-data.js';
-import type { BacklinkGraph, BacklinkGraphStats } from '@aeo/backlinks';
+import type { BacklinkGraph, BacklinkGraphStats } from '@advance-labs/backlinks';
 
 type Status = 'idle' | 'building' | 'done' | 'error';
 

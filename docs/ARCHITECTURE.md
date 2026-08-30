@@ -6,12 +6,12 @@ The 9 tools look distinct from the outside but collapse into a small set of shar
 
 ```
                        ┌─────────────────────────────────────────┐
-                       │            @aeo/scoring (keystone)        │
+                       │            @advance-labs/scoring (keystone)        │
                        │  technicalSeoRules · aeoRules · eeatRules │
                        └───────────────▲───────────────────────────┘
                                        │ consumes
         ┌──────────────┬───────────────┼───────────────┬──────────────┐
-   @aeo/crawler   @aeo/html-parser  @aeo/schema-     @aeo/pdf      @aeo/ui
+   @advance-labs/crawler   @advance-labs/html-parser  @advance-labs/schema-     @advance-labs/pdf      @advance-labs/ui
    (network)      (pure parse)      validator        (reports)     (React)
         │              │             (pure detect)       │            │
         └──────────────┴──────┬──────┴───────────────────┴────────────┘
@@ -19,9 +19,9 @@ The 9 tools look distinct from the outside but collapse into a small set of shar
    ┌─────────────┬────────────┴───────────┬──────────────┬───────────────┐
  llm-audit   eeat-scanner          ai-visibility-mcp   chrome-ext   llms-txt-gen
                                           │
-                                   @aeo/mcp-core ───── ga-gsc-mcp ───── backlink-mcp
+                                   @advance-labs/mcp-core ───── ga-gsc-mcp ───── backlink-mcp
                                           │
-   @aeo/google-api ─── ga-gsc-chat ───────┘        @aeo/llm ─── blogging-agent
+   @advance-labs/google-api ─── ga-gsc-chat ───────┘        @advance-labs/llm ─── blogging-agent
 ```
 
 - **Crawl → Parse → Detect → Score** is one pipeline. Build it once in `packages/`, import it in 4 tools.
@@ -35,28 +35,28 @@ because it reuses the engine the first one paid for.
 ## Data flow — audit pipeline (tools 1, 2, 4, 5)
 
 ```
-URL ──▶ @aeo/crawler ──▶ pages[] ──▶ @aeo/html-parser ──▶ ParsedHtml[]
+URL ──▶ @advance-labs/crawler ──▶ pages[] ──▶ @advance-labs/html-parser ──▶ ParsedHtml[]
                                             │
                                             ▼
-                                  @aeo/schema-validator ──▶ StructuredDataItem[]
+                                  @advance-labs/schema-validator ──▶ StructuredDataItem[]
                                             │
                                             ▼
-                          @aeo/scoring (RuleEngine + rule set) ──▶ Score + Finding[]
+                          @advance-labs/scoring (RuleEngine + rule set) ──▶ Score + Finding[]
                                             │
                           ┌─────────────────┼──────────────────┐
                           ▼                 ▼                  ▼
-                    @aeo/ui (web)     @aeo/pdf (export)   MCP tool result
+                    @advance-labs/ui (web)     @advance-labs/pdf (export)   MCP tool result
 ```
 
 ## Data flow — data connectors (tools 6, 7, 9)
 
 ```
-Google OAuth ──▶ @aeo/google-api (Ga4Client + GscClient) ──▶ metrics
+Google OAuth ──▶ @advance-labs/google-api (Ga4Client + GscClient) ──▶ metrics
                                             │
                           ┌─────────────────┼─────────────────┐
                           ▼                 ▼                 ▼
                   ga-gsc-chat        ga-gsc-mcp        blogging-agent
-                  (+ @aeo/llm)       (@aeo/mcp-core)   (+ @aeo/llm)
+                  (+ @advance-labs/llm)       (@advance-labs/mcp-core)   (+ @advance-labs/llm)
 ```
 
 ## Runtime & deployment
