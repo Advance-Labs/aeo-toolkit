@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/schema-validator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Detect and validate JSON-LD, Microdata, and RDFa structured data from raw HTML, mapped to schema.org types with AEO-relevant required-property validation.",
   "license": "MIT",

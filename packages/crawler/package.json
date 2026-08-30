@@ -1,8 +1,8 @@
 {
   "name": "@advance-labs/crawler",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Polite, bounded HTTP crawler \u2014 sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
+  "description": "Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

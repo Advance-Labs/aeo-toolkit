@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/orchestrator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Autopilot v1 managed-layer spine: per-customer cadence, an idempotent proposal store, the content + outreach runners (composed from @advance-labs/blogging and @advance-labs/backlinks), the graduated auto-publish gate, and runCadence. All I/O is injected, so it is fully testable with no network.",

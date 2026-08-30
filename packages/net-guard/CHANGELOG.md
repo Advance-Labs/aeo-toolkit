@@ -1,4 +1,4 @@
-# @advance-labs/schema-validator
+# @advance-labs/net-guard
 
 ## 0.2.0
 
@@ -15,7 +15,3 @@
 
 - Updated dependencies [cc35cb4]
   - @advance-labs/types@0.2.0
-
-## 0.1.0
-
-Initial release.

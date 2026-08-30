@@ -1,9 +1,9 @@
 {
   "name": "@advance-labs/storage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
-  "description": "Production storage and rate-limit adapters \u2014 Supabase-backed encrypted token store plus in-memory and Upstash rate limiters, behind small injectable seams.",
+  "description": "Production storage and rate-limit adapters — Supabase-backed encrypted token store plus in-memory and Upstash rate limiters, behind small injectable seams.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

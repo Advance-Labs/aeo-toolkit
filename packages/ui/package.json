@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Shared React design-system components for the AEO Toolkit web apps. Presentational, Tailwind-class based, headless-friendly.",

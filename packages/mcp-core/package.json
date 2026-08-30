@@ -1,9 +1,9 @@
 {
   "name": "@advance-labs/mcp-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
-  "description": "Shared MCP server kit for the AEO Toolkit: transports, OAuth 2.1 discovery, token-bucket rate limiting, tool registry, and structured errors \u2014 built on @modelcontextprotocol/sdk.",
+  "description": "Shared MCP server kit for the AEO Toolkit: transports, OAuth 2.1 discovery, token-bucket rate limiting, tool registry, and structured errors — built on @modelcontextprotocol/sdk.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
