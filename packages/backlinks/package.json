@@ -1,9 +1,9 @@
 {
   "name": "@advance-labs/backlinks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
-  "description": "Free-source backlink engine \u2014 DuckDuckGo / CommonCrawl / Wayback providers, contact extraction, a rate-limited HTTP seam, and a backlink graph builder.",
+  "description": "Free-source backlink engine — DuckDuckGo / CommonCrawl / Wayback providers, contact extraction, a rate-limited HTTP seam, and a backlink graph builder.",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

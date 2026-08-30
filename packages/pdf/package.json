@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/pdf",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Server-side PDF audit report renderer for the AEO Toolkit, built on @react-pdf/renderer.",

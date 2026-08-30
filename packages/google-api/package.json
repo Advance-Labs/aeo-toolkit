@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/google-api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "GA4 Data API + Search Console clients and Google OAuth for the AEO Toolkit. Uses injectable global fetch (no heavy googleapis dependency).",

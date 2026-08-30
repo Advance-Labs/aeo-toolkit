@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/blogging",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Autonomous multi-agent blogging pipeline: research GSC query gaps, draft with Groq, edit, dedup via Jaccard fingerprints, schedule, publish, and self-correct underperformers. Built on @advance-labs/google-api and @advance-labs/llm (BYOK). All I/O is injected, so it is fully testable with no network.",
