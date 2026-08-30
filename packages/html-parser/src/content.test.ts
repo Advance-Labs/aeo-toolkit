@@ -55,3 +55,51 @@ describe('isQuestionHeading', () => {
     expect(isQuestionHeading('Our grinder guide')).toBe(false);
   });
 });
+
+describe('client-side rendering signals', () => {
+  it('flags an empty React root as an empty app shell', () => {
+    const signals = computeContentSignals('<html><body><div id="root"></div><script src="/a.js"></script></body></html>');
+    expect(signals.hasEmptyAppShell).toBe(true);
+    expect(signals.scriptCount).toBe(1);
+  });
+
+  it('does NOT flag a filled mount point', () => {
+    // A server-rendered Next page has #__next WITH content. The element is not the
+    // signal; its emptiness is.
+    const signals = computeContentSignals(
+      '<html><body><div id="__next"><h1>Real heading</h1><p>Real body text here.</p></div></body></html>',
+    );
+    expect(signals.hasEmptyAppShell).toBe(false);
+  });
+
+  it('does not flag a page with no mount point at all', () => {
+    const signals = computeContentSignals('<html><body><h1>Plain page</h1><p>Server rendered.</p></body></html>');
+    expect(signals.hasEmptyAppShell).toBe(false);
+  });
+
+  it('treats a shell containing only scripts and noscript as empty', () => {
+    // Non-visible nodes must not count as content, or the check is trivially defeated.
+    const signals = computeContentSignals(
+      '<html><body><div id="app"><noscript>Enable JavaScript</noscript><script>x()</script></div></body></html>',
+    );
+    expect(signals.hasEmptyAppShell).toBe(true);
+  });
+
+  it('treats a whitespace-only shell as empty', () => {
+    const signals = computeContentSignals('<html><body><div id="app">\n   \n</div></body></html>');
+    expect(signals.hasEmptyAppShell).toBe(true);
+  });
+
+  it('recognises the other common mount-point conventions', () => {
+    for (const shell of ['<div id="app"></div>', '<div data-reactroot=""></div>']) {
+      expect(computeContentSignals(`<html><body>${shell}</body></html>`).hasEmptyAppShell).toBe(true);
+    }
+  });
+
+  it('counts every script element', () => {
+    const signals = computeContentSignals(
+      '<html><head><script>a()</script></head><body><script>b()</script><script src="c.js"></script></body></html>',
+    );
+    expect(signals.scriptCount).toBe(3);
+  });
+});

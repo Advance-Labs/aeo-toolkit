@@ -67,6 +67,18 @@ export interface ContentSignals {
   paragraphCount: number;
   listCount: number;
   tableCount: number;
+  /** Number of `<script>` elements on the page. */
+  scriptCount: number;
+  /**
+   * True when a known single-page-app mount point (`#root`, `#app`, `#__next`, a React root)
+   * is present but contains no visible text.
+   *
+   * This is the fingerprint of client-side rendering: the served HTML is an empty shell and
+   * the content only exists after JavaScript runs. It matters for AEO because answer engines
+   * and most AI crawlers read the HTML they are served and do not execute JavaScript, so that
+   * content is invisible to them no matter how good it is in a browser.
+   */
+  hasEmptyAppShell: boolean;
 }
 
 /** A raw structured-data block extracted from HTML, handed to `@advance-labs/schema-validator`. */

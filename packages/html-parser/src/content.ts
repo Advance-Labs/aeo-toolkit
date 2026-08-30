@@ -7,6 +7,13 @@ import { jsonLdHasType } from './structured-data.js';
 /** Elements whose text is not visible page content and must be excluded. */
 const NON_VISIBLE_SELECTOR = 'script, style, noscript, template, head';
 
+/**
+ * Mount points single-page apps render into. `#__next` is included deliberately: a
+ * server-rendered Next page fills it, a client-only one leaves it empty, and it is the
+ * emptiness, not the element, that carries the signal.
+ */
+const APP_SHELL_SELECTOR = '#root, #app, #__next, [data-reactroot], [data-server-rendered]';
+
 /** A heading is question-like if it ends with `?` or opens with an interrogative. */
 const QUESTION_WORDS = new Set([
   'who',
@@ -30,6 +37,23 @@ function countWords(text: string): number {
   const normalized = text.replace(/\s+/g, ' ').trim();
   if (normalized.length === 0) return 0;
   return normalized.split(' ').length;
+}
+
+/**
+ * Whether the page ships an app shell with nothing in it.
+ *
+ * Checks each candidate mount point for visible text after stripping non-visible nodes. An
+ * empty one means the served HTML carries no content for a crawler to read. Returns false
+ * when no mount point exists at all, so a conventional server-rendered page is never flagged.
+ */
+function detectEmptyAppShell($: CheerioAPI): boolean {
+  const shells = $(APP_SHELL_SELECTOR);
+  if (shells.length === 0) return false;
+  return shells.toArray().some((el) => {
+    const $shell = $(el).clone();
+    $shell.find(NON_VISIBLE_SELECTOR).remove();
+    return $shell.text().replace(/\s+/g, ' ').trim().length === 0;
+  });
 }
 
 /** Whether a heading reads as a question (terminal `?` or leading question word). */
@@ -95,5 +119,7 @@ export function computeContentSignals(
     paragraphCount: $('p').length,
     listCount: $('ul, ol').length,
     tableCount: $('table').length,
+    scriptCount: $('script').length,
+    hasEmptyAppShell: detectEmptyAppShell($),
   };
 }
