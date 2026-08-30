@@ -8,11 +8,32 @@ import { jsonLdHasType } from './structured-data.js';
 const NON_VISIBLE_SELECTOR = 'script, style, noscript, template, head';
 
 /**
- * Mount points single-page apps render into. `#__next` is included deliberately: a
- * server-rendered Next page fills it, a client-only one leaves it empty, and it is the
- * emptiness, not the element, that carries the signal.
+ * Mount points single-page apps render into, across the common frameworks. `#__next` and
+ * `#__nuxt` are included deliberately: a server-rendered page fills them, a client-only one
+ * leaves them empty, and it is the emptiness, not the element, that carries the signal.
  */
-const APP_SHELL_SELECTOR = '#root, #app, #__next, [data-reactroot], [data-server-rendered]';
+const APP_SHELL_SELECTOR = [
+  '#root',
+  '#app',
+  '#__next',
+  '#__nuxt',
+  '#nuxt',
+  '#___gatsby',
+  '#q-app',
+  '#svelte',
+  '[data-reactroot]',
+  '[data-server-rendered]',
+].join(', ');
+
+/**
+ * Words a shell may contain and still count as empty.
+ *
+ * Exact emptiness is the wrong test: the most common client-rendered page ships
+ * `<div id="root">Loading...</div>` or a short skeleton label, which is not empty and is
+ * still nothing for a crawler to read. Kept very small so a shell holding genuine content
+ * is never mistaken for a placeholder.
+ */
+const MAX_SHELL_PLACEHOLDER_WORDS = 3;
 
 /** A heading is question-like if it ends with `?` or opens with an interrogative. */
 const QUESTION_WORDS = new Set([
@@ -49,10 +70,19 @@ function countWords(text: string): number {
 function detectEmptyAppShell($: CheerioAPI): boolean {
   const shells = $(APP_SHELL_SELECTOR);
   if (shells.length === 0) return false;
+
+  // A real client-rendered page always ships the script that fills the shell. Requiring one
+  // rules out the case that produced a false positive in testing: a short server-rendered
+  // page (a contact page, say) carrying an empty widget-mount div and no scripts at all,
+  // which is simply a short page and must not be reported as invisible to crawlers.
+  if ($('script').length === 0) return false;
+
   return shells.toArray().some((el) => {
     const $shell = $(el).clone();
     $shell.find(NON_VISIBLE_SELECTOR).remove();
-    return $shell.text().replace(/\s+/g, ' ').trim().length === 0;
+    const text = $shell.text().replace(/\s+/g, ' ').trim();
+    if (text.length === 0) return true;
+    return text.split(' ').length <= MAX_SHELL_PLACEHOLDER_WORDS;
   });
 }
 

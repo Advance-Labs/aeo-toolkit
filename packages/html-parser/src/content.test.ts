@@ -86,13 +86,22 @@ describe('client-side rendering signals', () => {
   });
 
   it('treats a whitespace-only shell as empty', () => {
-    const signals = computeContentSignals('<html><body><div id="app">\n   \n</div></body></html>');
+    // The script tag is required: see the script-presence test below. A shell with no
+    // script alongside it is a widget mount on a server-rendered page, not an SPA.
+    const signals = computeContentSignals(
+      '<html><body><div id="app">\n   \n</div><script src="a.js"></script></body></html>',
+    );
     expect(signals.hasEmptyAppShell).toBe(true);
   });
 
   it('recognises the other common mount-point conventions', () => {
     for (const shell of ['<div id="app"></div>', '<div data-reactroot=""></div>']) {
-      expect(computeContentSignals(`<html><body>${shell}</body></html>`).hasEmptyAppShell).toBe(true);
+      expect(
+        computeContentSignals(
+          `<html><body>${shell}<script src="a.js"></script></body></html>`,
+        ).hasEmptyAppShell,
+        `shell: ${shell}`,
+      ).toBe(true);
     }
   });
 
@@ -101,5 +110,59 @@ describe('client-side rendering signals', () => {
       '<html><head><script>a()</script></head><body><script>b()</script><script src="c.js"></script></body></html>',
     );
     expect(signals.scriptCount).toBe(3);
+  });
+});
+
+describe('client-render detection — defects found in adversarial review', () => {
+  it('does NOT flag a short server-rendered page carrying an unrelated empty mount div', () => {
+    // FALSE POSITIVE found in review: a contact page with a widget-mount div and no
+    // scripts is simply a short page. Reporting it as invisible to crawlers is the same
+    // class of misdiagnosis this rule exists to prevent, pointed the other way.
+    const signals = computeContentSignals(
+      '<html><body><h1>Contact</h1><p>Call 555 1234.</p><div id="app"></div></body></html>',
+    );
+    expect(signals.hasEmptyAppShell).toBe(false);
+  });
+
+  it('flags a shell holding only a loading placeholder', () => {
+    // FALSE NEGATIVE found in review, and the most common client-rendered page there is.
+    // Exact emptiness was the wrong test.
+    for (const placeholder of ['Loading...', 'Loading', ' ', 'Please wait']) {
+      const signals = computeContentSignals(
+        `<html><body><div id="root">${placeholder}</div><script src="a.js"></script></body></html>`,
+      );
+      expect(signals.hasEmptyAppShell, `placeholder: ${placeholder}`).toBe(true);
+    }
+  });
+
+  it('does NOT treat a shell containing a real sentence as a placeholder', () => {
+    // The other side of the placeholder allowance: server-rendered content inside the
+    // mount point must still pass, or every SSR framework page gets flagged.
+    const signals = computeContentSignals(
+      '<html><body><div id="root"><p>This is genuine server rendered content.</p></div>' +
+        '<script src="a.js"></script></body></html>',
+    );
+    expect(signals.hasEmptyAppShell).toBe(false);
+  });
+
+  it('recognises the mount points of the other common frameworks', () => {
+    // FALSE NEGATIVES found in review: the original selector list covered React and Vue
+    // conventions only.
+    for (const id of ['___gatsby', 'q-app', '__nuxt', 'nuxt', 'svelte']) {
+      const signals = computeContentSignals(
+        `<html><body><div id="${id}"></div><script src="a.js"></script></body></html>`,
+      );
+      expect(signals.hasEmptyAppShell, `mount point: #${id}`).toBe(true);
+    }
+  });
+
+  it('requires at least one script, since a real client-rendered page always ships one', () => {
+    const noScript = computeContentSignals('<html><body><div id="root"></div></body></html>');
+    expect(noScript.hasEmptyAppShell).toBe(false);
+
+    const withScript = computeContentSignals(
+      '<html><body><div id="root"></div><script src="a.js"></script></body></html>',
+    );
+    expect(withScript.hasEmptyAppShell).toBe(true);
   });
 });
