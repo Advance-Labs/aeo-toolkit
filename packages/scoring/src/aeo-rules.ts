@@ -12,6 +12,14 @@ import { KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './con
 
 const ANSWERABLE_MIN_WORDS = 300;
 
+/**
+ * Below this visible word count, an empty app shell is treated as client-side rendering
+ * rather than a genuinely short page. Set low on purpose: the shell signal is already
+ * specific, so this only guards against flagging a server-rendered page that happens to
+ * contain an element named `#app`.
+ */
+const CLIENT_RENDER_MAX_WORDS = 100;
+
 /** Host without a leading `www.`, or undefined when the value will not parse as a URL. */
 function hostOf(value: string | undefined): string | undefined {
   if (!value) return undefined;
@@ -65,6 +73,42 @@ export const aeoRules: Rule[] = [
       return fromSchema || fromHtml
         ? { passed: true }
         : { passed: false, detail: 'No FAQ/QA content or schema detected.' };
+    },
+  },
+  {
+    id: 'aeo.content-server-rendered',
+    category: 'aeo',
+    severity: 'high',
+    weight: 9,
+    title: 'Content is in the HTML without running JavaScript',
+    description:
+      'Answer engines and most AI crawlers read the HTML they are served and do not execute ' +
+      'JavaScript. Content that only appears after hydration is invisible to them.',
+    recommendation:
+      'Server-render or pre-render the page so its content is in the initial HTML response.',
+    docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics',
+    evaluate: (ctx) => {
+      // An empty app shell is the specific fingerprint. Low word count ALONE is thin
+      // content, which `tech.content-not-thin` already reports and which needs the
+      // opposite fix ("write more" vs "render it server-side"). Requiring both signals
+      // is what keeps the two diagnoses apart.
+      const shellPages = ctx.pages.filter(
+        (p) => p.content.hasEmptyAppShell && p.content.wordCount < CLIENT_RENDER_MAX_WORDS,
+      );
+      if (shellPages.length === 0) return { passed: true };
+
+      const first = shellPages[0];
+      const where =
+        shellPages.length === 1
+          ? `${first?.url ?? 'a page'} serves`
+          : `${shellPages.length} pages serve`;
+      return {
+        passed: false,
+        detail:
+          `${where} an empty app shell: the markup contains a mount point with no text, ` +
+          'so a crawler that does not run JavaScript sees no content. This is not thin ' +
+          'content, and writing more will not fix it.',
+      };
     },
   },
   {
