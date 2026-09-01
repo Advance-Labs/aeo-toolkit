@@ -15,8 +15,12 @@ function dimension(value: string | undefined): number | undefined {
 
 /**
  * Extract `<img>` elements with resolved `src`, alt text, and alt presence.
- * Images without a `src` (or with an empty one) are dropped — there is nothing
- * to score. A present-but-empty `alt=""` counts as *not* having descriptive alt.
+ * Images without a `src` (or with an empty one) are dropped — there is nothing to score.
+ *
+ * Three states, not two (ADV-174): a non-empty `alt` is described (`hasAlt`), an `alt=""` is
+ * explicitly decorative (`isDecorative`), and a missing `alt` attribute is neither — an
+ * omission. Collapsing the first two categories is what made `imageAltCoverage` report 58%
+ * for a page that was 100% correct.
  */
 export function extractImages($: CheerioAPI, pageUrl: string): ImageInfo[] {
   const images: ImageInfo[] = [];
@@ -28,11 +32,14 @@ export function extractImages($: CheerioAPI, pageUrl: string): ImageInfo[] {
     const altRaw = $el.attr('alt');
     const alt = altRaw?.trim();
     const hasAlt = alt !== undefined && alt.length > 0;
+    // Attribute PRESENT but empty => the author declared it decorative.
+    const isDecorative = altRaw !== undefined && !hasAlt;
 
     images.push({
       src: resolveUrl(rawSrc, pageUrl),
       alt: altRaw,
       hasAlt,
+      isDecorative,
       width: dimension($el.attr('width')),
       height: dimension($el.attr('height')),
     });
@@ -40,9 +47,17 @@ export function extractImages($: CheerioAPI, pageUrl: string): ImageInfo[] {
   return images;
 }
 
-/** Fraction of images with non-empty alt text, 0..1. Empty set → 1 (vacuously). */
+/**
+ * Fraction of images NEEDING alt text that have it, 0..1. Empty set → 1 (vacuously).
+ *
+ * Images the author marked decorative (`alt=""`) are excluded from BOTH sides of the ratio
+ * (ADV-174): they neither need describing nor count against the page. A page of correctly
+ * marked decorative icons therefore scores 1, not 0 — the previous behaviour failed
+ * advancelabs.dev at 58% when every one of its 19 images was marked correctly.
+ */
 export function imageAltCoverage(images: ImageInfo[]): number {
-  if (images.length === 0) return 1;
-  const withAlt = images.filter((img) => img.hasAlt).length;
-  return withAlt / images.length;
+  const scorable = images.filter((img) => !img.isDecorative);
+  if (scorable.length === 0) return 1;
+  const withAlt = scorable.filter((img) => img.hasAlt).length;
+  return withAlt / scorable.length;
 }

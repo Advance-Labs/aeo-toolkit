@@ -43,7 +43,17 @@ export interface HeadingNode {
 export interface ImageInfo {
   src: Url;
   alt?: string;
+  /** True only for a NON-EMPTY alt. An `alt=""` is `false` here and `isDecorative` instead. */
   hasAlt: boolean;
+  /**
+   * The author explicitly marked this image decorative with `alt=""` (ADV-174).
+   *
+   * Distinct from a missing `alt` attribute, which is an omission. Under WCAG `alt=""` is the
+   * PRESCRIBED markup for an image whose meaning is already carried by adjacent text, so it
+   * must not be scored as a defect — telling an author to describe it makes the page worse
+   * for a screen-reader user.
+   */
+  isDecorative: boolean;
   width?: number;
   height?: number;
 }
