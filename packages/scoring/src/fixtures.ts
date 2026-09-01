@@ -60,8 +60,10 @@ function goodParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
     ],
     headingHierarchyValid: true,
     images: [
-      { src: 'https://good.example.com/a.png', alt: 'descriptive', hasAlt: true },
-      { src: 'https://good.example.com/b.png', alt: 'also descriptive', hasAlt: true },
+      { src: 'https://good.example.com/a.png', alt: 'descriptive', hasAlt: true, isDecorative: false },
+      { src: 'https://good.example.com/b.png', alt: 'also descriptive', hasAlt: true, isDecorative: false },
+      // ADV-174: a correctly-marked decorative icon must not drag coverage down.
+      { src: 'https://good.example.com/icon.svg', alt: '', hasAlt: false, isDecorative: true },
     ],
     imageAltCoverage: 1,
     links: [],
@@ -100,8 +102,8 @@ function poorParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
     ],
     headingHierarchyValid: false,
     images: [
-      { src: 'https://poor.example.com/a.png', hasAlt: false },
-      { src: 'https://poor.example.com/b.png', hasAlt: false },
+      { src: 'https://poor.example.com/a.png', hasAlt: false, isDecorative: false },
+      { src: 'https://poor.example.com/b.png', hasAlt: false, isDecorative: false },
     ],
     imageAltCoverage: 0,
     links: [],

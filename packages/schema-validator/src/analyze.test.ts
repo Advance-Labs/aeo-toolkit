@@ -134,3 +134,64 @@ describe('analyzeStructuredData', () => {
     expect(item?.valid).toBe(true);
   });
 });
+
+describe('nested @type collection (ADV-173)', () => {
+  it('sees a Person nested as a property, not only top-level nodes', () => {
+    const html = `<script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          name: 'Advance Labs Inc.',
+          founder: [
+            { '@type': 'Person', name: 'Lucas Krawczak' },
+            { '@type': 'Person', name: 'Matthew Krawczak' },
+          ],
+          address: { '@type': 'PostalAddress', addressLocality: 'London' },
+        },
+        { '@type': 'WebSite', name: 'Advance Labs' },
+      ],
+    })}</script>`;
+    const r = analyzeStructuredData(html, 'https://example.com/');
+    expect(r.hasPerson).toBe(true);
+    expect(r.hasOrganization).toBe(true);
+    expect(r.typesPresent).toEqual(
+      expect.arrayContaining(['Organization', 'WebSite', 'Person', 'PostalAddress']),
+    );
+    // `items` keeps its top-level meaning: two published nodes, not five.
+    expect(r.totalItems).toBe(2);
+  });
+
+  it('sees an Article author nested the way Google documents it', () => {
+    const html = `<script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: 'A post',
+      author: { '@type': 'Person', name: 'Lucas Krawczak' },
+    })}</script>`;
+    const r = analyzeStructuredData(html, 'https://example.com/post');
+    expect(r.hasArticle).toBe(true);
+    expect(r.hasPerson).toBe(true);
+  });
+
+  it('handles an array-valued nested @type', () => {
+    const html = `<script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      mainEntity: { '@type': ['FAQPage', 'CreativeWork'], name: 'FAQ' },
+    })}</script>`;
+    const r = analyzeStructuredData(html, 'https://example.com/');
+    expect(r.hasFaqOrQa).toBe(true);
+  });
+
+  it('still works for flat, non-graph documents', () => {
+    const html = `<script type="application/ld+json">${JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home' }],
+    })}</script>`;
+    const r = analyzeStructuredData(html, 'https://example.com/');
+    expect(r.hasBreadcrumb).toBe(true);
+    expect(r.typesPresent).toEqual(expect.arrayContaining(['BreadcrumbList', 'ListItem']));
+  });
+});

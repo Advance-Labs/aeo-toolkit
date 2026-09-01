@@ -61,7 +61,14 @@ export function ScoreGauge({ score }: ScoreGaugeProps): JSX.Element {
       <div className="gauge-meta">
         <span className="pass">{score.passedCount} passed</span>
         <span className="fail">{score.failedCount} failed</span>
-        {score.criticalCount > 0 && <span className="crit">{score.criticalCount} critical</span>}
+        {/*
+          ADV-175: `criticalCount` counts severity `critical` AND `high` (engine.ts), so
+          labelling it "critical" overstated a high-severity finding. The tally is right;
+          the word was not.
+        */}
+        {score.criticalCount > 0 && (
+          <span className="crit">{score.criticalCount} needs attention</span>
+        )}
       </div>
     </div>
   );

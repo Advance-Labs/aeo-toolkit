@@ -8,7 +8,7 @@
  * structure (lists, decent word count). All accessors are defensive.
  */
 import type { Rule, ScoringContext } from '@advance-labs/types';
-import { KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './context-utils.js';
+import { isSingleRootPage, KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './context-utils.js';
 
 const ANSWERABLE_MIN_WORDS = 300;
 
@@ -107,6 +107,9 @@ export const aeoRules: Rule[] = [
     category: 'aeo',
     severity: 'medium',
     weight: 5,
+    // A homepage is not an article. Marking one up as `Article` to satisfy this rule would
+    // be actively misleading markup, so the rule does not apply there. See ADV-175.
+    appliesTo: (ctx) => !isSingleRootPage(ctx),
     title: 'Article and author schema are present',
     description: 'Article + Person markup attributes content for E-E-A-T and citation.',
     recommendation: 'Add Article JSON-LD with an author of type Person.',
@@ -248,6 +251,9 @@ export const aeoRules: Rule[] = [
     category: 'aeo',
     severity: 'low',
     weight: 3,
+    // A homepage is the ROOT of the breadcrumb trail; a one-item trail pointing at itself is
+    // noise, and Google does not expect breadcrumbs there. See ADV-175.
+    appliesTo: (ctx) => !isSingleRootPage(ctx),
     title: 'Breadcrumb structured data is present',
     description: 'BreadcrumbList markup clarifies site structure for engines.',
     recommendation: 'Add BreadcrumbList JSON-LD reflecting your navigation path.',
