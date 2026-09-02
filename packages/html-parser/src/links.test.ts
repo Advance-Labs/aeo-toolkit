@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { extractLinks, externalLinkCount, internalLinkCount } from './index.js';
+import { extractHreflangs, extractLinks, externalLinkCount, internalLinkCount } from './index.js';
 import { FIXTURE_URL, RICH_PAGE_HTML } from './fixtures.js';
 
 describe('extractLinks', () => {
@@ -32,5 +32,30 @@ describe('internalLinkCount / externalLinkCount', () => {
     const links = extractLinks(RICH_PAGE_HTML, FIXTURE_URL);
     expect(internalLinkCount(links)).toBe(1);
     expect(externalLinkCount(links)).toBe(1);
+  });
+});
+
+describe('extractHreflangs', () => {
+  it('collects rel=alternate hreflang annotations with resolved hrefs, case preserved', () => {
+    const html =
+      '<link rel="alternate" hreflang="en-GB" href="/uk/">' +
+      '<link rel="ALTERNATE" hreflang="x-default" href="https://shop.example.com/">' +
+      '<link rel="alternate stylesheet" hreflang="fr" href="/fr/">';
+    const entries = extractHreflangs(html, FIXTURE_URL);
+    expect(entries).toHaveLength(3);
+    // Case preserved so a validator can quote the authored value verbatim.
+    expect(entries[0]).toEqual({ hreflang: 'en-GB', href: 'https://shop.example.com/uk/' });
+    expect(entries[1]?.hreflang).toBe('x-default');
+    expect(entries[2]?.href).toBe('https://shop.example.com/fr/');
+  });
+
+  it('ignores non-alternate links and elements missing hreflang or href', () => {
+    const html =
+      '<link rel="stylesheet" hreflang="en" href="/style.css">' +
+      '<link rel="alternates" hreflang="en" href="/not-a-rel-token">' +
+      '<link rel="alternate" hreflang="" href="/empty-lang">' +
+      '<link rel="alternate" hreflang="en">' +
+      '<a hreflang="en" href="/anchor-not-link">a</a>';
+    expect(extractHreflangs(html, FIXTURE_URL)).toHaveLength(0);
   });
 });

@@ -12,6 +12,13 @@ import { isSingleRootPage, KEY_AI_BOTS, firstStructured, meanOverPages, normaliz
 
 const ANSWERABLE_MIN_WORDS = 300;
 
+/**
+ * Schema types whose date properties describe the PRIMARY content of a page.
+ * An Event's startDate or a Review's datePublished says nothing about whether
+ * the page's own copy is maintained, so those types are deliberately excluded.
+ */
+const DATEABLE_TYPES = new Set(['Article', 'NewsArticle', 'BlogPosting', 'TechArticle', 'WebPage']);
+
 /** Host without a leading `www.`, or undefined when the value will not parse as a URL. */
 function hostOf(value: string | undefined): string | undefined {
   if (!value) return undefined;
@@ -284,6 +291,45 @@ export const aeoRules: Rule[] = [
             passed: false,
             detail: `Mean paragraphs ${Math.round(meanParagraphs)}, lists+tables ${structureCount}.`,
           };
+    },
+  },
+  {
+    // Added for #11. Checks that a date EXISTS and PARSES, deliberately not how recent
+    // it is — a 2019 date on a reference page is correct, and penalizing it would flag
+    // good content. The two failure details are different fixes for the site owner:
+    // "no date" means add the property, "unparseable" means fix its format.
+    id: 'aeo.content-freshness',
+    category: 'aeo',
+    severity: 'medium',
+    weight: 5,
+    title: 'Content declares a modification date',
+    description: 'A parseable dateModified gives engines a reason to cite the page over undated competitors.',
+    recommendation: 'Add dateModified (or datePublished) in ISO 8601 to your Article/WebPage JSON-LD.',
+    docsUrl: 'https://schema.org/dateModified',
+    evaluate: (ctx) => {
+      const values: unknown[] = [];
+      for (const report of ctx.structuredData) {
+        for (const item of report.items) {
+          if (!DATEABLE_TYPES.has(item.type)) continue;
+          const value = item.properties['dateModified'] ?? item.properties['datePublished'];
+          if (value !== undefined && value !== null) values.push(value);
+        }
+      }
+
+      if (values.length === 0) {
+        return {
+          passed: false,
+          detail: 'No dateModified or datePublished found on Article/WebPage structured data.',
+        };
+      }
+      const anyParseable = values.some(
+        (value) => typeof value === 'string' && !Number.isNaN(Date.parse(value)),
+      );
+      if (anyParseable) return { passed: true };
+      return {
+        passed: false,
+        detail: `Date present but unparseable: "${String(values[0])}". Use ISO 8601 (e.g. "2026-05-01").`,
+      };
     },
   },
 ];

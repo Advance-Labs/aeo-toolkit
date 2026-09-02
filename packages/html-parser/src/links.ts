@@ -1,6 +1,6 @@
 /** Link extraction with internal/external and nofollow classification. */
 import type { CheerioAPI } from 'cheerio';
-import type { LinkInfo } from '@advance-labs/types';
+import type { HreflangEntry, LinkInfo } from '@advance-labs/types';
 
 import { isInternalLink, resolveUrl } from './url-utils.js';
 
@@ -38,6 +38,32 @@ export function extractLinks($: CheerioAPI, pageUrl: string): LinkInfo[] {
     });
   });
   return links;
+}
+
+/**
+ * Extract `<link rel="alternate" hreflang="…" href="…">` annotations in document order.
+ *
+ * The hreflang value is kept exactly as authored (case preserved) so a validator can
+ * report the offending string verbatim; the href is resolved against the page URL.
+ * Elements missing either attribute are skipped — there is nothing to validate.
+ * `rel` is matched token-aware and case-insensitively, so `rel="ALTERNATE stylesheet"`
+ * still counts and `rel="alternates"` does not.
+ */
+export function extractHreflangs($: CheerioAPI, pageUrl: string): HreflangEntry[] {
+  const entries: HreflangEntry[] = [];
+  $('link[hreflang][href]').each((_, el) => {
+    const $el = $(el);
+    const rel = $el.attr('rel')?.trim().toLowerCase().split(/\s+/) ?? [];
+    if (!rel.includes('alternate')) return;
+
+    const hreflang = $el.attr('hreflang')?.trim();
+    const rawHref = $el.attr('href')?.trim();
+    if (hreflang === undefined || hreflang.length === 0) return;
+    if (rawHref === undefined || rawHref.length === 0) return;
+
+    entries.push({ hreflang, href: resolveUrl(rawHref, pageUrl) });
+  });
+  return entries;
 }
 
 /** Count of links classified as internal. */
