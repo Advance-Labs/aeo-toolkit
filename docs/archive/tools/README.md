@@ -1,3 +1,10 @@
+> [!WARNING]
+> **Archived and historical — this does not describe the current repository.**
+> Written before the consolidation in [ADR-0003](../../adr/0003-single-vercel-deployment.md); the `apps/` layout and package list below no
+> longer exist. Kept for design history only. See [the archive index](../README.md) for what replaced it.
+
+---
+
 # Tool Specifications
 
 One spec per tool. Each maps to an app under `apps/` and reuses the shared engines under `packages/`.

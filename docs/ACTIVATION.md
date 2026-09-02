@@ -1,4 +1,8 @@
-# Activation Runbook
+---
+title: Activation runbook
+description: >-
+  The console ships dormant. Turn on Supabase Auth and Stripe billing by adding keys, and roll back by removing them.
+---
 
 The console ships **dormant**: with none of the env vars below set, the site runs exactly as it does
 today — all five tools free and open, no sign-in, no paywall. The commercial layer (Supabase Auth +

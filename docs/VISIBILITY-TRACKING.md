@@ -1,7 +1,11 @@
-# Visibility Tracking — the off-page companion to the audit
+---
+title: Visibility tracking
+description: >-
+  The off-page companion to the audit: proving over time that AI engines actually cite a site, not just that it is built to be cited.
+---
 
 The AEO Toolkit answers **"is this site built to be cited?"** — it crawls a site, scores it
-against the 51 AEO / E-E-A-T / technical rules, and renders a scorecard. That is a
+against the 54 AEO / E-E-A-T / technical rules, and renders a scorecard. That is a
 **point-in-time, on-page diagnostic**.
 
 It does **not** answer the question a retainer client actually pays for: **"is it working —
@@ -26,7 +30,7 @@ systems fit together — so anyone working in the toolkit understands the full r
 |---|---|---|
 | Question | Is the site *built* to be cited? | Is the site *actually* being cited, over time? |
 | Layer | On-page (the site itself) | Off-page (the AI engines' answers) |
-| Method | Crawl → 51-rule score → PDF | Ask AI engines the money queries → record cited?/rank |
+| Method | Crawl → 54-rule score → PDF | Ask AI engines the money queries → record cited?/rank |
 | Cadence | Point-in-time (per audit) | Recurring (weekly time-series) |
 | Output | Scorecard + prioritized fixes | `cited 0% → 67%`, `avg rank 4.0 → 1.5` deltas |
 | Role | Baseline + the fix list | Proof the fixes moved the needle |

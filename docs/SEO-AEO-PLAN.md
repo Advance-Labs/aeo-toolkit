@@ -1,4 +1,8 @@
-# SEO + AEO Optimization Plan — AEO Toolkit site
+---
+title: SEO + AEO plan
+description: >-
+  How the toolkit's own site dogfoods the product: llms.txt, JSON-LD, server-rendered HTML, and answer-first content.
+---
 
 > The site must dogfood the product. AEO Toolkit teaches sites how to rank in classic search **and**
 > in AI answer engines — so `aeotoolkit` itself ships `llms.txt`, JSON-LD, server-rendered semantic

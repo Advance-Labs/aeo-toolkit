@@ -1,4 +1,8 @@
-# ADR 0001 — pnpm + Turborepo monorepo
+---
+title: ADR-0001 — pnpm + Turborepo monorepo
+description: >-
+  Why the nine tools share one repository instead of forking the crawl/parse/score engines across nine.
+---
 
 - **Status:** Accepted
 - **Date:** 2026-06-02

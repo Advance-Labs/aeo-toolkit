@@ -1,4 +1,8 @@
-# Self-hosting the AEO Toolkit
+---
+title: Self-hosting
+description: >-
+  Run the whole console locally or on your own server with Docker, no accounts and no API keys required.
+---
 
 Run the console on your own machine or server. Useful if you would rather not send
 Search Console data to someone else's deployment, or you just want it local.

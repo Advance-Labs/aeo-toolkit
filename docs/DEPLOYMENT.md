@@ -1,4 +1,8 @@
-# Deployment
+---
+title: Deployment
+description: >-
+  Deploying the console as a single Vercel project, plus the Chrome extension, with the root-directory and Turbo build gotchas.
+---
 
 The suite deploys as **one Vercel project** (`apps/console`) plus the Chrome extension (built from the
 repo, shipped via the Web Store). One domain, one env set.

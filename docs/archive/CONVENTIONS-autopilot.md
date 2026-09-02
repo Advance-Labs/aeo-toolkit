@@ -1,3 +1,10 @@
+> [!WARNING]
+> **Archived and historical — this does not describe the current repository.**
+> Written before the consolidation in [ADR-0003](../adr/0003-single-vercel-deployment.md); the `apps/` layout and package list below no
+> longer exist. Kept for design history only. See [the archive index](README.md) for what replaced it.
+
+---
+
 # Autopilot — Build Conventions (security invariants)
 
 > Binding for every agent/package in the Autopilot v1 build. Lifted from the spec's §0.6 security

@@ -19,9 +19,11 @@
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in a few seconds.
 
-Those five are the browser tools. The full suite is **nine**: these five, plus three
-MCP servers (`ga-gsc`, `backlink`, `ai-visibility`) that plug into Claude or any MCP
-client, plus one GitHub Actions content agent ([`@advance-labs/blogging`](packages/blogging)).
+Those five are the browser tools. The full suite is **ten**: these five, plus three
+MCP servers (`ai-visibility`, `backlink`, `ga-gsc`) exposing 22 tools to Claude or any MCP
+client, plus a scheduled content agent ([`@advance-labs/blogging`](packages/blogging)) and the
+[Chrome extension](apps/chrome-extension). See [`docs/reference/tools.md`](docs/reference/tools.md)
+for the full map.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -44,7 +46,7 @@ As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 | [`@advance-labs/crawler`](packages/crawler) | Multi-threaded web crawler with robots.txt compliance, sitemap parsing, and per-host rate limiting |
 | [`@advance-labs/html-parser`](packages/html-parser) | Extracts meta tags, Open Graph, Twitter Cards, headings, images, links, and JSON-LD from HTML |
 | [`@advance-labs/schema-validator`](packages/schema-validator) | Validates Schema.org JSON-LD structured data against known types |
-| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 20+ technical SEO and AEO rules — returns a numeric score with per-rule explanations |
+| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 54 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
 | [`@advance-labs/google-api`](packages/google-api) | Google Search Console + GA4 client — list properties, fetch impressions, submit sitemaps |
 | [`@advance-labs/storage`](packages/storage) | Supabase token store with AES-256-GCM encryption, in-memory and Upstash rate limiters |
 | [`@advance-labs/mcp-core`](packages/mcp-core) | MCP (Model Context Protocol) transport helpers for exposing AEO tools to AI agents |
@@ -81,7 +83,7 @@ git clone https://github.com/Advance-Labs/aeo-toolkit.git
 cd aeo-toolkit
 pnpm install
 pnpm build          # turbo builds every package
-pnpm test           # 860 tests
+pnpm test           # 868 tests
 pnpm dev --filter=@advance-labs/console   # run the console locally
 ```
 
@@ -91,7 +93,8 @@ Or run the whole console in Docker with no accounts and no keys:
 docker compose up --build   # then open http://localhost:3000
 ```
 
-See [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md) for the full self-hosting guide.
+See [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md) for the full self-hosting guide, or read the
+full documentation at **[docs.advancelabs.dev](https://docs.advancelabs.dev)**.
 
 Once built, the packages compose like this:
 
@@ -129,7 +132,9 @@ AEO Toolkit automates auditing all of these.
 aeo-toolkit/
 ├── packages/          # 16 shared libraries (crawler, parser, scorer, etc.)
 ├── apps/console/      # Next.js app behind the hosted tools
-└── apps/chrome-extension/
+├── apps/chrome-extension/
+├── apps/docs/         # Astro + Starlight docs site (renders ../../docs)
+└── docs/              # the documentation itself
 ```
 
 Built with [Turborepo](https://turbo.build) · TypeScript 5 · Vitest · React 19

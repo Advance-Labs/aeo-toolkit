@@ -1,4 +1,8 @@
-# ADR 0002 — TypeScript-first clean-room rebuild (no forks)
+---
+title: ADR-0002 — TypeScript clean-room rebuild
+description: >-
+  Why the toolkit was rebuilt in TypeScript from scratch rather than forking Go, Python, or AGPL-licensed references.
+---
 
 - **Status:** Accepted
 - **Date:** 2026-06-02
