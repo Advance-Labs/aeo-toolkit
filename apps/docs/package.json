@@ -1,0 +1,23 @@
+{
+  "name": "@advance-labs/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "echo \"docs: schema is validated by astro build\"",
+    "lint": "echo \"no lint for docs\"",
+    "clean": "rimraf dist .astro .turbo"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.36.0",
+    "astro": "^5.16.0",
+    "sharp": "^0.34.2",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
+}
