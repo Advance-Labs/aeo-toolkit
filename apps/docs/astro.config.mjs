@@ -56,6 +56,10 @@ function rehypeRepoAwareLinks() {
         // Trailing slash matters: it is the form Astro emits, the form the canonical tag and
         // sitemap advertise, and the only form the proxy serves without a 308. Emitting the
         // bare path here would make every in-body cross-reference cost a redirect hop.
+        //
+        // NOTE: Astro caches rendered collection entries, and Vercel restores that cache between
+        // builds, so editing this function alone does NOT change the output. The build script
+        // clears `.astro` for that reason -- see apps/docs/package.json.
         const path = slug === '' ? `${BASE}/` : `${BASE}/${slug}/`;
         node.properties.href = `${path}${hash ? `#${hash}` : ''}`;
         return;

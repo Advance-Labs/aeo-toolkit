@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "rimraf .astro node_modules/.astro && astro build",
     "preview": "astro preview",
     "typecheck": "echo \"docs: schema is validated by astro build\"",
     "lint": "echo \"no lint for docs\"",
