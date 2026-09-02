@@ -7,7 +7,7 @@ engines under [`../packages`](../packages); these apps are the thin composition 
 |-----|------|---------------|
 | [`console`](console) | **The whole suite in one Next.js app** — all 5 web tools as routes, the 3 MCP servers as route handlers, and the blogging agent as a Vercel Cron. One Vercel project, one domain. | Vercel |
 | [`chrome-extension`](chrome-extension) | Single-page AEO/GEO audit that runs locally in the browser (zero server calls). Built from the repo, shipped via the Chrome Web Store. | Chrome Web Store |
-| [`docs`](docs) | Astro + Starlight documentation site. Sources its content directly from [`../docs`](../docs) rather than keeping a copy, so there is one set of files to maintain. | Vercel |
+| [`docs`](docs) | Astro + Starlight documentation site, published at [docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit). Sources its content directly from [`../docs`](../docs) rather than keeping a copy, so there is one set of files to maintain. | Vercel |
 
 > The former standalone tool apps (llm-audit, eeat-scanner, llms-txt-generator, ga-gsc-chat,
 > backlink-graph, ai-visibility-mcp, ga-gsc-mcp, backlink-mcp, blogging-agent) were **consolidated into

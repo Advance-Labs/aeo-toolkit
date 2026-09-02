@@ -7,6 +7,13 @@ import { visit } from 'unist-util-visit';
 
 const SITE = process.env.DOCS_SITE_URL ?? 'https://docs.advancelabs.dev';
 const REPO = 'https://github.com/Advance-Labs/aeo-toolkit';
+
+/**
+ * `docs.advancelabs.dev` is the umbrella docs domain for every Advance Labs repo, so this one
+ * is mounted at its own path rather than the root. Astro prefixes the links it generates, but
+ * NOT the root-absolute hrefs the rewriter below produces, so those apply BASE themselves.
+ */
+const BASE = process.env.DOCS_BASE_PATH ?? '/aeo-toolkit';
 const DOCS_ROOT = fileURLToPath(new URL('../../docs/', import.meta.url));
 
 /**
@@ -44,8 +51,9 @@ function rehypeRepoAwareLinks() {
         const slug = rel
           .replace(/\.mdx?$/i, '')
           .toLowerCase()
+          .replace(/(^|\/)readme$/, '$1index')
           .replace(/(^|\/)index$/, '');
-        node.properties.href = `/${slug}${hash ? `#${hash}` : ''}`;
+        node.properties.href = `${BASE}/${slug}${hash ? `#${hash}` : ''}`;
         return;
       }
 
@@ -62,6 +70,7 @@ function rehypeRepoAwareLinks() {
 
 export default defineConfig({
   site: SITE,
+  base: BASE,
   markdown: { rehypePlugins: [rehypeRepoAwareLinks] },
   integrations: [
     starlight({
@@ -87,7 +96,7 @@ export default defineConfig({
         {
           label: 'Start here',
           items: [
-            { label: 'Overview', link: '/' },
+            { label: 'Overview', slug: 'index' },
             { label: 'Architecture', slug: 'architecture' },
           ],
         },

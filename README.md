@@ -94,7 +94,7 @@ docker compose up --build   # then open http://localhost:3000
 ```
 
 See [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md) for the full self-hosting guide, or read the
-full documentation at **[docs.advancelabs.dev](https://docs.advancelabs.dev)**.
+full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit)**.
 
 Once built, the packages compose like this:
 
