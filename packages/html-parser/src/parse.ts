@@ -5,7 +5,7 @@ import type { ParsedHtml } from '@advance-labs/types';
 import { computeContentSignals } from './content.js';
 import { extractHeadings, isHeadingHierarchyValid } from './headings.js';
 import { extractImages, imageAltCoverage } from './images.js';
-import { extractLinks, externalLinkCount, internalLinkCount } from './links.js';
+import { extractHreflangs, extractLinks, externalLinkCount, internalLinkCount } from './links.js';
 import { extractMeta, extractOpenGraph, extractTwitter } from './meta.js';
 import { extractRawStructuredData } from './structured-data.js';
 
@@ -39,6 +39,7 @@ export function parseHtml(html: string, url: string): ParsedHtml {
     links,
     internalLinkCount: internalLinkCount(links),
     externalLinkCount: externalLinkCount(links),
+    hreflangs: extractHreflangs($, url),
     content,
     rawStructuredData,
   };

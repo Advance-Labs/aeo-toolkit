@@ -125,7 +125,18 @@ function poorParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
 
 function richStructured(overrides: Partial<StructuredDataReport> = {}): StructuredDataReport {
   return {
-    items: [],
+    // One concrete, dated Article item so the good site passes aeo.content-freshness;
+    // the boolean has* flags below cover the rules that only check type presence.
+    items: [
+      {
+        format: 'json-ld',
+        type: 'Article',
+        properties: { dateModified: '2026-05-01T09:00:00Z', datePublished: '2026-01-10' },
+        valid: true,
+        missingRequired: [],
+        warnings: [],
+      },
+    ],
     typesPresent: ['Organization', 'Article', 'Person', 'FAQPage', 'BreadcrumbList'],
     aeoTypesPresent: ['Organization', 'Article', 'Person', 'FAQPage', 'BreadcrumbList', 'HowTo'],
     hasOrganization: true,
