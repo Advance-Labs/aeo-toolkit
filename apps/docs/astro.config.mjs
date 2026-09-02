@@ -53,7 +53,11 @@ function rehypeRepoAwareLinks() {
           .toLowerCase()
           .replace(/(^|\/)readme$/, '$1index')
           .replace(/(^|\/)index$/, '');
-        node.properties.href = `${BASE}/${slug}${hash ? `#${hash}` : ''}`;
+        // Trailing slash matters: it is the form Astro emits, the form the canonical tag and
+        // sitemap advertise, and the only form the proxy serves without a 308. Emitting the
+        // bare path here would make every in-body cross-reference cost a redirect hop.
+        const path = slug === '' ? `${BASE}/` : `${BASE}/${slug}/`;
+        node.properties.href = `${path}${hash ? `#${hash}` : ''}`;
         return;
       }
 
