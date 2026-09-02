@@ -199,6 +199,21 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
         summary:
           'Compare aggregate Search Console performance between two date ranges, returning per-metric absolute and relative deltas.',
       },
+      {
+        name: 'gsc_traffic_drop',
+        summary:
+          'Explain why traffic changed between two periods — attributes the click change to individual pages or queries and ranks them by how much of the move each accounts for, reporting gains and losses separately.',
+      },
+      {
+        name: 'gsc_cannibalization',
+        summary:
+          "Find queries two or more of the site's own pages compete for, and name the best-ranking page as the consolidation target.",
+      },
+      {
+        name: 'gsc_decay',
+        summary:
+          'Catch pages bleeding clicks before they fall off page one, flagging whether each also lost rank — which separates a competitor problem from seasonality.',
+      },
     ],
   },
 ];
