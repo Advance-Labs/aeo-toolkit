@@ -19,11 +19,19 @@ const RESOURCES = [
   { href: '/mcp#backlink', label: 'Backlink MCP' },
 ];
 
+// The content cluster (#35–#37): footer links make it a site-wide hub, which is exactly the
+// internal-linking pattern the SEO plan prescribes (and the scoring engine rewards).
+const LEARN = [
+  { href: '/guide/answer-engine-optimization', label: 'AEO Guide' },
+  { href: '/glossary', label: 'Glossary' },
+  { href: '/compare/aeo-vs-seo', label: 'AEO vs SEO' },
+];
+
 export function Footer(): React.ReactElement {
   return (
     <footer className="relative mt-16 border-t border-white/[0.08] py-14">
       <Container>
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="max-w-xs">
             <Link
               href="/"
@@ -40,6 +48,7 @@ export function Footer(): React.ReactElement {
           </div>
           <FooterCol title="Tools" links={TOOLS} />
           <FooterCol title="MCP servers" links={RESOURCES} />
+          <FooterCol title="Learn" links={LEARN} />
           <FooterCol
             title="Company"
             links={[
