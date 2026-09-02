@@ -1,0 +1,12 @@
+# Normalize line endings so text files are LF in the repo and on every checkout.
+# Added for apps/console/src/mcp/skills.test.ts (and any parser that splits on 
+):
+# a Windows clone with core.autocrlf=true otherwise delivers CRLF to tests that
+# pass on the LF checkouts CI uses.
+* text=auto eol=lf
+
+# Binary assets never get end-of-line conversion.
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ico binary
