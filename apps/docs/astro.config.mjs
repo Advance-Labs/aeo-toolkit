@@ -106,6 +106,7 @@ export default defineConfig({
           items: [
             { label: 'Overview', slug: 'index' },
             { label: 'Architecture', slug: 'architecture' },
+            { label: 'Roadmap', slug: 'roadmap' },
           ],
         },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
