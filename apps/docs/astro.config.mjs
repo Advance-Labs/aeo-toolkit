@@ -104,7 +104,7 @@ export default defineConfig({
         {
           label: 'Operating the console',
           items: [
-            { label: 'Self-hosting', slug: 'self_hosting' },
+            { label: 'Self-hosting', slug: 'self-hosting' },
             { label: 'Deployment', slug: 'deployment' },
             { label: 'Activation', slug: 'activation' },
           ],

@@ -4,7 +4,13 @@
   "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@advance-labs/docs",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/aeo-toolkit", "destination": "/" },
-    { "source": "/aeo-toolkit/:path*", "destination": "/:path*" }
+    {
+      "source": "/aeo-toolkit",
+      "destination": "/"
+    },
+    {
+      "source": "/aeo-toolkit/(.*)",
+      "destination": "/$1"
+    }
   ]
 }

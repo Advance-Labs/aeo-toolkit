@@ -93,7 +93,7 @@ Or run the whole console in Docker with no accounts and no keys:
 docker compose up --build   # then open http://localhost:3000
 ```
 
-See [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md) for the full self-hosting guide, or read the
+See [`docs/SELF-HOSTING.md`](docs/SELF-HOSTING.md) for the full self-hosting guide, or read the
 full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit)**.
 
 Once built, the packages compose like this:

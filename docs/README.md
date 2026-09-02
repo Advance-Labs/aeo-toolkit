@@ -19,7 +19,7 @@ entirely on your own infrastructure if you want it to.
 | Understand how the pieces fit | [Architecture](ARCHITECTURE.md) |
 | See every tool and its route | [Tool reference](reference/tools.md) |
 | Use a package on its own | [Package reference](reference/packages.md) |
-| Run the whole thing yourself | [Self-hosting](SELF_HOSTING.md) |
+| Run the whole thing yourself | [Self-hosting](SELF-HOSTING.md) |
 | Deploy it to Vercel | [Deployment](DEPLOYMENT.md) |
 | Turn on auth and billing | [Activation runbook](ACTIVATION.md) |
 | Contribute code | [Conventions](CONVENTIONS.md) |
