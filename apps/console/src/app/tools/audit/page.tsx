@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
+import { CHROME_STORE_URL, breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { AuditExperience } from '@/components/audit/AuditExperience';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
@@ -79,6 +79,11 @@ const FAQ: ReadonlyArray<{ question: string; answer: string }> = [
     question: 'Does this audit cover AI answer engines, not just Google?',
     answer:
       'Yes. Alongside classic technical SEO it scores answer-engine optimization (AEO): whether you ship an llms.txt file, allow AI crawlers like GPTBot and ClaudeBot, structure content as extractable answers, and expose JSON-LD. These are the signals that get you cited inside ChatGPT, Claude, Perplexity, and Google AI Overviews.',
+  },
+  {
+    question: 'Is there a Chrome extension?',
+    answer:
+      'Yes. AEO/GEO Auditor is free on the Chrome Web Store. It audits the page you are already looking at — including pages this crawler cannot reach, such as staging sites, logged-in dashboards, and localhost — because it reads the rendered DOM in your own browser rather than fetching the URL from a server. Every audit runs client-side: no account, no server call, and no audit data ever leaves the browser.',
   },
   {
     question: 'Can I export the report?',
@@ -235,6 +240,45 @@ export default function AuditToolPage(): JSX.Element {
               </Reveal>
             ))}
           </ol>
+        </Container>
+      </Section>
+
+      {/* Chrome extension — the same engine, on pages this crawler cannot reach. */}
+      <Section className="border-t border-white/[0.06] bg-grid py-16 sm:py-20">
+        <Container>
+          <Reveal>
+            <SpotlightCard className="flex flex-col gap-5 p-8 sm:p-10">
+              <span className="eyebrow">Chrome extension</span>
+              <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Audit the page you are <GradientText>already looking at</GradientText>
+              </h2>
+              <p className="max-w-2xl text-base leading-relaxed text-slate-400">
+                AEO/GEO Auditor runs this same scoring engine against the rendered DOM in your own
+                browser. That reaches what a server-side crawler cannot — staging sites, logged-in
+                dashboards, localhost — and it runs entirely client-side: no account, no server
+                call, no audit data leaving your machine.
+              </p>
+              <div className="flex flex-wrap items-center gap-4">
+                {/* Plain <a>: external, so never a Next <Link> (which would RSC-prefetch it). */}
+                <a
+                  href={CHROME_STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-opacity hover:opacity-90"
+                >
+                  Add to Chrome — free
+                </a>
+                <a
+                  href="https://advancelabs.dev/privacy/aeo-auditor"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-slate-400 underline underline-offset-4 transition-colors hover:text-white"
+                >
+                  Privacy policy
+                </a>
+              </div>
+            </SpotlightCard>
+          </Reveal>
         </Container>
       </Section>
 

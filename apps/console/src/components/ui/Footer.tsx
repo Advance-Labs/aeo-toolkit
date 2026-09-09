@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BrandLockup } from '../BrandMark';
 import { Container } from './Container';
+import { CHROME_STORE_URL } from '@/lib/seo';
 
 const TOOLS = [
   { href: '/tools/audit', label: 'SEO Audit' },
@@ -44,6 +45,7 @@ export function Footer(): React.ReactElement {
             links={[
               { href: '/about', label: 'About' },
               { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
+              { href: CHROME_STORE_URL, label: 'Chrome extension' },
               { href: 'https://advancelabs.dev', label: 'Advance Labs' },
             ]}
           />

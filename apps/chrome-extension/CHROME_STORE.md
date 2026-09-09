@@ -224,3 +224,45 @@ The store requires a privacy section. Use these answers:
    extra scrutiny; the local-only privacy posture above is the key justification.
 5. After approval, bump the `version` in `package.json` for the next release and
    re-run `pnpm --filter @advance-labs/chrome-extension package` to produce the next zip.
+
+---
+
+## 7. Published state, and the trap that caught v0.1.0
+
+**Live since 2026-09-02**: item `bdkkjpbipgolopjhndknigaaokdabnad`. The canonical link is
+`https://chromewebstore.google.com/detail/bdkkjpbipgolopjhndknigaaokdabnad` — the store's own
+share button appends `?utm_source=item-share-cp`; drop it. The URL is held once in each repo:
+`CHROME_STORE_URL` in `apps/console/src/lib/seo.ts` here, and `CHROME_STORE` in
+`web/src/content/site.js` in the `advance-labs` repo (where it is also an `ORG.sameAs` entry).
+
+**The store is publish-once. A green `main` ships nothing.**
+
+v0.1.0 was uploaded on 2026-08-30 at 09:58. The three scoring accuracy fixes in `603ab7c`
+(ADV-173 nested `@graph`, ADV-174 decorative `alt=""`, ADV-175 page-type-aware rules) landed
+2026-08-31 at 22:01 — *after* the upload. The published extension therefore spent its whole
+shelf life telling people with correct markup that it was wrong, which is the single worst
+failure mode this tool has. Nothing surfaced it, because:
+
+- `main` was fixed, so the repo looked correct;
+- `dist/` had been rebuilt afterwards, so a local check looked correct;
+- only the **zip's** contents — the artifact Google actually holds — told the truth.
+
+So, before every upload:
+
+```bash
+pnpm --filter @advance-labs/chrome-extension package
+cd apps/chrome-extension && unzip -l aeo-extension.zip   # manifest.json at the ROOT
+```
+
+and confirm the archive is newer than the last commit touching `packages/scoring`,
+`packages/schema-validator`, or `packages/html-parser` — the extension bundles their built
+output, so a stale workspace `dist/` silently ships fixed bugs.
+
+`src/lib/audit.integration.test.ts` is the standing guard: it runs the **real** (unmocked)
+parser → validator → scoring chain that the bundle contains, and fails if either of the two
+observable ADV-173/174 behaviours regresses. `audit.test.ts` mocks those packages by design and
+cannot catch this.
+
+The report version is derived from `package.json` (`EXTENSION_VERSION` in `src/lib/audit.ts`),
+so bumping the version in one place is enough. It was hardcoded until 0.1.1 and would have
+stamped `0.1.0` into every 0.1.1 PDF.

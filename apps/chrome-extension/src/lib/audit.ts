@@ -21,13 +21,22 @@ import type {
   StructuredDataReport,
 } from '@advance-labs/types';
 
+import { version as packageVersion } from '../../package.json';
+
 import { parseRobotsTxt } from './robots.js';
 import { parseSitemap } from './sitemap.js';
 import type { SiteFiles } from './site-files.js';
 import type { AuditPayload, CheckRow } from './types.js';
 
-/** Toolkit version surfaced in report metadata. */
-const EXTENSION_VERSION = '0.1.0';
+/**
+ * Toolkit version surfaced in report metadata (and the exported PDF).
+ *
+ * Derived from package.json — the same single source `manifest.config.ts` reads —
+ * so a release bump cannot leave the report stamping a stale version. This was
+ * hardcoded as '0.1.0' and would have shipped that string in every 0.1.1 report.
+ * Rollup tree-shakes the JSON named import, so only the version string is bundled.
+ */
+const EXTENSION_VERSION = packageVersion;
 
 export interface BuildContextInput {
   /** The live page URL (active tab). */
