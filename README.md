@@ -13,6 +13,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-A8F326?style=flat-square&labelColor=0A0A0B)](LICENSE)
 [![Made by Advance Labs](https://img.shields.io/badge/Made%20by-Advance%20Labs-7C3AED?style=flat-square&labelColor=0A0A0B)](https://advancelabs.dev)
 [![Brand](https://img.shields.io/badge/Brand-guide-B6A4FD?style=flat-square&labelColor=0A0A0B)](brand/README.md)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-AEO%2FGEO_Auditor-A8F326?style=flat-square&logo=googlechrome&logoColor=white&labelColor=0A0A0B)](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)
 
 </div>
 
@@ -47,6 +48,27 @@ E-E-A-T, run against up to 50 pages, scored out of 100, with a prioritised fix l
 for any crawl-hint file you're missing. Free, no account, and your data stays yours.
 
 <img src="docs/assets/audit-tool.webp" alt="The LLM &amp; Technical SEO Audit tool" width="100%">
+
+---
+
+## The Chrome extension
+
+**[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)** puts the same engine on your toolbar. Open any page, click the icon, and get a 0 to 100 AI-readiness score with a letter grade and a list of what to fix. Export it as a PDF.
+
+It runs **40 checks across 9 categories**: the 29 technical-SEO rules plus the 11 AEO rules, which is `auditRules` in [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts). The 14 E-E-A-T signals are a separate scorer the extension does not run, which is why this says 40 and the hosted audit above says 54.
+
+Everything happens in your browser. No account, no server, no analytics, no telemetry. The only network requests are to the audited site's own `robots.txt`, `sitemap.xml`, and `llms.txt`, which is what the host permission is for. Nothing is stored, because nothing is sent.
+
+- **Install:** [Chrome Web Store](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)
+- **About:** [advancelabs.dev/tools/aeo-auditor](https://advancelabs.dev/tools/aeo-auditor)
+- **Source:** [`apps/chrome-extension`](apps/chrome-extension) · [publishing runbook](apps/chrome-extension/CHROME_STORE.md)
+
+Build it yourself:
+
+```bash
+pnpm --filter @advance-labs/chrome-extension package
+# → apps/chrome-extension/aeo-extension.zip, loadable via chrome://extensions (Developer mode → Load unpacked, on dist/)
+```
 
 ---
 
