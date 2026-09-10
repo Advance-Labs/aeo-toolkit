@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/net-guard",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "SSRF-guarded HTTP fetch seam — DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding.",
   "keywords": [

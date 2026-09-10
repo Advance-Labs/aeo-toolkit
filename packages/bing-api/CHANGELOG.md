@@ -1,5 +1,12 @@
 # @advance-labs/bing-api
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [f62532a]
+  - @advance-labs/types@0.2.2
+
 ## 0.2.0
 
 ### Minor Changes

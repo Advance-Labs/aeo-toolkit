@@ -1,5 +1,12 @@
 # @advance-labs/pdf
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [f62532a]
+  - @advance-labs/types@0.2.2
+
 ## 0.1.2
 
 ### Patch Changes

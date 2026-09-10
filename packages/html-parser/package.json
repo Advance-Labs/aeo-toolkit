@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/html-parser",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
   "keywords": [
