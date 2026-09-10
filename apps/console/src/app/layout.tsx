@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Inter, JetBrains_Mono, Syne } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { Footer } from '@/components/ui/Footer';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
         <Header />
         <main className="relative">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
