@@ -1,38 +1,34 @@
 /**
  * `/.well-known/oauth-protected-resource` — RFC 9728 protected-resource metadata.
  *
- * Tells Claude.ai (and other MCP clients) which authorization server guards this
- * deployment's MCP endpoints so the remote connector can auto-register. Served via
- * `@advance-labs/mcp-core#wellKnownProtectedResource`, with URLs based on `MCP_PUBLIC_URL`
- * (resolved in `@/mcp/shared`). One document covers all three MCP servers since
- * they share this origin.
+ * Served ONLY when an external authorization server is configured
+ * (`OAUTH_AUTHORIZATION_SERVERS`, or `OAUTH_ISSUER`). Otherwise this returns 404,
+ * because there is nothing true to say: every MCP server on this origin is BYOK,
+ * and this app implements no OAuth endpoints of its own. See
+ * `configuredAuthorizationServers` for why advertising this origin as its own
+ * authorization server broke every discovering client.
+ *
+ * A 404 here is not a degraded state. It is the signal that makes an MCP client
+ * skip the OAuth flow and connect with the headers this server actually reads.
  *
  * Node runtime for parity with the MCP routes; the document itself is pure.
  */
 import { wellKnownProtectedResource } from '@advance-labs/mcp-core';
 
-import { mcpPublicUrl } from '@/mcp/shared.js';
+import { configuredAuthorizationServers, mcpPublicUrl } from '@/mcp/shared.js';
 
 export const runtime = 'nodejs';
 
-/** Optional dedicated OAuth issuer; defaults to this origin when unset. */
-function authorizationServers(origin: string): string[] {
-  const configured = process.env.OAUTH_AUTHORIZATION_SERVERS?.trim();
-  if (configured && configured.length > 0) {
-    return configured
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-  }
-  const issuer = process.env.OAUTH_ISSUER?.trim();
-  return [issuer && issuer.length > 0 ? issuer : origin];
-}
-
 export function GET(): Response {
   const origin = mcpPublicUrl();
+  const authorizationServers = configuredAuthorizationServers(origin);
+  if (authorizationServers === null) {
+    return new Response('Not found', { status: 404 });
+  }
+
   const metadata = wellKnownProtectedResource({
     resource: origin,
-    authorizationServers: authorizationServers(origin),
+    authorizationServers,
     resourceDocumentation: `${origin}/`,
   });
   return Response.json(metadata);
