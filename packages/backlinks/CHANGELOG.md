@@ -1,5 +1,14 @@
 # @advance-labs/backlinks
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [f0890cc]
+  - @advance-labs/types@0.2.1
+  - @advance-labs/crawler@0.2.1
+  - @advance-labs/storage@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

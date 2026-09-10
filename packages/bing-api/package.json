@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/bing-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Bing Webmaster Tools JSON/HTTP client for the AEO Toolkit. Read-only. Uses injectable global fetch.",
@@ -14,7 +14,9 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

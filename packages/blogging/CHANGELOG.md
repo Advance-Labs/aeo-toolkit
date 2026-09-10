@@ -1,5 +1,15 @@
 # @advance-labs/blogging
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [f0890cc]
+  - @advance-labs/types@0.2.1
+  - @advance-labs/google-api@0.1.2
+  - @advance-labs/llm@0.1.2
+  - @advance-labs/storage@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

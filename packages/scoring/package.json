@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/scoring",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit.",
   "keywords": [
