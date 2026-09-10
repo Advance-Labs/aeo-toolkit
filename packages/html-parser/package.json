@@ -14,6 +14,7 @@
     "seo"
   ],
   "license": "Apache-2.0",
+  "author": "Lucas Krawczak <lucas@advancelabs.dev> (https://advancelabs.dev/lucas)",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -53,5 +54,5 @@
     "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
     "directory": "packages/html-parser"
   },
-  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
+  "homepage": "https://docs.advancelabs.dev/aeo-toolkit"
 }
