@@ -150,9 +150,11 @@ Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
 
 The human-facing connection page is **`https://<domain>/mcp`** — it lists every tool and the exact
 connect steps for Claude.ai and Cursor. In **Claude.ai → Settings → Connectors**, add:
-- `https://<domain>/api/mcp/ai-visibility`
-- `https://<domain>/api/mcp/ga-gsc`
-- `https://<domain>/api/mcp/backlink`
+- `https://<domain>/api/mcp/ai-visibility/mcp`
+- `https://<domain>/api/mcp/search/mcp` (`/api/mcp/ga-gsc/mcp` still works as a compatibility alias)
+- `https://<domain>/api/mcp/backlink/mcp`
+
+The trailing `/mcp` is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found".
 
 These servers are BYOK and implement no OAuth — credentials ride on the request (a Google
 `Authorization: Bearer` token, an optional `x-bing-api-key`), so `/.well-known/*` deliberately 404s
