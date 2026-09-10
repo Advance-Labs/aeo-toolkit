@@ -72,7 +72,7 @@ describe('MCP catalog endpoints', () => {
  * Read the names out of the server source rather than importing and running the server, which
  * would need a full runtime context. This mirrors `mcp/skills.test.ts`.
  *
- * Scan the whole server directory, not just `server.ts`: ga-gsc declares its tool names inline
+ * Scan the whole server directory, not just `server.ts`: search declares its tool names inline
  * in `server.ts`, but backlink declares each one in its own `tools/*.ts` file.
  */
 function sourceFiles(dir: string): string[] {
@@ -83,19 +83,12 @@ function sourceFiles(dir: string): string[] {
   });
 }
 
-/**
- * The `ga-gsc` slug is the published URL segment (kept for backward-compat clients) but the
- * source directory behind it was renamed to `search` when Bing joined Google there.
- */
-const SLUG_SOURCE_DIRS: Partial<Record<McpServerMeta['slug'], string>> = {
-  'ga-gsc': 'search',
-};
-
-function registeredToolNames(slug: string): Set<string> {
+function registeredToolNames(slug: McpServerMeta['slug']): Set<string> {
   const names = new Set<string>();
-  const sourceDir = SLUG_SOURCE_DIRS[slug as McpServerMeta['slug']] ?? slug;
-  for (const file of sourceFiles(join(process.cwd(), 'src/mcp', sourceDir))) {
-    for (const match of readFileSync(file, 'utf8').matchAll(/name:\s*'([a-z0-9]+(?:_[a-z0-9]+)+)'/g)) {
+  for (const file of sourceFiles(join(process.cwd(), 'src/mcp', slug))) {
+    for (const match of readFileSync(file, 'utf8').matchAll(
+      /name:\s*'([a-z0-9]+(?:_[a-z0-9]+)+)'/g,
+    )) {
       names.add(match[1] as string);
     }
   }

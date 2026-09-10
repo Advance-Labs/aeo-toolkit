@@ -21,13 +21,19 @@ export interface McpToolMeta {
 /** One MCP server exposed over Streamable HTTP at `endpoint`, with its tool catalog. */
 export interface McpServerMeta {
   /** Stable URL/anchor slug; also the last path segment of the endpoint. */
-  slug: 'ai-visibility' | 'ga-gsc' | 'backlink';
+  slug: 'ai-visibility' | 'search' | 'backlink';
   /** Human display name, e.g. "AI Visibility MCP". */
   name: string;
   /** One-sentence description of the server's purpose. */
   blurb: string;
   /** Streamable-HTTP endpoint an MCP client connects to (`${SITE_URL}/api/mcp/<slug>/mcp`). */
   endpoint: string;
+  /**
+   * A retired connection URL kept alive as a compatibility alias — still answers requests,
+   * but `endpoint` is what new configs should use. Shown on the page as a small note so
+   * anyone with an old config pinned knows it still works.
+   */
+  legacyEndpoint?: string;
   /** Authentication model: open, or bring-your-own Google account (OAuth at connect time). */
   auth: 'none' | 'google-byok';
   /** Operational status: live and open, or requires a Google connection to return data. */
@@ -146,16 +152,17 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
       {
         name: 'find_competitor_link_sources',
         summary:
-          "Approximate the pages linking to a competitor using free DuckDuckGo signals — a directional prospecting starting point.",
+          'Approximate the pages linking to a competitor using free DuckDuckGo signals — a directional prospecting starting point.',
       },
     ],
   },
   {
-    slug: 'ga-gsc',
+    slug: 'search',
     name: 'Search MCP (Google + Bing)',
     blurb:
       'Query your own Google Analytics 4, Search Console, and Bing Webmaster data in natural language, and compare Google against Bing directly, after connecting your accounts.',
-    endpoint: mcpEndpoint('ga-gsc'),
+    endpoint: mcpEndpoint('search'),
+    legacyEndpoint: `${SITE_URL.replace(/\/$/, '')}/api/mcp/ga-gsc/mcp`,
     auth: 'google-byok',
     status: 'needs-google',
     examplePrompts: [
@@ -217,8 +224,7 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
       },
       {
         name: 'list_bing_sites',
-        summary:
-          'List the Bing Webmaster Tools sites the connected API key can access.',
+        summary: 'List the Bing Webmaster Tools sites the connected API key can access.',
       },
       {
         name: 'bing_traffic_stats',
@@ -256,7 +262,7 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
       {
         name: 'engine_divergence',
         summary:
-          'Split a date range in half and classify each query by how it moved on each engine: held on Bing but dropped on Google (a Google ranking problem), dropped on both (a content problem), Bing-specific, or insufficient data. Both engines honour the range here — Google is queried per half, and Bing\'s undated rows are bucketed locally by each row\'s own date. An engine that could not answer yields insufficient_data, never a zero.',
+          "Split a date range in half and classify each query by how it moved on each engine: held on Bing but dropped on Google (a Google ranking problem), dropped on both (a content problem), Bing-specific, or insufficient data. Both engines honour the range here — Google is queried per half, and Bing's undated rows are bucketed locally by each row's own date. An engine that could not answer yields insufficient_data, never a zero.",
       },
     ],
   },

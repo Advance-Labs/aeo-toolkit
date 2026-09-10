@@ -15,7 +15,7 @@ const TOOLS = [
 // 404s, which is mcp-handler's own response and not a routing fault.
 const RESOURCES = [
   { href: '/mcp#ai-visibility', label: 'AI Visibility MCP' },
-  { href: '/mcp#ga-gsc', label: 'GA4 + GSC MCP' },
+  { href: '/mcp#search', label: 'Search MCP' },
   { href: '/mcp#backlink', label: 'Backlink MCP' },
 ];
 
