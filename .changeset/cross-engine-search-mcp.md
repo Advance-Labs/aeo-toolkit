@@ -1,6 +1,5 @@
 ---
 '@advance-labs/bing-api': minor
-'@advance-labs/console': minor
 ---
 
 Add Bing Webmaster Tools to the search MCP server, alongside Google.
