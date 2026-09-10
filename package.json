@@ -2,7 +2,7 @@
   "name": "aeo-toolkit",
   "version": "0.0.0",
   "private": true,
-  "description": "Open-source suite of 9 AEO / technical-SEO / AI-visibility tools (Answer Engine Optimization toolkit).",
+  "description": "Open-source suite of ten AEO / technical-SEO / AI-visibility tools (Answer Engine Optimization toolkit).",
   "license": "Apache-2.0",
   "type": "module",
   "engines": {
