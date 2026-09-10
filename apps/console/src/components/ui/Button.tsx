@@ -24,16 +24,32 @@ const SIZES: Record<Size, string> = {
 
 type CommonProps = { variant?: Variant; size?: Size; className?: string; children?: ReactNode };
 
-/** A button, or a Next `<Link>` when `href` is provided. */
+/**
+ * A button, or a Next `<Link>` when `href` is provided. Pass `native` for an href that is not a page
+ * (e.g. a route handler that redirects off-site): `<Link>` would first try a client-side RSC fetch,
+ * fail on the cross-origin redirect, then fall back to a full load, hitting the route twice.
+ */
 export function Button({
   variant = 'primary',
   size = 'md',
   className,
   href,
   prefetch,
+  native,
   ...props
-}: CommonProps & { href?: string; prefetch?: boolean } & ComponentPropsWithoutRef<'button'>): React.ReactElement {
+}: CommonProps & {
+  href?: string;
+  prefetch?: boolean;
+  native?: boolean;
+} & ComponentPropsWithoutRef<'button'>): React.ReactElement {
   const classes = cn(BASE, VARIANTS[variant], SIZES[size], className);
+  if (href && native) {
+    return (
+      <a href={href} className={classes}>
+        {props.children}
+      </a>
+    );
+  }
   if (href) {
     return (
       <Link href={href} prefetch={prefetch} className={classes}>

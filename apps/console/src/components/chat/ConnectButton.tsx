@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import type { JSX } from 'react';
 import { Button } from '@/components/ui';
 
@@ -28,12 +29,24 @@ function GoogleMark(): JSX.Element {
   );
 }
 
-/** Anchor that starts the Google OAuth flow by navigating to the server route. */
+const START_PATH = '/api/auth/google';
+
+/**
+ * Anchor that starts the Google OAuth flow by navigating to the server route. It passes the current
+ * page as `return_to` so the callback lands back here (on whichever host served it: advancelabs.dev
+ * proxies this tool), not on the landing page. The href is filled in after mount because
+ * `window.location` does not exist during SSR; before then the server falls back to /tools/chat.
+ */
 export function ConnectButton({ connected }: { connected: boolean }): JSX.Element {
+  const [href, setHref] = useState(START_PATH);
+  useEffect(() => {
+    setHref(`${START_PATH}?return_to=${encodeURIComponent(window.location.href)}`);
+  }, []);
+
   return (
     <Button
-      href="/api/auth/google"
-      prefetch={false}
+      href={href}
+      native
       variant={connected ? 'secondary' : 'primary'}
       size="md"
     >
