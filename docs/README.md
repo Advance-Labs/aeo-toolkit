@@ -27,7 +27,7 @@ entirely on your own infrastructure if you want it to.
 ## What's in the suite
 
 **Ten tools from two deployables.** Five browser tools (technical audit, E-E-A-T scanner, llms.txt
-generator, GA4+GSC chat, 3D backlink graph), three MCP servers exposing 30 tools to Claude and other
+generator, GA4+GSC chat, 3D backlink graph), three MCP servers exposing 31 tools to Claude and other
 MCP clients, one scheduled content agent, and a Chrome extension. All of it is served from a single
 Next.js app plus the extension — see [ADR-0003](adr/0003-single-vercel-deployment.md) for why.
 

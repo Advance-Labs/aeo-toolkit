@@ -1,7 +1,7 @@
 ---
 title: Tool reference
 description: >-
-  All ten tools — five browser tools, three MCP servers with 30 tools, a content agent, and the Chrome extension — and the routes behind them.
+  All ten tools — five browser tools, three MCP servers with 31 tools, a content agent, and the Chrome extension — and the routes behind them.
 ---
 
 The suite is **ten tools**, delivered from **two deployables**: a single Next.js app
@@ -28,9 +28,28 @@ in the console with a matching route handler.
 
 ## MCP servers — 3
 
-Served from the console as Streamable-HTTP route handlers via the `mcp-handler` adapter, with OAuth
-discovery under `/.well-known/`. **30 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+Served from the console as Streamable-HTTP route handlers via the `mcp-handler` adapter.
+**31 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
+
+These servers are **BYOK and implement no OAuth** — no `/authorize`, `/token` or `/register`
+exists. `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`
+therefore return 404 unless an *external* issuer is configured, and that 404 is what makes a
+client skip the OAuth flow and send the headers that actually work.
+
+### Connecting
+
+Nothing to install — these are hosted HTTP endpoints. In Claude Code:
+
+```bash
+claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
+claude mcp add --transport http --scope user aeo-backlink   https://aeo.advancelabs.dev/api/mcp/backlink/mcp
+claude mcp add --transport http --scope user aeo-search     https://aeo.advancelabs.dev/api/mcp/search/mcp
+```
+
+For Claude.ai, Cursor and other clients, see the [connection page](https://advancelabs.dev/mcp)
+or the JSON block in the [README](../../README.md#connect-the-mcp-servers). The trailing `/mcp`
+is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found".
 
 | Server | Endpoint | Auth | Tools |
 |---|---|---|---|
@@ -41,7 +60,7 @@ Every tool on every server is **read-only** — none calls a write method on any
 The search server was `GA4 + GSC` at `/api/mcp/ga-gsc/mcp`; that path still works as a compatibility
 alias so existing client configs need no change, but new configs should point at `/api/mcp/search/mcp`.
 
-### Search server — 18 tools
+### Search server — 19 tools
 
 | Tool | Engine | Notes |
 |---|---|---|

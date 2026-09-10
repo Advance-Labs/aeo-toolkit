@@ -25,7 +25,7 @@ Point the auditor at a URL and it returns a weighted, per-rule report in about a
 <a href="https://advancelabs.dev/tools"><img src="docs/assets/landing.webp" alt="AEO Toolkit — Your next customer asks an AI. Free, open instruments that measure whether the engines can find, parse, and cite you." width="100%"></a>
 
 Those five are the browser tools. The full suite is **ten**: these five, plus three
-MCP servers (`ai-visibility`, `backlink`, `ga-gsc`) exposing 30 tools to Claude or any MCP
+MCP servers (`ai-visibility`, `backlink`, `search`) exposing 31 tools to Claude or any MCP
 client, plus a scheduled content agent ([`@advance-labs/blogging`](packages/blogging)) and the
 [Chrome extension](apps/chrome-extension). See [`docs/reference/tools.md`](docs/reference/tools.md)
 for the full map.
@@ -121,6 +121,56 @@ for (const page of pages) {
   console.log(page.url, score.total, score.rules)
 }
 ```
+
+---
+
+## Connect the MCP servers
+
+The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
+nothing to `npm install` and no local process to run — point any MCP client at the URL.
+
+**Claude Code** — one command per server:
+
+```bash
+claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
+claude mcp add --transport http --scope user aeo-backlink   https://aeo.advancelabs.dev/api/mcp/backlink/mcp
+claude mcp add --transport http --scope user aeo-search     https://aeo.advancelabs.dev/api/mcp/search/mcp
+```
+
+Drop `--scope user` to register them in the current project only. Check the result with
+`claude mcp list`.
+
+**Claude.ai / Claude Desktop** — Settings → Connectors → Add custom connector, then paste the URL.
+
+**Cursor** (`~/.cursor/mcp.json`), Windsurf, or any client that takes a JSON block:
+
+```json
+{
+  "mcpServers": {
+    "aeo-visibility": { "url": "https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp" },
+    "aeo-backlink":   { "url": "https://aeo.advancelabs.dev/api/mcp/backlink/mcp" },
+    "aeo-search":     { "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp" }
+  }
+}
+```
+
+| Server | Tools | Credentials |
+|---|---|---|
+| `aeo-visibility` | 5 | None to connect. Citation checks take a Perplexity key per request. |
+| `aeo-backlink` | 7 | None. |
+| `aeo-search` | 19 | BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
+
+Three things that trip people up:
+
+- **The trailing `/mcp` is required.** The bare `/api/mcp/<slug>` returns the adapter's own
+  "Not found", which looks like a routing bug and is not.
+- **These servers are BYOK and implement no OAuth.** Credentials ride on the request, so
+  `/.well-known/oauth-*` deliberately returns 404. A client that discovers nothing there correctly
+  skips the OAuth flow and uses the headers instead.
+- **Every tool is read-only.** None calls a write method on any upstream API.
+
+`/api/mcp/ga-gsc/mcp` still works as a compatibility alias for `aeo-search`; new configs should use
+`/api/mcp/search/mcp`.
 
 ---
 
