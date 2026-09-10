@@ -3,6 +3,16 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
+  "keywords": [
+    "html",
+    "parser",
+    "meta-tags",
+    "open-graph",
+    "twitter-cards",
+    "json-ld",
+    "structured-data",
+    "seo"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

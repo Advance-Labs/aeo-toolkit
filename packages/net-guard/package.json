@@ -3,6 +3,15 @@
   "version": "0.2.0",
   "type": "module",
   "description": "SSRF-guarded HTTP fetch seam — DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding.",
+  "keywords": [
+    "ssrf",
+    "security",
+    "fetch",
+    "http",
+    "dns-rebinding",
+    "url-validation",
+    "allowlist"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

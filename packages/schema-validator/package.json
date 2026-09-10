@@ -3,6 +3,16 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Detect and validate JSON-LD, Microdata, and RDFa structured data from raw HTML, mapped to schema.org types with AEO-relevant required-property validation.",
+  "keywords": [
+    "schema-org",
+    "json-ld",
+    "microdata",
+    "rdfa",
+    "structured-data",
+    "validator",
+    "seo",
+    "aeo"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

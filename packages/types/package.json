@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Shared domain types for the AEO Toolkit — the single source of truth across all packages.",
+  "keywords": [
+    "aeo",
+    "seo",
+    "typescript",
+    "types",
+    "answer-engine-optimization"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

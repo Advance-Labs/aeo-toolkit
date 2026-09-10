@@ -3,6 +3,15 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
+  "keywords": [
+    "crawler",
+    "web-crawler",
+    "robots-txt",
+    "sitemap",
+    "scraping",
+    "bfs",
+    "seo"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

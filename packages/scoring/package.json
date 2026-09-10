@@ -3,6 +3,15 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit.",
+  "keywords": [
+    "aeo",
+    "seo",
+    "answer-engine-optimization",
+    "e-e-a-t",
+    "audit",
+    "rule-engine",
+    "scoring"
+  ],
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
