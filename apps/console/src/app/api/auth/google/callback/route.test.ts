@@ -86,6 +86,20 @@ describe('GET /api/auth/google/callback', () => {
     expect(storeSet).not.toHaveBeenCalled();
   });
 
+  it("logs Google's error code so a bad client secret is distinguishable", async () => {
+    const { GoogleApiError } = await import('@advance-labs/google-api');
+    exchangeCode.mockRejectedValue(
+      new GoogleApiError('Google API request failed: 401 Unauthorized', 401, JSON.stringify({
+        error: 'invalid_client',
+        error_description: 'Unauthorized',
+      })),
+    );
+    await callback('code=c&state=nonce');
+    expect(console.error).toHaveBeenCalledWith(
+      '[oauth] token exchange failed: 401 invalid_client (Unauthorized)',
+    );
+  });
+
   it('passes through a plain Google error code but not arbitrary text', async () => {
     expect((await callback('error=access_denied')).location).toBe(
       `${ORIGIN}/tools/chat?error=access_denied`,

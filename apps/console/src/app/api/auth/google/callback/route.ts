@@ -7,6 +7,7 @@
  * outcome lands there, so the page can say what happened. Node runtime only.
  */
 import { NextResponse, type NextRequest } from 'next/server';
+import { GoogleApiError } from '@advance-labs/google-api';
 import { cookies } from 'next/headers';
 import { createOAuth, STATE_COOKIE, USER_COOKIE } from '@/lib/oauth';
 import { getTokenStore } from '@/lib/token-store';
@@ -22,6 +23,26 @@ import {
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+/**
+ * One-line reason for a failed token exchange. Google's token endpoint answers with a JSON body like
+ * `{"error":"invalid_client","error_description":"Unauthorized"}`; those two fields tell a bad client
+ * secret (401 invalid_client) from a bad or reused code (400 invalid_grant) or a redirect-URI
+ * mismatch. Only those fields are logged: the body never contains the secret, but log no more.
+ */
+function exchangeFailureReason(err: unknown): string {
+  if (err instanceof GoogleApiError) {
+    try {
+      const body = JSON.parse(err.body) as { error?: unknown; error_description?: unknown };
+      const code = typeof body.error === 'string' ? body.error : 'unknown';
+      const detail = typeof body.error_description === 'string' ? ` (${body.error_description})` : '';
+      return `${err.status} ${code}${detail}`;
+    } catch {
+      return `${err.status} (non-JSON body)`;
+    }
+  }
+  return err instanceof Error ? err.message : String(err);
+}
 
 /** Google's `error` param is attacker-controllable; only pass through plain error codes. */
 function safeCode(raw: string): string {
@@ -73,7 +94,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     await getTokenStore().set(userId, tokens);
   } catch (err) {
     // Log server-side so a failed exchange is diagnosable; never leak internals to the client.
-    console.error('[oauth] token exchange failed:', err instanceof Error ? err.message : String(err));
+    console.error(`[oauth] token exchange failed: ${exchangeFailureReason(err)}`);
     return finish({ error: 'exchange_failed' });
   }
 
