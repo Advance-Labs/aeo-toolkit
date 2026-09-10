@@ -204,11 +204,17 @@ repo sits ahead of npm with no way to trigger a release. Confirm the secret firs
 gh api repos/Advance-Labs/aeo-toolkit/actions/secrets -q '.secrets[].name'
 ```
 
-**3. GitHub Actions cannot open the Version Packages PR.** Every release run fails at
-`HttpError: GitHub Actions is not permitted to create or approve pull requests`. The action still
-pushes the `changeset-release/main` branch successfully — only PR creation is blocked. Either
-enable **Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and
-approve pull requests"**, or open it by hand:
+**3. GitHub Actions could not open the Version Packages PR** (fixed 2026-09-10). Every release
+run failed at `HttpError: GitHub Actions is not permitted to create or approve pull requests`,
+while still pushing the `changeset-release/main` branch successfully — only PR creation was
+blocked. The lock was at the **organization** level: the repo's checkbox under Settings → Actions →
+General is greyed out until **Advance-Labs org settings → Actions → General → Workflow permissions
+→ "Allow GitHub Actions to create and approve pull requests"** is ticked, because a repo can
+tighten an org policy but never loosen it. The default workflow permission is deliberately left at
+read-only; `release.yml` requests `contents: write` and `pull-requests: write` for itself.
+
+If it regresses (the check is `gh api repos/Advance-Labs/aeo-toolkit/actions/permissions/workflow`
+→ `can_approve_pull_request_reviews`), open the PR by hand:
 
 ```bash
 gh pr create --base main --head changeset-release/main --title "chore: version packages"
