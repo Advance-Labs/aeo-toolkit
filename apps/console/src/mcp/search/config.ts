@@ -1,5 +1,6 @@
 /**
- * Environment + server configuration for the GA4 + GSC MCP server (re-homed).
+ * Environment + server configuration for the cross-engine search MCP server
+ * (Google Analytics 4 + Google Search Console + Bing Webmaster Tools).
  *
  * Pure parsing of `process.env` into a typed shape. Google OAuth credentials are
  * optional at boot so the server still works (and tools still register) when only
@@ -8,7 +9,17 @@
  */
 import { BING_API_BASE } from '@advance-labs/bing-api';
 
-export const SERVER_NAME = 'ga-gsc-mcp';
+/**
+ * Advertised `serverInfo.name`. The `aeo-*-mcp` prefix is the AEO Toolkit family
+ * convention shared by all three servers here (search, visibility, backlink), and
+ * it matches the product brand (AEO Toolkit, AEO/GEO Auditor). Was `ga-gsc-mcp`,
+ * a name the server outgrew when Bing joined Google behind it.
+ *
+ * Renaming this is safe: `serverInfo.name` is informational, and MCP clients key
+ * off the name in their own config, not this string. The URL path is NOT part of
+ * the rename -- `/api/mcp/search` stays put so pinned client configs keep working.
+ */
+export const SERVER_NAME = 'aeo-search-mcp';
 export const SERVER_VERSION = '0.1.0';
 
 /** Resolved Google OAuth client credentials (present only when all three are set). */

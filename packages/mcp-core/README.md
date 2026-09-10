@@ -1,10 +1,12 @@
 # @advance-labs/mcp-core
 
-Shared kit for the AEO Toolkit's three MCP servers (`ai-visibility-mcp`, `ga-gsc-mcp`,
-`backlink-mcp`), built on the official [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk).
+Shared kit for the AEO Toolkit's three MCP servers (`aeo-search-mcp`, `aeo-visibility-mcp`,
+`aeo-backlink-mcp`), built on the official [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk).
 It provides a one-call server factory, a tool registry that wraps handlers with token-bucket
-rate limiting and structured errors, OAuth 2.1 `.well-known` discovery builders for Claude.ai
-connector auto-registration, and thin transport mounters (stdio + HTTP/SSE).
+rate limiting and structured errors, OAuth 2.1 `.well-known` discovery builders (metadata shaping only --
+these servers are BYOK and implement no `/authorize`, `/token` or `/register`; see the
+console's `.well-known` routes for why they must stay 404 unless an *external* issuer is
+configured), and thin transport mounters (stdio + HTTP/SSE).
 
 ## Usage
 
@@ -21,7 +23,7 @@ import {
 } from '@advance-labs/mcp-core';
 
 const created = createServer({
-  name: 'ai-visibility-mcp',
+  name: 'aeo-visibility-mcp',
   version: '0.1.0',
   rateLimit: { capacity: 20, refillPerSec: 5 },
 });
