@@ -21,12 +21,12 @@ npm i @advance-labs/crawler      # polite crawler with robots.txt + rate limitin
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`@advance-labs/crawler`](../../packages/crawler) | `0.2.0` | Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection. |
-| [`@advance-labs/html-parser`](../../packages/html-parser) | `0.2.0` | Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network. |
-| [`@advance-labs/net-guard`](../../packages/net-guard) | `0.2.0` | SSRF-guarded HTTP fetch seam — DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding. |
-| [`@advance-labs/schema-validator`](../../packages/schema-validator) | `0.2.0` | Detect and validate JSON-LD, Microdata, and RDFa structured data from raw HTML, mapped to schema.org types with AEO-relevant required-property validation. |
-| [`@advance-labs/scoring`](../../packages/scoring) | `0.2.0` | Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit. |
-| [`@advance-labs/types`](../../packages/types) | `0.2.0` | Shared domain types for the AEO Toolkit — the single source of truth across all packages. |
+| [`@advance-labs/crawler`](../../packages/crawler) | `0.2.1` | Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection. |
+| [`@advance-labs/html-parser`](../../packages/html-parser) | `0.2.1` | Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network. |
+| [`@advance-labs/net-guard`](../../packages/net-guard) | `0.2.1` | SSRF-guarded HTTP fetch seam — DNS-resolves and rejects private/loopback/link-local/CGNAT/cloud-metadata addresses, re-validates every redirect hop, caps body size and time, and host-pins to defeat DNS rebinding. |
+| [`@advance-labs/schema-validator`](../../packages/schema-validator) | `0.2.1` | Detect and validate JSON-LD, Microdata, and RDFa structured data from raw HTML, mapped to schema.org types with AEO-relevant required-property validation. |
+| [`@advance-labs/scoring`](../../packages/scoring) | `0.2.1` | Declarative weighted rule engine plus technical-SEO, AEO, and E-E-A-T rule sets and report builders — the keystone scorer of the AEO Toolkit. |
+| [`@advance-labs/types`](../../packages/types) | `0.2.1` | Shared domain types for the AEO Toolkit — the single source of truth across all packages. |
 
 ## Workspace-internal
 

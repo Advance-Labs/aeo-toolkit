@@ -174,6 +174,68 @@ integration for per-PR preview deployments. Secrets live only in Vercel/GitHub e
 
 ---
 
+---
+
+## 7. Releasing to npm
+
+Six packages publish to npm (`types`, `crawler`, `scoring`, `html-parser`, `net-guard`,
+`schema-validator`). Everything else is `private: true`, and `console` + `chrome-extension` sit in
+the Changesets `ignore` list because they are apps, not libraries.
+
+**The flow.** A push to `main` runs `.github/workflows/release.yml`, which collects pending
+changesets onto a `changeset-release/main` branch as a "Version Packages" commit. Merging *that*
+PR is what publishes — a release is always a deliberate act, never a side effect of landing a
+feature.
+
+### Three things that have actually bitten this repo
+
+**1. A commit with no changeset never publishes.** This is the big one. Under Changesets a commit
+without a changeset file is invisible to the release pipeline: it merges, CI goes green, `main` is
+correct, and nothing ships. `7f9cb3e` relicensed the whole repo MIT → Apache-2.0 this way, and for
+two days npm kept serving MIT tarballs while the repo, site and `SECURITY.md` all said Apache-2.0.
+**If a change affects what a consumer receives — including licensing — it needs a changeset**, not
+just a green build.
+
+**2. Never merge a Version Packages PR before `NPM_TOKEN` exists.** The version commit *deletes*
+the changeset files. If the publish then fails there is no changeset left to retry with, and the
+repo sits ahead of npm with no way to trigger a release. Confirm the secret first:
+
+```bash
+gh api repos/Advance-Labs/aeo-toolkit/actions/secrets -q '.secrets[].name'
+```
+
+**3. GitHub Actions cannot open the Version Packages PR.** Every release run fails at
+`HttpError: GitHub Actions is not permitted to create or approve pull requests`. The action still
+pushes the `changeset-release/main` branch successfully — only PR creation is blocked. Either
+enable **Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and
+approve pull requests"**, or open it by hand:
+
+```bash
+gh pr create --base main --head changeset-release/main --title "chore: version packages"
+```
+
+### Verify a release actually landed
+
+Changesets reports success per package **optimistically** — it has claimed a package published, and
+even pushed a git tag for it, when the registry never received it (this happened to `net-guard` on
+the 0.2.1 release; a re-run of the workflow fixed it, since with no changesets pending the action
+goes straight to publishing whatever is missing). Do not trust the log. Ask the registry:
+
+```bash
+for p in types crawler scoring html-parser net-guard schema-validator; do
+  printf "%-18s " "$p"
+  curl -s "https://registry.npmjs.org/@advance-labs%2f$p" |
+    python3 -c "import json,sys;d=json.load(sys.stdin);lt=d['dist-tags']['latest'];print(lt, d['versions'][lt].get('license'))"
+done
+```
+
+### Licensing note
+
+No package carries its own `LICENSE` file. `pnpm pack` copies the workspace-root `LICENSE` into
+each tarball, so the root file is the single source of truth for what ships. npm cannot amend an
+already-published version — a license correction only reaches consumers who upgrade, which is why
+such a fix should go out as a `patch` (on 0.x, `^0.2.0` accepts `0.2.x` but not `0.3.0`).
+
 ## Becoming a billable SaaS (BUILT — ships dormant)
 
 The commercial layer is **fully built and ships dormant**: Supabase Auth (magic-link), Stripe billing
