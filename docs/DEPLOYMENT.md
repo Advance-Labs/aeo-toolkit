@@ -80,9 +80,9 @@ vercel deploy --prod --yes
 
 After the first deploy, set `MCP_PUBLIC_URL` to the live URL and redeploy. It's the canonical origin
 used across the app (SEO metadata, tool-page URLs, and the `.well-known` routes' notion of "this
-origin") — the MCP servers themselves are BYOK and implement no OAuth, so `/.well-known/oauth-*`
-404s regardless; `MCP_PUBLIC_URL` only matters there if an external `OAUTH_ISSUER` is ever set, so
-that issuer isn't mistaken for this origin.
+origin"). The ROOT `/.well-known/oauth-*` documents 404 regardless; `MCP_PUBLIC_URL` only matters
+there if an external `OAUTH_ISSUER` is ever set, so that issuer isn't mistaken for this origin. The
+search server's own login (below) names whatever host the request arrived on, not `MCP_PUBLIC_URL`.
 
 ---
 
@@ -156,10 +156,15 @@ connect steps for Claude.ai and Cursor. In **Claude.ai → Settings → Connecto
 
 The trailing `/mcp` is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found".
 
-These servers are BYOK and implement no OAuth — credentials ride on the request (a Google
-`Authorization: Bearer` token, an optional `x-bing-api-key`), so `/.well-known/*` deliberately 404s
-and there is no authorization step to complete. (A local **stdio** MCP variant for Claude Desktop
-isn't part of the Vercel deployment; re-add it later from a thin package over the same tools.)
+AI Visibility and Backlink need no login. **Search** runs its own OAuth 2.1 authorization server
+at `/api/mcp/oauth` (register, authorize, complete, token), switched on by `OAUTH_STATE_SECRET`:
+unset, those routes and their path-scoped `.well-known` documents 404 and the server is BYOK-only
+again. The login rides the existing Connect Google flow, so it needs the same `GOOGLE_*` env, the
+Supabase token store, and `AUTH_COOKIE_DOMAIN` when the Google callback lands on a sibling host.
+Everything the login hands out is sealed with `OAUTH_STATE_SECRET` and nothing is stored, so
+**rotating that secret signs every MCP client out**. A raw Google `Authorization: Bearer` token and
+`x-bing-api-key` still work alongside it. (A local **stdio** MCP variant for Claude Desktop isn't
+part of the Vercel deployment; re-add it later from a thin package over the same tools.)
 
 ## 5. Chrome extension
 

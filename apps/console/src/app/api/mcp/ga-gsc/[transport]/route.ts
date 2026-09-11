@@ -19,7 +19,7 @@ import {
   type GaGscRuntime,
 } from '@/mcp/search/server.js';
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/search/config.js';
-import { bearerToken, bingApiKeyHeader } from '@/mcp/search/http-util.js';
+import { authenticateSearchRequest, type SearchCaller } from '@/mcp/oauth/gate.js';
 import { getSharedMcpRateLimiter } from '@/mcp/shared.js';
 import { checkEntitlement } from '@/lib/billing/entitlements';
 
@@ -31,11 +31,13 @@ function getRuntime(): GaGscRuntime {
   return cachedRuntime;
 }
 
-function buildHandler(
-  requestToken: string | null,
-  requestBingKey: string | null,
-): (req: Request) => Promise<Response> {
-  const ctx = buildGaGscContext(getRuntime(), requestToken, requestBingKey);
+function buildHandler(caller: SearchCaller): (req: Request) => Promise<Response> {
+  const ctx = buildGaGscContext(
+    getRuntime(),
+    caller.requestToken,
+    caller.requestBingKey,
+    caller.userId,
+  );
   return createMcpHandler(
     (server) => {
       registerGaGscTools(server, ctx);
@@ -56,9 +58,9 @@ async function handler(request: Request): Promise<Response> {
   const gate = await checkEntitlement(request, 'mcp');
   if (!gate.ok) return Response.json(gate.body, { status: gate.status });
 
-  const token = bearerToken(request.headers.get('authorization'));
-  const bingKey = bingApiKeyHeader(request.headers);
-  return buildHandler(token, bingKey)(request);
+  const auth = authenticateSearchRequest(request, '/api/mcp/ga-gsc/mcp');
+  if (!auth.ok) return auth.response;
+  return buildHandler(auth.caller)(request);
 }
 
 export { handler as GET, handler as POST };

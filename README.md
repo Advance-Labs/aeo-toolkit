@@ -158,15 +158,16 @@ Drop `--scope user` to register them in the current project only. Check the resu
 |---|---|---|
 | `aeo-visibility` | 5 | None to connect. Citation checks take a Perplexity key per request. |
 | `aeo-backlink` | 7 | None. |
-| `aeo-search` | 19 | BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
+| `aeo-search` | 19 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
 
 Three things that trip people up:
 
 - **The trailing `/mcp` is required.** The bare `/api/mcp/<slug>` returns the adapter's own
   "Not found", which looks like a routing bug and is not.
-- **These servers are BYOK and implement no OAuth.** Credentials ride on the request, so
-  `/.well-known/oauth-*` deliberately returns 404. A client that discovers nothing there correctly
-  skips the OAuth flow and uses the headers instead.
+- **Only `aeo-search` has a login, and its discovery is path-scoped.** It answers an anonymous
+  request with a 401 pointing at `/.well-known/oauth-protected-resource/api/mcp/search/mcp`; its
+  authorization server is `/api/mcp/oauth`. The ROOT `/.well-known/oauth-*` documents deliberately
+  return 404, because `aeo-visibility` and `aeo-backlink` need no login.
 - **Every tool is read-only.** None calls a write method on any upstream API.
 
 `/api/mcp/ga-gsc/mcp` still works as a compatibility alias for `aeo-search`; new configs should use
