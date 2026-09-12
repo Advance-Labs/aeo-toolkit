@@ -8,8 +8,11 @@ const [major = '0', minor = '0', patch = '0'] = version.replace(/[^\d.]/g, '').s
 export default defineManifest({
   manifest_version: 3,
   name: 'AEO/GEO Auditor',
+  // Chrome Web Store hard-caps `description` at 132 characters. The previous copy was 162
+  // and would have been rejected at submission. Keep any edit under the cap; the longer
+  // pitch belongs in the store listing's detailed description, not here.
   description:
-    'Run a client-side AI-readiness (AEO/GEO) audit on the active tab — meta, structured data, robots.txt, sitemap, llms.txt and AI-bot directives — then export a PDF.',
+    'Client-side AEO/GEO audit of the active tab: meta, structured data, robots.txt, sitemap, llms.txt, AI-bot rules. Exports a PDF.',
   version: `${major}.${minor}.${patch}`,
   version_name: version,
   // PNGs are generated from src/icons/icon.svg by scripts/generate-icons.mjs

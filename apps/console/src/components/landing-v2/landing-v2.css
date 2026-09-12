@@ -1,0 +1,301 @@
+/**
+ * Landing v4 — framed tech dark. One engineered master shell with gradient-border
+ * framing, overshooting guide rails, and corner marks on a near-black monochrome
+ * ground. The ink-blue survives only as sparse active cues; hierarchy is carried by
+ * frame logic and monochrome contrast. Tokens scoped to .v2; components unchanged.
+ */
+.v2 {
+  --v2-bg: #0a0a0b;
+  --v2-text: #f4f4f5;
+  --v2-ink: #f4f4f5; /* legacy alias */
+  --v2-ink-soft: #b6b6bd;
+  /* Lifted per audit: this token carries real qualifying copy at 11px mono. */
+  --v2-ink-faint: #9a9aa6;
+  --v2-rule: rgba(255, 255, 255, 0.09);
+  --v2-rule-strong: rgba(255, 255, 255, 0.18);
+  --v2-paper: #f4f4f5; /* legacy alias: light text tone */
+  --v2-signal: #a8f326;
+  --v2-signal-hover: #c3ff57;
+  --v2-signal-ondark: #a8f326;
+  --v2-ok: #3fbf8a;
+  --v2-warn: #d9974f;
+  /* Secondary (Advance Labs violet): the annotation voice — captions, stamps, meta.
+     Green stays the operational voice. */
+  --v2-accent2: #b6a4fd;
+
+  color: var(--v2-text);
+  font-family: var(--font-v2-sans), system-ui, sans-serif;
+  scroll-behavior: auto;
+}
+
+html:has(.v2) {
+  scroll-behavior: auto;
+}
+
+.v2 ::selection {
+  background: #a8f326;
+  color: #0a0a0b;
+}
+
+.v2 :focus-visible {
+  outline: 2px solid var(--v2-signal);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.v2 h1,
+.v2 h2,
+.v2 h3 {
+  color: var(--v2-text);
+  font-family: var(--font-v2-display), var(--font-v2-sans), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* The cursive accent voice: one turned phrase per headline, never body copy. */
+.v2-cursive {
+  font-family: var(--font-v2-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* ── Monochrome atmosphere: one soft bloom + falloff + grain. Nothing colored. ── */
+.v2-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 40% at 50% -4%, rgba(168, 243, 38, 0.06) 0%, transparent 70%),
+    radial-gradient(40% 34% at 10% 82%, rgba(124, 58, 237, 0.16) 0%, transparent 70%),
+    radial-gradient(70% 60% at 50% 115%, rgba(139, 92, 246, 0.09) 0%, transparent 70%),
+    var(--v2-bg);
+}
+.v2-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+.v2 > *:not(.v2-backdrop) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Gradient-border framing: one technique, three weights. ──
+   A transparent border filled by a border-box gradient over a padding-box fill keeps
+   the 1px edge crisp at any radius. */
+
+/* Master shell. */
+.v2-sheet {
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(18, 18, 20, 0.97), rgba(13, 13, 15, 0.97)) padding-box,
+    linear-gradient(
+        180deg,
+        rgba(206, 193, 255, 0.36),
+        rgba(255, 255, 255, 0.07) 30%,
+        rgba(255, 255, 255, 0.05) 70%,
+        rgba(255, 255, 255, 0.14)
+      )
+      border-box;
+  box-shadow: 0 40px 90px -45px rgba(0, 0, 0, 0.9);
+}
+
+/* Panel: cards, the specimen, the form field's sibling surfaces. */
+.v2-glass {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06)) border-box;
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.7);
+}
+
+
+/* ── Frame furniture: overshooting rails + corner squares on the master shell. ── */
+.v2-frame {
+  position: relative;
+}
+/* Vertical guide rails that overshoot the shell top and bottom. */
+.v2-frame::before,
+.v2-frame::after {
+  content: '';
+  position: absolute;
+  top: -28px;
+  bottom: -28px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.16) 12%,
+    rgba(255, 255, 255, 0.16) 88%,
+    transparent
+  );
+  pointer-events: none;
+}
+.v2-frame::before {
+  left: -14px;
+}
+.v2-frame::after {
+  right: -14px;
+}
+/* Tiny corner squares where the rails meet the shell's top and bottom edges. */
+.v2-corner {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+/* Mono utility voice. */
+.v2-label {
+  font-family: var(--font-v2-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--v2-ink-faint);
+}
+
+.v2-rule {
+  height: 1px;
+  background: var(--v2-rule-strong);
+}
+
+/* L-brackets: reserved for the specimen alone — they mark the measured instrument. */
+.v2-brackets {
+  position: relative;
+}
+.v2-brackets::before,
+.v2-brackets::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+.v2-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.v2-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* Header fold (landing only, hover-capable devices only — Motion.tsx sets the
+   classes): once the cinematic stage releases into normal scrolling the chrome folds
+   upward; hovering the top edge (or focusing into the header) drops it back down. */
+body > header {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.v2-header-folded body > header {
+  transform: translateY(-100%);
+}
+html.v2-header-folded.v2-header-peek body > header,
+html.v2-header-folded body > header:focus-within {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  body > header {
+    transition: none;
+  }
+}
+
+/* The cinematic stage: in static/no-JS/reduced-motion views the two layers are
+   ordinary stacked sections. With motion armed they occupy one grid cell — the hero
+   on top, the story beneath — so scroll can zoom past one into the other. */
+html.has-motion .v2 .v2-stage {
+  display: grid;
+  min-height: calc(100vh - 6.75rem);
+}
+html.has-motion .v2 .v2-stage > .v2-stage-layer {
+  grid-area: 1 / 1;
+}
+html.has-motion .v2 [data-stage-hero] {
+  z-index: 2;
+  /* Transparent: the stage-level shader is the ground; the layer only carries content. */
+  will-change: transform, opacity;
+}
+html.has-motion .v2 [data-stage-story] {
+  z-index: 1;
+  border-top: 0;
+}
+
+/* Word-split masks (Motion.tsx). */
+.v2-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.v2-word {
+  display: inline-block;
+  will-change: transform;
+}
+.v2 [data-story-line] {
+  font-family: var(--font-v2-display), var(--font-v2-sans), system-ui, sans-serif;
+}
+
+html.has-motion .v2 [data-hero-title] {
+  visibility: hidden;
+}
+
+/* Specimen: framed instrument with a monochrome flashlight sheen following the pointer. */
+.v2-specimen {
+  border-radius: 12px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: perspective(1100px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  overflow: hidden;
+}
+.v2-specimen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    240px 190px at var(--mx, 30%) var(--my, 20%),
+    rgba(255, 255, 255, 0.09) 0%,
+    transparent 70%
+  );
+  opacity: var(--sheen, 0);
+  transition: opacity 0.4s ease;
+}
+
+/* Act II scan: rows idle-dimmed only while motion is armed; the pass brightens them
+   and lights the numeral. Static and reduced-motion views get full rows, green numerals. */
+.v2 .v2-scan-n {
+  color: var(--v2-signal);
+  transition: color 0.45s ease;
+}
+html.has-motion .v2 [data-scan-item] {
+  opacity: 0.38;
+  transition: opacity 0.45s ease;
+}
+html.has-motion .v2 [data-scan-item].is-scanned {
+  opacity: 1;
+}
+html.has-motion .v2 [data-scan-item]:not(.is-scanned) .v2-scan-n {
+  color: var(--v2-ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-specimen {
+    transition: none;
+    transform: none;
+  }
+  .v2-specimen::before {
+    display: none;
+  }
+  .v2-cta,
+  .v2-cta:hover {
+    transform: none;
+  }
+}

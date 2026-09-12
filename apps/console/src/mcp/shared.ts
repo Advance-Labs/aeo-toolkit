@@ -35,6 +35,48 @@ export function mcpPublicUrl(env: Record<string, string | undefined> = process.e
 }
 
 /**
+ * The authorization servers this deployment can honestly point a client at from
+ * the ROOT `.well-known` documents, or `null` when there are none.
+ *
+ * THE ROOT OF THIS ORIGIN IS NOT AN AUTHORIZATION SERVER. There is no `/authorize`,
+ * `/token` or `/register` at the root, and the ai-visibility and backlink servers
+ * need no login at all. So the root documents must NEVER name this origin as its
+ * own authorization server. (The search server does run one, but at the path-scoped
+ * issuer `${origin}/api/mcp/oauth`, discovered through its own path-scoped
+ * `.well-known` documents; see `@/mcp/oauth/config`. It never touches these.)
+ *
+ * It used to. `OAUTH_ISSUER` is unset in production, both `.well-known` documents
+ * fell back to this origin, and the authorization-server document advertised
+ * `${origin}/register` as a Dynamic Client Registration endpoint. Clients did
+ * exactly as told, POSTed there, and got the Next.js 404 HTML page back:
+ *
+ *   SDK auth failed: Dynamic Client Registration rejected (HTTP 404): <!DOCTYPE html>...
+ *
+ * Discovering nothing is what makes a client fall back to the header-based
+ * credentials that actually work; discovering a broken flow makes it give up. So
+ * when no EXTERNAL issuer is configured, the documents 404 rather than lie.
+ *
+ * Returns the configured servers only when they are genuinely external — a value
+ * equal to this origin is treated as unconfigured, since that is the same lie by
+ * a longer route.
+ */
+export function configuredAuthorizationServers(
+  origin: string,
+  env: Record<string, string | undefined> = process.env,
+): string[] | null {
+  const explicit = env.OAUTH_AUTHORIZATION_SERVERS?.trim();
+  const listed = explicit
+    ? explicit
+        .split(',')
+        .map((s) => trimTrailingSlash(s.trim()))
+        .filter((s) => s.length > 0)
+    : [trimTrailingSlash(env.OAUTH_ISSUER?.trim() ?? '')].filter((s) => s.length > 0);
+
+  const external = listed.filter((s) => s !== trimTrailingSlash(origin));
+  return external.length > 0 ? external : null;
+}
+
+/**
  * Build the per-caller distributed rate limiter from the environment. Prefers the
  * Upstash sliding-window adapter when `UPSTASH_REDIS_REST_URL` +
  * `UPSTASH_REDIS_REST_TOKEN` are present (shared across serverless instances) and

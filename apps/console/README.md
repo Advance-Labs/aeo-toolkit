@@ -1,4 +1,9 @@
-<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../../brand/logo-dark.png">
+    <img src="../../brand/logo.png" alt="AEO Toolkit" width="280">
+  </picture>
+</p>
 
 # AEO Toolkit Console
 
@@ -11,7 +16,7 @@
 | `/` | Dashboard / tool launcher |
 | `/tools/audit` · `/tools/eeat` · `/tools/llms-txt` · `/tools/chat` · `/tools/graph` | the 5 web tools |
 | `/api/audit/*`, `/api/generate`, `/api/chat`, `/api/auth/google/*`, `/api/graph/*` | tool APIs (Node runtime) |
-| `/api/mcp/ai-visibility`, `/api/mcp/ga-gsc`, `/api/mcp/backlink` | remote MCP servers (via `mcp-handler`) |
+| `/api/mcp/{ai-visibility,ga-gsc,backlink}/mcp` | remote MCP servers (via `mcp-handler`); the trailing `/mcp` is the transport path and is required |
 | `/.well-known/*` | MCP OAuth discovery for Claude.ai connectors |
 | `/api/cron/blogging` | the autonomous blogging agent, run by a **Vercel Cron** (see `vercel.ts`) |
 

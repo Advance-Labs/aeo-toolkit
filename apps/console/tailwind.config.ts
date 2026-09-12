@@ -7,9 +7,9 @@ export default {
       colors: {
         // Brand palette (see /brand).
         brand: {
-          indigo: '#6366F1',
-          violet: '#8B5CF6',
-          cyan: '#22D3EE',
+          indigo: '#7C3AED',
+          violet: '#B6A4FD',
+          cyan: '#A8F326',
         },
         // Surface scale for the dark theme.
         ink: {
@@ -32,11 +32,11 @@ export default {
         'grid-fade':
           'linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px)',
         'radial-glow':
-          'radial-gradient(60% 60% at 50% 0%, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.10) 40%, transparent 70%)',
+          'radial-gradient(60% 60% at 50% 0%, rgba(124,58,237,0.22) 0%, rgba(168,243,38,0.06) 40%, transparent 70%)',
       },
       boxShadow: {
-        glow: '0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px -20px rgba(99,102,241,0.45)',
-        'glow-cyan': '0 0 0 1px rgba(34,211,238,0.18), 0 18px 50px -18px rgba(34,211,238,0.40)',
+        glow: '0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px -20px rgba(168,243,38,0.35)',
+        'glow-cyan': '0 0 0 1px rgba(168,243,38,0.2), 0 18px 50px -18px rgba(168,243,38,0.4)',
       },
       keyframes: {
         'fade-up': {

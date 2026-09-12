@@ -199,7 +199,7 @@ export default function AboutPage(): JSX.Element {
                 </p>
                 <p className="text-base leading-relaxed text-slate-400">
                   We believe the best tools are open, fast, and honest. The AEO Toolkit is
-                  open-source and MIT licensed; you can read the code, run it yourself, and see
+                  open-source and Apache-2.0 licensed; you can read the code, run it yourself, and see
                   exactly how every score is calculated.
                 </p>
               </div>

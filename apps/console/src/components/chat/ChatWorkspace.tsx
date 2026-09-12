@@ -12,6 +12,7 @@ import type {
 import { PRESET_PROMPTS } from '@/components/chat/presets.js';
 import { PROVIDER_OPTIONS, defaultModelFor } from '@/components/chat/models.js';
 import { ConnectButton } from '@/components/chat/ConnectButton.js';
+import { authNoticeFrom, type AuthNotice } from '@/components/chat/auth-notice.js';
 import { Button, Input, Reveal, SpotlightCard } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
@@ -121,7 +122,7 @@ function ChatBubble({ turn }: { turn: ChatTurn }): JSX.Element {
       <div className="flex items-start gap-3">
         <span
           aria-hidden="true"
-          className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,#6366F1,#22D3EE)] text-[11px] font-bold text-white"
+          className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[linear-gradient(135deg,#7C3AED,#A8F326)] text-[11px] font-bold text-white"
         >
           AI
         </span>
@@ -193,6 +194,19 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
     void loadConnection();
     // Intentionally run once on mount; loadConnection captures current setters.
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // The OAuth callback lands back here with ?connected=1 or ?error=<reason>. Surface it once, then
+  // strip the params so a reload or a shared link doesn't replay a stale result.
+  const [authNotice, setAuthNotice] = useState<AuthNotice | null>(null);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const notice = authNoticeFrom(url.searchParams);
+    if (notice === null) return;
+    setAuthNotice(notice);
+    url.searchParams.delete('connected');
+    url.searchParams.delete('error');
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
   }, []);
 
   // Keep the latest turn in view as the thread grows.
@@ -282,6 +296,17 @@ export function ChatWorkspace({ initialConnected }: { initialConnected: boolean 
                 <StatusDot ok={connected} />
                 {connected ? 'Connected' : 'Not connected'}
               </span>
+              {authNotice ? (
+                <p
+                  role={authNotice.ok ? 'status' : 'alert'}
+                  className={cn(
+                    'max-w-xs text-xs sm:text-right',
+                    authNotice.ok ? 'text-emerald-300' : 'text-red-300',
+                  )}
+                >
+                  {authNotice.text}
+                </p>
+              ) : null}
             </div>
           }
         />

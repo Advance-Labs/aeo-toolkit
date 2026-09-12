@@ -1,4 +1,8 @@
-# ADR 0003 — Single Vercel deployment (the console) + Marketplace database
+---
+title: ADR-0003 — Single Vercel deployment
+description: >-
+  Why nine independently-deployable apps were consolidated into one Next.js console, and what that traded away.
+---
 
 - **Status:** Accepted
 - **Date:** 2026-06-03

@@ -28,4 +28,4 @@ if (!res.ok) {
 4. **Body + time caps** — `maxBodyBytes` (default 2 MB) and `timeoutMs` (default 10 s, aborts the request).
 
 All logic is pure and injected (`resolve`, `fetchImpl`) — unit-tested with zero network. See
-`docs/CONVENTIONS-autopilot.md` invariant #1.
+[`docs/CONVENTIONS.md`](../../docs/CONVENTIONS.md) security invariant #1.

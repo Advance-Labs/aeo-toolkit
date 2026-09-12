@@ -57,18 +57,18 @@ ${tools}
 
 ## Docs
 
-- [Open-source repository](${REPO_URL}): source code, issues, and roadmap (MIT licensed).
+- [Open-source repository](${REPO_URL}): source code, issues, and roadmap (Apache-2.0 licensed).
 - [SEO + AEO plan](${REPO_URL}/blob/main/docs/SEO-AEO-PLAN.md): the strategy this site dogfoods.
 - [Sitemap](${base}/sitemap.xml): full list of indexable pages.
 
 ## About
 
-${SITE_NAME} is built by ${ORG_LEGAL_NAME}. It is free to use and released under the MIT License.
+${SITE_NAME} is built by ${ORG_LEGAL_NAME}. It is free to use and released under the Apache License 2.0.
 
 ## Contact
 
 - Repository & issues: ${REPO_URL}
-- License: MIT
+- License: Apache-2.0
 `;
 
   return new Response(body, {

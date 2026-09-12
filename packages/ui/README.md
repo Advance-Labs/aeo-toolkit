@@ -1,7 +1,7 @@
 # @advance-labs/ui
 
-Shared React design-system components for the AEO Toolkit web apps (`llm-audit`,
-`eeat-scanner`, `llms-txt-generator`, `ga-gsc-chat`). Every component is
+Shared React design-system components for the AEO Toolkit console (`apps/console`) and
+Chrome extension. Every component is
 **presentational**: it accepts typed data via props (from `@advance-labs/types`), renders
 semantic HTML with Tailwind class strings, and contains no application logic.
 There is no Tailwind build in this package — consumers provide it.
@@ -39,8 +39,6 @@ client boundary.
 | `GradeBadge` | `{ grade: ScoreGrade; size?; className? }` | Compact A–F grade pill. |
 | `ReportLayout` | `{ title; children; subtitle?; actions?; className? }` | Semantic page shell (`<header>` + `<main>`) for report screens. |
 | `TemplateDownload` | `{ template: GeneratedTemplate; onDownload?; className? }` | Renders a generated file with a download action; download side effect is injectable. |
-| `LogoMark` | `{ size?; title?; idSuffix? }` | The square brand tile (gradient + "A" peak + cyan sparkle) as accessible inline SVG. Pass distinct `idSuffix` values to render multiple marks on one page. |
-| `Logo` | `{ size?; variant?; className? }` | Horizontal lockup (mark + "AEO Toolkit" wordmark); `variant="dark"` uses light text. |
 
 All prop types are also exported (`ScoreGaugeProps`, `FixListProps`, …).
 
@@ -52,3 +50,9 @@ co-located Vitest + Testing Library (jsdom) tests. No stubs.
 - The `TemplateDownload` browser download (Blob + object URL) is isolated behind an
   injectable `onDownload` prop so it is unit-testable without a real download; the
   default DOM implementation is a guarded no-op in non-DOM environments.
+
+## Brand
+
+The mark and lockups live in [`brand/`](../../brand) and the visual system in
+[`brand/README.md`](../../brand/README.md). The console renders the mark through its own `BrandMark`;
+the old `Logo` / `LogoMark` tile components were removed with the September 2026 redesign.

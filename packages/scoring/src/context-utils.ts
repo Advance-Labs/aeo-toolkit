@@ -149,3 +149,23 @@ export function isNoindex(page: ParsedHtml): boolean {
   const robots = page.meta.robots?.toLowerCase() ?? '';
   return robots.includes('noindex');
 }
+
+/**
+ * True when this audit covers exactly one page and that page is the site root (ADV-175).
+ *
+ * Used by rules that are meaningful on a deep page but not on a homepage. Deliberately
+ * narrow: in a full-site crawl the homepage sits alongside deep pages, the cross-page rules
+ * already look at all of them, and nothing should be skipped.
+ */
+export function isSingleRootPage(ctx: ScoringContext): boolean {
+  if (ctx.mode !== 'single-page') return false;
+  const page = firstPage(ctx);
+  if (!page) return false;
+  try {
+    const path = new URL(page.url).pathname;
+    return path === '/' || path === '';
+  } catch {
+    return false;
+  }
+}
+

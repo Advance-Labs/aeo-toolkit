@@ -15,9 +15,9 @@ import { describe, expect, it } from 'vitest';
 /** Repo root, from `apps/console`. */
 const SKILLS_DIR = join(process.cwd(), '..', '..', 'skills');
 
-/** Tool names as registered in `ga-gsc/server.ts`, read from source so it cannot drift. */
+/** Tool names as registered in `search/server.ts`, read from source so it cannot drift. */
 function registeredToolNames(): Set<string> {
-  const server = readFileSync(join(process.cwd(), 'src/mcp/ga-gsc/server.ts'), 'utf8');
+  const server = readFileSync(join(process.cwd(), 'src/mcp/search/server.ts'), 'utf8');
   return new Set([...server.matchAll(/name:\s*'([a-z0-9_]+)'/g)].map((m) => m[1] as string));
 }
 

@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo } from '@advance-labs/ui';
-import { Button } from './ui/Button';
+import { BrandLockup } from './BrandMark';
 import { cn } from '@/lib/cn';
+
+/** Solid drafting-ink CTA — the v2 accent, replacing the old gradient pill. */
+const CTA_CLASSES =
+  'v2-cta inline-flex h-9 items-center rounded-lg px-3.5 text-sm font-semibold';
 
 const NAV = [
   { href: '/tools/audit', label: 'Audit' },
@@ -23,10 +26,10 @@ export function Header(): React.ReactElement {
   const path = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-ink-950/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[#0a0a0b]/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-content items-center justify-between px-5 sm:px-8">
         <Link href="/" aria-label="AEO Toolkit home" className="shrink-0">
-          <Logo size={26} variant="dark" />
+          <BrandLockup size={22} tone="dark" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -37,8 +40,10 @@ export function Header(): React.ReactElement {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'rounded-lg px-3 py-2 text-sm font-medium transition',
-                  active ? 'bg-white/[0.06] text-white' : 'text-slate-400 hover:text-white',
+                  'rounded px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition',
+                  active
+                    ? 'bg-[#A8F326]/10 text-[#C3FF57]'
+                    : 'text-[#A8F326]/85 hover:bg-[#A8F326]/5 hover:text-[#C3FF57]',
                 )}
               >
                 {item.label}
@@ -48,9 +53,9 @@ export function Header(): React.ReactElement {
         </nav>
 
         <div className="hidden md:block">
-          <Button href="/tools/audit" size="sm">
-            Run a free audit
-          </Button>
+          <Link href="/tools/audit" className={CTA_CLASSES}>
+            Run the audit
+          </Link>
         </div>
 
         <button
@@ -80,21 +85,21 @@ export function Header(): React.ReactElement {
       </div>
 
       {open ? (
-        <div className="border-t border-white/[0.06] bg-ink-950/95 px-5 py-3 md:hidden">
+        <div className="border-t border-white/[0.06] bg-[#0a0a0b]/90 backdrop-blur-xl px-5 py-3 md:hidden">
           <nav className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
+                className="rounded px-3 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[#A8F326]/85 hover:bg-[#A8F326]/5 hover:text-[#C3FF57]"
               >
                 {item.label}
               </Link>
             ))}
-            <Button href="/tools/audit" size="sm" className="mt-2">
-              Run a free audit
-            </Button>
+            <Link href="/tools/audit" onClick={() => setOpen(false)} className={cn(CTA_CLASSES, 'mt-2 justify-center')}>
+              Run the audit
+            </Link>
           </nav>
         </div>
       ) : null}

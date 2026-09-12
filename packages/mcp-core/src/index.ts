@@ -2,7 +2,7 @@
  * @advance-labs/mcp-core — shared kit for the three AEO MCP servers.
  *
  * Built on `@modelcontextprotocol/sdk`. Re-exports only the surface consumers
- * (ai-visibility-mcp, ga-gsc-mcp, backlink-mcp) need: server + tool registry
+ * (aeo-search-mcp, aeo-visibility-mcp, aeo-backlink-mcp) need: server + tool registry
  * helpers, token-bucket rate limiting, OAuth 2.1 `.well-known` discovery
  * builders, transport mounters, and the structured tool-error helper.
  */

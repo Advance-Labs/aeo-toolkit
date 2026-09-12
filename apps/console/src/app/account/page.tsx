@@ -270,7 +270,7 @@ export default async function AccountPage(): Promise<JSX.Element> {
                   className={
                     overQuota
                       ? 'h-full rounded-full bg-rose-500'
-                      : 'h-full rounded-full bg-[linear-gradient(100deg,#6366F1,#22D3EE)]'
+                      : 'h-full rounded-full bg-[linear-gradient(100deg,#7C3AED,#A8F326)]'
                   }
                   style={{ width: `${usagePct}%` }}
                 />

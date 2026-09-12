@@ -15,7 +15,7 @@ describe('published rule counts', () => {
   /**
    * These numbers are QUOTED PUBLICLY — advancelabs.dev/services/aeo-audit sells the audit as an
    * "N-rule engine" and breaks it down by family, right next to an invitation to read this
-   * MIT-licensed source. On 2026-08-01 that copy claimed 51 rules with a 16-rule E-E-A-T family
+   * Apache-2.0-licensed source. On 2026-08-01 that copy claimed 51 rules with a 16-rule E-E-A-T family
    * when the real numbers were 49 and 14; it had been wrong since the copy was written, because
    * nothing connected the claim to the code.
    *

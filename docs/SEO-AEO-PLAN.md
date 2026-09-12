@@ -1,4 +1,8 @@
-# SEO + AEO Optimization Plan — AEO Toolkit site
+---
+title: SEO + AEO plan
+description: >-
+  How the toolkit's own site dogfoods the product: llms.txt, JSON-LD, server-rendered HTML, and answer-first content.
+---
 
 > The site must dogfood the product. AEO Toolkit teaches sites how to rank in classic search **and**
 > in AI answer engines — so `aeotoolkit` itself ships `llms.txt`, JSON-LD, server-rendered semantic
@@ -26,7 +30,7 @@
 | **robots.txt** | `src/app/robots.ts` — allow all crawlers, **explicitly allow AI bots** (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended), link the sitemap. |
 | **llms.txt** | `/llms.txt` route — the de-facto AI crawl-hint file (we generate it with our own tool). |
 | **HTTPS / HSTS** | Vercel default. |
-| **Core Web Vitals** | Aurora is CSS (no WebGL on first paint); three.js dynamic-imported only on `/tools/graph`; `next/font` (no layout shift); image-free hero; lazy-load below-the-fold. Target LCP < 2.0s, CLS < 0.05, INP < 200ms. |
+| **Core Web Vitals** | First paint is CSS-only (the hero shader and node field load after hydration and are gated on `prefers-reduced-motion`); three.js dynamic-imported only on `/tools/graph`; `next/font` (no layout shift); image-free hero; lazy-load below-the-fold. Target LCP < 2.0s, CLS < 0.05, INP < 200ms. |
 | **Mobile** | Responsive at 360/768/1280; tap targets ≥ 40px; viewport meta via Next. |
 | **Metadata** | Title template, unique title + description per page, OG + Twitter cards, `opengraph-image` generated with `next/og`. |
 
@@ -95,7 +99,7 @@ Why it matters for AEO: `FAQPage`/`HowTo` give answer engines pre-extracted Q→
 ## 6. Off-page / authority
 
 - Dogfood the **Backlink Graph** to track our own referring domains.
-- Open-source flywheel: the MIT repo + the free tools earn natural links/mentions.
+- Open-source flywheel: the Apache-2.0 repo + the free tools earn natural links/mentions.
 - Submit the **Chrome extension** (Web Store listing links back), the **MCP servers** to MCP
   directories, and the tools to AEO/SEO tool roundups.
 - Digital PR around "we rebuilt SellOnLLM's tools open-source".
@@ -116,7 +120,7 @@ Why it matters for AEO: `FAQPage`/`HowTo` give answer engines pre-extracted Q→
 
 ## 8. Implementation status
 
-**Shipping in this redesign pass:** server-rendered design system, per-page metadata + canonical, OG
+**Shipping in this redesign pass:** server-rendered design system (the September 2026 brand, see [`brand/README.md`](../brand/README.md)), per-page metadata + canonical, OG
 images, `sitemap.ts`, `robots.ts` (AI bots allowed), `/llms.txt`, Organization/WebSite/SoftwareApplication
 + per-page FAQPage/HowTo/BreadcrumbList JSON-LD, answer-first copy + FAQ blocks on every page, semantic
 HTML, internal-link hub, CWV-conscious rendering.

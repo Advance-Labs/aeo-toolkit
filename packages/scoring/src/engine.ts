@@ -120,6 +120,11 @@ export async function runRules(
   const order: ScoreCategoryKey[] = [];
 
   for (const rule of rules) {
+    // ADV-175: a rule that does not apply to this page contributes nothing at all — no
+    // finding and no weight — rather than a pass that overstates coverage or a fail that
+    // manufactures work.
+    if (rule.appliesTo && !rule.appliesTo(ctx)) continue;
+
     const outcome = await evaluateRule(rule, ctx);
     const finding = toFinding(rule, outcome);
     let bucket = byCategory.get(rule.category);

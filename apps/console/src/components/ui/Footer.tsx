@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { LogoMark } from '@advance-labs/ui';
+import { BrandLockup } from '../BrandMark';
 import { Container } from './Container';
+import { CHROME_STORE_URL } from '@/lib/seo';
 
 const TOOLS = [
   { href: '/tools/audit', label: 'SEO Audit' },
@@ -10,11 +11,12 @@ const TOOLS = [
   { href: '/tools/graph', label: 'Backlink Graph' },
 ];
 
-// Point humans at the `/mcp` connection page (anchored to each server). The raw `/api/mcp/*`
-// Streamable-HTTP endpoints stay reachable for real MCP clients; they 404 in a browser.
+// Point humans at the `/mcp` connection page (anchored to each server). The machine endpoints
+// live at `/api/mcp/<slug>/mcp` and are for MCP clients only; the bare `/api/mcp/<slug>` always
+// 404s, which is mcp-handler's own response and not a routing fault.
 const RESOURCES = [
   { href: '/mcp#ai-visibility', label: 'AI Visibility MCP' },
-  { href: '/mcp#ga-gsc', label: 'GA4 + GSC MCP' },
+  { href: '/mcp#search', label: 'Search MCP' },
   { href: '/mcp#backlink', label: 'Backlink MCP' },
 ];
 
@@ -29,8 +31,7 @@ export function Footer(): React.ReactElement {
               className="inline-flex items-center gap-2.5"
               aria-label="AEO Toolkit home"
             >
-              <LogoMark size={28} idSuffix="footer" />
-              <span className="font-display text-lg font-semibold text-white">AEO Toolkit</span>
+              <BrandLockup size={24} tone="dark" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-slate-400">
               Audit, optimize, and track your visibility across AI answer engines — ChatGPT, Claude,
@@ -44,13 +45,14 @@ export function Footer(): React.ReactElement {
             links={[
               { href: '/about', label: 'About' },
               { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
+              { href: CHROME_STORE_URL, label: 'Chrome extension' },
               { href: 'https://advancelabs.dev', label: 'Advance Labs' },
             ]}
           />
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-slate-400 sm:flex-row sm:items-center">
           <p>© 2026 Advance Labs Inc. All rights reserved.</p>
-          <p>Built clean-room in TypeScript · MIT licensed</p>
+          <p>Built clean-room in TypeScript · Apache-2.0 licensed</p>
         </div>
       </Container>
     </footer>

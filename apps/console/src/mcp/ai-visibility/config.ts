@@ -6,7 +6,17 @@
  * straight through to `@advance-labs/llm`.
  */
 
-export const SERVER_NAME = 'ai-visibility-mcp';
+/**
+ * Advertised `serverInfo.name`. The `aeo-*-mcp` prefix is the AEO Toolkit family
+ * convention shared by all three servers here (search, visibility, backlink), and
+ * it matches the product brand (AEO Toolkit, AEO/GEO Auditor).
+ * Was `ai-visibility-mcp`.
+ *
+ * Renaming this is safe: `serverInfo.name` is informational, and MCP clients key
+ * off the name in their own config, not this string. The URL path is NOT part of
+ * the rename -- `/api/mcp/ai-visibility` stays put so pinned client configs keep working.
+ */
+export const SERVER_NAME = 'aeo-visibility-mcp';
 export const SERVER_VERSION = '0.1.0';
 
 /**

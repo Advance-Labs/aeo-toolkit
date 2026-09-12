@@ -58,8 +58,8 @@ export function ScoreGauge({
         >
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#6366F1" />
-              <stop offset="0.5" stopColor="#8B5CF6" />
+              <stop offset="0" stopColor="#7C3AED" />
+              <stop offset="0.5" stopColor="#B6A4FD" />
               <stop offset="1" stopColor={stroke} />
             </linearGradient>
             <filter id={glowId} x="-30%" y="-30%" width="160%" height="160%">

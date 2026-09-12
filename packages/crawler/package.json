@@ -1,9 +1,19 @@
 {
   "name": "@advance-labs/crawler",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "type": "module",
   "description": "Polite, bounded HTTP crawler — sitemap-first discovery, link-following BFS, robots.txt, and site-file detection.",
-  "license": "MIT",
+  "keywords": [
+    "crawler",
+    "web-crawler",
+    "robots-txt",
+    "sitemap",
+    "scraping",
+    "bfs",
+    "seo"
+  ],
+  "license": "Apache-2.0",
+  "author": "Lucas Krawczak <lucas@advancelabs.dev> (https://advancelabs.dev/lucas)",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -46,5 +56,5 @@
     "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
     "directory": "packages/crawler"
   },
-  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
+  "homepage": "https://docs.advancelabs.dev/aeo-toolkit"
 }

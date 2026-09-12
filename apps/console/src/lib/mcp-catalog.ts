@@ -21,13 +21,19 @@ export interface McpToolMeta {
 /** One MCP server exposed over Streamable HTTP at `endpoint`, with its tool catalog. */
 export interface McpServerMeta {
   /** Stable URL/anchor slug; also the last path segment of the endpoint. */
-  slug: 'ai-visibility' | 'ga-gsc' | 'backlink';
+  slug: 'ai-visibility' | 'search' | 'backlink';
   /** Human display name, e.g. "AI Visibility MCP". */
   name: string;
   /** One-sentence description of the server's purpose. */
   blurb: string;
   /** Streamable-HTTP endpoint an MCP client connects to (`${SITE_URL}/api/mcp/<slug>/mcp`). */
   endpoint: string;
+  /**
+   * A retired connection URL kept alive as a compatibility alias — still answers requests,
+   * but `endpoint` is what new configs should use. Shown on the page as a small note so
+   * anyone with an old config pinned knows it still works.
+   */
+  legacyEndpoint?: string;
   /** Authentication model: open, or bring-your-own Google account (OAuth at connect time). */
   auth: 'none' | 'google-byok';
   /** Operational status: live and open, or requires a Google connection to return data. */
@@ -146,22 +152,24 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
       {
         name: 'find_competitor_link_sources',
         summary:
-          "Approximate the pages linking to a competitor using free DuckDuckGo signals — a directional prospecting starting point.",
+          'Approximate the pages linking to a competitor using free DuckDuckGo signals — a directional prospecting starting point.',
       },
     ],
   },
   {
-    slug: 'ga-gsc',
-    name: 'GA4 + GSC MCP',
+    slug: 'search',
+    name: 'Search MCP (Google + Bing)',
     blurb:
-      'Query your own Google Analytics 4 and Search Console data in natural language after connecting your Google account.',
-    endpoint: mcpEndpoint('ga-gsc'),
+      'Query your own Google Analytics 4, Search Console, and Bing Webmaster data in natural language, and compare Google against Bing directly, after connecting your accounts.',
+    endpoint: mcpEndpoint('search'),
+    legacyEndpoint: `${SITE_URL.replace(/\/$/, '')}/api/mcp/ga-gsc/mcp`,
     auth: 'google-byok',
     status: 'needs-google',
     examplePrompts: [
       'List my Search Console sites and show the top queries for example.com over the last 28 days.',
       'Find high-impression, low-CTR queries on example.com that need better titles.',
       'Compare Search Console clicks and impressions for the last 28 days vs the prior 28.',
+      'Compare Google and Bing query performance for example.com over the last 28 days — where do they disagree?',
     ],
     tools: [
       {
@@ -198,6 +206,63 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
         name: 'compare_periods',
         summary:
           'Compare aggregate Search Console performance between two date ranges, returning per-metric absolute and relative deltas.',
+      },
+      {
+        name: 'gsc_traffic_drop',
+        summary:
+          'Explain why traffic changed between two periods — attributes the click change to individual pages or queries and ranks them by how much of the move each accounts for, reporting gains and losses separately.',
+      },
+      {
+        name: 'gsc_cannibalization',
+        summary:
+          "Find queries two or more of the site's own pages compete for, and name the best-ranking page as the consolidation target.",
+      },
+      {
+        name: 'gsc_decay',
+        summary:
+          'Catch pages bleeding clicks before they fall off page one, flagging whether each also lost rank — which separates a competitor problem from seasonality.',
+      },
+      {
+        name: 'list_bing_sites',
+        summary: 'List the Bing Webmaster Tools sites the connected API key can access.',
+      },
+      {
+        name: 'bing_traffic_stats',
+        summary:
+          "Bing's daily clicks and impressions series for a site, with totals across the series.",
+      },
+      {
+        name: 'bing_top_queries',
+        summary: 'The top search queries for a site on Bing, ranked by clicks.',
+      },
+      {
+        name: 'bing_top_pages',
+        summary: 'The top pages for a site on Bing, ranked by clicks.',
+      },
+      {
+        name: 'bing_query_pages',
+        summary:
+          'The query-to-page pairing on Bing: which pages served a query, or which queries a page served.',
+      },
+      {
+        name: 'bing_index_health',
+        summary:
+          "Bing's crawl stats, crawl issues, and URL submission quota for a site — is Bing crawling and indexing it.",
+      },
+      {
+        name: 'bing_keyword_research',
+        summary:
+          'Keyword impression and broad-match volume around a seed term, from Bing Webmaster. Google Search Console exposes no equivalent data at all — this tool is Bing-only.',
+      },
+      {
+        name: 'compare_engines',
+        summary:
+          'Query rows from Search Console and Bing Webmaster for the same site, merged by query with an explicit coverage block. Only the Google side honours the requested date range — Bing has no date-range parameter, so its rows are its own unwindowed aggregate.',
+      },
+      {
+        name: 'engine_divergence',
+        summary:
+          "Split a date range in half and classify each query by how it moved on each engine: held on Bing but dropped on Google (a Google ranking problem), dropped on both (a content problem), Bing-specific, or insufficient data. Both engines honour the range here — Google is queried per half, and Bing's undated rows are bucketed locally by each row's own date. An engine that could not answer yields insufficient_data, never a zero.",
       },
     ],
   },

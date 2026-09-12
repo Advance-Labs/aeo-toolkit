@@ -1,0 +1,88 @@
+/* AEO Toolkit brand for Starlight — see ../../../../docs/BRAND.md.
+   Only Starlight's own custom properties are overridden so upgrades stay painless. */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --sl-font: 'Inter', system-ui, sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* Signal green as the accent on both themes. */
+  --sl-color-accent-low: #2f4210;
+  --sl-color-accent: #a8f326;
+  --sl-color-accent-high: #dcff8c;
+}
+
+/* Dark theme: the console's ink ground. */
+:root[data-theme='dark'] {
+  --sl-color-white: #f4f4f5;
+  --sl-color-gray-1: #e7e7ea;
+  --sl-color-gray-2: #b6b6bd;
+  --sl-color-gray-3: #9a9aa6;
+  --sl-color-gray-4: #4a4a55;
+  --sl-color-gray-5: #26262c;
+  --sl-color-gray-6: #141416;
+  --sl-color-black: #0a0a0b;
+  --sl-color-bg-nav: #0a0a0b;
+  --sl-color-bg-sidebar: #0a0a0b;
+  --sl-color-hairline: rgba(255, 255, 255, 0.09);
+}
+
+/* Light theme: paper. Accent darkens so green text stays legible on white. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #edffc7;
+  --sl-color-accent: #5c8a00;
+  --sl-color-accent-high: #2f4210;
+  --sl-color-white: #16150f;
+  --sl-color-black: #f4f4f5;
+  --sl-color-gray-6: #ffffff;
+}
+
+/* Headlines in Syne, like the site. */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.site-title,
+h1#_top {
+  font-family: 'Syne', var(--sl-font);
+  letter-spacing: -0.01em;
+}
+
+/* Mono, uppercase labels for sidebar group headings — the lab-sheet voice. */
+.sidebar-content details > summary .large,
+.sidebar-content > ul > li > .large {
+  font-family: var(--sl-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Secondary accent: the site's violet (#B6A4FD / #7C3AED). Signal stays for the one thing that
+   matters on a page; violet carries links, inline code, and the quiet structural glow. */
+:root {
+  --aeo-violet: #b6a4fd;
+  --aeo-violet-deep: #7c3aed;
+}
+.sl-markdown-content a:not(.sl-anchor-link) {
+  color: var(--aeo-violet);
+  text-decoration-color: color-mix(in srgb, var(--aeo-violet) 45%, transparent);
+}
+.sl-markdown-content a:not(.sl-anchor-link):hover {
+  color: var(--sl-color-accent-high);
+}
+.sl-markdown-content code:not(pre code) {
+  color: var(--aeo-violet);
+  background: color-mix(in srgb, var(--aeo-violet) 12%, transparent);
+}
+.sl-markdown-content blockquote {
+  border-inline-start-color: var(--aeo-violet-deep);
+}
+.sl-markdown-content th {
+  border-bottom: 1px solid color-mix(in srgb, var(--aeo-violet) 40%, transparent);
+}
+/* A faint violet-to-signal rule under the header, like the shader wash on the landing. */
+header.header {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--aeo-violet-deep), var(--aeo-violet) 45%, var(--sl-color-accent) 100%) 1;
+}
+:root[data-theme='light'] {
+  --aeo-violet: #6d4bd8;
+}

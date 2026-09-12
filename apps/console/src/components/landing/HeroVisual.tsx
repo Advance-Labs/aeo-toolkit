@@ -48,9 +48,9 @@ export function HeroVisual(): React.ReactElement {
           />
           <defs>
             <linearGradient id="heroGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366F1" />
-              <stop offset="55%" stopColor="#8B5CF6" />
-              <stop offset="100%" stopColor="#22D3EE" />
+              <stop offset="0%" stopColor="#7C3AED" />
+              <stop offset="55%" stopColor="#B6A4FD" />
+              <stop offset="100%" stopColor="#A8F326" />
             </linearGradient>
           </defs>
         </svg>

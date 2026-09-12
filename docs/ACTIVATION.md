@@ -1,4 +1,8 @@
-# Activation Runbook
+---
+title: Activation runbook
+description: >-
+  The console ships dormant. Turn on Supabase Auth and Stripe billing by adding keys, and roll back by removing them.
+---
 
 The console ships **dormant**: with none of the env vars below set, the site runs exactly as it does
 today — all five tools free and open, no sign-in, no paywall. The commercial layer (Supabase Auth +
@@ -103,16 +107,26 @@ The three MCP servers are live now and do **not** require any of the above to fu
 user's own Google sign-in). The human-facing connection page is **<https://aeo.advancelabs.dev/mcp>** —
 it lists every tool and the connection steps. In short:
 
+> The trailing `/mcp` is required. `mcp-handler` only answers at that transport path; the
+> bare `/api/mcp/<slug>` returns its own "Not found".
+
 | Server | URL | Auth |
 |--------|-----|------|
-| AI Visibility (5 tools) | `https://aeo.advancelabs.dev/api/mcp/ai-visibility` | none |
-| Backlink (7 tools) | `https://aeo.advancelabs.dev/api/mcp/backlink` | none |
-| GA4 + GSC (7 tools) | `https://aeo.advancelabs.dev/api/mcp/ga-gsc` | Google sign-in (BYOK) |
+| AI Visibility (5 tools) | `https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp` | none |
+| Backlink (7 tools) | `https://aeo.advancelabs.dev/api/mcp/backlink/mcp` | none |
+| Search — Google + Bing (19 tools) | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | Google sign-in (BYOK); Bing key optional |
+
+**Claude Code:**
+```bash
+claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
+claude mcp add --transport http --scope user aeo-backlink   https://aeo.advancelabs.dev/api/mcp/backlink/mcp
+claude mcp add --transport http --scope user aeo-search     https://aeo.advancelabs.dev/api/mcp/search/mcp
+```
 
 **Claude.ai:** Settings → Connectors → Add custom connector → paste the URL.
 **Cursor** (`~/.cursor/mcp.json`):
 ```json
-{ "mcpServers": { "aeo-ai-visibility": { "url": "https://aeo.advancelabs.dev/api/mcp/ai-visibility" } } }
+{ "mcpServers": { "aeo-ai-visibility": { "url": "https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp" } } }
 ```
 
 Once Billing is on, MCP access is gated to plans whose `limits.mcpAccess` is `true` (Pro and Agency by

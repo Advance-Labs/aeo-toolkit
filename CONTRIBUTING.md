@@ -25,6 +25,7 @@ Requires Node ≥ 20 (see `.nvmrc`) and pnpm ≥ 9.
 - Libraries export **named** symbols only; no default exports.
 - Keep network/filesystem I/O behind small adapters so logic stays unit-testable.
 - See [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md) for the full package template and code style.
+- Anything a user sees follows [`brand/README.md`](brand/README.md) — tokens over hex, one Signal per view, the sphere as the mark.
 
 ## Adding a scoring rule
 

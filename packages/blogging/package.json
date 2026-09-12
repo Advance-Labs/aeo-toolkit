@@ -1,10 +1,10 @@
 {
   "name": "@advance-labs/blogging",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "private": true,
   "type": "module",
   "description": "Autonomous multi-agent blogging pipeline: research GSC query gaps, draft with Groq, edit, dedup via Jaccard fingerprints, schedule, publish, and self-correct underperformers. Built on @advance-labs/google-api and @advance-labs/llm (BYOK). All I/O is injected, so it is fully testable with no network.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

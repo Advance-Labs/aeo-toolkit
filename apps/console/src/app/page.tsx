@@ -1,88 +1,101 @@
 import type { JSX } from 'react';
 import type { Metadata } from 'next';
+import { Archivo, IBM_Plex_Mono, Instrument_Serif, Syne } from 'next/font/google';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { publicUrl } from '@/lib/seo';
+import { Motion } from '@/components/landing-v2/Motion';
 import {
-  CtaBand,
-  Faq,
-  FAQS,
-  Features,
-  Hero,
-  HowItWorks,
-  ProofBand,
-  ToolsShowcase,
-  TrustStrip,
-  WhyAeo,
-} from '@/components/landing';
+  CtaV2,
+  FaqV2,
+  CinematicStage,
+  InstrumentIndexV2,
+  LANDING_FAQS,
+  LedgerV2,
+  StoryFrame,
+} from '@/components/landing-v2/Sections';
+import '@/components/landing-v2/landing-v2.css';
+import { assetUrl } from '@/lib/asset-url';
 
 /**
- * Marketing landing page for the AEO Toolkit. Server component: every section ships
- * meaningful static HTML (hero copy, tool cards, FAQ) so crawlers and AI bots read the
- * content without JS — only `Reveal` and the FAQ accordion are client islands.
- *
- * The shell layout (`src/app/layout.tsx`) provides the header, footer, aurora backdrop,
- * and the `<main>` wrapper, so this page renders only its section content.
+ * Landing v2 — "the audit, printed." A warm paper report sheet framed in the site's dark
+ * graphite shell (light-mode-paper-technical direction). Server components ship the full
+ * content statically; Motion.tsx (GSAP + Lenis) and the specimen tilt are the only client
+ * islands, both no-ops under prefers-reduced-motion and absent without JavaScript.
  */
+
+const v2Sans = Archivo({ subsets: ['latin'], variable: '--font-v2-sans', display: 'swap' });
+const v2Mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-v2-mono',
+  display: 'swap',
+});
+// Display voice: Syne — wide, arty, unmistakably not a default.
+const v2Display = Syne({
+  subsets: ['latin'],
+  weight: ['700', '800'],
+  variable: '--font-v2-display',
+  display: 'swap',
+});
+// Cursive accent: Instrument Serif italic, for the one phrase per headline that turns.
+const v2Serif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: 'italic',
+  variable: '--font-v2-serif',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'AEO Toolkit — Get cited by ChatGPT, Claude & Perplexity',
   description:
     'Audit, optimize, and track your visibility across AI answer engines. Technical SEO + AEO scoring, E-E-A-T scanning, llms.txt generation, GA4/GSC chat, and a 3D backlink graph — one free console.',
-  // This page is mirrored at advancelabs.dev/tools, which is the copy we want indexed.
   alternates: { canonical: publicUrl('/') },
 };
 
-/** `SoftwareApplication` schema makes the toolkit eligible for tool/product answers. */
-const softwareApplicationLd: Record<string, unknown> = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'AEO Toolkit',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  description:
-    'A free console to audit, optimize, and track your visibility across AI answer engines — technical SEO + AEO audits, E-E-A-T scoring, llms.txt generation, GA4/GSC chat, and a 3D backlink graph.',
-  url: publicUrl('/'),
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
-  featureList: [
-    'LLM & Technical SEO Audit',
-    'E-E-A-T Scanner',
-    'llms.txt Generator',
-    'GA4 + Search Console Chat',
-    'Backlink Graph',
-  ],
-};
-
-/** `FAQPage` schema — derived from the same `FAQS` the page renders visibly. */
-const faqPageLd: Record<string, unknown> = {
+/** Visible FAQ mirrored 1:1 into FAQPage JSON-LD (Organization/WebSite ship from the layout). */
+const faqLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: FAQS.map((faq) => ({
+  mainEntity: LANDING_FAQS.map((faq) => ({
     '@type': 'Question',
     name: faq.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: faq.answer,
-    },
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
   })),
 };
 
 export default function LandingPage(): JSX.Element {
   return (
-    <>
-      <JsonLd data={[softwareApplicationLd, faqPageLd]} />
-      <Hero />
-      <TrustStrip />
-      <ProofBand />
-      <Features />
-      <ToolsShowcase />
-      <HowItWorks />
-      <WhyAeo />
-      <Faq />
-      <CtaBand />
-    </>
+    <div className={`v2 ${v2Sans.variable} ${v2Mono.variable} ${v2Display.variable} ${v2Serif.variable} relative`}>
+      {/* The light field the glass refracts — fixed, so it also glows through the chrome. */}
+      <div className="v2-backdrop" aria-hidden="true" />
+      <JsonLd data={faqLd} />
+      <Motion />
+
+      {/* One engineered master shell: gradient-border frame, overshooting rails,
+          corner marks. A single container — the earlier two-sheet seam grouped nothing. */}
+      <div className="px-6 pt-10 sm:px-8 lg:px-12">
+        <div className="v2-frame mx-auto max-w-[88rem]">
+          <span className="v2-corner" style={{ top: -2, left: -16 }} aria-hidden="true" />
+          <span className="v2-corner" style={{ top: -2, right: -16 }} aria-hidden="true" />
+          <span className="v2-corner" style={{ bottom: -2, left: -16 }} aria-hidden="true" />
+          <span className="v2-corner" style={{ bottom: -2, right: -16 }} aria-hidden="true" />
+          <div className="v2-sheet overflow-hidden">
+            <CinematicStage />
+            <LedgerV2 />
+            <StoryFrame
+              src={assetUrl('/story/calibrated.webp')}
+              alt="Macro of a precision lens element in matte black metal, a thin green laser refracting through its edge"
+              label="Calibrated · 54 rules"
+            />
+            <InstrumentIndexV2 />
+            <FaqV2 />
+          </div>
+        </div>
+      </div>
+
+      {/* Final call sits on the shell itself — the inverse beat that closes the report. */}
+      <CtaV2 />
+    </div>
   );
 }

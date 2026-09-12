@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Shared ESLint, TypeScript, and Prettier configuration for the AEO Toolkit monorepo.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "exports": {
     "./eslint": "./eslint/base.js",
     "./eslint/react": "./eslint/react.js",

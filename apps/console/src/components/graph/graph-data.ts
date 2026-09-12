@@ -20,9 +20,9 @@ import type {
 
 /** Brand palette keyed by node type. Mirrors the spec's 3D-scene encoding. */
 export const NODE_COLORS: Readonly<Record<GraphNodeType, string>> = {
-  root: '#22D3EE',
-  'referring-domain': '#8B5CF6',
-  'backlink-page': '#6366F1',
+  root: '#A8F326',
+  'referring-domain': '#B6A4FD',
+  'backlink-page': '#7C3AED',
   mention: '#64748B',
   competitor: '#F59E0B',
 };
