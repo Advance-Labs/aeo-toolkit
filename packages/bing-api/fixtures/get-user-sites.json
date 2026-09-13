@@ -1,0 +1,18 @@
+{
+  "d": [
+    {
+      "__type": "Site:#Microsoft.Bing.Webmaster.Api",
+      "AuthenticationCode": "REDACTED0000000000000000000000000",
+      "DnsVerificationCode": "redacted.example.com",
+      "IsVerified": true,
+      "Url": "https://example.com/"
+    },
+    {
+      "__type": "Site:#Microsoft.Bing.Webmaster.Api",
+      "AuthenticationCode": "REDACTED1111111111111111111111111",
+      "DnsVerificationCode": "redacted.docs.example.com",
+      "IsVerified": true,
+      "Url": "https://docs.example.com/"
+    }
+  ]
+}

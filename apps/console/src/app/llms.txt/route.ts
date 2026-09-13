@@ -1,4 +1,6 @@
 import { SITE_URL, SITE_NAME, ORG_LEGAL_NAME, REPO_URL, SITE_TAGLINE } from '@/lib/seo';
+import { COMPARISONS } from '@/content/compare';
+import { GLOSSARY_TERMS } from '@/content/glossary';
 
 export const runtime = 'nodejs';
 // Static content — let the platform cache it aggressively.
@@ -45,6 +47,17 @@ export function GET(): Response {
     (tool) => `- [${tool.name}](${base}${tool.path}): ${tool.description}`,
   ).join('\n');
 
+  const learn = [
+    `- [Answer Engine Optimization: the complete guide](${base}/guide/answer-engine-optimization): what AEO is, why AI citations are the new rankings, and how to win them step by step.`,
+    `- [AEO glossary](${base}/glossary): plain-language definitions of answer engines, llms.txt, E-E-A-T, AI citations, and the rest of the AI-search vocabulary.`,
+    ...GLOSSARY_TERMS.map(
+      (term) => `- [${term.question}](${base}/glossary/${term.slug}): ${term.metaDescription}`,
+    ),
+    ...COMPARISONS.map(
+      (entry) => `- [${entry.title}](${base}/compare/${entry.slug}): ${entry.metaDescription}`,
+    ),
+  ].join('\n');
+
   const body = `# ${SITE_NAME}
 
 > ${SITE_NAME} is a free, open-source suite for Answer Engine Optimization (AEO) and technical SEO. It helps you ${SITE_TAGLINE.toLowerCase()} by auditing crawlability and structure, scoring E-E-A-T trust signals, generating llms.txt, chatting with your GA4/Search Console data, and mapping your backlink graph — all in one console.
@@ -55,20 +68,24 @@ This file follows the llms.txt convention (https://llmstxt.org). It is generated
 
 ${tools}
 
+## Learn
+
+${learn}
+
 ## Docs
 
-- [Open-source repository](${REPO_URL}): source code, issues, and roadmap (MIT licensed).
+- [Open-source repository](${REPO_URL}): source code, issues, and roadmap (Apache-2.0 licensed).
 - [SEO + AEO plan](${REPO_URL}/blob/main/docs/SEO-AEO-PLAN.md): the strategy this site dogfoods.
 - [Sitemap](${base}/sitemap.xml): full list of indexable pages.
 
 ## About
 
-${SITE_NAME} is built by ${ORG_LEGAL_NAME}. It is free to use and released under the MIT License.
+${SITE_NAME} is built by ${ORG_LEGAL_NAME}. It is free to use and released under the Apache License 2.0.
 
 ## Contact
 
 - Repository & issues: ${REPO_URL}
-- License: MIT
+- License: Apache-2.0
 `;
 
   return new Response(body, {

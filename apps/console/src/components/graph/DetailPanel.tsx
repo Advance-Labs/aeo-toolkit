@@ -156,7 +156,7 @@ function AuthorityRow({ authority }: { authority: number }): JSX.Element {
       </dt>
       <dd className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
         <span
-          className="block h-full rounded-full bg-[linear-gradient(90deg,#6366F1,#8B5CF6_55%,#22D3EE)]"
+          className="block h-full rounded-full bg-[linear-gradient(90deg,#7C3AED,#B6A4FD_55%,#A8F326)]"
           style={{ width: `${pct}%` }}
         />
       </dd>

@@ -133,7 +133,7 @@ export default function GraphToolPage(): JSX.Element {
               See any site’s backlink universe as an interactive 3D map. The Backlink Graph renders
               referring domains, backlink pages, and brand mentions discovered from open web indexes
               — so you can spot your strongest link sources, dofollow vs nofollow balance, and
-              competitor overlap at a glance. Enter a URL below to build it.
+              competitor overlap at a glance.
             </p>
           </div>
 

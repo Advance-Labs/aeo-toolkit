@@ -42,10 +42,10 @@ interface GraphState {
 
 /** Legend entries mirror the canvas node colors so the scene reads at a glance. */
 const LEGEND: ReadonlyArray<{ label: string; color: string }> = [
-  { label: 'Root', color: '#22D3EE' },
-  { label: 'Referring domain', color: '#6366F1' },
-  { label: 'Backlink page', color: '#818CF8' },
-  { label: 'Mention', color: '#8B5CF6' },
+  { label: 'Root', color: '#A8F326' },
+  { label: 'Referring domain', color: '#7C3AED' },
+  { label: 'Backlink page', color: '#B6A4FD' },
+  { label: 'Mention', color: '#B6A4FD' },
   { label: 'Competitor', color: '#F59E0B' },
 ];
 

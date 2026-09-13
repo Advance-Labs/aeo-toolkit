@@ -1,0 +1,16 @@
+{
+  "d": [
+    {
+      "__type": "RankAndTrafficStats:#Microsoft.Bing.Webmaster.Api",
+      "Clicks": 0,
+      "Date": "/Date(1780531200000)/",
+      "Impressions": 0
+    },
+    {
+      "__type": "RankAndTrafficStats:#Microsoft.Bing.Webmaster.Api",
+      "Clicks": 2,
+      "Date": "/Date(1780617600000)/",
+      "Impressions": 31
+    }
+  ]
+}

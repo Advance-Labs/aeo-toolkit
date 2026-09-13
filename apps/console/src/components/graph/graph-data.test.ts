@@ -63,9 +63,9 @@ function makeGraph(): BacklinkGraph {
 
 describe('colorForType', () => {
   it('maps each node type to the brand palette', () => {
-    expect(colorForType('root')).toBe('#22D3EE');
-    expect(colorForType('referring-domain')).toBe('#8B5CF6');
-    expect(colorForType('backlink-page')).toBe('#6366F1');
+    expect(colorForType('root')).toBe('#A8F326');
+    expect(colorForType('referring-domain')).toBe('#B6A4FD');
+    expect(colorForType('backlink-page')).toBe('#7C3AED');
     expect(colorForType('mention')).toBe('#64748B');
     expect(colorForType('competitor')).toBe('#F59E0B');
   });
@@ -108,7 +108,7 @@ describe('toForceGraphData', () => {
 
     const ref = nodes.find((n) => n.id === 'ref.com');
     expect(ref).toBeDefined();
-    expect(ref?.color).toBe('#8B5CF6');
+    expect(ref?.color).toBe('#B6A4FD');
     expect(ref?.authority).toBe(80);
     expect(ref?.val).toBeGreaterThan(0);
 
@@ -157,8 +157,8 @@ describe('toForceGraphData', () => {
 describe('mergeGraph', () => {
   const a: ForceGraphData = {
     nodes: [
-      { id: 'root', type: 'root', domain: 'example.com', val: 12, color: '#22D3EE' },
-      { id: 'ref.com', type: 'referring-domain', domain: 'ref.com', val: 3, color: '#8B5CF6' },
+      { id: 'root', type: 'root', domain: 'example.com', val: 12, color: '#A8F326' },
+      { id: 'ref.com', type: 'referring-domain', domain: 'ref.com', val: 3, color: '#B6A4FD' },
     ],
     links: [{ source: 'ref.com', target: 'root', kind: 'backlink', dofollow: true }],
   };
@@ -168,7 +168,7 @@ describe('mergeGraph', () => {
       nodes: [
         // duplicate id with a different val — original must win
         { id: 'ref.com', type: 'referring-domain', domain: 'ref.com', val: 99, color: '#000000' },
-        { id: 'new.com', type: 'referring-domain', domain: 'new.com', val: 2, color: '#8B5CF6' },
+        { id: 'new.com', type: 'referring-domain', domain: 'new.com', val: 2, color: '#B6A4FD' },
       ],
       links: [],
     };
@@ -182,7 +182,7 @@ describe('mergeGraph', () => {
   it('dedups links by source|target|kind', () => {
     const b: ForceGraphData = {
       nodes: [
-        { id: 'new.com', type: 'referring-domain', domain: 'new.com', val: 2, color: '#8B5CF6' },
+        { id: 'new.com', type: 'referring-domain', domain: 'new.com', val: 2, color: '#B6A4FD' },
       ],
       links: [
         // exact duplicate of a's link

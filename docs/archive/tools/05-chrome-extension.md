@@ -1,0 +1,29 @@
+> [!WARNING]
+> **Archived and historical — this does not describe the current repository.**
+> Written before the consolidation in [ADR-0003](../../adr/0003-single-vercel-deployment.md); the `apps/` layout and package list below no
+> longer exist. Kept for design history only. See [the archive index](../README.md) for what replaced it.
+
+---
+
+# Tool 5 — AEO/GEO Chrome Extension (`apps/chrome-extension`)
+
+**Type:** Chrome MV3 extension (Vite + `@crxjs/vite-plugin`) · **Deploy:** Chrome Web Store
+**Depends on:** `@advance-labs/scoring` (single-page mode), `@advance-labs/schema-validator`, `@advance-labs/types`. PDF via `jsPDF` (local).
+
+## What it does
+Runs a 21+ check AEO/SEO audit on the **active tab** in real time — meta tags, structured data,
+robots.txt, sitemap.xml, llms.txt, canonical, mobile readiness, Open Graph, Twitter cards, AI-bot
+directives. Returns a 0–100 AI-readiness score and exports a PDF. Audit runs locally — zero server calls.
+
+## Structure
+- `manifest.config.ts` (MV3) — permissions: `activeTab`, `scripting`; host permissions for fetching
+  `robots.txt` / `sitemap.xml` / `llms.txt` of the current origin from the background worker.
+- `src/content/` — reads the live DOM, runs `@advance-labs/html-parser`-style extraction + `@advance-labs/schema-validator`.
+- `src/background/` — fetches the site files (`robots.txt`, `sitemap.xml`, `llms.txt`) for the origin.
+- `src/popup/` — React UI: score gauge, check list, "Export PDF" (jsPDF).
+- Scoring uses `@advance-labs/scoring` with `mode: 'single-page'` and a synthetic single-page `ScoringContext`.
+
+## Notes
+- Bundle `@advance-labs/*` deps into the extension build (no Node at runtime). Vite handles the workspace deps.
+- `jsPDF` (not `@advance-labs/pdf`/react-pdf) is used here because the extension has no Node/server.
+- Keep all analysis client-side; the only network calls are same-origin file fetches.

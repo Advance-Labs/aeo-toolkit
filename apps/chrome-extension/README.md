@@ -1,4 +1,9 @@
-<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../../brand/logo-dark.png">
+    <img src="../../brand/logo.png" alt="AEO Toolkit" width="280">
+  </picture>
+</p>
 
 # @advance-labs/chrome-extension
 
@@ -97,7 +102,7 @@ privacy disclosures (all analysis is local; **zero server calls**), and version-
 ### Toolbar & store icons
 
 The toolbar and store icons are rasterized from the **brand mark** — `src/icons/icon.svg`
-(the indigo→violet rounded tile with the white "A" peak and cyan AI sparkle) — into
+(the Advance Labs sphere; see [`brand/README.md`](../../brand/README.md)) — into
 `public/icons/icon-{16,32,48,128}.png` by `scripts/generate-icons.mjs` (`pnpm icons`). Chrome
 MV3 will not accept SVG for the action icon or the store listing, so these PNGs are required.
 `manifest.config.ts` wires the `icons` map and `action.default_icon` (16/48/128) to them;

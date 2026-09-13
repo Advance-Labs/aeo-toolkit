@@ -1,4 +1,9 @@
-<p align="center"><img src="../../brand/logo.svg" alt="AEO Toolkit" width="280"></p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="../../brand/logo-dark.png">
+    <img src="../../brand/logo.png" alt="AEO Toolkit" width="280">
+  </picture>
+</p>
 
 # AEO Toolkit Console
 

@@ -16,6 +16,13 @@ export const SITE_NAME = 'AEO Toolkit';
 export const ORG_NAME = 'Advance Labs';
 export const ORG_LEGAL_NAME = 'Advance Labs Inc.';
 export const REPO_URL = 'https://github.com/Advance-Labs/aeo-toolkit';
+/**
+ * Chrome Web Store listing for the AEO/GEO Auditor extension (`apps/chrome-extension`).
+ * The bare `/detail/<id>` form is canonical — do not paste back the `?utm_source=item-share-cp`
+ * share parameter the store's own share button appends.
+ */
+export const CHROME_STORE_URL =
+  'https://chromewebstore.google.com/detail/bdkkjpbipgolopjhndknigaaokdabnad';
 export const SITE_TAGLINE = 'Rank in ChatGPT, Claude, Perplexity & AI Overviews';
 export const SITE_DESCRIPTION =
   'Open-source toolkit to audit, optimize, and track your visibility across AI answer engines — technical SEO + AEO audits, E-E-A-T scoring, llms.txt generation, GA4/GSC chat, and a 3D backlink graph.';
@@ -187,6 +194,7 @@ export function organizationSchema(): SchemaObject {
       'https://github.com/Advance-Labs',
       'https://www.linkedin.com/company/advance-labs',
       REPO_URL,
+      CHROME_STORE_URL,
     ],
   };
 }

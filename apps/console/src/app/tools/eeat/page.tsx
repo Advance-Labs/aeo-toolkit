@@ -210,7 +210,7 @@ export default function EeatToolPage(): JSX.Element {
       {/* Hero + scanner */}
       <Section className="pt-16 sm:pt-20">
         <Container>
-          <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-5 text-center">
+          <div className="flex w-full max-w-3xl flex-col gap-5">
             <Reveal>
               <Breadcrumb trail={TRAIL} />
             </Reveal>
@@ -240,7 +240,7 @@ export default function EeatToolPage(): JSX.Element {
       {/* What E-E-A-T means */}
       <Section className="pt-0">
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="max-w-2xl">
             <span className="eyebrow">The framework</span>
             <h2 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
               What E-E-A-T means
@@ -257,12 +257,6 @@ export default function EeatToolPage(): JSX.Element {
               <Reveal key={pillar.key} delay={i * 0.05}>
                 <SpotlightCard className="h-full">
                   <article className="flex h-full flex-col gap-4 p-6">
-                    <span
-                      aria-hidden="true"
-                      className={`flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br to-transparent ${pillar.accent}`}
-                    >
-                      {pillar.icon}
-                    </span>
                     <h3 className="text-lg font-semibold text-white">{pillar.label}</h3>
                     <p className="text-sm leading-relaxed text-slate-400">{pillar.blurb}</p>
                   </article>
@@ -276,7 +270,7 @@ export default function EeatToolPage(): JSX.Element {
       {/* How it works */}
       <Section className="pt-0">
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="max-w-2xl">
             <span className="eyebrow">How it works</span>
             <h2 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
               Run a scan in four steps
@@ -302,7 +296,7 @@ export default function EeatToolPage(): JSX.Element {
       {/* FAQ */}
       <Section className="pt-0">
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="max-w-2xl">
             <span className="eyebrow">FAQ</span>
             <h2 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
               E-E-A-T questions, answered

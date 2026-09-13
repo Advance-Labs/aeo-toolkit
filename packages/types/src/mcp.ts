@@ -21,7 +21,7 @@ export interface McpToolDefinition<TInput = unknown, TOutput = unknown> {
   handler: (input: TInput) => Promise<TOutput>;
 }
 
-/** AI-visibility check result (ai-visibility-mcp tool 4). */
+/** AI-visibility check result (aeo-visibility-mcp tool 4). */
 export interface VisibilityCheck {
   prompt: string;
   url: Url;

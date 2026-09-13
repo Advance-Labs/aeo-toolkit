@@ -1,9 +1,20 @@
 {
   "name": "@advance-labs/html-parser",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "type": "module",
   "description": "Pure HTML extraction for the AEO Toolkit — meta/OG/Twitter, headings, images, links, content signals, and raw structured-data blocks. No network.",
-  "license": "MIT",
+  "keywords": [
+    "html",
+    "parser",
+    "meta-tags",
+    "open-graph",
+    "twitter-cards",
+    "json-ld",
+    "structured-data",
+    "seo"
+  ],
+  "license": "Apache-2.0",
+  "author": "Lucas Krawczak <lucas@advancelabs.dev> (https://advancelabs.dev/lucas)",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -43,5 +54,5 @@
     "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
     "directory": "packages/html-parser"
   },
-  "homepage": "https://github.com/Advance-Labs/aeo-toolkit#readme"
+  "homepage": "https://docs.advancelabs.dev/aeo-toolkit"
 }

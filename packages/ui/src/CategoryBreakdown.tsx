@@ -47,7 +47,7 @@ export function CategoryBreakdown({ categories, className }: CategoryBreakdownPr
                 className="h-full rounded-full transition-all duration-700 ease-out"
                 style={{
                   width: `${pct}%`,
-                  backgroundImage: `linear-gradient(90deg, #6366F1, ${color})`,
+                  backgroundImage: `linear-gradient(90deg, #7C3AED, ${color})`,
                   boxShadow: `0 0 12px ${color}66`,
                 }}
               />

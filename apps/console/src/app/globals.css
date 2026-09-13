@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: dark;
-  --bg: #05060f;
+  --bg: #0a0a0b;
   --surface: rgba(255, 255, 255, 0.025);
   --surface-strong: rgba(255, 255, 255, 0.045);
   --border: rgba(255, 255, 255, 0.08);
@@ -48,7 +48,7 @@
     color: inherit;
   }
   :focus-visible {
-    outline: 2px solid rgba(34, 211, 238, 0.7);
+    outline: 2px solid #a8f326;
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -61,7 +61,7 @@
   /* Brand gradient clipped to text. */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(100deg, #818cf8 0%, #a78bfa 45%, #22d3ee 100%);
+    background-image: linear-gradient(100deg, #c6ff5c 0%, #a8f326 45%, #b6a4fd 100%);
   }
   /* Card / panel surface with a hairline border + soft inner sheen. */
   .surface {
@@ -71,7 +71,7 @@
     backdrop-filter: blur(8px);
   }
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-brand-cyan;
+    @apply inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-brand-cyan;
   }
   /* Subtle dotted/grid backdrop used behind sections.
      The grid image AND its radial fade-mask live on a ::before layer so the mask only fades the
@@ -97,6 +97,28 @@
     position: relative;
     z-index: 1;
   }
+}
+
+/* Acid CTA control (shared chrome uses it on every route). */
+/* Control: the border-gradient button with a dark inner fill and white-light lift. */
+.v2-cta {
+  color: #0c0f05;
+  border: 1px solid rgba(220, 255, 140, 0.65);
+  background: linear-gradient(180deg, #c6ff5c, #a8f326);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 10px 26px -12px rgba(168, 243, 38, 0.45);
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+.v2-cta:hover {
+  filter: brightness(1.25);
+  transform: translateY(-1px);
+}
+.v2-cta:active {
+  transform: translateY(0);
+  filter: brightness(1.1);
 }
 
 /* Thin, themed scrollbar. */

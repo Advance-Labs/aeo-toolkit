@@ -119,7 +119,7 @@ export function UrlInputForm({
           disabled={loading}
           className={cx(
             'group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-glow transition',
-            'bg-gradient-to-r from-brand-indigo via-brand-violet to-brand-cyan bg-[length:200%_100%] bg-left',
+            'border border-[#dcff8c]/60 bg-[linear-gradient(180deg,#c6ff5c,#a8f326)] !text-[#0c0f05]',
             'hover:bg-right hover:shadow-[0_0_0_1px_rgba(255,255,255,0.10),0_22px_60px_-18px_rgba(99,102,241,0.65)]',
             'focus-visible:ring-2 focus-visible:ring-brand-cyan/50',
             'disabled:cursor-not-allowed disabled:opacity-70',

@@ -17,7 +17,7 @@ export function GradientText({
         animate && 'animate-gradient-pan',
         className,
       )}
-      style={{ backgroundImage: 'linear-gradient(100deg,#818cf8 0%,#a78bfa 45%,#22d3ee 100%)' }}
+      style={{ backgroundImage: 'linear-gradient(100deg,#c6ff5c 0%,#a8f326 45%,#b6a4fd 100%)' }}
     >
       {children}
     </span>

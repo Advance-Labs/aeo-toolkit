@@ -19,5 +19,5 @@ Report vulnerabilities privately to the Advance Labs maintainers rather than ope
 
 ## Dependency hygiene
 
-- MIT-licensed throughout; no AGPL/proprietary source was copied (see `docs/adr/0002-typescript-from-scratch.md`).
+- Apache-2.0-licensed throughout; no AGPL/proprietary source was copied (see `docs/adr/0002-typescript-from-scratch.md`).
 - `pnpm` with a committed lockfile; CI installs with `--frozen-lockfile`.

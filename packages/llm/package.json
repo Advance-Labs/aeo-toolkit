@@ -1,10 +1,10 @@
 {
   "name": "@advance-labs/llm",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "private": true,
   "type": "module",
   "description": "Provider-agnostic BYOK LLM client (Anthropic, OpenAI, Groq, Perplexity, Vercel AI Gateway) with an injectable fetcher.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

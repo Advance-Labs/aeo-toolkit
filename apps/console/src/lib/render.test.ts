@@ -49,6 +49,8 @@ function parsedPage(url: string, title: string, description?: string): ParsedHtm
       paragraphCount: 0,
       listCount: 0,
       tableCount: 0,
+      scriptCount: 0,
+      hasEmptyAppShell: false,
     },
     rawStructuredData: [],
   };

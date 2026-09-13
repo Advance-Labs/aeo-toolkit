@@ -39,6 +39,29 @@ function isMultiPage(ctx: ScoringContext): boolean {
   return ctx.mode !== 'single-page' && ctx.crawl.pages.length > 1;
 }
 
+/**
+ * BCP 47 subset accepted in hreflang: language[-script][-region], e.g. "en",
+ * "en-GB", "zh-Hant", "es-419". Deliberately not the full grammar — variants and
+ * extensions are legal BCP 47 but never appear in real hreflang, while the actual
+ * failure modes ("english", "en_US", "uk" meaning United Kingdom is fine, "en-UK"
+ * is not a region we can catch without a registry) are all shape errors this does catch.
+ */
+const HREFLANG_PATTERN = /^[a-z]{2,3}(-[a-z]{4})?(-([a-z]{2}|[0-9]{3}))?$/i;
+
+/** Valid hreflang value: a BCP 47 language tag (see pattern above) or `x-default`. */
+function isValidHreflangValue(value: string): boolean {
+  return value.toLowerCase() === 'x-default' || HREFLANG_PATTERN.test(value.trim());
+}
+
+/** Hostname of a URL, lowercased, or undefined when it will not parse. */
+function hreflangHost(value: string): string | undefined {
+  try {
+    return new URL(value).hostname.toLowerCase();
+  } catch {
+    return undefined;
+  }
+}
+
 export const technicalSeoRules: Rule[] = [
   // ── Crawlability ──────────────────────────────────────────────────────────
   {
@@ -557,6 +580,27 @@ export const technicalSeoRules: Rule[] = [
     },
   },
   {
+    // Added for #10. A page with no declared encoding can be mis-decoded by crawlers,
+    // which garbles the exact text an answer engine would otherwise quote.
+    id: 'tech.charset-declared',
+    category: 'metadata',
+    severity: 'low',
+    weight: 2,
+    title: 'Character encoding is declared',
+    description: 'Pages without a declared encoding can be mis-decoded, garbling quoted text.',
+    recommendation: 'Add <meta charset="utf-8"> (or an equivalent content-type meta) to every page.',
+    evaluate: (ctx) => {
+      const missing = pagesFailing(ctx, (p) => Boolean(p.meta.charset));
+      return missing.length === 0
+        ? { passed: true }
+        : {
+            passed: false,
+            affectedUrls: missing,
+            detail: `${missing.length} page(s) declare no character encoding.`,
+          };
+    },
+  },
+  {
     id: 'tech.unique-titles',
     category: 'indexing',
     severity: 'medium',
@@ -580,6 +624,67 @@ export const technicalSeoRules: Rule[] = [
       return dupes.size === 0
         ? { passed: true }
         : { passed: false, detail: `${dupes.size} duplicated title(s).` };
+    },
+  },
+  {
+    // Added for #12. Scoped to what one crawl can see: value shape always; target
+    // reachability only for same-host targets in a multi-page crawl. Cross-domain
+    // alternates (example.de) and single-page audits cannot be verified from here,
+    // and unverifiable is not invalid — see the issue's "do not flag correct markup".
+    id: 'tech.hreflang-valid',
+    category: 'indexing',
+    severity: 'medium',
+    weight: 4,
+    title: 'hreflang annotations are valid',
+    description: 'Broken hreflang surfaces the wrong language in search and AI answers.',
+    recommendation:
+      'Use valid language-region codes (or x-default) and point each hreflang at a live URL.',
+    docsUrl:
+      'https://developers.google.com/search/docs/specialty/international/localized-versions',
+    evaluate: (ctx) => {
+      const annotated = ctx.pages.filter((p) => (p.hreflangs?.length ?? 0) > 0);
+      // A single-language site is not broken — skip cleanly when nothing is annotated.
+      if (annotated.length === 0) {
+        return { passed: true, detail: 'No hreflang annotations — nothing to validate.' };
+      }
+
+      for (const page of annotated) {
+        for (const entry of page.hreflangs ?? []) {
+          if (!isValidHreflangValue(entry.hreflang)) {
+            return {
+              passed: false,
+              affectedUrls: [page.url],
+              detail: `Invalid hreflang value "${entry.hreflang}" on ${page.url}.`,
+            };
+          }
+        }
+      }
+
+      if (ctx.mode !== 'single-page') {
+        const crawled = new Set<string>();
+        for (const p of ctx.crawl.pages) {
+          crawled.add(normalizeUrl(p.url));
+          crawled.add(normalizeUrl(p.finalUrl));
+        }
+        for (const p of ctx.pages) crawled.add(normalizeUrl(p.url));
+
+        const rootHost = hreflangHost(ctx.crawl.rootUrl);
+        for (const page of annotated) {
+          for (const entry of page.hreflangs ?? []) {
+            const targetHost = hreflangHost(entry.href);
+            if (rootHost === undefined || targetHost !== rootHost) continue;
+            if (!crawled.has(normalizeUrl(entry.href))) {
+              return {
+                passed: false,
+                affectedUrls: [page.url],
+                detail: `hreflang target ${entry.href} (on ${page.url}) was not reached by the crawl.`,
+              };
+            }
+          }
+        }
+      }
+
+      return { passed: true };
     },
   },
   {

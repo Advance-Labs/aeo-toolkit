@@ -155,9 +155,9 @@ function ScoreRing({ score }: { score: number }): JSX.Element {
       <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" aria-hidden="true">
         <defs>
           <linearGradient id="eeat-score-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6366F1" />
-            <stop offset="55%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#22D3EE" />
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="55%" stopColor="#B6A4FD" />
+            <stop offset="100%" stopColor="#A8F326" />
           </linearGradient>
         </defs>
         <circle

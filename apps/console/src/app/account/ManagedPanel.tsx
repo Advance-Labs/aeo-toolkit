@@ -80,7 +80,7 @@ function SlaRow({
         aria-label={`${label} delivered this period`}
       >
         <div
-          className="h-full rounded-full bg-[linear-gradient(100deg,#6366F1,#22D3EE)]"
+          className="h-full rounded-full bg-[linear-gradient(100deg,#7C3AED,#A8F326)]"
           style={{ width: `${pct}%` }}
         />
       </div>

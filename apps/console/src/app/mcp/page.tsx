@@ -143,9 +143,10 @@ export default function McpPage(): JSX.Element {
               </div>
               <div className="surface flex flex-col gap-4 p-6">
                 <p className="text-base leading-relaxed text-slate-300">
-                  The Model Context Protocol is an open standard that lets AI clients — Claude, Cursor,
-                  and others — call external tools directly. Instead of copying results back and forth,
-                  your assistant runs the toolkit&apos;s functions for you and reasons over the output.
+                  The Model Context Protocol is an open standard that lets AI clients — Claude,
+                  Cursor, and others — call external tools directly. Instead of copying results back
+                  and forth, your assistant runs the toolkit&apos;s functions for you and reasons
+                  over the output.
                 </p>
                 <p className="text-base leading-relaxed text-slate-400">
                   Each server below is a single connection URL. Paste it into your client once; from
@@ -169,8 +170,8 @@ export default function McpPage(): JSX.Element {
                 Three hosted <GradientText>MCP servers</GradientText>
               </h2>
               <p className="text-base leading-relaxed text-slate-400">
-                Add any of these to your AI client. Connection details, tools, and example prompts for
-                each are below.
+                Add any of these to your AI client. Connection details, tools, and example prompts
+                for each are below.
               </p>
             </div>
           </Reveal>
@@ -230,6 +231,13 @@ function ServerCard({ server }: { server: McpServerMeta }): JSX.Element {
             ? 'Authentication: sign in with Google when your client prompts. Your tokens are scoped to your account and never shared.'
             : 'Authentication: none. Tools that call third-party AI (Perplexity, your LLM) take a request-scoped key you supply — it is never stored or logged.'}
         </p>
+        {server.legacyEndpoint ? (
+          <p className="mt-2 text-xs leading-relaxed text-slate-500">
+            Already connected at{' '}
+            <code className="font-mono text-slate-400">{server.legacyEndpoint}</code>? That URL
+            still works — no need to reconnect.
+          </p>
+        ) : null}
       </div>
 
       {/* Two-column setup: Claude + Cursor */}

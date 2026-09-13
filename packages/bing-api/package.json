@@ -1,0 +1,40 @@
+{
+  "name": "@advance-labs/bing-api",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "description": "Bing Webmaster Tools JSON/HTTP client for the AEO Toolkit. Read-only. Uses injectable global fetch.",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rimraf dist .turbo",
+    "verify:bing": "node ./scripts/verify.mjs"
+  },
+  "dependencies": {
+    "@advance-labs/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@advance-labs/config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.6"
+  }
+}

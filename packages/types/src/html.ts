@@ -43,7 +43,17 @@ export interface HeadingNode {
 export interface ImageInfo {
   src: Url;
   alt?: string;
+  /** True only for a NON-EMPTY alt. An `alt=""` is `false` here and `isDecorative` instead. */
   hasAlt: boolean;
+  /**
+   * The author explicitly marked this image decorative with `alt=""` (ADV-174).
+   *
+   * Distinct from a missing `alt` attribute, which is an omission. Under WCAG `alt=""` is the
+   * PRESCRIBED markup for an image whose meaning is already carried by adjacent text, so it
+   * must not be scored as a defect — telling an author to describe it makes the page worse
+   * for a screen-reader user.
+   */
+  isDecorative: boolean;
   width?: number;
   height?: number;
 }
@@ -54,6 +64,14 @@ export interface LinkInfo {
   rel?: string;
   internal: boolean;
   nofollow: boolean;
+}
+
+/** One `<link rel="alternate" hreflang="…" href="…">` annotation from a page's head. */
+export interface HreflangEntry {
+  /** The raw hreflang value as authored, e.g. "en-GB" or "x-default" (case preserved). */
+  hreflang: string;
+  /** The alternate URL, resolved against the page URL. */
+  href: Url;
 }
 
 /** Content-quality signals used by both technical-SEO and AEO scoring. */
@@ -67,6 +85,18 @@ export interface ContentSignals {
   paragraphCount: number;
   listCount: number;
   tableCount: number;
+  /** Number of `<script>` elements on the page. */
+  scriptCount: number;
+  /**
+   * True when a known single-page-app mount point (`#root`, `#app`, `#__next`, a React root)
+   * is present but contains no visible text.
+   *
+   * This is the fingerprint of client-side rendering: the served HTML is an empty shell and
+   * the content only exists after JavaScript runs. It matters for AEO because answer engines
+   * and most AI crawlers read the HTML they are served and do not execute JavaScript, so that
+   * content is invisible to them no matter how good it is in a browser.
+   */
+  hasEmptyAppShell: boolean;
 }
 
 /** A raw structured-data block extracted from HTML, handed to `@advance-labs/schema-validator`. */
@@ -90,6 +120,12 @@ export interface ParsedHtml {
   links: LinkInfo[];
   internalLinkCount: number;
   externalLinkCount: number;
+  /**
+   * `rel="alternate" hreflang` annotations, in document order. Optional so contexts
+   * assembled before this field existed remain valid; absent and `[]` both mean
+   * "no annotations found".
+   */
+  hreflangs?: HreflangEntry[];
   content: ContentSignals;
   rawStructuredData: RawStructuredDataBlock[];
 }

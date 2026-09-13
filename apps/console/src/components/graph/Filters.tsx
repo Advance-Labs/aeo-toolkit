@@ -28,10 +28,10 @@ const TYPE_LABELS: Record<GraphNodeType, string> = {
 
 /** Swatch colors that mirror the canvas legend for at-a-glance correlation. */
 const TYPE_SWATCH: Record<GraphNodeType, string> = {
-  root: '#22D3EE',
-  'referring-domain': '#6366F1',
-  'backlink-page': '#818CF8',
-  mention: '#8B5CF6',
+  root: '#A8F326',
+  'referring-domain': '#7C3AED',
+  'backlink-page': '#B6A4FD',
+  mention: '#B6A4FD',
   competitor: '#F59E0B',
 };
 

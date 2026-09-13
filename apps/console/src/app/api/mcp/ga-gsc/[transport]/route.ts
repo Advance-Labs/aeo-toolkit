@@ -1,23 +1,13 @@
 /**
- * GA4 + GSC MCP server, mounted as a Next.js App Router route handler.
+ * Compatibility alias. The server moved to `/api/mcp/search` when Bing joined
+ * Google behind one server; this path stays so MCP client configs pinned to
+ * `/api/mcp/ga-gsc/mcp` keep working.
  *
- * Unlike the other two servers, ga-gsc's BYOK credential is the request's
- * `Authorization` bearer token (a Google access token), so the `mcp-handler`
- * handler is built *inside* the request function — this captures the per-request
- * bearer and injects it into a fresh tool context (the dynamic-routing shape from
- * the mcp-handler docs). The process-shared runtime (env-gated Supabase/in-memory
- * token store + resolver) is reused across requests.
- *
- * A per-caller distributed rate-limit gate runs before the transport hand-off.
- *
- * Node runtime: the tools call the Google Analytics + Search Console APIs.
-*
- * ROUTE SHAPE: this file MUST live under a `[transport]` segment. `mcp-handler`
- * derives its endpoints from `basePath` as `${basePath}/mcp`, `${basePath}/sse` and
- * `${basePath}/message`, then compares the request pathname against them. Mounted
- * directly at the basePath it answers every request with its own plain-text
- * "Not found" — a 404 that looks like a routing bug and is not. The dynamic segment
- * is what makes those transport paths exist. Clients connect to `<basePath>/mcp`.
+ * The handler is NOT re-exported from the new route module: `mcp-handler`
+ * derives its transport endpoints from `basePath` and compares them against the
+ * request pathname, so a handler built with basePath '/api/mcp/search' answers
+ * "Not found" to every request arriving here. This file therefore builds its own
+ * handler at its own basePath over the same tools.
  */
 import { createMcpHandler } from 'mcp-handler';
 import { enforceWebRateLimit } from '@advance-labs/mcp-core';
@@ -27,35 +17,32 @@ import {
   buildGaGscRuntime,
   registerGaGscTools,
   type GaGscRuntime,
-} from '@/mcp/ga-gsc/server.js';
-import { SERVER_NAME, SERVER_VERSION } from '@/mcp/ga-gsc/config.js';
-import { bearerToken } from '@/mcp/ga-gsc/http-util.js';
+} from '@/mcp/search/server.js';
+import { SERVER_NAME, SERVER_VERSION } from '@/mcp/search/config.js';
+import { authenticateSearchRequest, type SearchCaller } from '@/mcp/oauth/gate.js';
 import { getSharedMcpRateLimiter } from '@/mcp/shared.js';
 import { checkEntitlement } from '@/lib/billing/entitlements';
 
 export const runtime = 'nodejs';
 
-/** Lazily-built process-shared runtime (token store + resolver). */
 let cachedRuntime: GaGscRuntime | undefined;
 function getRuntime(): GaGscRuntime {
   cachedRuntime ??= buildGaGscRuntime();
   return cachedRuntime;
 }
 
-/**
- * Build the per-request MCP handler bound to the caller's BYOK bearer token. The
- * token flows into the tool context (request-scoped, never persisted or logged)
- * and takes precedence over any stored Google credential.
- */
-function buildHandler(requestToken: string | null): (req: Request) => Promise<Response> {
-  const ctx = buildGaGscContext(getRuntime(), requestToken);
+function buildHandler(caller: SearchCaller): (req: Request) => Promise<Response> {
+  const ctx = buildGaGscContext(
+    getRuntime(),
+    caller.requestToken,
+    caller.requestBingKey,
+    caller.userId,
+  );
   return createMcpHandler(
     (server) => {
       registerGaGscTools(server, ctx);
     },
-    {
-      serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
-    },
+    { serverInfo: { name: SERVER_NAME, version: SERVER_VERSION } },
     {
       basePath: '/api/mcp/ga-gsc',
       maxDuration: 120,
@@ -64,17 +51,16 @@ function buildHandler(requestToken: string | null): (req: Request) => Promise<Re
   );
 }
 
-/** Gate via the distributed limiter, then dispatch to a bearer-bound MCP handler. */
 async function handler(request: Request): Promise<Response> {
   const limited = await enforceWebRateLimit(getSharedMcpRateLimiter(), request);
   if (limited) return limited;
 
-  // Entitlement gate (no-op when billing is dormant; gates MCP access to plans with mcpAccess).
   const gate = await checkEntitlement(request, 'mcp');
   if (!gate.ok) return Response.json(gate.body, { status: gate.status });
 
-  const token = bearerToken(request.headers.get('authorization'));
-  return buildHandler(token)(request);
+  const auth = authenticateSearchRequest(request, '/api/mcp/ga-gsc/mcp');
+  if (!auth.ok) return auth.response;
+  return buildHandler(auth.caller)(request);
 }
 
 export { handler as GET, handler as POST };
