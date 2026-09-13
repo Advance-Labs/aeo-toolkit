@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/bing-api",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "description": "Bing Webmaster Tools JSON/HTTP client for the AEO Toolkit. Read-only. Uses injectable global fetch.",
