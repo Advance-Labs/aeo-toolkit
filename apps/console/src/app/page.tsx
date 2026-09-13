@@ -74,7 +74,7 @@ export default function LandingPage(): JSX.Element {
 
       {/* One engineered master shell: gradient-border frame, overshooting rails,
           corner marks. A single container — the earlier two-sheet seam grouped nothing. */}
-      <div className="px-6 pt-10 sm:px-8 lg:px-12">
+      <div className="px-6 pt-4 sm:px-8 sm:pt-10 lg:px-12">
         <div className="v2-frame mx-auto max-w-[88rem]">
           <span className="v2-corner" style={{ top: -2, left: -16 }} aria-hidden="true" />
           <span className="v2-corner" style={{ top: -2, right: -16 }} aria-hidden="true" />

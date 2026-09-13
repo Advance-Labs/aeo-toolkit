@@ -78,8 +78,11 @@ printf '%s' "<value>" | vercel env add TOKEN_ENCRYPTION_KEY production
 vercel deploy --prod --yes
 ```
 
-After the first deploy, set `MCP_PUBLIC_URL` to the live URL and redeploy so MCP `.well-known` discovery
-advertises the right origin.
+After the first deploy, set `MCP_PUBLIC_URL` to the live URL and redeploy. It's the canonical origin
+used across the app (SEO metadata, tool-page URLs, and the `.well-known` routes' notion of "this
+origin"). The ROOT `/.well-known/oauth-*` documents 404 regardless; `MCP_PUBLIC_URL` only matters
+there if an external `OAUTH_ISSUER` is ever set, so that issuer isn't mistaken for this origin. The
+search server's own login (below) names whatever host the request arrived on, not `MCP_PUBLIC_URL`.
 
 ---
 
@@ -147,12 +150,21 @@ Vercel sends `Authorization: Bearer $CRON_SECRET`, which the route verifies.
 
 The human-facing connection page is **`https://<domain>/mcp`** — it lists every tool and the exact
 connect steps for Claude.ai and Cursor. In **Claude.ai → Settings → Connectors**, add:
-- `https://<domain>/api/mcp/ai-visibility`
-- `https://<domain>/api/mcp/ga-gsc`
-- `https://<domain>/api/mcp/backlink`
+- `https://<domain>/api/mcp/ai-visibility/mcp`
+- `https://<domain>/api/mcp/search/mcp` (`/api/mcp/ga-gsc/mcp` still works as a compatibility alias)
+- `https://<domain>/api/mcp/backlink/mcp`
 
-OAuth discovery at `/.well-known/*` handles authorization. (A local **stdio** MCP variant for Claude
-Desktop isn't part of the Vercel deployment; re-add it later from a thin package over the same tools.)
+The trailing `/mcp` is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found".
+
+AI Visibility and Backlink need no login. **Search** runs its own OAuth 2.1 authorization server
+at `/api/mcp/oauth` (register, authorize, complete, token), switched on by `OAUTH_STATE_SECRET`:
+unset, those routes and their path-scoped `.well-known` documents 404 and the server is BYOK-only
+again. The login rides the existing Connect Google flow, so it needs the same `GOOGLE_*` env, the
+Supabase token store, and `AUTH_COOKIE_DOMAIN` when the Google callback lands on a sibling host.
+Everything the login hands out is sealed with `OAUTH_STATE_SECRET` and nothing is stored, so
+**rotating that secret signs every MCP client out**. A raw Google `Authorization: Bearer` token and
+`x-bing-api-key` still work alongside it. (A local **stdio** MCP variant for Claude Desktop isn't
+part of the Vercel deployment; re-add it later from a thin package over the same tools.)
 
 ## 5. Chrome extension
 
@@ -166,6 +178,74 @@ integration for per-PR preview deployments. Secrets live only in Vercel/GitHub e
 (`.env*` and `.vercel` are gitignored).
 
 ---
+
+---
+
+## 7. Releasing to npm
+
+Six packages publish to npm (`types`, `crawler`, `scoring`, `html-parser`, `net-guard`,
+`schema-validator`). Everything else is `private: true`, and `console` + `chrome-extension` sit in
+the Changesets `ignore` list because they are apps, not libraries.
+
+**The flow.** A push to `main` runs `.github/workflows/release.yml`, which collects pending
+changesets onto a `changeset-release/main` branch as a "Version Packages" commit. Merging *that*
+PR is what publishes — a release is always a deliberate act, never a side effect of landing a
+feature.
+
+### Three things that have actually bitten this repo
+
+**1. A commit with no changeset never publishes.** This is the big one. Under Changesets a commit
+without a changeset file is invisible to the release pipeline: it merges, CI goes green, `main` is
+correct, and nothing ships. `7f9cb3e` relicensed the whole repo MIT → Apache-2.0 this way, and for
+two days npm kept serving MIT tarballs while the repo, site and `SECURITY.md` all said Apache-2.0.
+**If a change affects what a consumer receives — including licensing — it needs a changeset**, not
+just a green build.
+
+**2. Never merge a Version Packages PR before `NPM_TOKEN` exists.** The version commit *deletes*
+the changeset files. If the publish then fails there is no changeset left to retry with, and the
+repo sits ahead of npm with no way to trigger a release. Confirm the secret first:
+
+```bash
+gh api repos/Advance-Labs/aeo-toolkit/actions/secrets -q '.secrets[].name'
+```
+
+**3. GitHub Actions could not open the Version Packages PR** (fixed 2026-09-10). Every release
+run failed at `HttpError: GitHub Actions is not permitted to create or approve pull requests`,
+while still pushing the `changeset-release/main` branch successfully — only PR creation was
+blocked. The lock was at the **organization** level: the repo's checkbox under Settings → Actions →
+General is greyed out until **Advance-Labs org settings → Actions → General → Workflow permissions
+→ "Allow GitHub Actions to create and approve pull requests"** is ticked, because a repo can
+tighten an org policy but never loosen it. The default workflow permission is deliberately left at
+read-only; `release.yml` requests `contents: write` and `pull-requests: write` for itself.
+
+If it regresses (the check is `gh api repos/Advance-Labs/aeo-toolkit/actions/permissions/workflow`
+→ `can_approve_pull_request_reviews`), open the PR by hand:
+
+```bash
+gh pr create --base main --head changeset-release/main --title "chore: version packages"
+```
+
+### Verify a release actually landed
+
+Changesets reports success per package **optimistically** — it has claimed a package published, and
+even pushed a git tag for it, when the registry never received it (this happened to `net-guard` on
+the 0.2.1 release; a re-run of the workflow fixed it, since with no changesets pending the action
+goes straight to publishing whatever is missing). Do not trust the log. Ask the registry:
+
+```bash
+for p in types crawler scoring html-parser net-guard schema-validator; do
+  printf "%-18s " "$p"
+  curl -s "https://registry.npmjs.org/@advance-labs%2f$p" |
+    python3 -c "import json,sys;d=json.load(sys.stdin);lt=d['dist-tags']['latest'];print(lt, d['versions'][lt].get('license'))"
+done
+```
+
+### Licensing note
+
+No package carries its own `LICENSE` file. `pnpm pack` copies the workspace-root `LICENSE` into
+each tarball, so the root file is the single source of truth for what ships. npm cannot amend an
+already-published version — a license correction only reaches consumers who upgrade, which is why
+such a fix should go out as a `patch` (on 0.x, `^0.2.0` accepts `0.2.x` but not `0.3.0`).
 
 ## Becoming a billable SaaS (BUILT — ships dormant)
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BrandLockup } from '../BrandMark';
 import { Container } from './Container';
+import { CHROME_STORE_URL } from '@/lib/seo';
 
 const TOOLS = [
   { href: '/tools/audit', label: 'SEO Audit' },
@@ -15,16 +16,28 @@ const TOOLS = [
 // 404s, which is mcp-handler's own response and not a routing fault.
 const RESOURCES = [
   { href: '/mcp#ai-visibility', label: 'AI Visibility MCP' },
-  { href: '/mcp#ga-gsc', label: 'GA4 + GSC MCP' },
+  { href: '/mcp#search', label: 'Search MCP' },
   { href: '/mcp#backlink', label: 'Backlink MCP' },
+];
+
+// The content cluster (#35–#37): footer links make it a site-wide hub, which is exactly the
+// internal-linking pattern the SEO plan prescribes (and the scoring engine rewards).
+const LEARN = [
+  { href: '/guide/answer-engine-optimization', label: 'AEO Guide' },
+  { href: '/glossary', label: 'Glossary' },
+  { href: '/compare/aeo-vs-seo', label: 'AEO vs SEO' },
 ];
 
 export function Footer(): React.ReactElement {
   return (
     <footer className="relative mt-16 border-t border-white/[0.08] py-14">
       <Container>
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="max-w-xs">
+        {/* Phones: two columns — Tools + Learn stacked on the left, MCP + Company stacked
+            on the right (each side's combined height stays close to the other, so neither
+            scrolls longer than it must). From lg both wrappers dissolve (lg:contents) into
+            the five columns. */}
+        <div className="grid grid-cols-2 gap-10 lg:grid-cols-5">
+          <div className="col-span-2 max-w-xs lg:col-span-1">
             <Link
               href="/"
               className="inline-flex items-center gap-2.5"
@@ -37,16 +50,22 @@ export function Footer(): React.ReactElement {
               Perplexity, and Google AI Overviews.
             </p>
           </div>
-          <FooterCol title="Tools" links={TOOLS} />
-          <FooterCol title="MCP servers" links={RESOURCES} />
-          <FooterCol
-            title="Company"
-            links={[
-              { href: '/about', label: 'About' },
-              { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
-              { href: 'https://advancelabs.dev', label: 'Advance Labs' },
-            ]}
-          />
+          <div className="flex flex-col gap-10 lg:contents">
+            <FooterCol title="Tools" links={TOOLS} />
+            <FooterCol title="Learn" links={LEARN} />
+          </div>
+          <div className="flex flex-col gap-10 lg:contents">
+            <FooterCol title="MCP servers" links={RESOURCES} />
+            <FooterCol
+              title="Company"
+              links={[
+                { href: '/about', label: 'About' },
+                { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
+                { href: CHROME_STORE_URL, label: 'Chrome extension' },
+                { href: 'https://advancelabs.dev', label: 'Advance Labs' },
+              ]}
+            />
+          </div>
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-sm text-slate-400 sm:flex-row sm:items-center">
           <p>© 2026 Advance Labs Inc. All rights reserved.</p>

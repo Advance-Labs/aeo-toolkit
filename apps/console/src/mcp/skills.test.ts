@@ -29,7 +29,10 @@ function skillDirs(): string[] {
 
 /** Split `---`-delimited YAML frontmatter from a skill body. */
 function parseSkill(dir: string): { frontmatter: Record<string, string>; body: string } {
-  const raw = readFileSync(join(SKILLS_DIR, dir, 'SKILL.md'), 'utf8');
+  // Normalized to LF first: a Windows clone with core.autocrlf=true checks the file out
+  // with CRLF endings, which would otherwise fail the frontmatter regex and the line
+  // splits below even though the skill itself is fine.
+  const raw = readFileSync(join(SKILLS_DIR, dir, 'SKILL.md'), 'utf8').replace(/\r\n/g, '\n');
   const match = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(raw);
   if (match === null) throw new Error(`${dir}/SKILL.md has no frontmatter block`);
 

@@ -56,8 +56,11 @@ Everything HTTP lives in **one Next.js app**. See
 | `apps/chrome-extension` | MV3 extension, audit runs entirely in the browser | Chrome Web Store |
 
 The three MCP servers are route handlers behind the `mcp-handler` adapter at
-`/api/mcp/<slug>/[transport]`, with OAuth 2.1 discovery under `/.well-known/` so Claude.ai can
-auto-register them. The blogging agent is a Vercel Cron, not a service.
+`/api/mcp/<slug>/[transport]`. They are BYOK and implement no OAuth — no `/authorize`, `/token` or
+`/register` exists, so `/.well-known/oauth-*` deliberately 404s unless an external issuer is
+configured; that 404 is what makes a client skip OAuth discovery and send the credentials these
+servers actually read. See [`reference/tools.md`](reference/tools.md) for the details.
+The blogging agent is a Vercel Cron, not a service.
 
 ## Data flow — the audit pipeline
 

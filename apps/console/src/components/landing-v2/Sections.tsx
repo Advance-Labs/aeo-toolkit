@@ -47,9 +47,9 @@ export function CinematicStage(): JSX.Element {
       {/* Layer 1 · the hero (on top while pinned; scrolling zooms past it). */}
       <div
         data-stage-hero
-        className="v2-stage-layer relative flex min-h-[calc(100vh-6.75rem)] flex-col overflow-hidden px-6 pt-10 sm:px-10 lg:px-14"
+        className="v2-stage-layer relative flex min-h-[calc(100vh-6.75rem)] flex-col overflow-hidden px-6 pt-6 sm:px-10 sm:pt-10 lg:px-14"
       >
-        <div className="relative z-10 my-auto grid w-full items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
+        <div className="relative z-10 my-auto grid w-full items-center gap-7 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
           <div>
             <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
               01 · Ask
@@ -62,7 +62,7 @@ export function CinematicStage(): JSX.Element {
             </h1>
             <p
               data-hero-sub
-              className="mt-6 max-w-md text-lg leading-relaxed"
+              className="mt-4 max-w-md text-lg leading-relaxed sm:mt-6"
               style={{ color: 'var(--v2-ink-soft)' }}
             >
               Free, open instruments that measure whether the engines can find, parse, and cite
@@ -73,7 +73,7 @@ export function CinematicStage(): JSX.Element {
               data-hero-cta
               action="/tools/audit"
               method="get"
-              className="mt-8 flex max-w-md gap-0"
+              className="mt-6 flex max-w-md gap-0 sm:mt-8"
             >
               <label htmlFor="hero-url" className="sr-only">
                 Website URL to audit
@@ -95,7 +95,7 @@ export function CinematicStage(): JSX.Element {
                 Run the audit
               </button>
             </form>
-            <p className="v2-label mt-4">54 rules · 50 pages · ~60s · no account</p>
+            <p className="v2-label mt-3 sm:mt-4">54 rules · 50 pages · ~60s · no account</p>
           </div>
 
           <div className="flex justify-center lg:justify-end">
@@ -105,8 +105,10 @@ export function CinematicStage(): JSX.Element {
 
         {/* Instrument rail: previews the six measures, fills the hero's bottom band,
             and cues the scroll now that the stage zooms in place. */}
-        <div className="relative z-10 mt-auto border-t border-[color:var(--v2-rule)] py-4">
-          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        {/* On phones the rail is one horizontally scrollable line (wrapping it to
+            three rows pushed the graph below the fold); from sm it wraps as before. */}
+        <div className="relative z-10 mt-auto border-t border-[color:var(--v2-rule)] py-3 sm:py-4">
+          <div className="flex flex-nowrap items-baseline gap-x-6 gap-y-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible sm:pb-0">
             {['Crawlability', 'AI-bot access', 'Structured data', 'Metadata', 'Answer readiness', 'E-E-A-T'].map(
               (name, i) => (
                 <span key={name} className="v2-label whitespace-nowrap">
@@ -153,7 +155,7 @@ export function CinematicStage(): JSX.Element {
             ))}
           </div>
           {/* The answer pops in from the side once the resolve lands. */}
-          <div data-story-specimen className="flex flex-col items-center gap-4 lg:items-end">
+          <div data-story-specimen className="flex min-w-0 flex-col items-center gap-4 lg:items-end">
             <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
               02 · Know — sixty seconds later
             </p>

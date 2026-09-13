@@ -12,6 +12,11 @@
  * The process-shared runtime (env-gated Supabase/in-memory token store, Google
  * token resolver, Bing key resolver) is reused across requests.
  *
+ * Or the caller logs in: an MCP client with no credentials gets a 401 challenge and
+ * runs the OAuth flow under `/api/mcp/oauth`, then sends an `aeo_at_` token that
+ * resolves to its own stored Google connection. `authenticateSearchRequest` sorts
+ * the three cases out; see `@/mcp/oauth/gate`.
+ *
  * A per-caller distributed rate-limit gate runs before the transport hand-off.
  *
  * Node runtime: the tools call the Google Analytics, Search Console, and Bing
@@ -37,7 +42,7 @@ import {
   type GaGscRuntime,
 } from '@/mcp/search/server.js';
 import { SERVER_NAME, SERVER_VERSION } from '@/mcp/search/config.js';
-import { bearerToken, bingApiKeyHeader } from '@/mcp/search/http-util.js';
+import { authenticateSearchRequest, type SearchCaller } from '@/mcp/oauth/gate.js';
 import { getSharedMcpRateLimiter } from '@/mcp/shared.js';
 import { checkEntitlement } from '@/lib/billing/entitlements';
 
@@ -51,15 +56,18 @@ function getRuntime(): GaGscRuntime {
 }
 
 /**
- * Build the per-request MCP handler bound to the caller's BYOK bearer token. The
+ * Build the per-request MCP handler bound to the caller's credentials. A BYOK
  * token flows into the tool context (request-scoped, never persisted or logged)
- * and takes precedence over any stored Google credential.
+ * and takes precedence over any stored Google credential; an OAuth caller brings
+ * its own `userId` instead.
  */
-function buildHandler(
-  requestToken: string | null,
-  requestBingKey: string | null,
-): (req: Request) => Promise<Response> {
-  const ctx = buildGaGscContext(getRuntime(), requestToken, requestBingKey);
+function buildHandler(caller: SearchCaller): (req: Request) => Promise<Response> {
+  const ctx = buildGaGscContext(
+    getRuntime(),
+    caller.requestToken,
+    caller.requestBingKey,
+    caller.userId,
+  );
   return createMcpHandler(
     (server) => {
       registerGaGscTools(server, ctx);
@@ -84,9 +92,9 @@ async function handler(request: Request): Promise<Response> {
   const gate = await checkEntitlement(request, 'mcp');
   if (!gate.ok) return Response.json(gate.body, { status: gate.status });
 
-  const token = bearerToken(request.headers.get('authorization'));
-  const bingKey = bingApiKeyHeader(request.headers);
-  return buildHandler(token, bingKey)(request);
+  const auth = authenticateSearchRequest(request, '/api/mcp/search/mcp');
+  if (!auth.ok) return auth.response;
+  return buildHandler(auth.caller)(request);
 }
 
 export { handler as GET, handler as POST };

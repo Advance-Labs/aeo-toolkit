@@ -211,23 +211,65 @@ html.v2-header-folded body > header:focus-within {
 }
 
 /* The cinematic stage: in static/no-JS/reduced-motion views the two layers are
-   ordinary stacked sections. With motion armed they occupy one grid cell — the hero
-   on top, the story beneath — so scroll can zoom past one into the other. */
-html.has-motion .v2 .v2-stage {
-  display: grid;
-  min-height: calc(100vh - 6.75rem);
+   ordinary stacked sections. With motion armed ON DESKTOP (lg+, matching Motion.tsx's
+   matchMedia gate) they occupy one grid cell — the hero on top, the story beneath —
+   so scroll can zoom past one into the other. Below lg the stacked story content is
+   taller than a phone viewport, so the layers always flow as normal sections there. */
+@media (min-width: 1024px) {
+  html.has-motion .v2 .v2-stage {
+    display: grid;
+    min-height: calc(100vh - 6.75rem);
+  }
+  html.has-motion .v2 .v2-stage > .v2-stage-layer {
+    grid-area: 1 / 1;
+  }
+  html.has-motion .v2 [data-stage-hero] {
+    z-index: 2;
+    /* Transparent: the stage-level shader is the ground; the layer only carries content. */
+    will-change: transform, opacity;
+  }
+  html.has-motion .v2 [data-stage-story] {
+    z-index: 1;
+    border-top: 0;
+  }
 }
-html.has-motion .v2 .v2-stage > .v2-stage-layer {
-  grid-area: 1 / 1;
+
+/* Below lg the WebGL gradient field never mounts (a full-stage shader is the most
+   expensive thing a phone GPU could run here); this static tint in the same palette
+   stands in behind the hero. */
+@media (max-width: 1023.98px) {
+  .v2 [data-stage-shader] {
+    background:
+      radial-gradient(120% 90% at 85% -10%, rgba(168, 243, 38, 0.1) 0%, transparent 55%),
+      radial-gradient(130% 100% at 15% 110%, rgba(124, 58, 237, 0.35) 0%, transparent 60%),
+      linear-gradient(200deg, #101024 0%, #0a0a0b 70%);
+  }
 }
-html.has-motion .v2 [data-stage-hero] {
-  z-index: 2;
-  /* Transparent: the stage-level shader is the ground; the layer only carries content. */
-  will-change: transform, opacity;
+
+/* Short phones (≤750px tall): the hero column must still leave room for the whole
+   graph above the fold, so the display type steps down one size there. */
+@media (max-width: 639.98px) and (max-height: 749.98px) {
+  .v2 [data-hero-title] {
+    font-size: 2.25rem;
+  }
+  .v2 [data-hero-sub] {
+    font-size: 1rem;
+    margin-top: 0.75rem;
+  }
+  .v2 [data-hero-cta] {
+    margin-top: 1rem;
+  }
+  .v2 [data-stage-hero] .grid {
+    row-gap: 1.25rem;
+  }
 }
-html.has-motion .v2 [data-stage-story] {
-  z-index: 1;
-  border-top: 0;
+
+/* Mobile browsers overreport 100vh while the URL bar is visible; size the layers to
+   the small viewport so the hero's instrument rail stays above the fold. */
+@supports (height: 100svh) {
+  .v2 .v2-stage-layer {
+    min-height: calc(100svh - 6.75rem);
+  }
 }
 
 /* Word-split masks (Motion.tsx). */
@@ -267,6 +309,14 @@ html.has-motion .v2 [data-hero-title] {
   );
   opacity: var(--sheen, 0);
   transition: opacity 0.4s ease;
+}
+
+/* On narrow screens the specimen's category labels don't fit 0.14em tracking in their
+   column — tighten the spacing there instead of truncating the words. */
+@media (max-width: 639.98px) {
+  .v2-specimen dt.v2-label {
+    letter-spacing: 0.05em;
+  }
 }
 
 /* Act II scan: rows idle-dimmed only while motion is armed; the pass brightens them

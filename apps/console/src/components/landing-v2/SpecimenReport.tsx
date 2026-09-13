@@ -70,7 +70,7 @@ export function SpecimenReport(): React.ReactElement {
       <div className="v2-rule mt-3" data-rule aria-hidden="true" />
 
       {/* The score: the single biggest thing on the sheet. */}
-      <div className="mt-5 flex items-end justify-between gap-6">
+      <div className="mt-5 flex items-end justify-between gap-4 sm:gap-6">
         <div>
           <div
             className="flex items-baseline font-[var(--font-v2-sans)] text-7xl font-bold leading-none tracking-tighter sm:text-8xl"
@@ -81,19 +81,21 @@ export function SpecimenReport(): React.ReactElement {
               /100
             </span>
           </div>
-          <p className="v2-label mt-2">Overall · grade B</p>
+          <p className="v2-label mt-2 whitespace-nowrap">Overall · grade B</p>
         </div>
-        <div className="pb-1 text-right">
-          <p className="v2-label">54 rules</p>
-          <p className="v2-label mt-1">12 pages crawled</p>
-          <p className="v2-label mt-1">41s</p>
+        {/* The meta column squeezes the score below sm — there it becomes the line under. */}
+        <div className="hidden shrink-0 pb-1 text-right sm:block">
+          <p className="v2-label whitespace-nowrap">54 rules</p>
+          <p className="v2-label mt-1 whitespace-nowrap">12 pages crawled</p>
+          <p className="v2-label mt-1 whitespace-nowrap">41s</p>
         </div>
       </div>
+      <p className="v2-label mt-3 sm:hidden">54 rules · 12 pages crawled · 41s</p>
 
       {/* Category bars — an honest data graphic, not ornament. */}
       <dl className="mt-6 flex flex-col gap-2.5">
         {CATEGORIES.map((cat) => (
-          <div key={cat.label} className="grid grid-cols-[9.5rem_1fr_2.5rem] items-center gap-3">
+          <div key={cat.label} className="grid grid-cols-[7.5rem_1fr_2rem] items-center gap-3 sm:grid-cols-[9.5rem_1fr_2.5rem]">
             <dt className="v2-label truncate" style={{ color: 'var(--v2-ink-soft)' }}>
               {cat.label}
             </dt>

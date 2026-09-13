@@ -10,8 +10,11 @@ import type { GoogleOAuthTokens } from '@advance-labs/types';
 import { googleEnv } from './google-env.js';
 import { getTokenStore } from './token-store.js';
 
-export const USER_COOKIE = 'aeo_uid';
-export const STATE_COOKIE = 'aeo_oauth_state';
+// Renamed from `aeo_uid` / `aeo_oauth_state` when the cookies became domain-scopable (see
+// `authCookieOptions`): a leftover host-only cookie of the same name would be sent first and shadow
+// the domain-wide one. Nobody held a stored token at the time, so the rename orphaned no connection.
+export const USER_COOKIE = 'aeo_session';
+export const STATE_COOKIE = 'aeo_oauth_nonce';
 
 /** Build a `GoogleOAuth` client from the server environment (read-only GA4 + GSC scopes). */
 export function createOAuth(): GoogleOAuth {

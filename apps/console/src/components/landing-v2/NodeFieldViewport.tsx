@@ -19,10 +19,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-const NODE_COUNT = 520;
 const LINKS_PER_NODE = 2;
-const PULSE_COUNT = 110;
-const PROBE_COUNT = 10;
 const LABEL_COUNT = 3;
 
 // Mock traffic — the kinds of searches and prompts the audit samples. Synthesized
@@ -53,6 +50,13 @@ export function NodeFieldViewport(): React.ReactElement {
     if (!host || !labelLayer) return undefined;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    // Phones get a lighter scene: fewer nodes/links to build and draw, fewer moving
+    // pulses, and a lower DPR cap — the composition reads the same at that size.
+    const small = window.matchMedia('(max-width: 639px)').matches;
+    const NODE_COUNT = small ? 300 : 520;
+    const PULSE_COUNT = small ? 60 : 110;
+    const PROBE_COUNT = small ? 6 : 10;
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -60,7 +64,7 @@ export function NodeFieldViewport(): React.ReactElement {
       setFailed(true);
       return undefined;
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.5 : 1.75));
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -213,7 +217,7 @@ export function NodeFieldViewport(): React.ReactElement {
 
     // Query labels: DOM chips tracking the projected screen position of a probe's
     // source node while it fires.
-    type QueryLabel = { el: HTMLDivElement; node: number; life: number; ttl: number };
+    type QueryLabel = { el: HTMLDivElement; node: number; life: number; ttl: number; width: number };
     const labels: QueryLabel[] = [];
     const labelPool: HTMLDivElement[] = [];
     for (let i = 0; i < LABEL_COUNT; i += 1) {
@@ -250,7 +254,7 @@ export function NodeFieldViewport(): React.ReactElement {
         if (el && Math.random() < 0.55) {
           queryCursor = (queryCursor + 1) % QUERIES.length;
           el.textContent = QUERIES[queryCursor] ?? '';
-          labels.push({ el, node: probeNode[i] ?? 0, life: 0, ttl: 150 });
+          labels.push({ el, node: probeNode[i] ?? 0, life: 0, ttl: 150, width: el.offsetWidth });
         }
         return;
       }
@@ -324,12 +328,14 @@ export function NodeFieldViewport(): React.ReactElement {
         worldV.fromArray(positions, label.node * 3).applyMatrix4(group.matrixWorld).project(camera);
         const x = (worldV.x * 0.5 + 0.5) * w;
         const y = (-worldV.y * 0.5 + 0.5) * h;
-        // Behind the camera, off-canvas, or too close to the right edge to fit the
-        // chip: hide rather than clip mid-word.
-        const visible = worldV.z < 1 && x > 8 && x < w - 220 && y > 24 && y < h - 12;
+        // Behind the camera or off-canvas: hide rather than smear. Otherwise clamp the
+        // chip inside the field by its measured width so it never clips mid-word —
+        // this is what keeps chips legible on narrow (mobile) hosts too.
+        const visible = worldV.z < 1 && x > 8 && x < w - 24 && y > 24 && y < h - 12;
         const ramp = Math.min(label.life / 20, (label.ttl - label.life) / 30, 1);
+        const lx = Math.min(x + 10, Math.max(8, w - label.width - 10));
         label.el.style.opacity = visible ? String(0.9 * ramp) : '0';
-        label.el.style.transform = `translate(${Math.round(x + 10)}px, ${Math.round(y - 18)}px)`;
+        label.el.style.transform = `translate(${Math.round(lx)}px, ${Math.round(y - 18)}px)`;
       }
     };
     // ────────────────────────────────────────────────────────────────────────────
@@ -340,6 +346,14 @@ export function NodeFieldViewport(): React.ReactElement {
       if (w === 0 || h === 0) return;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
+      // Desktop: the cloud deliberately bleeds past the column ("unframed field"),
+      // backing off only for portrait frustums. Phones: the short container must show
+      // the WHOLE ball, so fit the field's full radius on both axes instead.
+      camera.position.z = small
+        ? Math.min(4.6, 3.25 / Math.min(camera.aspect, 1))
+        : camera.aspect < 1
+          ? Math.min(4.6, 2.75 / Math.max(camera.aspect, 0.55))
+          : 2.75;
       camera.updateProjectionMatrix();
     };
     resize();
@@ -380,10 +394,22 @@ export function NodeFieldViewport(): React.ReactElement {
       running = false;
       cancelAnimationFrame(raf);
     };
+    // Render only while the field is actually on screen AND the tab is visible —
+    // once the user scrolls past the hero there is no reason to keep burning frames.
+    let inView = true;
+    const shouldRun = (): boolean => !reduceMotion && inView && !document.hidden;
     const onVisibility = (): void => {
-      if (document.hidden) stop();
-      else if (!reduceMotion) start();
+      if (shouldRun()) start();
+      else stop();
     };
+    const io = new IntersectionObserver(
+      (entries) => {
+        inView = entries[0]?.isIntersecting ?? true;
+        if (shouldRun()) start();
+        else stop();
+      },
+      { rootMargin: '120px' },
+    );
 
     const onContextLost = (e: Event): void => {
       e.preventDefault();
@@ -399,11 +425,13 @@ export function NodeFieldViewport(): React.ReactElement {
       host.addEventListener('pointermove', onPointer);
       host.addEventListener('pointerleave', onLeave);
       document.addEventListener('visibilitychange', onVisibility);
+      io.observe(host);
       start();
     }
 
     return () => {
       stop();
+      io.disconnect();
       ro.disconnect();
       host.removeEventListener('pointermove', onPointer);
       host.removeEventListener('pointerleave', onLeave);
@@ -425,12 +453,20 @@ export function NodeFieldViewport(): React.ReactElement {
       beamGeo.dispose();
       beamMat.dispose();
       renderer.dispose();
+      // Release the GPU context NOW rather than when GC gets around to it — every
+      // lingering context counts against the tab-wide cap, and hitting that cap is
+      // what freezes the hero shader after heavy navigation.
+      try {
+        renderer.forceContextLoss();
+      } catch {
+        /* context may already be gone */
+      }
       renderer.domElement.remove();
     };
   }, []);
 
   return (
-    <div data-hero-sheet className="relative h-[420px] w-full sm:h-[500px] lg:h-[560px]">
+    <div data-hero-sheet className="relative h-[28svh] min-h-[180px] w-full sm:h-[500px] lg:h-[560px]">
       {/* The unframed cloud: fills the column, spills past where the card used to end. */}
       <div
         ref={hostRef}

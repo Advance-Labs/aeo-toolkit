@@ -315,18 +315,21 @@ export function buildGaGscRuntime(env: NodeJS.ProcessEnv = process.env): GaGscRu
 /**
  * Build a per-request {@link ToolContext} from the shared runtime and the
  * request's BYOK bearer token and Bing API key (both take precedence over any
- * stored credential and are never persisted).
+ * stored credential and are never persisted). `userId` names the stored Google
+ * connection to resolve when there is no BYOK token: an OAuth caller's own id
+ * (see `@/mcp/oauth/gate`), else the shared `default` slot.
  */
 export function buildGaGscContext(
   runtime: GaGscRuntime,
   requestToken: string | null,
   requestBingKey: string | null,
+  userId: string = DEFAULT_USER_ID,
 ): ToolContext {
   return {
     tokens: runtime.tokens,
     bingKeys: runtime.bingKeys,
     clients: defaultClientFactory,
-    userId: DEFAULT_USER_ID,
+    userId,
     requestToken,
     requestBingKey,
   };

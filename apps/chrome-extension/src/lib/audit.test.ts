@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AuditReport, ParsedHtml, ScoringContext, StructuredDataReport } from '@advance-labs/types';
 import type { SiteFiles } from './site-files.js';
+import { version as packageVersion } from '../../package.json';
 
 // --- Mock the @advance-labs/* packages so the test exercises THIS app's wiring only. ---
 const parseHtmlMock = vi.fn<(html: string, url: string) => ParsedHtml>();
@@ -42,6 +43,8 @@ function fakeParsed(url: string): ParsedHtml {
       paragraphCount: 0,
       listCount: 0,
       tableCount: 0,
+      scriptCount: 0,
+      hasEmptyAppShell: false,
     },
     rawStructuredData: [],
   };
@@ -165,7 +168,7 @@ describe('runAudit', () => {
       pagesCrawled: 1,
       topFixes: [],
       templates: [],
-      meta: { durationMs: 0, crawler: 'aeo-chrome-extension', version: '0.1.0' },
+      meta: { durationMs: 0, crawler: 'aeo-chrome-extension', version: packageVersion },
     };
     buildAuditReportMock.mockResolvedValue(report);
 
@@ -178,7 +181,10 @@ describe('runAudit', () => {
 
     expect(buildAuditReportMock).toHaveBeenCalledOnce();
     const [, opts] = buildAuditReportMock.mock.calls[0] ?? [];
-    expect(opts?.version).toBe('0.1.0');
+    // Assert against package.json rather than a literal: the report version is
+    // derived from it, so a hardcoded expectation here would just re-introduce
+    // the drift this test is meant to catch.
+    expect(opts?.version).toBe(packageVersion);
     expect(opts?.durationMs).toBeGreaterThanOrEqual(0);
 
     expect(payload.origin).toBe('https://example.com');

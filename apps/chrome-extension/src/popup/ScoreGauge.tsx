@@ -6,11 +6,18 @@ const STROKE = 12;
 const RADIUS = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-/** Map a 0–100 score to a traffic-light color. */
-function scoreColor(score: number): string {
-  if (score >= 80) return '#16a34a'; // green
-  if (score >= 60) return '#d97706'; // amber
-  return '#dc2626'; // red
+/**
+ * Map a 0-100 score to a result BAND, not to a colour.
+ *
+ * This used to return a hex literal, which put brand colours in a TSX file as well as the
+ * stylesheet and made the popup impossible to retheme from one place. The band is the thing
+ * the component actually knows about; what a band looks like is the stylesheet's business.
+ * See `brand/README.md`: OK and Warn are reserved for audit results.
+ */
+function scoreBand(score: number): 'ok' | 'warn' | 'bad' {
+  if (score >= 80) return 'ok';
+  if (score >= 60) return 'warn';
+  return 'bad';
 }
 
 export interface ScoreGaugeProps {
@@ -21,10 +28,10 @@ export interface ScoreGaugeProps {
 export function ScoreGauge({ score }: ScoreGaugeProps): JSX.Element {
   const clamped = Math.max(0, Math.min(100, score.overall));
   const dash = (clamped / 100) * CIRCUMFERENCE;
-  const color = scoreColor(clamped);
+  const band = scoreBand(clamped);
 
   return (
-    <div className="gauge">
+    <div className={`gauge gauge-${band}`}>
       <svg
         width={SIZE}
         height={SIZE}
@@ -37,7 +44,7 @@ export function ScoreGauge({ score }: ScoreGaugeProps): JSX.Element {
           cy={SIZE / 2}
           r={RADIUS}
           fill="none"
-          stroke="#e5e7eb"
+          className="gauge-track"
           strokeWidth={STROKE}
         />
         <circle
@@ -45,13 +52,13 @@ export function ScoreGauge({ score }: ScoreGaugeProps): JSX.Element {
           cy={SIZE / 2}
           r={RADIUS}
           fill="none"
-          stroke={color}
+          className="gauge-arc"
           strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={`${dash} ${CIRCUMFERENCE - dash}`}
           transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
         />
-        <text x="50%" y="46%" textAnchor="middle" className="gauge-score" fill={color}>
+        <text x="50%" y="46%" textAnchor="middle" className="gauge-score">
           {clamped}
         </text>
         <text x="50%" y="66%" textAnchor="middle" className="gauge-grade">

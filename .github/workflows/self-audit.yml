@@ -1,0 +1,53 @@
+name: Self-audit
+
+# Dogfood check (#38): run our own auditor against the live site on a schedule, and fail
+# when the score drops below the threshold — the site must never quietly regress on the
+# rules it sells. Connectivity problems warn instead of failing (see scripts/self-audit.mjs).
+
+on:
+  schedule:
+    # Weekly, Monday 07:00 UTC — early enough that a regression is seen the same workday.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Site to audit'
+        default: 'https://aeo.advancelabs.dev'
+        required: false
+      min_score:
+        description: 'Fail below this overall score'
+        default: '70'
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  self-audit:
+    name: Audit the live site with our own engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        # No `version`: pnpm/action-setup@v4 reads it from package.json's `packageManager`.
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the audit engine
+        run: pnpm exec turbo run build --filter=@advance-labs/crawler --filter=@advance-labs/html-parser --filter=@advance-labs/schema-validator --filter=@advance-labs/scoring
+
+      - name: Run the self-audit
+        env:
+          SELF_AUDIT_URL: ${{ inputs.url || 'https://aeo.advancelabs.dev' }}
+          SELF_AUDIT_MIN_SCORE: ${{ inputs.min_score || '70' }}
+        run: node scripts/self-audit.mjs

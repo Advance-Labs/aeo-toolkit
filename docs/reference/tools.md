@@ -32,10 +32,14 @@ Served from the console as Streamable-HTTP route handlers via the `mcp-handler` 
 **31 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
-These servers are **BYOK and implement no OAuth** — no `/authorize`, `/token` or `/register`
-exists. `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`
-therefore return 404 unless an *external* issuer is configured, and that 404 is what makes a
-client skip the OAuth flow and send the headers that actually work.
+AI Visibility and Backlink need no login. **Search has one**: an anonymous request gets a 401
+whose `WWW-Authenticate` names `/.well-known/oauth-protected-resource/api/mcp/search/mcp`, and the
+client then logs in against the authorization server at `/api/mcp/oauth` (Dynamic Client
+Registration, PKCE, and Google's consent screen as the approval step). The tokens it issues name
+the user's stored Google connection, so the tools refresh Google access on their own. A raw Google
+`Authorization: Bearer` token and `x-bing-api-key` still work, unchanged. The ROOT
+`/.well-known/oauth-*` documents return 404 on purpose: advertising OAuth at the root would drag
+the two keyless servers into a login they don't need.
 
 ### Connecting
 
@@ -55,7 +59,7 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 |---|---|---|---|
 | AI Visibility | `/api/mcp/ai-visibility/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility` |
 | Backlink | `/api/mcp/backlink/mcp` | none | `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
-| Search (Google + Bing) | `/api/mcp/search/mcp` | Google BYOK; Bing BYOK optional | see below |
+| Search (Google + Bing) | `/api/mcp/search/mcp` | Google sign-in (OAuth) or Google BYOK; Bing BYOK optional | see below |
 
 The search server was `GA4 + GSC` at `/api/mcp/ga-gsc/mcp`; that path still works as a compatibility
 alias so existing client configs need no change, but new configs should point at `/api/mcp/search/mcp`.

@@ -12,6 +12,21 @@ import { isSingleRootPage, KEY_AI_BOTS, firstStructured, meanOverPages, normaliz
 
 const ANSWERABLE_MIN_WORDS = 300;
 
+/**
+ * Schema types whose date properties describe the PRIMARY content of a page.
+ * An Event's startDate or a Review's datePublished says nothing about whether
+ * the page's own copy is maintained, so those types are deliberately excluded.
+ */
+const DATEABLE_TYPES = new Set(['Article', 'NewsArticle', 'BlogPosting', 'TechArticle', 'WebPage']);
+
+/**
+ * Below this visible word count, an empty app shell is treated as client-side rendering
+ * rather than a genuinely short page. Set low on purpose: the shell signal is already
+ * specific, so this only guards against flagging a server-rendered page that happens to
+ * contain an element named `#app`.
+ */
+const CLIENT_RENDER_MAX_WORDS = 100;
+
 /** Host without a leading `www.`, or undefined when the value will not parse as a URL. */
 function hostOf(value: string | undefined): string | undefined {
   if (!value) return undefined;
@@ -65,6 +80,42 @@ export const aeoRules: Rule[] = [
       return fromSchema || fromHtml
         ? { passed: true }
         : { passed: false, detail: 'No FAQ/QA content or schema detected.' };
+    },
+  },
+  {
+    id: 'aeo.content-server-rendered',
+    category: 'aeo',
+    severity: 'high',
+    weight: 9,
+    title: 'Content is in the HTML without running JavaScript',
+    description:
+      'Answer engines and most AI crawlers read the HTML they are served and do not execute ' +
+      'JavaScript. Content that only appears after hydration is invisible to them.',
+    recommendation:
+      'Server-render or pre-render the page so its content is in the initial HTML response.',
+    docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics',
+    evaluate: (ctx) => {
+      // An empty app shell is the specific fingerprint. Low word count ALONE is thin
+      // content, which `tech.content-not-thin` already reports and which needs the
+      // opposite fix ("write more" vs "render it server-side"). Requiring both signals
+      // is what keeps the two diagnoses apart.
+      const shellPages = ctx.pages.filter(
+        (p) => p.content.hasEmptyAppShell && p.content.wordCount < CLIENT_RENDER_MAX_WORDS,
+      );
+      if (shellPages.length === 0) return { passed: true };
+
+      const first = shellPages[0];
+      const where =
+        shellPages.length === 1
+          ? `${first?.url ?? 'a page'} serves`
+          : `${shellPages.length} pages serve`;
+      return {
+        passed: false,
+        detail:
+          `${where} an empty app shell: the markup contains a mount point with no text, ` +
+          'so a crawler that does not run JavaScript sees no content. This is not thin ' +
+          'content, and writing more will not fix it.',
+      };
     },
   },
   {
@@ -284,6 +335,45 @@ export const aeoRules: Rule[] = [
             passed: false,
             detail: `Mean paragraphs ${Math.round(meanParagraphs)}, lists+tables ${structureCount}.`,
           };
+    },
+  },
+  {
+    // Added for #11. Checks that a date EXISTS and PARSES, deliberately not how recent
+    // it is — a 2019 date on a reference page is correct, and penalizing it would flag
+    // good content. The two failure details are different fixes for the site owner:
+    // "no date" means add the property, "unparseable" means fix its format.
+    id: 'aeo.content-freshness',
+    category: 'aeo',
+    severity: 'medium',
+    weight: 5,
+    title: 'Content declares a modification date',
+    description: 'A parseable dateModified gives engines a reason to cite the page over undated competitors.',
+    recommendation: 'Add dateModified (or datePublished) in ISO 8601 to your Article/WebPage JSON-LD.',
+    docsUrl: 'https://schema.org/dateModified',
+    evaluate: (ctx) => {
+      const values: unknown[] = [];
+      for (const report of ctx.structuredData) {
+        for (const item of report.items) {
+          if (!DATEABLE_TYPES.has(item.type)) continue;
+          const value = item.properties['dateModified'] ?? item.properties['datePublished'];
+          if (value !== undefined && value !== null) values.push(value);
+        }
+      }
+
+      if (values.length === 0) {
+        return {
+          passed: false,
+          detail: 'No dateModified or datePublished found on Article/WebPage structured data.',
+        };
+      }
+      const anyParseable = values.some(
+        (value) => typeof value === 'string' && !Number.isNaN(Date.parse(value)),
+      );
+      if (anyParseable) return { passed: true };
+      return {
+        passed: false,
+        detail: `Date present but unparseable: "${String(values[0])}". Use ISO 8601 (e.g. "2026-05-01").`,
+      };
     },
   },
 ];

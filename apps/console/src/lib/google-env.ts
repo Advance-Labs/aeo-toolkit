@@ -19,8 +19,13 @@ export class MissingEnvError extends Error {
   }
 }
 
+/**
+ * Values are trimmed: a secret stored with a trailing newline (e.g. `echo "$S" | vercel env add`)
+ * is sent to Google as `client_secret=…%0A` and rejected as `invalid_client` with a bare 401, which
+ * looks exactly like a wrong secret.
+ */
 function required(name: string): string {
-  const value = process.env[name];
+  const value = process.env[name]?.trim();
   if (value === undefined || value.length === 0) {
     throw new MissingEnvError(name);
   }

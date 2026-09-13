@@ -77,6 +77,8 @@ function goodParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
       paragraphCount: 12,
       listCount: 4,
       tableCount: 1,
+      scriptCount: 3,
+      hasEmptyAppShell: false,
     },
     rawStructuredData: [],
     ...overrides,
@@ -117,6 +119,11 @@ function poorParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
       paragraphCount: 1,
       listCount: 0,
       tableCount: 0,
+      // Thin, but genuinely server-rendered: the fix here is "write more", which is a
+      // DIFFERENT fix from the client-rendered case below. Keeping them separate is the
+      // point of the new rule.
+      scriptCount: 2,
+      hasEmptyAppShell: false,
     },
     rawStructuredData: [],
     ...overrides,
@@ -125,7 +132,18 @@ function poorParsedPage(url: string, overrides: Partial<ParsedHtml> = {}): Parse
 
 function richStructured(overrides: Partial<StructuredDataReport> = {}): StructuredDataReport {
   return {
-    items: [],
+    // One concrete, dated Article item so the good site passes aeo.content-freshness;
+    // the boolean has* flags below cover the rules that only check type presence.
+    items: [
+      {
+        format: 'json-ld',
+        type: 'Article',
+        properties: { dateModified: '2026-05-01T09:00:00Z', datePublished: '2026-01-10' },
+        valid: true,
+        missingRequired: [],
+        warnings: [],
+      },
+    ],
     typesPresent: ['Organization', 'Article', 'Person', 'FAQPage', 'BreadcrumbList'],
     aeoTypesPresent: ['Organization', 'Article', 'Person', 'FAQPage', 'BreadcrumbList', 'HowTo'],
     hasOrganization: true,
@@ -280,6 +298,38 @@ export function singlePageContext(): ScoringContext {
     ...ctx,
     crawl: { ...ctx.crawl, pages: ctx.crawl.pages.slice(0, 1), pageCount: 1 },
     pages: ctx.pages.slice(0, 1),
+  };
+}
+
+/**
+ * A site that is excellent in a browser and empty to a crawler: an app shell with no
+ * visible text, plus the script tags that would fill it.
+ *
+ * Deliberately distinct from `poorContext`, which is thin AND server-rendered. The two
+ * produce the same low word count and need opposite fixes, which is exactly the confusion
+ * `aeo.content-server-rendered` exists to resolve.
+ */
+export function clientRenderedContext(): ScoringContext {
+  const ctx = goodContext('single-page');
+  const page = ctx.pages[0];
+  if (page === undefined) throw new Error('goodContext must have at least one page');
+  const shellPage = {
+    ...page,
+    content: {
+      ...page.content,
+      wordCount: 12,
+      paragraphCount: 0,
+      listCount: 0,
+      tableCount: 0,
+      questionHeadingCount: 0,
+      scriptCount: 9,
+      hasEmptyAppShell: true,
+    },
+  };
+  return {
+    ...ctx,
+    crawl: { ...ctx.crawl, pages: ctx.crawl.pages.slice(0, 1), pageCount: 1 },
+    pages: [shellPage],
   };
 }
 

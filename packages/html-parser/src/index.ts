@@ -9,6 +9,7 @@ import * as cheerio from 'cheerio';
 import type {
   ContentSignals,
   HeadingNode,
+  HreflangEntry,
   ImageInfo,
   LinkInfo,
   MetaTags,
@@ -20,7 +21,10 @@ import type {
 import { computeContentSignals as computeContentSignalsFromDom } from './content.js';
 import { extractHeadings as extractHeadingsFromDom } from './headings.js';
 import { extractImages as extractImagesFromDom } from './images.js';
-import { extractLinks as extractLinksFromDom } from './links.js';
+import {
+  extractHreflangs as extractHreflangsFromDom,
+  extractLinks as extractLinksFromDom,
+} from './links.js';
 import {
   extractMeta as extractMetaFromDom,
   extractOpenGraph as extractOpenGraphFromDom,
@@ -58,6 +62,11 @@ export function extractImages(html: string, url: string): ImageInfo[] {
 /** Extract anchor links, classified internal/external and nofollow. */
 export function extractLinks(html: string, url: string): LinkInfo[] {
   return extractLinksFromDom(cheerio.load(html), url);
+}
+
+/** Extract `rel="alternate" hreflang` annotations with hrefs resolved against `url`. */
+export function extractHreflangs(html: string, url: string): HreflangEntry[] {
+  return extractHreflangsFromDom(cheerio.load(html), url);
 }
 
 /**

@@ -9,7 +9,7 @@
  * prefers-reduced-motion it renders nothing and the static backdrop stands in.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const ShaderGradientCanvas = dynamic(
@@ -26,22 +26,62 @@ const GRADIENT_URL =
 
 export function HeroShader(): React.ReactElement | null {
   const [enabled, setEnabled] = useState(false);
+  // Bumped when the browser evicts our WebGL context (tab-wide context cap under
+  // heavy navigation): a lost context freezes the canvas into a still of its last
+  // frame, so we remount for a fresh context. After 3 losses we stop fighting.
+  const [generation, setGeneration] = useState(0);
+  const hostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setEnabled(true);
+    // Desktop only: a full-stage animated shader is the single heaviest thing a phone
+    // GPU could be asked to do here, and below lg the stage doesn't pin anyway — a
+    // static tint (landing-v2.css) stands in on small screens.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wide = window.matchMedia('(min-width: 1024px)').matches;
+    if (!reduce && wide) setEnabled(true);
   }, []);
+
+  useEffect(() => {
+    if (!enabled) return undefined;
+    const hostEl = hostRef.current;
+    if (!hostEl) return undefined;
+    let timer = 0;
+    // Capture phase: the event fires on the (dynamically mounted) canvas below us.
+    const onLost = (): void => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setGeneration((g) => g + 1), 400);
+    };
+    hostEl.addEventListener('webglcontextlost', onLost, true);
+    return () => {
+      window.clearTimeout(timer);
+      hostEl.removeEventListener('webglcontextlost', onLost, true);
+    };
+  }, [enabled]);
 
   if (!enabled) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-      <ShaderGradientCanvas
-        style={{ position: 'absolute', inset: 0, opacity: 0.55 }}
-        pixelDensity={1}
-        fov={45}
-      >
-        <ShaderGradient control="query" urlString={GRADIENT_URL} />
-      </ShaderGradientCanvas>
+    <div ref={hostRef} className="pointer-events-none absolute inset-0" aria-hidden="true">
+      {generation < 3 ? (
+        <ShaderGradientCanvas
+          key={generation}
+          style={{ position: 'absolute', inset: 0, opacity: 0.55 }}
+          pixelDensity={1}
+          fov={45}
+        >
+          <ShaderGradient control="query" urlString={GRADIENT_URL} />
+        </ShaderGradientCanvas>
+      ) : (
+        /* The GPU keeps evicting us — settle on a static field in the same palette. */
+        <div
+          className="absolute inset-0"
+          style={{
+            opacity: 0.55,
+            background:
+              'radial-gradient(120% 90% at 85% -10%, rgba(168,243,38,0.18) 0%, transparent 55%), radial-gradient(130% 100% at 15% 110%, rgba(124,58,237,0.6) 0%, transparent 60%), linear-gradient(200deg, #101024 0%, #0a0a0b 70%)',
+          }}
+        />
+      )}
       {/* Contrast overlay: the field stays atmosphere, the type stays readable. */}
       <div
         className="absolute inset-0"

@@ -35,13 +35,15 @@ export function mcpPublicUrl(env: Record<string, string | undefined> = process.e
 }
 
 /**
- * The authorization servers this deployment can honestly point a client at, or
- * `null` when there are none.
+ * The authorization servers this deployment can honestly point a client at from
+ * the ROOT `.well-known` documents, or `null` when there are none.
  *
- * THIS APP IMPLEMENTS NO OAUTH. There is no `/authorize`, no `/token`, no
- * `/register` — every MCP server here is BYOK, taking a caller-supplied bearer or
- * an `x-bing-api-key` header. So this origin must NEVER name itself as its own
- * authorization server.
+ * THE ROOT OF THIS ORIGIN IS NOT AN AUTHORIZATION SERVER. There is no `/authorize`,
+ * `/token` or `/register` at the root, and the ai-visibility and backlink servers
+ * need no login at all. So the root documents must NEVER name this origin as its
+ * own authorization server. (The search server does run one, but at the path-scoped
+ * issuer `${origin}/api/mcp/oauth`, discovered through its own path-scoped
+ * `.well-known` documents; see `@/mcp/oauth/config`. It never touches these.)
  *
  * It used to. `OAUTH_ISSUER` is unset in production, both `.well-known` documents
  * fell back to this origin, and the authorization-server document advertised

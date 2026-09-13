@@ -6,6 +6,12 @@
  * sequence over the measure ledger, scroll-triggered score count-up, and slow parallax
  * on the narrative frames.
  *
+ * Responsive contract: the pinned cinematic stage is a two-column desktop composition —
+ * below lg (1024px) its stacked story content is taller than a phone viewport, so the
+ * stage does not pin there. gsap.matchMedia gates it: desktop gets the zoom/scrub
+ * sequence and header fold; smaller screens get the layers as ordinary sections with
+ * per-line reveals and an on-enter count-up.
+ *
  * Accessibility contract: under prefers-reduced-motion nothing is hidden, pinned, or
  * animated (final states render immediately); without JavaScript the markup is complete
  * — hidden/dimmed styles apply only under `html.has-motion`. Word splitting preserves
@@ -46,6 +52,8 @@ export function Motion(): null {
     gsap.registerPlugin(ScrollTrigger);
     document.documentElement.classList.add('has-motion');
 
+    let mm: gsap.MatchMedia | undefined;
+
     const ctx = gsap.context(() => {
       gsap.defaults({ ease: 'power3.out', duration: 0.85 });
 
@@ -65,94 +73,133 @@ export function Motion(): null {
         '-=0.55',
       );
 
-      // ── The cinematic stage: scroll zooms past the hero while the void frame
-      // surfaces; the story lines then play; the pin releases into normal scrolling.
+      // ── The cinematic stage. Desktop: scroll zooms past the hero while the void
+      // frame surfaces; the story lines then play; the pin releases into normal
+      // scrolling. Mobile: no pin — the layers stack, lines reveal on entry.
       const stage = document.querySelector<HTMLElement>('[data-stage]');
       if (stage) {
         const heroLayer = stage.querySelector<HTMLElement>('[data-stage-hero]');
         const storyLayer = stage.querySelector<HTMLElement>('[data-stage-story]');
         const lines = stage.querySelectorAll<HTMLElement>('[data-story-line]');
         const specimen = stage.querySelector<HTMLElement>('[data-story-specimen]');
-        if (storyLayer) gsap.set(storyLayer, { autoAlpha: 0 });
-        // Hover-capable devices fold the chrome once the stage releases; touch keeps
-        // the header, since there is no hover to summon it back.
-        const canFold = window.matchMedia('(hover: hover)').matches;
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: stage,
-            // Absolute zero: the stage owns the scroll from the first wheel tick — the
-            // hero never translates, it only zooms.
-            start: () => 0,
-            end: '+=320%',
-            scrub: 0.4,
-            pin: true,
-            onLeave: () => {
-              if (canFold) document.documentElement.classList.add('v2-header-folded');
-            },
-            onEnterBack: () => {
-              document.documentElement.classList.remove('v2-header-folded', 'v2-header-peek');
-            },
-          },
-        });
-        if (heroLayer) {
-          tl.to(
-            heroLayer,
-            {
-              scale: 1.22,
-              autoAlpha: 0,
-              duration: 1.2,
-              ease: 'power2.in',
-              transformOrigin: '50% 42%',
-            },
-            0,
-          );
-        }
         const shaderField = stage.querySelector<HTMLElement>('[data-stage-shader]');
-        if (shaderField) {
-          tl.to(shaderField, { autoAlpha: 0, duration: 1.1, ease: 'power1.in' }, 0.1);
-        }
-        if (storyLayer) {
-          tl.to(storyLayer, { autoAlpha: 1, duration: 1.0, ease: 'none' }, 0.2);
-        }
-        const lineStart = 1.25;
-        const beat = 0.75;
-        lines.forEach((line, i) => {
-          tl.fromTo(
-            line,
-            { autoAlpha: 0, y: 44 },
-            { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-            lineStart + i * beat,
-          );
-          if (i < lines.length - 1) {
-            tl.to(line, { autoAlpha: 0.16, duration: 0.4 }, lineStart + i * beat + 0.6);
-          }
-        });
-        if (specimen) {
-          const at = lineStart + (lines.length - 1) * beat + 0.55;
-          tl.fromTo(
-            specimen,
-            { autoAlpha: 0, xPercent: 16 },
-            { autoAlpha: 1, xPercent: 0, duration: 1.2, ease: 'power2.out' },
-            at,
-          );
-          const scoreEl = specimen.querySelector<HTMLElement>('[data-count]');
-          if (scoreEl) {
-            const target = Number(scoreEl.dataset.count ?? '0');
-            const state = { n: 0 };
-            tl.to(
-              state,
-              {
-                n: target,
-                duration: 1.3,
-                ease: 'none',
-                onUpdate: () => {
-                  scoreEl.textContent = String(Math.round(state.n));
-                },
+        const scoreEl = stage.querySelector<HTMLElement>('[data-count]');
+
+        const runCount = (vars: gsap.TweenVars | null, tl?: gsap.core.Timeline, at?: number): void => {
+          if (!scoreEl) return;
+          const target = Number(scoreEl.dataset.count ?? '0');
+          const state = { n: 0 };
+          const tween: gsap.TweenVars = {
+            n: target,
+            duration: 1.3,
+            ease: 'none',
+            onUpdate: () => {
+              scoreEl.textContent = String(Math.round(state.n));
+            },
+            ...(vars ?? {}),
+          };
+          if (tl) tl.to(state, tween, at);
+          else gsap.to(state, tween);
+        };
+
+        mm = gsap.matchMedia();
+
+        // Desktop composition: the pinned two-layer zoom.
+        mm.add('(min-width: 1024px)', () => {
+          if (storyLayer) gsap.set(storyLayer, { autoAlpha: 0 });
+          // Hover-capable devices fold the chrome once the stage releases; touch keeps
+          // the header, since there is no hover to summon it back.
+          const canFold = window.matchMedia('(hover: hover)').matches;
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: stage,
+              // Absolute zero: the stage owns the scroll from the first wheel tick — the
+              // hero never translates, it only zooms.
+              start: () => 0,
+              end: '+=320%',
+              scrub: 0.4,
+              pin: true,
+              onLeave: () => {
+                if (canFold) document.documentElement.classList.add('v2-header-folded');
               },
-              at + 0.3,
+              onEnterBack: () => {
+                document.documentElement.classList.remove('v2-header-folded', 'v2-header-peek');
+              },
+            },
+          });
+          if (heroLayer) {
+            tl.to(
+              heroLayer,
+              {
+                scale: 1.22,
+                autoAlpha: 0,
+                duration: 1.2,
+                ease: 'power2.in',
+                transformOrigin: '50% 42%',
+              },
+              0,
             );
           }
-        }
+          if (shaderField) {
+            tl.to(shaderField, { autoAlpha: 0, duration: 1.1, ease: 'power1.in' }, 0.1);
+          }
+          if (storyLayer) {
+            tl.to(storyLayer, { autoAlpha: 1, duration: 1.0, ease: 'none' }, 0.2);
+          }
+          const lineStart = 1.25;
+          const beat = 0.75;
+          lines.forEach((line, i) => {
+            tl.fromTo(
+              line,
+              { autoAlpha: 0, y: 44 },
+              { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+              lineStart + i * beat,
+            );
+            if (i < lines.length - 1) {
+              tl.to(line, { autoAlpha: 0.16, duration: 0.4 }, lineStart + i * beat + 0.6);
+            }
+          });
+          if (specimen) {
+            const at = lineStart + (lines.length - 1) * beat + 0.55;
+            tl.fromTo(
+              specimen,
+              { autoAlpha: 0, xPercent: 16 },
+              { autoAlpha: 1, xPercent: 0, duration: 1.2, ease: 'power2.out' },
+              at,
+            );
+            runCount(null, tl, at + 0.3);
+          }
+          return () => {
+            document.documentElement.classList.remove('v2-header-folded', 'v2-header-peek');
+          };
+        });
+
+        // Stacked composition: the layers flow as sections; each line lands on entry.
+        mm.add('(max-width: 1023.98px)', () => {
+          lines.forEach((line) => {
+            gsap.from(line, {
+              autoAlpha: 0,
+              y: 28,
+              duration: 0.7,
+              ease: 'power2.out',
+              scrollTrigger: { trigger: line, start: 'top 86%' },
+            });
+          });
+          if (specimen) {
+            gsap.from(specimen, {
+              autoAlpha: 0,
+              y: 26,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: { trigger: specimen, start: 'top 85%' },
+            });
+          }
+          runCount({
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: { trigger: scoreEl ?? stage, start: 'top 80%', once: true },
+          } as gsap.TweenVars);
+        });
       }
 
       // ── Act II scan: rows brighten one by one as the scroll passes them.
@@ -165,18 +212,18 @@ export function Motion(): null {
         });
       }
 
-      // ── Act III: the score counts up when the specimen enters.
-      const scoreEl = document.querySelector<HTMLElement>('[data-count]');
-      if (scoreEl && !scoreEl.closest('[data-stage]')) {
-        const target = Number(scoreEl.dataset.count ?? '0');
+      // ── Act III: a score outside the stage counts up when its specimen enters.
+      const looseScore = document.querySelector<HTMLElement>('[data-count]');
+      if (looseScore && !looseScore.closest('[data-stage]')) {
+        const target = Number(looseScore.dataset.count ?? '0');
         const state = { n: 0 };
         gsap.to(state, {
           n: target,
           duration: 1.2,
           ease: 'power2.out',
-          scrollTrigger: { trigger: scoreEl, start: 'top 80%', once: true },
+          scrollTrigger: { trigger: looseScore, start: 'top 80%', once: true },
           onUpdate: () => {
-            scoreEl.textContent = String(Math.round(state.n));
+            looseScore.textContent = String(Math.round(state.n));
           },
         });
       }
@@ -270,6 +317,7 @@ export function Motion(): null {
       document.documentElement.classList.remove('v2-header-folded', 'v2-header-peek');
       gsap.ticker.remove(tick);
       lenis.destroy();
+      mm?.revert();
       ctx.revert();
       document.documentElement.classList.remove('has-motion');
     };

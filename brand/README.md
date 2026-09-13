@@ -87,6 +87,27 @@ repo.
 - Don't tint, outline, rotate, or put a ring behind the sphere; don't recolour or restyle the
   wordmark; don't place either on a mid-grey ground where the off-white sphere loses its edge.
 
+## App icons: the mark carries its own ground
+
+Where we do **not** control the background, the sphere ships composited on a rounded `#0A0A0B`
+tile rather than on transparency. The sphere is off-white with no outline — measured on the
+128 px raster it is 56.7% transparent at a mean luminance of 155/255 — so on a white ground it
+very nearly disappears, and the Chrome Web Store listing card and the light-mode Chrome toolbar
+are both white. This is the same reason `logo-dark-preview.png` exists; an app icon is that
+problem in a smaller box.
+
+| Surface | Treatment |
+|---------|-----------|
+| Chrome extension icons (16/32/48/128) | Sphere on a rounded `#0A0A0B` tile, radius `size × 28/128` |
+| Favicons, app icons, avatars | Same, wherever the host renders on an unknown ground |
+| Anywhere we own the ground (site, docs, README on GitHub's dark UI) | The transparent mark, as above |
+
+Clear space and the 16 px mark minimum **collide on small tiles** — a quarter-width inset on a
+16 px icon leaves a 10 px sphere, under the mark's own floor. Clear space is what gives, because
+it is breathing room and legibility is a requirement. The inset therefore tightens as the tile
+shrinks: the sphere takes 64% of the tile at 128 and 48, 78% at 32, 88% at 16. That table lives
+in `apps/chrome-extension/scripts/generate-icons.mjs`; change it there, not by hand-editing PNGs.
+
 ## Previous brand
 
 The indigo→violet tile with the white "A" and cyan sparkle (`#6366F1` / `#8B5CF6` / `#22D3EE`)
