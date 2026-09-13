@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter, JetBrains_Mono, Syne } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { Footer } from '@/components/ui/Footer';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -67,10 +68,11 @@ export default function RootLayout({ children }: { children: ReactNode }): React
         <Header />
         <main className="relative">{children}</main>
         <Footer />
-        {/* Core Web Vitals field data (SEO-AEO-PLAN §7). No-ops outside Vercel — the script
-            only loads when the deployment provides it — so self-hosted/Docker installs are
-            unaffected and no data leaves them. */}
+        {/* Core Web Vitals field data (SEO-AEO-PLAN §7) plus page-view analytics. Both
+            no-op outside Vercel — the scripts only load when the deployment provides
+            them — so self-hosted/Docker installs are unaffected and no data leaves them. */}
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
