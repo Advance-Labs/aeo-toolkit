@@ -83,8 +83,17 @@ Prepare these before submission (the store will not publish without them):
 | **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | Generated from the brand mark `src/icons/icon.svg` by `pnpm icons` (`scripts/generate-icons.mjs`, via `sharp`) into `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). The `package` script runs `icons` automatically, so the store zip always contains them. |
 | **Store icon** | 128×128 PNG | The icon shown on the store listing page — `public/icons/icon-128.png`, the Advance Labs sphere rasterized at 128px (see `brand/README.md`). |
 | **Screenshots** | 1280×800 or 640×400 PNG/JPEG, 1–5 images | Capture the popup: score gauge, the site-file (robots/sitemap/llms) grid, and the checklist. |
-| **Small promo tile** (optional) | 440×280 PNG/JPEG | Improves discoverability. |
-| **Marquee promo tile** (optional) | 1400×560 PNG/JPEG | Only needed for featured placement. |
+| **Small promo tile** (optional) | 440×280 PNG/JPEG | Improves discoverability. Generate with `pnpm promo-tiles` → `store-assets/small-tile-440x280.png`. |
+| **Marquee promo tile** (optional) | 1400×560 PNG/JPEG | Only needed for featured placement. Generate with `pnpm promo-tiles` → `store-assets/marquee-1400x560.png`. |
+
+**No badge/status text on any listing image.** The 2026-09-13 submission was rejected
+(policy: "Impersonation and Intellectual Property" — mimicking ranking/performance/status)
+because a hand-made small tile had "Free" text baked into it. Chrome bans words like
+"free", "new", "#1", or "recommended" on icons/screenshots/tiles regardless of whether
+they're accurate — it reads as faked store-endorsed status. `scripts/generate-promo-tiles.mjs`
+composites only the brand mark + wordmark from `brand/logo-dark.png` onto the flat `#0A0A0B`
+ground, with no overlaid text, so it can't reintroduce this. Don't hand-edit promo images with
+text/badges outside that script.
 
 ## 4. Listing copy
 
