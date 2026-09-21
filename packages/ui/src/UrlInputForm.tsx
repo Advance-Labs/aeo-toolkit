@@ -131,7 +131,7 @@ export function UrlInputForm({
             // into a real crawl of open indexes, so "searching" is honest here. A future
             // consumer that submits into something other than a fetch/crawl should pass
             // its own busy state instead of reusing this one.
-            <span role="status" className="inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-2">
               <ThinkingOrb state="searching" size={20} theme="auto" aria-hidden="true" />
               Analyzing…
             </span>
@@ -140,6 +140,15 @@ export function UrlInputForm({
           )}
         </button>
       </div>
+      {/*
+        A role="status" span *inside* the button above is unreliable — button children
+        are presentational, so most screen readers never announce a live region nested
+        in one. This sibling is the real announcement: always rendered (empty when
+        idle) so the text change is what fires.
+      */}
+      <span role="status" className="sr-only">
+        {loading ? 'Analyzing…' : ''}
+      </span>
       {error !== null ? (
         <p id="aeo-url-error" role="alert" className="text-sm font-medium text-red-300">
           {error}

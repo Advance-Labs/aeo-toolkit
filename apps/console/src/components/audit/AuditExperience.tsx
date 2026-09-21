@@ -547,7 +547,7 @@ function ScoreSummaryCard({
             disabled={pdfBusy}
           >
             {pdfBusy ? (
-              <span role="status" className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-2">
                 <ThinkingOrb state="composing" size={20} theme="auto" aria-hidden="true" />
                 Preparing PDF…
               </span>
@@ -558,6 +558,15 @@ function ScoreSummaryCard({
               </>
             )}
           </Button>
+          {/*
+            A role="status" span *inside* the button above is unreliable — button
+            children are presentational, so most screen readers never announce a
+            live region nested in one. This sibling is the real announcement: it's
+            always rendered (empty when idle) so the text change is what fires.
+          */}
+          <span role="status" className="sr-only">
+            {pdfBusy ? 'Preparing PDF…' : ''}
+          </span>
           {pdfError !== null ? (
             <p role="alert" className="text-xs text-red-300">
               {pdfError}
