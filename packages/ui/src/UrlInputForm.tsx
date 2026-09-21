@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { FormEvent, JSX } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import { cx } from './utils.js';
 
 export interface UrlInputFormProps {
@@ -126,37 +127,28 @@ export function UrlInputForm({
           )}
         >
           {loading ? (
-            <>
-              <svg
-                className="animate-spin"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="9"
-                  stroke="currentColor"
-                  strokeOpacity="0.3"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M21 12a9 9 0 0 0-9-9"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-              </svg>
+            // This form's only current consumer (the backlink graph's UrlBar) submits
+            // into a real crawl of open indexes, so "searching" is honest here. A future
+            // consumer that submits into something other than a fetch/crawl should pass
+            // its own busy state instead of reusing this one.
+            <span className="inline-flex items-center gap-2">
+              <ThinkingOrb state="searching" size={20} theme="auto" aria-hidden="true" />
               Analyzing…
-            </>
+            </span>
           ) : (
             submitLabel
           )}
         </button>
       </div>
+      {/*
+        A role="status" span *inside* the button above is unreliable — button children
+        are presentational, so most screen readers never announce a live region nested
+        in one. This sibling is the real announcement: always rendered (empty when
+        idle) so the text change is what fires.
+      */}
+      <span role="status" className="sr-only">
+        {loading ? 'Analyzing…' : ''}
+      </span>
       {error !== null ? (
         <p id="aeo-url-error" role="alert" className="text-sm font-medium text-red-300">
           {error}

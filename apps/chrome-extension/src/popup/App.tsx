@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { JSX } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import { toCheckRows } from '../lib/audit.js';
 import { ScoreGauge } from './ScoreGauge.js';
 import { CheckList } from './CheckList.js';
@@ -41,8 +42,10 @@ export function App(): JSX.Element {
       {state.status === 'idle' && <p className="hint">Starting audit…</p>}
 
       {state.status === 'running' && (
-        <div className="loading">
-          <div className="spinner" aria-label="Running audit" />
+        // The 40 audit rules run synchronously against the already-loaded tab DOM
+        // (no network crawl — see useAudit.ts), so this is the "solving" phase.
+        <div className="loading" role="status">
+          <ThinkingOrb state="solving" size={64} theme="auto" aria-hidden="true" />
           <p>Analyzing the active tab — fully client-side.</p>
         </div>
       )}

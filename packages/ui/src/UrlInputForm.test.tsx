@@ -34,6 +34,9 @@ describe('UrlInputForm', () => {
 
   it('disables the control and shows a busy label while loading', () => {
     render(<UrlInputForm onSubmit={vi.fn()} loading />);
+    // The busy button now nests a `thinking-orbs` indicator, but it's aria-hidden
+    // (the adjacent "Analyzing…" text is the sole accessible name — see
+    // UrlInputForm.tsx for why the orb doesn't carry its own aria-label).
     const button = screen.getByRole('button', { name: 'Analyzing…' });
     expect(button).toBeDisabled();
     expect(screen.getByLabelText('Website URL')).toBeDisabled();

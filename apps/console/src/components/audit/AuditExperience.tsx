@@ -2,6 +2,7 @@
 
 import { useCallback, useId, useState } from 'react';
 import type { FormEvent, JSX, ReactNode } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import type {
   AuditReport,
   Finding,
@@ -319,16 +320,18 @@ function AuditError({ message }: { message: string }): JSX.Element {
   );
 }
 
+/**
+ * The audit endpoint is one opaque request (`POST /api/audit/technical`) that
+ * crawls the site and scores it server-side with no progress events in between,
+ * so this is one honest "working" state rather than invented crawl/score phases.
+ */
 function AuditLoading(): JSX.Element {
+  const label = 'Crawling and scoring the site — this can take a moment for larger sites.';
   return (
     <div className="surface flex flex-col gap-5 p-6 sm:p-7" aria-live="polite" aria-busy="true">
       <div className="flex items-center gap-3">
-        <span className="text-brand-cyan">
-          <Spinner />
-        </span>
-        <p className="text-sm font-medium text-slate-200">
-          Crawling and scoring the site — this can take a moment for larger sites.
-        </p>
+        <ThinkingOrb state="working" size={20} theme="auto" aria-hidden="true" />
+        <p className="text-sm font-medium text-slate-200">{label}</p>
       </div>
       {/* Skeleton shimmer rows hint at the layout that's about to appear. */}
       <div className="grid gap-4 sm:grid-cols-[auto,1fr]">
@@ -544,10 +547,10 @@ function ScoreSummaryCard({
             disabled={pdfBusy}
           >
             {pdfBusy ? (
-              <>
-                <Spinner />
+              <span className="inline-flex items-center gap-2">
+                <ThinkingOrb state="composing" size={20} theme="auto" aria-hidden="true" />
                 Preparing PDF…
-              </>
+              </span>
             ) : (
               <>
                 <DownloadIcon />
@@ -555,6 +558,15 @@ function ScoreSummaryCard({
               </>
             )}
           </Button>
+          {/*
+            A role="status" span *inside* the button above is unreliable — button
+            children are presentational, so most screen readers never announce a
+            live region nested in one. This sibling is the real announcement: it's
+            always rendered (empty when idle) so the text change is what fires.
+          */}
+          <span role="status" className="sr-only">
+            {pdfBusy ? 'Preparing PDF…' : ''}
+          </span>
           {pdfError !== null ? (
             <p role="alert" className="text-xs text-red-300">
               {pdfError}
