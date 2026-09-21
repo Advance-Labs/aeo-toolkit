@@ -118,7 +118,7 @@ function LoadingState(): JSX.Element {
     <Card>
       <div className="flex flex-col gap-5" aria-live="polite">
         <p role="status" className="flex items-center gap-2.5 text-sm text-slate-300">
-          <ThinkingOrb state="working" size={20} theme="auto" aria-label={label} />
+          <ThinkingOrb state="working" size={20} theme="auto" aria-hidden="true" />
           {label}
         </p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

@@ -127,16 +127,14 @@ export function UrlInputForm({
           )}
         >
           {loading ? (
-            <>
-              {/*
-                This form's only current consumer (the backlink graph's UrlBar) submits
-                into a real crawl of open indexes, so "searching" is honest here. A future
-                consumer that submits into something other than a fetch/crawl should pass
-                its own busy state instead of reusing this one.
-              */}
-              <ThinkingOrb state="searching" size={20} theme="auto" aria-label="Analyzing…" />
+            // This form's only current consumer (the backlink graph's UrlBar) submits
+            // into a real crawl of open indexes, so "searching" is honest here. A future
+            // consumer that submits into something other than a fetch/crawl should pass
+            // its own busy state instead of reusing this one.
+            <span role="status" className="inline-flex items-center gap-2">
+              <ThinkingOrb state="searching" size={20} theme="auto" aria-hidden="true" />
               Analyzing…
-            </>
+            </span>
           ) : (
             submitLabel
           )}

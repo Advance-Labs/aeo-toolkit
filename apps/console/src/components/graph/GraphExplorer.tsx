@@ -289,7 +289,7 @@ function EmptyOrLoading({ status, hasGraph }: { status: Status; hasGraph: boolea
           // Real crawl phase, not a rendering spinner: the API is pulling backlinks
           // from open indexes (DuckDuckGo, CommonCrawl, Wayback) — see the flow note
           // at the top of this file. Maps to "searching", not the canvas render.
-          <ThinkingOrb state="searching" size={64} theme="auto" aria-label={title} />
+          <ThinkingOrb state="searching" size={64} theme="auto" aria-hidden="true" />
         ) : (
           <span
             aria-hidden

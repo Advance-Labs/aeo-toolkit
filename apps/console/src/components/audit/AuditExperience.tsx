@@ -330,7 +330,7 @@ function AuditLoading(): JSX.Element {
   return (
     <div className="surface flex flex-col gap-5 p-6 sm:p-7" aria-live="polite" aria-busy="true">
       <div className="flex items-center gap-3">
-        <ThinkingOrb state="working" size={20} theme="auto" aria-label={label} />
+        <ThinkingOrb state="working" size={20} theme="auto" aria-hidden="true" />
         <p className="text-sm font-medium text-slate-200">{label}</p>
       </div>
       {/* Skeleton shimmer rows hint at the layout that's about to appear. */}
@@ -547,10 +547,10 @@ function ScoreSummaryCard({
             disabled={pdfBusy}
           >
             {pdfBusy ? (
-              <>
-                <ThinkingOrb state="composing" size={20} theme="auto" aria-label="Preparing PDF…" />
+              <span role="status" className="inline-flex items-center gap-2">
+                <ThinkingOrb state="composing" size={20} theme="auto" aria-hidden="true" />
                 Preparing PDF…
-              </>
+              </span>
             ) : (
               <>
                 <DownloadIcon />
