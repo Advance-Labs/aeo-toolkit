@@ -20,7 +20,8 @@
     "@advance-labs/types": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "jspdf": "^4.2.1"
+    "jspdf": "^4.2.1",
+    "thinking-orbs": "^0.3.1"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",

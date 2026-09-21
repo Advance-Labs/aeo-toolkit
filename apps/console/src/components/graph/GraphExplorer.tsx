@@ -16,6 +16,7 @@
  */
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { JSX } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import { BacklinkGraphCanvas } from '@/components/graph/BacklinkGraphCanvas.js';
 import { DetailPanel } from '@/components/graph/DetailPanel.js';
 import { Filters, applyFilter, defaultFilter } from '@/components/graph/Filters.js';
@@ -285,10 +286,10 @@ function EmptyOrLoading({ status, hasGraph }: { status: Status; hasGraph: boolea
         aria-busy={building}
       >
         {building ? (
-          <span
-            aria-hidden
-            className="h-9 w-9 animate-spin rounded-full border-2 border-white/15 border-t-brand-cyan"
-          />
+          // Real crawl phase, not a rendering spinner: the API is pulling backlinks
+          // from open indexes (DuckDuckGo, CommonCrawl, Wayback) — see the flow note
+          // at the top of this file. Maps to "searching", not the canvas render.
+          <ThinkingOrb state="searching" size={64} theme="auto" aria-label={title} />
         ) : (
           <span
             aria-hidden

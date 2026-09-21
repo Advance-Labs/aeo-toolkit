@@ -56,6 +56,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.7(react@19.2.7)
+      thinking-orbs:
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.7)
     devDependencies:
       '@crxjs/vite-plugin':
         specifier: ^2.0.0-beta.28
@@ -195,6 +198,9 @@ importers:
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
+      thinking-orbs:
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.7)
       three:
         specifier: ^0.171.0
         version: 0.171.0
@@ -709,6 +715,9 @@ importers:
       '@advance-labs/types':
         specifier: workspace:*
         version: link:../types
+      thinking-orbs:
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.7)
     devDependencies:
       '@advance-labs/config':
         specifier: workspace:*
@@ -5138,6 +5147,11 @@ packages:
 
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
+
+  thinking-orbs@0.3.1:
+    resolution: {integrity: sha512-3BG1aeB1RUTxItCml/BBuIz5JRM4kZqGuyx+vouv0fXTtcR9ZNoKjWGneHPx94y74GxgArwJZ1qbJR5dt54kSw==}
+    peerDependencies:
+      react: '>=18.0.0'
 
   three-forcegraph@1.43.4:
     resolution: {integrity: sha512-FtmiZP/T16ZQaHza3JDaDn0YTXFtg9e7pGnTeU8nzu0NNkx7MpWbF/GvmpbQsWHx3rukHtkRv1fTorLPB3FDEA==}
@@ -10760,6 +10774,10 @@ snapshots:
   thenify@3.3.1:
     dependencies:
       any-promise: 1.3.0
+
+  thinking-orbs@0.3.1(react@19.2.7):
+    dependencies:
+      react: 19.2.7
 
   three-forcegraph@1.43.4(three@0.184.0):
     dependencies:

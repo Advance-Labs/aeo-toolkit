@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { FormEvent, JSX } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import { cx } from './utils.js';
 
 export interface UrlInputFormProps {
@@ -127,29 +128,13 @@ export function UrlInputForm({
         >
           {loading ? (
             <>
-              <svg
-                className="animate-spin"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="9"
-                  stroke="currentColor"
-                  strokeOpacity="0.3"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M21 12a9 9 0 0 0-9-9"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-              </svg>
+              {/*
+                This form's only current consumer (the backlink graph's UrlBar) submits
+                into a real crawl of open indexes, so "searching" is honest here. A future
+                consumer that submits into something other than a fetch/crawl should pass
+                its own busy state instead of reusing this one.
+              */}
+              <ThinkingOrb state="searching" size={20} theme="auto" aria-label="Analyzing…" />
               Analyzing…
             </>
           ) : (

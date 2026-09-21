@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
+import { ThinkingOrb } from 'thinking-orbs';
 import type { EeatReport } from '@advance-labs/types';
 import { GradeBadge } from '@advance-labs/ui';
 import { requestEeatAudit } from '@/components/eeat/client.js';
@@ -105,31 +106,20 @@ export function EeatScanner(): JSX.Element {
   );
 }
 
-/** Skeleton + status copy shown while the crawl + scoring runs. */
+/**
+ * Skeleton + status copy shown while the crawl + scoring runs. `requestEeatAudit`
+ * is one opaque request with no progress events, so this is one honest "working"
+ * state — the crawl and the four-pillar scoring both happen server-side before
+ * the response comes back, not observable sub-phases to map separately.
+ */
 function LoadingState(): JSX.Element {
+  const label = 'Crawling up to 12 pages and scoring the four pillars…';
   return (
     <Card>
       <div className="flex flex-col gap-5" aria-live="polite">
         <p role="status" className="flex items-center gap-2.5 text-sm text-slate-300">
-          <span aria-hidden="true" className="text-brand-cyan">
-            <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <circle
-                cx="12"
-                cy="12"
-                r="9"
-                stroke="currentColor"
-                strokeOpacity="0.25"
-                strokeWidth="3"
-              />
-              <path
-                d="M21 12a9 9 0 0 0-9-9"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          Crawling up to 12 pages and scoring the four pillars…
+          <ThinkingOrb state="working" size={20} theme="auto" aria-label={label} />
+          {label}
         </p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {[0, 1, 2, 3].map((i) => (
