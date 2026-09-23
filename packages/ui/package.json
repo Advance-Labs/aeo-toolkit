@@ -26,7 +26,8 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@advance-labs/types": "workspace:*"
+    "@advance-labs/types": "workspace:*",
+    "thinking-orbs": "^0.3.1"
   },
   "peerDependencies": {
     "react": ">=18"
