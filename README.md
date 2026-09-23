@@ -238,6 +238,8 @@ beside it. Anything a user sees should follow it, and
 
 ## Made by Advance Labs
 
+Built and maintained by [Advance Labs](https://advancelabs.dev) · [All Advance Labs products](https://advancelabs.dev/lab)
+
 AEO Toolkit is built and maintained by **[Advance Labs Inc.](https://advancelabs.dev)** — a software studio building [Creatin](https://www.creatin.ca), [Cartrix](https://www.cartrix.live), and this toolkit.
 
 This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, JSON-LD Organization schema, SSG-rendered pages, and canonical URLs — all patterns the scoring engine teaches.

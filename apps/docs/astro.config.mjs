@@ -97,6 +97,10 @@ export default defineConfig({
       favicon: '/favicon.png',
       customCss: ['./src/styles/brand.css'],
       social: [{ icon: 'github', label: 'GitHub', href: REPO }],
+      components: {
+        // Adds the parent-brand credit line under Starlight's default footer.
+        Footer: './src/components/ParentFooter.astro',
+      },
       head: [
         { tag: 'meta', attrs: { property: 'og:site_name', content: 'AEO Toolkit Docs' } },
         { tag: 'meta', attrs: { property: 'og:image', content: `${SITE}${BASE}/og.png` } },
@@ -107,6 +111,27 @@ export default defineConfig({
         {
           tag: 'meta',
           attrs: { name: 'robots', content: 'index, follow, max-snippet:-1, max-image-preview:large' },
+        },
+        // Entity graph: ties this product's docs to the Advance Labs Organization entity,
+        // without touching the console app's own Organization JSON-LD (apps/console).
+        {
+          tag: 'script',
+          attrs: { type: 'application/ld+json' },
+          content: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            '@id': 'https://advancelabs.dev/lab/aeo-toolkit#software',
+            name: 'AEO Toolkit',
+            url: 'https://docs.advancelabs.dev/aeo-toolkit/',
+            applicationCategory: 'DeveloperApplication',
+            license: 'https://www.apache.org/licenses/LICENSE-2.0',
+            creator: { '@id': 'https://advancelabs.dev/#organization' },
+            publisher: { '@id': 'https://advancelabs.dev/#organization' },
+            sameAs: [
+              'https://github.com/Advance-Labs/aeo-toolkit',
+              'https://advancelabs.dev/lab/aeo-toolkit',
+            ],
+          }),
         },
       ],
       sidebar: [
