@@ -1,0 +1,28 @@
+---
+// Adds a parent-brand credit line under Starlight's default footer content
+// (LastUpdated / Pagination / EditLink). See ../../../../brand/README.md and
+// the Advance Labs Instrument system (parent CLAUDE.md rebrand, Sept 2026).
+import Default from '@astrojs/starlight/components/Footer.astro';
+---
+
+<Default><slot /></Default>
+<p class="parent-credit">
+  AEO Toolkit is an open-source instrument by <a href="https://advancelabs.dev/lab/aeo-toolkit">Advance Labs</a>.
+</p>
+
+<style>
+  .parent-credit {
+    margin-top: 1rem;
+    font-family: var(--sl-font-mono);
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3);
+  }
+  .parent-credit a {
+    color: var(--sl-color-gray-3);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--sl-color-gray-3) 45%, transparent);
+  }
+  .parent-credit a:hover {
+    color: var(--sl-color-white);
+  }
+</style>

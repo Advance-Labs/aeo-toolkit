@@ -1,6 +1,6 @@
 /* AEO Toolkit brand for Starlight — see ../../../../docs/BRAND.md.
    Only Starlight's own custom properties are overridden so upgrades stay painless. */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 :root {
   --sl-font: 'Inter', system-ui, sans-serif;
@@ -36,14 +36,23 @@
   --sl-color-gray-6: #ffffff;
 }
 
-/* Headlines in Syne, like the site. */
-.sl-markdown-content h1,
-.sl-markdown-content h2,
-.sl-markdown-content h3,
-.site-title,
-h1#_top {
+/* The wordmark stays Syne Bold (brand/README.md); body headings move to Inter 600 with tight
+   tracking to match the parent Advance Labs type scale (see ninebrains DESIGN.md). */
+.site-title {
   font-family: 'Syne', var(--sl-font);
   letter-spacing: -0.01em;
+}
+.sl-markdown-content h1,
+h1#_top {
+  font-family: 'Inter', var(--sl-font);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+  font-family: 'Inter', var(--sl-font);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 /* Mono, uppercase labels for sidebar group headings — the lab-sheet voice. */
@@ -85,4 +94,12 @@ header.header {
 }
 :root[data-theme='light'] {
   --aeo-violet: #6d4bd8;
+}
+
+/* Slit line (runs-on.dev / Instrument): a hairline that fades out at both ends instead of a
+   flat rule. Dark mode only — the light theme keeps Starlight's plain hairline. */
+:root[data-theme='dark'] .sl-markdown-content hr {
+  height: 1px;
+  border: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16) 20%, rgba(255, 255, 255, 0.16) 80%, transparent);
 }
