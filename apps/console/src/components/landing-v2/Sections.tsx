@@ -281,7 +281,7 @@ const TOOL_FRAGMENTS: Record<string, string> = {
   '/tools/llms-txt': 'generate & download',
   '/tools/chat': 'ask your own GA4 + GSC',
   '/tools/graph': 'the web around you, in 3D',
-  '/tools/authority': 'open link graph · 0–10 · 12mo',
+  '/tools/authority': 'open link graph · 0–10 · since 2018',
 };
 
 /**

@@ -85,7 +85,7 @@ export const TOOLS: readonly ToolEntry[] = [
     href: '/tools/authority',
     name: 'Website Authority Checker',
     blurb:
-      'Score any domain against Common Crawl’s public link graph — Open PageRank 0–10, global rank, referring domains, and twelve months of history.',
+      'Score any domain against Common Crawl’s public link graph — Open PageRank 0–10, global rank, referring domains, and monthly history back to 2018.',
     tag: 'Authority',
     icon: 'spark',
     category: 'Links & authority',

@@ -35,7 +35,7 @@ export const HOW_TO_STEPS: readonly HowToStep[] = [
   },
   {
     name: 'Read the trend, not the number',
-    text: 'A single score is close to meaningless in isolation. The monthly history is the useful part: climbing, flat, or falling over twelve months tells you whether anything you did worked.',
+    text: 'A single score is close to meaningless in isolation. The monthly history is the useful part, and for an established domain it runs back to January 2018: climbing, flat, or falling over years tells you whether anything you did worked. A domain new to the graph has one observation and no trend yet, which is itself informative.',
   },
   {
     name: 'Compare against the set that matters',
@@ -62,7 +62,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   {
     question: 'How often is the score updated?',
     answer:
-      'The underlying graph is rebuilt monthly, so a score moves at most once a month and a twelve-month history is twelve observations. If you published a link yesterday, do not expect to see it today — and be suspicious of any tool that shows you a same-day change in a monthly metric.',
+      'The underlying graph is rebuilt monthly, so a score moves at most once a month and one observation is one month. The series runs back to January 2018, which is about 105 observations for a domain that has been in the graph throughout. If you published a link yesterday, do not expect to see it today — and be suspicious of any tool that shows you a same-day change in a monthly metric.',
   },
   {
     question: 'Does Google use a domain authority score?',

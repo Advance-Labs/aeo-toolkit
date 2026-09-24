@@ -7,23 +7,30 @@ import {
   parseAuthorityResponse,
 } from './authority';
 
-/** A response in the shape the published docs describe. */
+/**
+ * A real captured response, trimmed. Verified against the live API on 2026-09-24
+ * with `semrush.com` (open_page_rank 8.9, rank 673, 32,815 referring domains,
+ * 105 history points from 2018-01-01) — the numbers below are that call's, so the
+ * fixture encodes the service's actual shape rather than a reading of its docs.
+ *
+ * Note `date` is a full ISO day (`2026-09-01`), not a `YYYY-MM` month.
+ */
 const OK_BODY = {
   as_of: '2026-09-01',
   count: 1,
   results: [
     {
-      domain: 'advancelabs.dev',
+      domain: 'semrush.com',
       found: true,
-      open_page_rank: 3.42,
-      rank: 4_812_003,
-      referring_domains: 137,
+      open_page_rank: 8.9,
+      rank: 673,
+      referring_domains: 32_815,
       history: [
-        { date: '2026-08', open_page_rank: 3.31, estimated: false },
+        { date: '2026-09-01', open_page_rank: 8.9, estimated: false },
         // Deliberately out of order: the parser must sort, because the UI draws
         // the series straight off the array.
-        { date: '2026-06', open_page_rank: 3.02, estimated: true },
-        { date: '2026-07', open_page_rank: 3.18, estimated: false },
+        { date: '2018-01-01', open_page_rank: 8.63, estimated: false },
+        { date: '2018-02-01', open_page_rank: 8.63, estimated: true },
       ],
     },
   ],
@@ -68,26 +75,36 @@ describe('parseAuthorityResponse', () => {
     expect(report.source).toBe('open-pagerank');
     const [row] = report.results;
     expect(row).toMatchObject({
-      domain: 'advancelabs.dev',
+      domain: 'semrush.com',
       found: true,
-      openPageRank: 3.42,
-      rank: 4_812_003,
-      referringDomains: 137,
+      openPageRank: 8.9,
+      rank: 673,
+      referringDomains: 32_815,
     });
   });
 
   it('returns history oldest-first', () => {
     const [row] = parseAuthorityResponse(OK_BODY).results;
-    expect(row?.history.map((h) => h.date)).toEqual(['2026-06', '2026-07', '2026-08']);
-    expect(row?.history[0]?.estimated).toBe(true);
+    expect(row?.history.map((h) => h.date)).toEqual(['2018-01-01', '2018-02-01', '2026-09-01']);
+    expect(row?.history[1]?.estimated).toBe(true);
   });
 
   it('reports a domain absent from the graph as found:false with a null score', () => {
     // Not zero. A domain the graph has never seen has no score, and rendering
     // a 0 would be a fabricated number.
+    // This is the literal shape the live API returns for an unknown domain:
+    // `found: false` with every metric explicitly null, not omitted.
     const report = parseAuthorityResponse({
       as_of: '2026-09-01',
-      results: [{ domain: 'nowhere.example', found: false }],
+      results: [
+        {
+          domain: 'nowhere.example',
+          found: false,
+          open_page_rank: null,
+          rank: null,
+          referring_domains: null,
+        },
+      ],
     });
     expect(report.results[0]).toMatchObject({ found: false, openPageRank: null });
   });
@@ -112,8 +129,8 @@ describe('parseAuthorityResponse', () => {
         {
           domain: 'advancelabs.dev',
           found: true,
-          open_page_rank: 3.4,
-          history: [{ date: '2026-08', open_page_rank: 3.3 }, null, { date: '2026-07' }],
+          open_page_rank: 1.35,
+          history: [{ date: '2026-09-01', open_page_rank: 1.35 }, null, { date: '2026-08-01' }],
         },
       ],
     });

@@ -30,19 +30,32 @@
  * changing nothing else in the route or the page.
  *
  * ─────────────────────────────────────────────────────────────────────────────
- * ⚠ UNVERIFIED AGAINST THE LIVE API
+ * VERIFIED AGAINST THE LIVE API, 2026-09-24
  * ─────────────────────────────────────────────────────────────────────────────
- * Open PageRank moved hosts (domcop.com → openpagerank.keywordseverywhere.com) and
- * the request/response shape below is transcribed from the current published docs.
- * It has NOT been exercised against the live service, because that needs a free
- * API key nobody has claimed yet (OPENPAGERANK_API_KEY).
+ * Open PageRank moved hosts: domcop.com/openpagerank 301s to
+ * openpagerank.keywordseverywhere.com, and auth changed from an `API-OPR` header to
+ * `Authorization: Bearer opr_live_…`. Anything you read about the old GET
+ * `/api/v1.0/getPageRank` endpoint is stale.
  *
- * The parser is therefore TOTAL: every field is validated, and anything unexpected
+ * Confirmed live against `semrush.com`, `ahrefs.com` and an unknown domain:
+ *   POST /v1/domains/bulk  { domains: string[], include_history: boolean }
+ *   → { as_of, count, results[], invalid[] }
+ *   result: { domain, found, open_page_rank, rank, referring_domains, history[] }
+ *   history point: { date: "2018-01-01", open_page_rank, estimated }
+ *
+ * Three things the docs did not make obvious and the code depends on:
+ *   1. `date` is a full ISO day, not `YYYY-MM`.
+ *   2. History runs back to 2018-01-01 — about 105 points for an established
+ *      domain, NOT twelve. Copy that promises "12 months" is wrong.
+ *   3. An unknown domain returns `found: false` with every metric explicitly
+ *      `null`. It is a successful answer, not an error, and never a zero.
+ * Also: GET /v1/usage reports tier and remaining quota, GET /v1/health needs no auth.
+ *
+ * The parser stays TOTAL anyway: every field is validated, and anything unexpected
  * raises `AuthorityError('upstream_shape')` naming the field rather than silently
- * yielding `undefined` and rendering a blank score. A wrong guess about the schema
- * fails loudly on the first real call instead of shipping a plausible-looking zero.
- * (See the memory on verification methods that lie: a tool that renders "0" because
- * a field was renamed is worse than one that renders an error.)
+ * yielding `undefined` and rendering a blank score. The schema is confirmed today;
+ * the guard is for the day it changes. A tool that renders "0" because a field was
+ * renamed is worse than one that renders an error.
  */
 
 /** Where a score came from. Widen this union when a second provider lands. */

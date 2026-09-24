@@ -43,7 +43,7 @@ const PAGE_PATH = '/tools/authority';
 const PAGE_URL = `${SITE_URL.replace(/\/$/, '')}${PAGE_PATH}`;
 const PAGE_TITLE = 'Website Authority Checker';
 const PAGE_DESCRIPTION =
-  'Check any domain’s authority score free, computed over Common Crawl’s public link graph. Get Open PageRank 0–10, global rank, referring domains, and 12 months of history.';
+  'Check any domain’s authority score free, computed over Common Crawl’s public link graph. Get Open PageRank 0–10, global rank, referring domains, and monthly history back to 2018.';
 const TRAIL = toolBreadcrumbTrail(PAGE_TITLE, PAGE_PATH);
 
 export const metadata = toolMetadata({
@@ -53,7 +53,7 @@ export const metadata = toolMetadata({
   description: PAGE_DESCRIPTION,
   shareTitle: 'Website Authority Checker — an open alternative to DA and DR',
   shareDescription:
-    'Open PageRank 0–10 over Common Crawl’s public link graph, with 12 months of history. Free, no account, and honest about what the number is not.',
+    'Open PageRank 0–10 over Common Crawl’s public link graph, with monthly history back to 2018. Free, no account, and honest about what the number is not.',
 });
 
 /** schema.org JSON-LD: breadcrumb trail, the FAQ Q&A pairs, and the HowTo steps. */
@@ -102,7 +102,7 @@ const EXPLAINER_CARDS: ReadonlyArray<{ title: string; body: string }> = [
   },
   {
     title: 'A relative measure with a monthly clock',
-    body: 'The graph rebuilds monthly and the scale is roughly logarithmic, so read your position against direct competitors and read the twelve-month trend. A single absolute score, on its own, decides nothing.',
+    body: 'The graph rebuilds monthly and the scale is roughly logarithmic, so read your position against direct competitors and read the trend. An established domain carries a monthly series back to 2018; a single absolute score, on its own, decides nothing.',
   },
 ];
 
@@ -147,7 +147,8 @@ export default function AuthorityToolPage(): JSX.Element {
                 Enter any domain to get its{' '}
                 <span className="font-medium text-white">Open PageRank</span>, a 0–10 score computed
                 over Common Crawl’s public link graph, plus its global rank, referring domains, and
-                twelve months of history. Free, no account — and it is not Moz DA or Ahrefs DR,
+                every monthly observation back to 2018. Free, no account — and it is not Moz DA or
+                Ahrefs DR,
                 which is explained below.
               </p>
             </Reveal>
