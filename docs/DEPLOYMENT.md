@@ -23,7 +23,13 @@ repo, shipped via the Web Store). One domain, one env set.
 - **Env set:** `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`, `CRON_SECRET`, `MCP_PUBLIC_URL`,
   `AUDIT_MAX_PAGES`, `BACKLINK_GRAPH_LIMIT`, `SUPABASE_URL` (+ the integration's `SUPABASE_SERVICE_ROLE_KEY`,
   `NEXT_PUBLIC_SUPABASE_URL`, `POSTGRES_*`, …).
-- **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`; the human MCP
+- **`OPENPAGERANK_API_KEY`** — required by `/tools/authority` and `POST /api/authority`. Free tier at
+  <https://openpagerank.keywordseverywhere.com>: 30,000 domains/month, 60 requests/minute, no card.
+  Without it the route returns **503 `not_configured`** and the page says the deployment is not
+  connected; it never falls back to a fabricated score. Quota is metered per *domain* per month, so
+  `lookupAuthority` de-duplicates before sending. Check remaining quota with
+  `curl -H "Authorization: Bearer $OPENPAGERANK_API_KEY" https://openpagerank.keywordseverywhere.com/v1/usage`.
+- **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`, `/tools/authority`; the human MCP
   connection page at **`/mcp`**; the `ai-visibility` + `backlink` MCP servers (BYOK Perplexity); MCP
   discovery; Supabase-backed token + post storage.
 - **Pending creds:** Google OAuth (chat + ga-gsc MCP), LLM keys (blogging cron), Upstash (optional), custom domain.
