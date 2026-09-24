@@ -8,4 +8,5 @@ export { HowItWorks } from './HowItWorks';
 export { WhyAeo } from './WhyAeo';
 export { Faq } from './Faq';
 export { CtaBand } from './CtaBand';
-export { FAQS, TOOLS, STEPS } from './data';
+export { FAQS, TOOLS, STEPS, TOOL_CATEGORIES, PLANNED_TOOLS } from './data';
+export type { ToolEntry, ToolCategory, PlannedTool } from './data';

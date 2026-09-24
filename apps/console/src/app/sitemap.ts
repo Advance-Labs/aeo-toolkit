@@ -16,6 +16,7 @@ const ROUTES: ReadonlyArray<{
   { path: '/tools/llms-txt', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/tools/chat', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/tools/graph', changeFrequency: 'weekly', priority: 0.8 },
+  { path: '/tools/authority', changeFrequency: 'weekly', priority: 0.9 },
   // The content cluster (#35–#37): the guide is the pillar, glossary/compare pages target
   // definitional and comparison queries. Term/comparison paths are derived from the content
   // modules so a new entry can never be forgotten here.
@@ -41,7 +42,8 @@ const ROUTES: ReadonlyArray<{
 // 2026-07-31: bumped for the move onto advancelabs.dev/tools/* — the canonical URLs below all
 // changed, which is exactly the substantive change a re-crawl should be prompted for.
 // 2026-09-02: bumped for the launch of the content cluster (guide, glossary, comparisons).
-const LAST_CONTENT_UPDATE = '2026-09-02';
+// 2026-09-24: bumped for /tools/authority and the regrouped tools index on the landing page.
+const LAST_CONTENT_UPDATE = '2026-09-24';
 
 /**
  * Emits the CANONICAL (advancelabs.dev) URL for every consolidated route, so this sitemap

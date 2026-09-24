@@ -8,7 +8,8 @@
 
 import type { JSX } from 'react';
 import Link from 'next/link';
-import { FAQS, TOOLS } from '@/components/landing';
+import { FAQS, PLANNED_TOOLS, TOOL_CATEGORIES, TOOLS } from '@/components/landing';
+import type { ToolCategory } from '@/components/landing';
 import { HeroShader } from './HeroShader';
 import { NodeFieldViewport } from './NodeFieldViewport';
 import { SpecimenReport } from './SpecimenReport';
@@ -65,8 +66,7 @@ export function CinematicStage(): JSX.Element {
               className="mt-4 max-w-md text-lg leading-relaxed sm:mt-6"
               style={{ color: 'var(--v2-ink-soft)' }}
             >
-              Free, open instruments that measure whether the engines can find, parse, and cite
-              you.
+              Free, open instruments that measure whether the engines can find, parse, and cite you.
             </p>
 
             <form
@@ -109,15 +109,23 @@ export function CinematicStage(): JSX.Element {
             three rows pushed the graph below the fold); from sm it wraps as before. */}
         <div className="relative z-10 mt-auto border-t border-[color:var(--v2-rule)] py-3 sm:py-4">
           <div className="flex flex-nowrap items-baseline gap-x-6 gap-y-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap sm:overflow-visible sm:pb-0">
-            {['Crawlability', 'AI-bot access', 'Structured data', 'Metadata', 'Answer readiness', 'E-E-A-T'].map(
-              (name, i) => (
-                <span key={name} className="v2-label whitespace-nowrap">
-                  <span style={{ color: 'var(--v2-signal)' }}>{String(i + 1).padStart(2, '0')}</span>{' '}
-                  {name}
-                </span>
-              ),
-            )}
-            <span className="v2-label ml-auto whitespace-nowrap" style={{ color: 'var(--v2-accent2)' }}>
+            {[
+              'Crawlability',
+              'AI-bot access',
+              'Structured data',
+              'Metadata',
+              'Answer readiness',
+              'E-E-A-T',
+            ].map((name, i) => (
+              <span key={name} className="v2-label whitespace-nowrap">
+                <span style={{ color: 'var(--v2-signal)' }}>{String(i + 1).padStart(2, '0')}</span>{' '}
+                {name}
+              </span>
+            ))}
+            <span
+              className="v2-label ml-auto whitespace-nowrap"
+              style={{ color: 'var(--v2-accent2)' }}
+            >
               Scroll to begin ↓
             </span>
           </div>
@@ -155,7 +163,10 @@ export function CinematicStage(): JSX.Element {
             ))}
           </div>
           {/* The answer pops in from the side once the resolve lands. */}
-          <div data-story-specimen className="flex min-w-0 flex-col items-center gap-4 lg:items-end">
+          <div
+            data-story-specimen
+            className="flex min-w-0 flex-col items-center gap-4 lg:items-end"
+          >
             <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
               02 · Know — sixty seconds later
             </p>
@@ -198,7 +209,10 @@ export function StoryFrame({
         data-parallax
         className="absolute inset-0 h-full w-full scale-110 object-cover"
       />
-      <figcaption className="v2-label absolute bottom-4 left-6 sm:left-10 lg:left-14" style={{ color: 'var(--v2-accent2)' }}>
+      <figcaption
+        className="v2-label absolute bottom-4 left-6 sm:left-10 lg:left-14"
+        style={{ color: 'var(--v2-accent2)' }}
+      >
         {label}
       </figcaption>
     </figure>
@@ -223,7 +237,10 @@ export function LedgerV2(): JSX.Element {
         <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
           03 · Measure
         </p>
-        <h2 id="measures-h" className="mt-3 max-w-lg text-3xl font-bold tracking-tighter sm:text-4xl">
+        <h2
+          id="measures-h"
+          className="mt-3 max-w-lg text-3xl font-bold tracking-tighter sm:text-4xl"
+        >
           Six instruments <span className="v2-cursive">scan.</span>
         </h2>
       </div>
@@ -264,28 +281,40 @@ const TOOL_FRAGMENTS: Record<string, string> = {
   '/tools/llms-txt': 'generate & download',
   '/tools/chat': 'ask your own GA4 + GSC',
   '/tools/graph': 'the web around you, in 3D',
+  '/tools/authority': 'open link graph · 0–10 · 12mo',
 };
 
-export function InstrumentIndexV2(): JSX.Element {
-  return (
-    <section
-      className="border-t border-[color:var(--v2-rule-strong)] bg-white/[0.03] px-6 py-14 sm:px-10 sm:py-16 lg:px-14"
-      aria-labelledby="tools-h"
-    >
-      <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
-            04 · Fix
-          </p>
-          <h2 id="tools-h" className="mt-3 max-w-lg text-3xl font-bold tracking-tighter sm:text-4xl">
-            Work the list. Re-run. <span className="v2-cursive">Get named.</span>
-          </h2>
-        </div>
-        <p className="v2-label">Five tools · free · Apache-2.0</p>
-      </div>
+/**
+ * The free-tools index.
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * WHY GROUPED SECTIONS AND NOT TABS
+ * ─────────────────────────────────────────────────────────────────────────────
+ * The category tabs every competitor's free-tools hub uses hide two thirds of the
+ * page behind a click. That costs nothing to a human and everything to an answer
+ * engine: content in a closed tab panel is still in the DOM, but content gated
+ * behind a client-side tab component often is not, and either way the reader who
+ * arrived from a search for one specific tool has to hunt.
+ *
+ * Grouped sections render every tool, in order, with no JavaScript at all. That is
+ * the same information architecture with the interaction removed, which on a page
+ * whose entire job is to be found and cited is a straight improvement rather than a
+ * compromise. If this ever does get a filter, it must filter markup that is already
+ * server-rendered — never fetch or mount the list on the client.
+ */
+function ToolGroup({ category, index }: { category: ToolCategory; index: number }): JSX.Element {
+  const tools = TOOLS.filter((tool) => tool.category === category);
+  const planned = PLANNED_TOOLS.filter((tool) => tool.category === category);
+  const headingId = `tools-${index}`;
 
-      <ol data-reveal-group className="mt-10 list-none p-0">
-        {TOOLS.map((tool, i) => (
+  return (
+    <section aria-labelledby={headingId} className="mt-10 first:mt-0">
+      <h3 id={headingId} className="v2-label" style={{ color: 'var(--v2-accent2)', margin: 0 }}>
+        {category}
+      </h3>
+
+      <ol data-reveal-group className="mt-4 list-none p-0">
+        {tools.map((tool, i) => (
           <li key={tool.href} data-reveal-item>
             <Link
               href={tool.href}
@@ -318,6 +347,56 @@ export function InstrumentIndexV2(): JSX.Element {
           </li>
         ))}
       </ol>
+
+      {/*
+        Planned tools are plain text, never links and never styled as cards. A reader
+        must be able to tell in one glance which of these they can use right now.
+      */}
+      {planned.length > 0 && (
+        <ul className="mt-4 list-none border-t border-[color:var(--v2-rule)] p-0 pt-4">
+          {planned.map((tool) => (
+            <li
+              key={tool.name}
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-1 py-1.5 font-[var(--font-v2-mono)] text-xs"
+              style={{ color: 'var(--v2-ink-faint)' }}
+            >
+              <span>Not built yet — {tool.name}</span>
+              <span style={{ opacity: 0.85 }}>· {tool.source}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+export function InstrumentIndexV2(): JSX.Element {
+  return (
+    <section
+      id="tools"
+      className="border-t border-[color:var(--v2-rule-strong)] bg-white/[0.03] px-6 py-14 sm:px-10 sm:py-16 lg:px-14"
+      aria-labelledby="tools-h"
+    >
+      <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="v2-label" style={{ color: 'var(--v2-signal)' }}>
+            04 · Fix
+          </p>
+          <h2
+            id="tools-h"
+            className="mt-3 max-w-lg text-3xl font-bold tracking-tighter sm:text-4xl"
+          >
+            Work the list. Re-run. <span className="v2-cursive">Get named.</span>
+          </h2>
+        </div>
+        <p className="v2-label">{TOOLS.length} tools · free · Apache-2.0</p>
+      </div>
+
+      <div className="mt-10">
+        {TOOL_CATEGORIES.map((category, i) => (
+          <ToolGroup key={category} category={category} index={i} />
+        ))}
+      </div>
 
       {/* Verifiable-facts strip — one line, every claim checkable in the repo. */}
       <p data-reveal className="v2-label mt-12">
@@ -360,7 +439,10 @@ export function FaqV2(): JSX.Element {
                 +
               </span>
             </summary>
-            <p className="max-w-2xl pb-6 text-sm leading-relaxed" style={{ color: 'var(--v2-ink-soft)' }}>
+            <p
+              className="max-w-2xl pb-6 text-sm leading-relaxed"
+              style={{ color: 'var(--v2-ink-soft)' }}
+            >
               {faq.answer}
             </p>
           </details>

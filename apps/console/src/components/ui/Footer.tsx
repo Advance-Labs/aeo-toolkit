@@ -9,6 +9,7 @@ const TOOLS = [
   { href: '/tools/llms-txt', label: 'llms.txt Generator' },
   { href: '/tools/chat', label: 'GA4 + GSC Chat' },
   { href: '/tools/graph', label: 'Backlink Graph' },
+  { href: '/tools/authority', label: 'Authority Checker' },
 ];
 
 // Point humans at the `/mcp` connection page (anchored to each server). The machine endpoints
