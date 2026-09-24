@@ -29,6 +29,19 @@ repo, shipped via the Web Store). One domain, one env set.
   connected; it never falls back to a fabricated score. Quota is metered per *domain* per month, so
   `lookupAuthority` de-duplicates before sending. Check remaining quota with
   `curl -H "Authorization: Bearer $OPENPAGERANK_API_KEY" https://openpagerank.keywordseverywhere.com/v1/usage`.
+- **`AUTHORITY_MONTHLY_DOMAIN_BUDGET`** *(optional, default 25,000)* — ceiling on upstream domain
+  fetches per calendar month, deliberately below the 30,000 free tier. Cache hits do not count
+  against it; only genuine misses do. When it is reached the route returns **503 `quota_exhausted`**
+  with copy that states the limit is ours, not a reading of the caller's domain. An unparseable value
+  falls back to the default rather than to no limit. Counters live in Vercel Runtime Cache and are
+  **not atomic**, so the real spend can drift slightly above the count: that is why the ceiling sits
+  below the quota. Raise it only after checking `/v1/usage` above.
+- **Rate limiting** — 20 requests and 150 domains per address per 10 minutes, returning **429
+  `rate_limited`** with a `Retry-After`. Responses carry `X-Authority-Cache: hit=<n>, miss=<n>` so a
+  launch-day quota question can be answered by reading a header instead of guessing.
+- **Cache** — per *domain* (not per request), 24h TTL, in Vercel Runtime Cache. The source webgraph
+  rebuilds monthly, so 24h is an order of magnitude fresher than the data. A 100-domain batch with 99
+  seen entries costs one upstream unit. Purge everything with `invalidateByTag('authority')`.
 - **Working now:** `/tools/audit`, `/tools/eeat`, `/tools/llms-txt`, `/tools/graph`, `/tools/authority`; the human MCP
   connection page at **`/mcp`**; the `ai-visibility` + `backlink` MCP servers (BYOK Perplexity); MCP
   discovery; Supabase-backed token + post storage.

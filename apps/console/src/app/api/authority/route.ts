@@ -8,8 +8,10 @@
  * and maps `AuthorityError.code` onto an HTTP status.
  */
 import { NextResponse } from 'next/server';
-import { AuthorityError, lookupAuthority } from '@/lib/authority';
+import { AuthorityError } from '@/lib/authority';
 import type { AuthorityReport } from '@/lib/authority';
+import { lookupAuthorityCached } from '@/lib/authority-cache';
+import { callerKey, checkMonthlyBudget, checkRateLimit, recordSpend } from '@/lib/authority-limits';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,6 +33,9 @@ const STATUS_BY_CODE: Record<AuthorityError['code'], number> = {
   upstream_rejected: 502,
   upstream_shape: 502,
   unreachable: 504,
+  rate_limited: 429,
+  // 503 rather than 429: the caller did nothing wrong, our month's budget is gone.
+  quota_exhausted: 503,
 };
 
 function isAuthorityRequest(value: unknown): value is { domains: string[] } {
@@ -66,9 +71,39 @@ export async function POST(
     );
   }
 
+  // Both gates run before the lookup, because their entire purpose is to avoid it.
+  // Rate limit first: it is the cheaper check and the more common rejection.
+  const limit = await checkRateLimit(callerKey(request), payload.domains.length);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: limit.message!, code: 'rate_limited' as const },
+      {
+        status: STATUS_BY_CODE.rate_limited,
+        headers: { 'Retry-After': String(limit.retryAfterSeconds ?? 600) },
+      },
+    );
+  }
+
+  const budget = await checkMonthlyBudget();
+  if (!budget.allowed) {
+    return NextResponse.json(
+      { error: budget.message!, code: 'quota_exhausted' as const },
+      { status: STATUS_BY_CODE.quota_exhausted },
+    );
+  }
+
   try {
-    const report = await lookupAuthority(payload.domains);
-    return NextResponse.json(report, { status: 200 });
+    const { report, hits, misses } = await lookupAuthorityCached(payload.domains);
+    // Metered after the fact, against what the lookup actually spent upstream.
+    // Cache hits are free and must not count, or a launch would exhaust the
+    // budget on traffic that never touched the index.
+    await recordSpend(misses);
+    return NextResponse.json(report, {
+      status: 200,
+      // Observable in the browser's network tab and in logs, so a launch-day
+      // quota question can be answered by looking rather than by guessing.
+      headers: { 'X-Authority-Cache': `hit=${hits}, miss=${misses}` },
+    });
   } catch (error) {
     if (error instanceof AuthorityError) {
       return NextResponse.json(

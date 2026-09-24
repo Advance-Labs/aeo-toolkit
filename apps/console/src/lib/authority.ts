@@ -108,7 +108,11 @@ export type AuthorityErrorCode =
   /** Upstream answered, but not in the shape we parse. See the ⚠ note above. */
   | 'upstream_shape'
   /** Network failure or timeout. */
-  | 'unreachable';
+  | 'unreachable'
+  /** This caller has asked too often. Fairness on a free endpoint, not an auth failure. */
+  | 'rate_limited'
+  /** Our month's budget for the free index is spent. Our problem, stated as ours. */
+  | 'quota_exhausted';
 
 export class AuthorityError extends Error {
   readonly code: AuthorityErrorCode;
@@ -317,39 +321,14 @@ export async function lookupAuthority(
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
- * PRESENTATION — one deliberate gap, see the note below.
+ * PRESENTATION
+ *
+ * The band mapping lives in `./authority-bands`, which is a PURE module with no
+ * `process.env` access, so the client island can import it directly. Keeping it
+ * out of this file is what stops the whole provider (and its secret handling)
+ * being pulled into the browser bundle just to render a word next to a number.
+ * Re-exported here so server callers keep one import site.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/** A reader-facing reading of a raw score. */
-export interface AuthorityVerdict {
-  /** Short band name shown beside the figure, e.g. "Establishing". */
-  band: string;
-  /** One sentence telling the reader what the band means for them. */
-  meaning: string;
-  /** Which state colour the figure wears: ok / warn / neutral. */
-  tone: 'ok' | 'warn' | 'neutral';
-}
-
-/**
- * TODO(lucas): implement the band mapping — see the hand-off in the session notes.
- *
- * WHY THIS ONE IS YOURS, NOT MINE
- * Open PageRank is 0–10 and roughly logarithmic: the gap from 3 to 4 is a different
- * amount of work from 6 to 7, and the median indexed domain sits near 2–3. So the
- * bands are not arithmetic thirds, and where you put the cut points is a positioning
- * call, not a maths one:
- *
- *   - Cut generously and most visitors see a flattering band, bounce, and never book.
- *   - Cut harshly and the tool reads as a scare-ware funnel, which is the exact
- *     thing the "we tell you what the metric can't do" angle is selling against.
- *   - advancelabs.dev itself scores in here. Pick bands you'd be happy to publish
- *     your own number against.
- *
- * Suggested shape (5–10 lines): a `const BANDS` array of { min, band, meaning, tone }
- * ordered high→low, and a `.find(b => score >= b.min)`. Handle `score === null`
- * (absent from the graph) as its own case — "not in the index" is not "score 0",
- * and conflating them would be the same class of lie as rendering a blank as a zero.
- */
-export function describeAuthority(_score: number | null): AuthorityVerdict {
-  throw new Error('describeAuthority is not implemented yet — see the TODO above.');
-}
+export type { AuthorityVerdict } from './authority-bands';
+export { describeAuthority } from './authority-bands';

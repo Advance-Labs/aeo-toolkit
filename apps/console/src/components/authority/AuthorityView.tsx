@@ -4,6 +4,7 @@ import { useCallback, useId, useState } from 'react';
 import type { FormEvent, JSX } from 'react';
 import { ThinkingOrb } from 'thinking-orbs';
 import { Button, Input, SpotlightCard } from '@/components/ui';
+import { describeAuthority } from '@/lib/authority-bands';
 import { cn } from '@/lib/cn';
 
 /* ── Wire types. Mirrors `@/lib/authority`, re-declared so the client bundle does
@@ -36,7 +37,9 @@ type ErrorCode =
   | 'bad_input'
   | 'upstream_rejected'
   | 'upstream_shape'
-  | 'unreachable';
+  | 'unreachable'
+  | 'rate_limited'
+  | 'quota_exhausted';
 
 /**
  * One honest sentence per failure mode.
@@ -54,6 +57,10 @@ const ERROR_COPY: Record<ErrorCode, string> = {
   upstream_shape:
     'The authority index answered in a format this tool does not recognise, so there is no number we are willing to show you. We have been told; please try again later.',
   unreachable: 'The authority index did not respond in time. Try again in a moment.',
+  rate_limited:
+    'That is a lot of lookups from one address in a short window. The limit exists so the free quota lasts the month for everyone. Give it a few minutes and it will let you straight back in.',
+  quota_exhausted:
+    'This month\u2019s lookup budget for the free index is spent, so there is no number to show. Nothing is wrong with your domain and nothing is wrong with the checker: we have simply run out of calls until the quota resets.',
 };
 
 function isErrorCode(value: unknown): value is ErrorCode {
@@ -145,11 +152,24 @@ function ResultCard({ result, asOf }: { result: AuthorityResult; asOf: string })
             <span className="text-2xl text-slate-400">/ 10</span>
           </p>
           {/*
-            BAND SLOT. `describeAuthority()` in src/lib/authority.ts renders here once
-            its cut points are chosen — see the TODO in that file. Deliberately left
-            unwired rather than stubbed with invented thresholds: a band is a claim
-            about what a number means, and a wrong one is worse than none.
+            The band. Cut points live in `describeAuthority()` and are spaced to the
+            index's real distribution, not arithmetic thirds.
+
+            Rendered in the card's existing white/slate only, with no colour coding:
+            the mapping never returns a 'warn' tone by design, so painting bands
+            green-to-red would invent a severity the verdict deliberately withholds.
           */}
+          {(() => {
+            const verdict = describeAuthority(openPageRank);
+            return (
+              <>
+                <p className="mt-2 text-lg text-white">{verdict.band}</p>
+                <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">
+                  {verdict.meaning}
+                </p>
+              </>
+            );
+          })()}
 
           <dl className="mt-8 grid gap-6 border-t border-white/[0.08] pt-6 sm:grid-cols-2">
             <div>
