@@ -15,9 +15,25 @@ export interface ToolEntry {
   tag: string;
   /** Key of the inline SVG icon to render (see `Icon`). */
   icon: IconKey;
+  /** Which group the tool indexes under on the hub. */
+  category: ToolCategory;
 }
 
 export type IconKey = 'gauge' | 'shield' | 'doc' | 'chat' | 'graph' | 'spark';
+
+/**
+ * Hub groupings. Deliberately three, and deliberately named after what a reader is
+ * trying to find out rather than after our architecture: someone arriving from
+ * "domain authority checker" is looking for links, not for a console.
+ */
+export type ToolCategory = 'Audit & AEO' | 'Links & authority' | 'Your own data';
+
+/** Render order for the hub's groups. */
+export const TOOL_CATEGORIES: readonly ToolCategory[] = [
+  'Audit & AEO',
+  'Links & authority',
+  'Your own data',
+] as const;
 
 export const TOOLS: readonly ToolEntry[] = [
   {
@@ -27,6 +43,7 @@ export const TOOLS: readonly ToolEntry[] = [
       'Crawl up to 50 pages, score technical SEO + AEO out of 100, and get a prioritized fix list with templates and a PDF report.',
     tag: 'Audit',
     icon: 'gauge',
+    category: 'Audit & AEO',
   },
   {
     href: '/tools/eeat',
@@ -35,6 +52,7 @@ export const TOOLS: readonly ToolEntry[] = [
       'Score Experience, Expertise, Authoritativeness, and Trust pillar-by-pillar, with the exact signals each page is missing.',
     tag: 'E-E-A-T',
     icon: 'shield',
+    category: 'Audit & AEO',
   },
   {
     href: '/tools/llms-txt',
@@ -43,6 +61,7 @@ export const TOOLS: readonly ToolEntry[] = [
       'Crawl a site sitemap-first, extract titles and descriptions, and generate a structured llms.txt (and llms-full.txt) to download.',
     tag: 'llms.txt',
     icon: 'doc',
+    category: 'Audit & AEO',
   },
   {
     href: '/tools/chat',
@@ -51,6 +70,7 @@ export const TOOLS: readonly ToolEntry[] = [
       'Connect Google read-only and ask SEO questions grounded in your own GA4 + Search Console data, answered with your own LLM key.',
     tag: 'GA4 + GSC',
     icon: 'chat',
+    category: 'Your own data',
   },
   {
     href: '/tools/graph',
@@ -59,6 +79,63 @@ export const TOOLS: readonly ToolEntry[] = [
       'Explore any URL’s backlink universe as an interactive 3D force-directed graph, sampled live from open web indexes.',
     tag: 'Backlink Graph',
     icon: 'graph',
+    category: 'Links & authority',
+  },
+  {
+    href: '/tools/authority',
+    name: 'Website Authority Checker',
+    blurb:
+      'Score any domain against Common Crawl’s public link graph — Open PageRank 0–10, global rank, referring domains, and monthly history back to 2018.',
+    tag: 'Authority',
+    icon: 'spark',
+    category: 'Links & authority',
+  },
+] as const;
+
+/**
+ * Tools that are researched and specified but NOT BUILT.
+ *
+ * They are listed on the hub under an explicit "not built yet" heading and are
+ * deliberately NOT links, NOT in the sitemap, and NOT in llms.txt. A roadmap entry
+ * that looks like a shipped tool is vapourware, and on a site whose whole pitch is
+ * "we tell you what the metric cannot do" that would be self-refuting.
+ *
+ * Each carries the data source that makes it buildable at all, because the reason
+ * the list is short is that most of the category's tools require a proprietary index
+ * nobody can replicate for free. Do not add an entry without one.
+ */
+export interface PlannedTool {
+  name: string;
+  category: ToolCategory;
+  /** The free or open source this tool would run on. */
+  source: string;
+}
+
+export const PLANNED_TOOLS: readonly PlannedTool[] = [
+  {
+    name: 'AI-crawler access checker',
+    category: 'Audit & AEO',
+    source: 'robots.txt, read directly — GPTBot, ClaudeBot, PerplexityBot, Google-Extended',
+  },
+  {
+    name: 'SERP snippet simulator',
+    category: 'Audit & AEO',
+    source: 'client-side pixel measurement, no index required',
+  },
+  {
+    name: 'JSON-LD validator',
+    category: 'Audit & AEO',
+    source: 'the schema.org vocabulary, already vendored by the audit engine',
+  },
+  {
+    name: 'Sitemap generator',
+    category: 'Audit & AEO',
+    source: 'the same crawler that backs the llms.txt generator',
+  },
+  {
+    name: 'AI traffic checker',
+    category: 'Your own data',
+    source: 'your own GA4 referrals, classified by known answer-engine hosts',
   },
 ] as const;
 

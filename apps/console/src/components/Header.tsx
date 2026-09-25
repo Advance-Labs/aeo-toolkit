@@ -16,6 +16,7 @@ const NAV = [
   { href: '/tools/llms-txt', label: 'llms.txt' },
   { href: '/tools/chat', label: 'GA4 + GSC' },
   { href: '/tools/graph', label: 'Graph' },
+  { href: '/tools/authority', label: 'Authority' },
   { href: '/mcp', label: 'MCP' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },

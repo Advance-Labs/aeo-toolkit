@@ -38,6 +38,12 @@ const TOOLS: ReadonlyArray<{ name: string; path: string; description: string }> 
     description:
       'Visualize your referring-domain network as an interactive 3D graph to spot authority clusters and link-building gaps.',
   },
+  {
+    name: 'Website Authority Checker',
+    path: '/tools/authority',
+    description:
+      'Check any domain’s authority against Common Crawl’s public link graph: Open PageRank 0–10, global rank, referring domains, and the full monthly history back to 2018. Not Moz DA or Ahrefs DR, which are proprietary metrics over private crawls.',
+  },
 ];
 
 export function GET(): Response {

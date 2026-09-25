@@ -46,14 +46,20 @@ const TOOLS: ReadonlyArray<{ name: string; path: string; summary: string; detail
     detail:
       'Maps the links pointing to a site as a 3D scene: each node is a referring domain, backlink page, brand mention, or competitor, and each edge is a link (dofollow links pulse brighter than nofollow). Backlinks are discovered from open web indexes — DuckDuckGo, CommonCrawl, and the Wayback Machine — so it is free and privacy-friendly, but directional rather than a complete commercial index. Click any node to expand its own backlinks and follow authority outward from your root domain.',
   },
+  {
+    name: 'Website Authority Checker',
+    path: '/tools/authority',
+    summary: 'A domain authority score computed over a public link graph, not a private index.',
+    detail:
+      'Reports Open PageRank for any domain: a 0–10 score produced by running the classic PageRank algorithm over Common Crawl’s domain-level web graph (roughly 90 million registrable domains joined by about 2 billion links, rebuilt monthly and published as open data). Returns the score, the domain’s global rank in the graph, the number of referring domains the graph counted, and the complete monthly series back to January 2018 (about 105 observations for an established domain), so a trend can be read rather than a single figure. A domain new to the graph correctly returns a single observation and no trend. It is explicitly NOT Moz Domain Authority, Ahrefs Domain Rating, or Semrush Authority Score: each of those is proprietary and computed over that company’s own private crawl, and none can be reproduced without licensing their API. A domain absent from the graph is reported as absent, never as a score of zero.',
+  },
 ];
 
 export function GET(): Response {
   const base = SITE_URL.replace(/\/$/, '');
 
   const tools = TOOLS.map(
-    (tool) =>
-      `### ${tool.name}\n${base}${tool.path}\n\n${tool.summary}\n\n${tool.detail}`,
+    (tool) => `### ${tool.name}\n${base}${tool.path}\n\n${tool.summary}\n\n${tool.detail}`,
   ).join('\n\n');
 
   const body = `# ${SITE_NAME} — Full Content Map
