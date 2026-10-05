@@ -1,3 +1,8 @@
+---
+title: 'ADV-322: keyless MCP context measurement'
+description: Measured schema payloads for the two keyless MCP servers and the remaining client comparison.
+---
+
 # ADV-322: keyless MCP context measurement
 
 **Status: measurement recorded; fold decision open.** ADR-0004 is in [PR #75](https://github.com/Advance-Labs/aeo-toolkit/pull/75), not yet merged. This note measures the payload but does not amend that ADR or claim a client comparison happened.
