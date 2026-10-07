@@ -96,7 +96,10 @@ export async function POST(request: Request): Promise<Response> {
     client_reference_id: userId,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${base}/account?checkout=success`,
-    cancel_url: `${base}/pricing?checkout=cancelled`,
+    // Was `/pricing`, which no longer exists (removed 2026-10, see next.config redirects).
+    // Points at /account so a cancelled checkout lands somewhere that shows the user's actual
+    // state rather than bouncing through a 308 to the landing page.
+    cancel_url: `${base}/account?checkout=cancelled`,
     subscription_data: { metadata: { user_id: userId, plan: planId } },
     allow_promotion_codes: true,
   });

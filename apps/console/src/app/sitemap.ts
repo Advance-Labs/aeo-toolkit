@@ -49,7 +49,7 @@ const LAST_CONTENT_UPDATE = '2026-09-24';
  * Emits the CANONICAL (advancelabs.dev) URL for every consolidated route, so this sitemap
  * never advertises a URL that its own page then canonicals away — a self-contradiction that
  * wastes crawl budget and slows consolidation. `publicUrl` leaves subdomain-only surfaces
- * (/about, /pricing, /mcp) on this origin, so they stay correct here too.
+ * (/about, /mcp) on this origin, so they stay correct here too.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = LAST_CONTENT_UPDATE;
