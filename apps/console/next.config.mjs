@@ -41,6 +41,20 @@ export default {
       },
     ];
   },
+  /**
+   * `/pricing` was removed in 2026-10: the toolkit is fully open source, every tool runs with
+   * no limits, and a page advertising $29/$99/$499 tiers contradicted that. The billing layer
+   * itself is untouched and still dormant (`lib/billing/*`, gated on `STRIPE_SECRET_KEY`), so
+   * this is a presentation change, not a product one.
+   *
+   * A redirect rather than a deletion because the URL was publicly reachable and linked from
+   * the header on every page, so it is in indexes and in people's history. 308 (permanent) is
+   * deliberate: it passes any accumulated signal to the landing page instead of stranding it
+   * on a 404. Drop this only once the URL stops receiving traffic.
+   */
+  async redirects() {
+    return [{ source: '/pricing', destination: '/', permanent: true }];
+  },
   // Lint runs as its own Turbo task (`pnpm lint`); don't duplicate it during the build.
   eslint: { ignoreDuringBuilds: true },
   // We're an app inside a pnpm workspace. Point output file tracing at the monorepo root so Next's

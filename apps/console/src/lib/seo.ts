@@ -51,7 +51,7 @@ export function absolute(path: string): string {
  * The URL a search engine should treat as the home of `path`.
  *
  * Only the surfaces that advancelabs.dev actually mirrors are remapped; everything else
- * (/about, /pricing, /mcp, /account, auth) is served from this subdomain alone and keeps its
+ * (/about, /mcp, /account, auth) is served from this subdomain alone and keeps its
  * own origin. Pointing a canonical at a URL that serves DIFFERENT content is a real ranking
  * bug, so the mapping stays deliberately narrow rather than blanket-rewriting the host.
  *
