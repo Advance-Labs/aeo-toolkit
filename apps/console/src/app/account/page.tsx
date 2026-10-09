@@ -314,8 +314,20 @@ export default async function AccountPage(): Promise<JSX.Element> {
           />
         ) : null}
 
+        {/* Was "See all plans on the pricing page". /pricing was removed in 2026-10 — the
+            toolkit is fully open source and every tool runs with no limits, so there are no
+            plans to see. The billing layer stays dormant behind STRIPE_SECRET_KEY. */}
         <p className="text-center text-xs leading-relaxed text-slate-500">
-          See all plans on the <a href="/pricing" className="text-brand-cyan hover:underline">pricing page</a>.
+          Every tool is free and open source, with no limits.{' '}
+          <a
+            href="https://github.com/Advance-Labs/aeo-toolkit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-cyan hover:underline"
+          >
+            Source on GitHub
+          </a>
+          .
         </p>
       </div>
     </Section>

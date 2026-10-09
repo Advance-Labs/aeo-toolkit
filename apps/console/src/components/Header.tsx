@@ -18,14 +18,20 @@ const NAV = [
   { href: '/tools/graph', label: 'Graph' },
   { href: '/tools/authority', label: 'Authority' },
   { href: '/mcp', label: 'MCP' },
-  { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
 ];
 
-/** The drawer groups the same routes by kind — instruments first, then the site. */
+/**
+ * The drawer groups the same routes by kind — instruments first, then the site.
+ *
+ * Grouped by PATH, not by index. This used to be `NAV.slice(0, 5)` / `NAV.slice(5)`, which
+ * silently mis-sorts the moment the array changes: `/tools/authority` was added at index 5 and
+ * has been appearing under "Site" ever since. Removing an entry shifts every later index too,
+ * so an index-based split and an editable list cannot both be safe.
+ */
 const DRAWER_GROUPS: ReadonlyArray<{ heading: string; items: typeof NAV }> = [
-  { heading: 'Tools', items: NAV.slice(0, 5) },
-  { heading: 'Site', items: NAV.slice(5) },
+  { heading: 'Tools', items: NAV.filter((i) => i.href.startsWith('/tools/')) },
+  { heading: 'Site', items: NAV.filter((i) => !i.href.startsWith('/tools/')) },
 ];
 
 export function Header(): React.ReactElement {
