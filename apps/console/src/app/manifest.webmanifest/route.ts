@@ -1,8 +1,9 @@
-import type { MetadataRoute } from 'next';
 import { SITE_NAME, SITE_DESCRIPTION } from '@/lib/seo';
 
-export default function manifest(): MetadataRoute.Manifest {
-  return {
+// An ordinary route keeps Next from injecting a root-relative manifest link.
+// The layout supplies the link with assetUrl(), which works behind the proxy.
+export function GET(): Response {
+  const manifest = {
     name: `${SITE_NAME} — Answer Engine Optimization Suite`,
     short_name: SITE_NAME,
     description: SITE_DESCRIPTION,
@@ -25,4 +26,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
   };
+  return new Response(JSON.stringify(manifest), {
+    headers: { 'Content-Type': 'application/manifest+json; charset=utf-8' },
+  });
 }

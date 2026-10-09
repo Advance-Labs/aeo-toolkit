@@ -8,6 +8,7 @@ import { Footer } from '@/components/ui/Footer';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { organizationSchema, websiteSchema, softwareApplicationSchema, SITE_URL } from '@/lib/seo';
+import { assetUrl } from '@/lib/asset-url';
 import './globals.css';
 
 const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
@@ -62,6 +63,13 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       lang="en"
       className={`${sans.variable} ${display.variable} ${mono.variable} ${brand.variable}`}
     >
+      {/* Keep these URLs relative for self-hosters. The Metadata API resolves relative
+          icon/manifest URLs against metadataBase, which defaults to our hosted origin. */}
+      <head>
+        <link rel="manifest" href={assetUrl('/manifest.webmanifest')} />
+        <link rel="icon" href={assetUrl('/icon.png')} type="image/png" sizes="256x256" />
+        <link rel="apple-touch-icon" href={assetUrl('/apple-icon.png')} type="image/png" sizes="180x180" />
+      </head>
       {/* Instrument ground, shared by chrome, sheets and tool pages. #101010 `paper`; cards
           recede to #080808 `card`, so depth comes from a rule rather than a glow. */}
       <body className="relative min-h-screen overflow-x-hidden bg-paper antialiased">
