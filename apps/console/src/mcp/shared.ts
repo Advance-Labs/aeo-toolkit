@@ -12,7 +12,11 @@
  * (ai-visibility, backlink) or as the `Authorization` bearer (ga-gsc) and are
  * never read from the environment, persisted, or logged.
  */
-import { resolveRateLimiter, type RateLimiter } from '@advance-labs/storage';
+import {
+  redisCredentialsFromEnv,
+  resolveRateLimiter,
+  type RateLimiter,
+} from '@advance-labs/storage';
 
 /**
  * Per-caller budget applied at each MCP route entry (one window per caller).
@@ -124,8 +128,8 @@ export function configuredAuthorizationServers(
 export function createMcpRateLimiter(
   env: Record<string, string | undefined> = process.env,
 ): RateLimiter {
-  const redisUrl = env.UPSTASH_REDIS_REST_URL;
-  const redisToken = env.UPSTASH_REDIS_REST_TOKEN;
+  // Accepts UPSTASH_* and Vercel's KV_* names; see redisCredentialsFromEnv.
+  const { redisUrl, redisToken } = redisCredentialsFromEnv(env);
   const hasSharedStore =
     redisUrl !== undefined &&
     redisUrl.length > 0 &&

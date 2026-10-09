@@ -29,7 +29,12 @@ export type {
 
 export { deriveKey, encrypt, decrypt, TokenCryptoError, CURRENT_KEY_VERSION } from './crypto.js';
 
-export { InMemoryRateLimiter, UpstashRateLimiter, resolveRateLimiter } from './rate-limit.js';
+export {
+  InMemoryRateLimiter,
+  UpstashRateLimiter,
+  resolveRateLimiter,
+  redisCredentialsFromEnv,
+} from './rate-limit.js';
 export type {
   RateLimiter,
   RateLimitResult,
