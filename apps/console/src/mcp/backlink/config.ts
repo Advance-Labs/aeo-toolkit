@@ -6,6 +6,7 @@
  * scraping, so we identify the client honestly and stay polite by default.
  */
 import type { RateLimitConfig } from '@advance-labs/types';
+import { redisCredentialsFromEnv } from '@advance-labs/storage';
 
 /**
  * Configuration for the distributed scrape rate limiter that throttles outbound
@@ -96,8 +97,8 @@ export function resolveConfig(env: Record<string, string | undefined> = process.
   // Distributed limiting is opt-in: only attach Upstash creds when BOTH are set,
   // otherwise `resolveRateLimiter` falls back to the in-memory limiter (dev/tests
   // need no secrets). Secrets come only from env — never hard-coded or logged.
-  const redisUrl = stringFromEnv(env.UPSTASH_REDIS_REST_URL);
-  const redisToken = stringFromEnv(env.UPSTASH_REDIS_REST_TOKEN);
+  // Accepts UPSTASH_* and Vercel's KV_* names; see redisCredentialsFromEnv.
+  const { redisUrl, redisToken } = redisCredentialsFromEnv(env);
   if (redisUrl !== undefined && redisToken !== undefined) {
     scrapeRateLimit.redisUrl = redisUrl;
     scrapeRateLimit.redisToken = redisToken;

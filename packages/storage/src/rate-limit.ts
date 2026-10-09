@@ -176,6 +176,53 @@ export interface ResolveRateLimiterOptions {
   redisToken?: string;
 }
 
+/** Upstash REST credentials, in whichever naming convention the host happened to inject. */
+export interface RedisCredentials {
+  redisUrl?: string;
+  redisToken?: string;
+}
+
+/**
+ * Resolve Upstash REST credentials from EITHER naming convention.
+ *
+ * There are two, and which one you get depends on how the store was created:
+ *
+ *   UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN   Upstash's own dashboard, and self-hosters
+ *   KV_REST_API_URL        / KV_REST_API_TOKEN          Vercel's Upstash marketplace integration
+ *
+ * Reading only the first set means a correctly-provisioned, correctly-connected store is
+ * silently ignored and every limiter stays on the per-instance fallback. That is not
+ * hypothetical: it happened on 2026-10-09. The store was created, connected to the project and
+ * redeployed, the dashboard showed it attached — and the limiter never saw it, because Vercel
+ * injects the `KV_*` names. Nothing failed loudly; the cap was just quietly not what the code
+ * said it was.
+ *
+ * `UPSTASH_*` wins when both are set: it is the explicit, hand-written one, so it is the one
+ * someone chose on purpose.
+ *
+ * Empty strings are treated as unset. Vercel writes an empty value rather than removing a key
+ * when a variable is cleared, and `''` must not read as "configured".
+ */
+export function redisCredentialsFromEnv(
+  env: Record<string, string | undefined> = process.env,
+): RedisCredentials {
+  const pick = (...keys: readonly string[]): string | undefined => {
+    for (const key of keys) {
+      const value = env[key];
+      if (value !== undefined && value.trim() !== '') return value;
+    }
+    return undefined;
+  };
+
+  const redisUrl = pick('UPSTASH_REDIS_REST_URL', 'KV_REST_API_URL');
+  const redisToken = pick('UPSTASH_REDIS_REST_TOKEN', 'KV_REST_API_TOKEN');
+
+  return {
+    ...(redisUrl !== undefined ? { redisUrl } : {}),
+    ...(redisToken !== undefined ? { redisToken } : {}),
+  };
+}
+
 /** Emit the production-fallback warning at most once per process, not once per resolve call. */
 let warnedInMemoryFallback = false;
 

@@ -9,7 +9,7 @@
  *
  * Credentials come only from the environment — never hard-coded, never logged.
  */
-import { resolveRateLimiter } from '@advance-labs/storage';
+import { redisCredentialsFromEnv, resolveRateLimiter } from '@advance-labs/storage';
 import type { RateLimiter } from '@advance-labs/storage';
 
 export type { RateLimiter, RateLimitResult } from '@advance-labs/storage';
@@ -30,8 +30,8 @@ export function resolveAuditRateLimiter(
   return resolveRateLimiter({
     limit: AUDIT_RATE_LIMIT,
     windowSeconds: AUDIT_WINDOW_SECONDS,
-    redisUrl: env.UPSTASH_REDIS_REST_URL,
-    redisToken: env.UPSTASH_REDIS_REST_TOKEN,
+    // Accepts UPSTASH_* and Vercel's KV_* names; see redisCredentialsFromEnv.
+    ...redisCredentialsFromEnv(env),
   });
 }
 
