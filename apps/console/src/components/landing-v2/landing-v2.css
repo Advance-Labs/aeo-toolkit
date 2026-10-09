@@ -43,6 +43,22 @@ html:has(.v2) {
   border-radius: 4px;
 }
 
+/*
+ * Joined controls (the hero URL field + its submit) opt out of the outward ring.
+ *
+ * The global rule above draws the ring 2px OUTSIDE the element on all four sides and forces a 4px
+ * radius. On an input welded to a button that is wrong twice: the right-hand edge of the ring
+ * crosses the seam and floats over the button, and the 4px radius fights the field's own
+ * `10px 0 0 10px`. The two stop reading as one control exactly when focus says they are one.
+ *
+ * `outline-offset: -2px` draws the ring INSIDE the field, so the seam stays flush and the
+ * field's own corner radius is preserved.
+ */
+.v2-joined :focus-visible {
+  outline-offset: -2px;
+  border-radius: inherit;
+}
+
 .v2 h1,
 .v2 h2,
 .v2 h3 {
@@ -65,10 +81,11 @@ html:has(.v2) {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* Was three coloured radials — one acid, two violet (#7c3aed, #8b5cf6). Violet appears
+     nowhere else in this product; it was decoration pretending to be atmosphere. One faint
+     acid bloom at the top edge is kept because it anchors the hero; the rest is flat ground. */
   background:
-    radial-gradient(55% 40% at 50% -4%, rgba(168, 243, 38, 0.06) 0%, transparent 70%),
-    radial-gradient(40% 34% at 10% 82%, rgba(124, 58, 237, 0.16) 0%, transparent 70%),
-    radial-gradient(70% 60% at 50% 115%, rgba(139, 92, 246, 0.09) 0%, transparent 70%),
+    radial-gradient(55% 40% at 50% -4%, rgba(168, 243, 38, 0.05) 0%, transparent 70%),
     var(--v2-bg);
 }
 .v2-backdrop::after {
@@ -106,12 +123,11 @@ html:has(.v2) {
 }
 
 /* Panel: cards, the specimen, the form field's sibling surfaces. */
+/* Was a gradient fill under a gradient border under a 50px drop shadow — glassmorphism. Cards
+   now recede below the page and are bounded by a plain rule, same as every other surface. */
 .v2-glass {
-  border: 1px solid transparent;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)) padding-box,
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06)) border-box;
-  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--v2-rule);
+  background: #080808;
 }
 
 
@@ -239,10 +255,12 @@ html.v2-header-folded body > header:focus-within {
    stands in behind the hero. */
 @media (max-width: 1023.98px) {
   .v2 [data-stage-shader] {
+    /* The below-lg stand-in for the WebGL field. Was a 0.35-alpha violet radial over a
+       #101024 navy ramp — the single most saturated thing on the site, and it only ever
+       showed on phones, where nobody reviewing on a desktop would see it. */
     background:
-      radial-gradient(120% 90% at 85% -10%, rgba(168, 243, 38, 0.1) 0%, transparent 55%),
-      radial-gradient(130% 100% at 15% 110%, rgba(124, 58, 237, 0.35) 0%, transparent 60%),
-      linear-gradient(200deg, #101024 0%, #0a0a0b 70%);
+      radial-gradient(120% 90% at 85% -10%, rgba(168, 243, 38, 0.08) 0%, transparent 55%),
+      var(--v2-bg);
   }
 }
 

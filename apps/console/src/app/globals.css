@@ -115,26 +115,28 @@
   }
 }
 
-/* Acid CTA control (shared chrome uses it on every route). */
-/* Control: the border-gradient button with a dark inner fill and white-light lift. */
+/*
+ * The primary control, used by the shared chrome on every route.
+ *
+ * Was a 180deg gradient fill under an inset white highlight under a 26px acid bloom, hovering to
+ * `brightness(1.25)` AND `translateY(-1px)`. Five effects on one button. The bloom in particular
+ * is what read as "AI template" — a coloured glow spilling onto the background behind a control.
+ *
+ * Flat fill, one hover. runs-on.dev's entire button hover is `opacity: .9`, and it looks more
+ * expensive than this did. The acid is kept because it is this product's identity on the landing;
+ * the runs-on purist version would make the action white and reserve green for live state.
+ */
 .v2-cta {
   color: #0c0f05;
-  border: 1px solid rgba(220, 255, 140, 0.65);
-  background: linear-gradient(180deg, #c6ff5c, #a8f326);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 10px 26px -12px rgba(168, 243, 38, 0.45);
-  transition:
-    filter 0.2s ease,
-    transform 0.2s ease;
+  background: #a8f326;
+  border: 1px solid #a8f326;
+  transition: opacity 0.2s ease;
 }
 .v2-cta:hover {
-  filter: brightness(1.25);
-  transform: translateY(-1px);
+  opacity: 0.9;
 }
 .v2-cta:active {
-  transform: translateY(0);
-  filter: brightness(1.1);
+  opacity: 0.8;
 }
 
 /* Thin, themed scrollbar. */

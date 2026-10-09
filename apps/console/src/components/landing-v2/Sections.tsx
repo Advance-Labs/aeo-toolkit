@@ -73,7 +73,7 @@ export function CinematicStage(): JSX.Element {
               data-hero-cta
               action="/tools/audit"
               method="get"
-              className="mt-6 flex max-w-md gap-0 sm:mt-8"
+              className="v2-joined mt-6 flex max-w-md gap-0 sm:mt-8"
             >
               <label htmlFor="hero-url" className="sr-only">
                 Website URL to audit
@@ -84,7 +84,7 @@ export function CinematicStage(): JSX.Element {
                 type="url"
                 inputMode="url"
                 placeholder="https://yoursite.com"
-                className="h-12 w-full border border-r-0 border-white/25 bg-white/[0.07] px-4 font-[var(--font-v2-mono)] text-sm text-[color:var(--v2-text)] backdrop-blur-md placeholder:text-[color:var(--v2-ink-faint)]"
+                className="h-12 w-full border border-r-0 border-white/25 bg-black/40 px-4 font-[var(--font-v2-mono)] text-sm text-[color:var(--v2-text)] placeholder:text-[color:var(--v2-ink-faint)]"
                 style={{ borderRadius: '10px 0 0 10px' }}
               />
               <button
