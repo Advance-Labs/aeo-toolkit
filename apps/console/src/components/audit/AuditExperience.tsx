@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import type { JSX, ReactNode } from 'react';
 import { ThinkingOrb } from 'thinking-orbs';
+import { CHROME_STORE_URL } from '@/lib/seo';
 import type {
   AuditReport,
   Finding,
@@ -358,6 +359,46 @@ function AuditResults({
           </ResultPanel>
         </Reveal>
       ) : null}
+
+      <Reveal delay={0.2}>
+        <ExtensionCta />
+      </Reveal>
+    </div>
+  );
+}
+
+/**
+ * Install prompt for the browser extension, rendered ONLY in the `done` state — someone who has
+ * just read a score understands what it offers; someone staring at an empty input does not.
+ *
+ * The page already carries a Chrome section, but it sits two sections below this island, so a
+ * reader who just got a result has to scroll past unrelated content to reach it. This is the
+ * contextual placement; that one is the page's standing pitch.
+ *
+ * Deliberately low-key — a bordered row, not a filled button. The primary action in this view is
+ * the PDF export on the score card above, and two competing filled CTAs in one viewport is the
+ * thing the design contract bans.
+ */
+function ExtensionCta(): JSX.Element {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-1">
+        <p className="text-sm font-semibold text-white">Audit any page without pasting a URL</p>
+        {/* text-slate-400, never text-slate-500: 500 fails WCAG AA on this background. */}
+        <p className="max-w-xl text-sm leading-relaxed text-slate-400">
+          The same engine as a Chrome extension, reading the rendered DOM in your browser — so it
+          also reaches staging, logged-in and localhost pages this crawler cannot fetch.
+        </p>
+      </div>
+      {/* Plain <a>: external, so never a Next <Link> (which would RSC-prefetch it). */}
+      <a
+        href={CHROME_STORE_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-white/30 hover:bg-white/[0.08]"
+      >
+        Add to Chrome — free
+      </a>
     </div>
   );
 }

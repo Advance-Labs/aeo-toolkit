@@ -11,6 +11,7 @@ import {
 } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import {
+  CHROME_STORE_URL,
   SITE_NAME,
   SITE_URL,
   absolute,
@@ -185,6 +186,39 @@ export default function McpPage(): JSX.Element {
               </div>
             ))}
           </div>
+        </Container>
+      </Section>
+
+      {/*
+       * The extension has the same discoverability problem these MCP servers had: it is a real
+       * surface that nothing pointed at. Same audience, too — someone wiring our tooling into
+       * their own environment is the person most likely to want a one-click local auditor.
+       */}
+      <Section className="border-t border-white/[0.06] py-14 sm:py-16">
+        <Container>
+          <Reveal>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                  Prefer a browser button to a config file?
+                </h2>
+                <p className="max-w-2xl text-sm leading-relaxed text-slate-400">
+                  AEO/GEO Auditor runs the same scoring engine client-side on whatever page you are
+                  looking at — no endpoint to wire up, and it reaches staging, logged-in and
+                  localhost pages no remote server can fetch.
+                </p>
+              </div>
+              {/* Plain <a>: external, so never a Next <Link> (which would RSC-prefetch it). */}
+              <a
+                href={CHROME_STORE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-white/30 hover:bg-white/[0.08]"
+              >
+                Add to Chrome — free
+              </a>
+            </div>
+          </Reveal>
         </Container>
       </Section>
     </>

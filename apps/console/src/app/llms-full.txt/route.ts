@@ -1,4 +1,11 @@
-import { SITE_URL, SITE_NAME, ORG_LEGAL_NAME, REPO_URL, SITE_TAGLINE } from '@/lib/seo';
+import {
+  SITE_URL,
+  SITE_NAME,
+  ORG_LEGAL_NAME,
+  REPO_URL,
+  SITE_TAGLINE,
+  CHROME_STORE_URL,
+} from '@/lib/seo';
 
 export const runtime = 'nodejs';
 // Static content — let the platform cache it aggressively.
@@ -75,6 +82,7 @@ ${tools}
 ## Docs
 
 - [Open-source repository](${REPO_URL}): source code, issues, and roadmap (Apache-2.0 licensed).
+- [AEO/GEO Auditor (Chrome extension)](${CHROME_STORE_URL}): free browser extension that runs the same scoring engine against the rendered DOM of the page you are on, including staging, logged-in and localhost pages a server-side crawler cannot fetch.
 - [SEO + AEO plan](${REPO_URL}/blob/main/docs/SEO-AEO-PLAN.md): the strategy this site dogfoods.
 - [Sitemap](${base}/sitemap.xml): full list of indexable pages.
 
