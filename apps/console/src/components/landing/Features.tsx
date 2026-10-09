@@ -22,7 +22,7 @@ export function Features(): React.ReactElement {
         {FEATURES.map((feature, i) => (
           <Reveal key={feature.title} delay={i * 0.08}>
             <SpotlightCard className="h-full p-6">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-brand-indigo/20 to-brand-cyan/10 text-brand-cyan">
+              <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-rule bg-paper text-ink-muted">
                 <Icon name={feature.icon} className="h-5 w-5" />
               </span>
               <h3 className="mt-5 text-lg font-semibold text-white">{feature.title}</h3>

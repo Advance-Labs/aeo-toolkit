@@ -5,7 +5,7 @@ import {
   Badge,
   Breadcrumb,
   Container,
-  GradientText,
+  Accent,
   Reveal,
   Section,
   SpotlightCard,
@@ -75,7 +75,7 @@ export default function GlossaryIndexPage(): JSX.Element {
             <Breadcrumb trail={TRAIL} />
             <Badge tone="cyan">Glossary</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              The language of <GradientText>AI search</GradientText>, defined
+              The language of <Accent>AI search</Accent>, defined
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{PAGE_DESCRIPTION}</p>
           </header>

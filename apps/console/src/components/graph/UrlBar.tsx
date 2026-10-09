@@ -23,7 +23,7 @@ export function UrlBar({ onSubmit, loading = false, defaultValue }: UrlBarProps)
     <div
       role="search"
       aria-label="Build a backlink graph"
-      className="pointer-events-auto w-full max-w-2xl rounded-2xl border border-white/[0.12] bg-ink-950/80 p-3 shadow-glow backdrop-blur-md sm:p-4"
+      className="pointer-events-auto w-full max-w-2xl rounded-xl border border-rule-strong bg-card p-3 sm:p-4"
     >
       <UrlInputForm
         onSubmit={onSubmit}

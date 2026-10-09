@@ -21,13 +21,13 @@ export function HowItWorks(): React.ReactElement {
         {/* Connector rail (desktop only). */}
         <div
           aria-hidden
-          className="absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-transparent via-white/10 to-transparent md:block"
+          className="absolute left-0 right-0 top-6 hidden h-px bg-rule md:block"
         />
         {STEPS.map((step, i) => (
           <Reveal key={step.title} delay={i * 0.1}>
             <li className="relative flex flex-col gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-ink-900 text-lg font-semibold text-white shadow-glow">
-                <span className="bg-gradient-to-br from-brand-indigo via-brand-violet to-brand-cyan bg-clip-text text-transparent">
+              <span className="flex h-12 w-12 items-center justify-center rounded-lg border border-rule bg-card font-mono text-lg text-ink">
+                <span className="text-ink">
                   {i + 1}
                 </span>
               </span>

@@ -9,18 +9,28 @@ export function Badge({
 }: {
   children: ReactNode;
   className?: string;
-  tone?: 'cyan' | 'violet' | 'indigo' | 'neutral';
+  tone?: 'cyan' | 'violet' | 'indigo' | 'neutral' | 'pulse';
 }): React.ReactElement {
+  /*
+   * Was a tinted, filled, fully-rounded pill in three brand colours. DESIGN.md's term for that
+   * is "pill badges scattered as decoration", and there were 83 of them.
+   *
+   * It is now a `.meta` label: mono, uppercase, tracked, muted — the same treatment runs-on.dev
+   * uses for every piece of metadata on the page. It reads as a field name rather than a sticker.
+   * `tone` is kept so 23 call sites do not need editing, but only `pulse` tints, and only because
+   * a live-state label genuinely should.
+   */
   const tones: Record<string, string> = {
-    cyan: 'text-brand-cyan border-brand-cyan/25 bg-brand-cyan/10',
-    violet: 'text-brand-violet border-brand-violet/25 bg-brand-violet/10',
-    indigo: 'text-brand-indigo border-brand-indigo/25 bg-brand-indigo/10',
-    neutral: 'text-slate-300 border-white/15 bg-white/5',
+    cyan: 'text-ink-muted',
+    violet: 'text-ink-muted',
+    indigo: 'text-ink-muted',
+    neutral: 'text-ink-muted',
+    pulse: 'text-pulse',
   };
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 self-start rounded-full border px-2.5 py-1 text-xs font-medium uppercase tracking-wide',
+        'inline-flex items-center gap-2 self-start font-mono text-xs uppercase tracking-meta',
         tones[tone],
         className,
       )}

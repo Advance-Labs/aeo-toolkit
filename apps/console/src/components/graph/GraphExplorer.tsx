@@ -194,7 +194,7 @@ export function GraphExplorer(): JSX.Element {
         }
       >
         {/* The 3D scene, framed in a dark rounded surface panel. */}
-        <div className="relative h-[58vh] min-h-[24rem] w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-[#070a17] shadow-glow lg:h-[calc(100dvh-18rem)]">
+        <div className="relative h-[58vh] min-h-[24rem] w-full overflow-hidden rounded-xl border border-rule bg-card lg:h-[calc(100dvh-18rem)]">
           {/* Soft brand vignette so the GL scene blends into the page chrome. */}
           <div
             aria-hidden

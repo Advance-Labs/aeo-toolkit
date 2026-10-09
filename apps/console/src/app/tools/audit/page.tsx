@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { CHROME_STORE_URL, breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { AuditExperience } from '@/components/audit/AuditExperience';
@@ -175,7 +175,7 @@ export default function AuditToolPage(): JSX.Element {
             <Breadcrumb trail={TRAIL} />
             <Badge tone="cyan">Free audit · no sign-up</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              LLM &amp; Technical <GradientText>SEO Audit</GradientText>
+              LLM &amp; Technical <Accent>SEO Audit</Accent>
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{ANSWER_FIRST}</p>
           </header>
@@ -192,7 +192,7 @@ export default function AuditToolPage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">What the audit checks</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Every signal that decides if you get <GradientText>found and cited</GradientText>
+                Every signal that decides if you get <Accent>found and cited</Accent>
               </h2>
               <p className="text-base leading-relaxed text-slate-400">
                 The audit evaluates dozens of rules across six signal groups — the same checks that
@@ -222,7 +222,7 @@ export default function AuditToolPage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">How to run a technical SEO audit</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                From URL to fix list in <GradientText>five steps</GradientText>
+                From URL to fix list in <Accent>five steps</Accent>
               </h2>
             </div>
           </Reveal>
@@ -250,7 +250,7 @@ export default function AuditToolPage(): JSX.Element {
             <SpotlightCard className="flex flex-col gap-5 p-8 sm:p-10">
               <span className="eyebrow">Chrome extension</span>
               <h2 className="max-w-2xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Audit the page you are <GradientText>already looking at</GradientText>
+                Audit the page you are <Accent>already looking at</Accent>
               </h2>
               <p className="max-w-2xl text-base leading-relaxed text-slate-400">
                 AEO/GEO Auditor runs this same scoring engine against the rendered DOM in your own
@@ -290,7 +290,7 @@ export default function AuditToolPage(): JSX.Element {
               <div className="flex flex-col gap-3 lg:sticky lg:top-24">
                 <span className="eyebrow">FAQ</span>
                 <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                  Audit <GradientText>questions</GradientText>
+                  Audit <Accent>questions</Accent>
                 </h2>
                 <p className="text-base leading-relaxed text-slate-400">
                   Everything you need to know about scoring, coverage, and what the audit checks for

@@ -10,11 +10,11 @@ export function CtaBand(): React.ReactElement {
     <section className="pb-24 pt-8" aria-label="Get started">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-indigo/[0.18] via-brand-violet/[0.10] to-brand-cyan/[0.12] px-6 py-14 text-center sm:px-12 sm:py-20">
+          <div className="relative overflow-hidden rounded-xl border border-rule bg-card px-6 py-14 text-center sm:px-12 sm:py-20">
             {/* Inner glow + grid texture. */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_80%_at_50%_0%,rgba(99,102,241,0.30),transparent_70%)]"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-rule-strong"
             />
             <div
               aria-hidden

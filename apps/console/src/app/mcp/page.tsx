@@ -4,7 +4,7 @@ import {
   Badge,
   Breadcrumb,
   Container,
-  GradientText,
+  Accent,
   Reveal,
   Section,
   SpotlightCard,
@@ -121,7 +121,7 @@ export default function McpPage(): JSX.Element {
             <Breadcrumb trail={TRAIL} />
             <Badge tone="violet">Model Context Protocol</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              Connect the AEO Toolkit to your <GradientText>AI client</GradientText>
+              Connect the AEO Toolkit to your <Accent>AI client</Accent>
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{ANSWER_FIRST}</p>
             <p className="text-sm text-slate-400">
@@ -139,7 +139,7 @@ export default function McpPage(): JSX.Element {
               <div className="flex flex-col gap-3 lg:sticky lg:top-24">
                 <span className="eyebrow">New to MCP?</span>
                 <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                  Tools your AI can <GradientText>actually call</GradientText>
+                  Tools your AI can <Accent>actually call</Accent>
                 </h2>
               </div>
               <div className="surface flex flex-col gap-4 p-6">
@@ -168,7 +168,7 @@ export default function McpPage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">The servers</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Three hosted <GradientText>MCP servers</GradientText>
+                Three hosted <Accent>MCP servers</Accent>
               </h2>
               <p className="text-base leading-relaxed text-slate-400">
                 Add any of these to your AI client. Connection details, tools, and example prompts

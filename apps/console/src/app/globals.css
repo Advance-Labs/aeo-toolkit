@@ -2,16 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Instrument tokens, shared with runs-on.dev and advancelabs.dev.
+ *
+ * Two deliberate inversions from the old scale:
+ *   - `--card` is DARKER than `--bg`. Surfaces recede instead of floating, so depth needs no glow.
+ *   - `--signal` is WHITE. Green (`--pulse`) marks live state only: a running audit, a passing
+ *     check, a number that just moved. It is not a button fill.
+ */
 :root {
   color-scheme: dark;
-  --bg: #0a0a0b;
+  --bg: #101010;
+  --card: #080808;
+  --rule: #212121;
+  --rule-strong: #2e2e2e;
+  --text: #f3f3f3;
+  --text-muted: #9c9c9c;
+  --text-faint: #6b6b6b;
+  --signal: #f3f3f3;
+  --pulse: #98ff38;
+
+  /* Kept: still referenced by graph/chart code that paints its own surfaces. */
   --surface: rgba(255, 255, 255, 0.025);
   --surface-strong: rgba(255, 255, 255, 0.045);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --text: #e7eaf3;
-  --text-muted: #9aa3b8;
-  --text-faint: #6b7390;
+  --border: #212121;
+  --border-strong: #2e2e2e;
 }
 
 @layer base {
@@ -31,9 +46,10 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* Was indigo rgba(99,102,241) — a colour that appears nowhere else in this product. */
   ::selection {
-    background: rgba(99, 102, 241, 0.35);
-    color: #fff;
+    background: rgba(152, 255, 56, 0.25);
+    color: #f3f3f3;
   }
   /* Readable defaults inside prose/result panels so re-homed components inherit sane colors. */
   h1,
@@ -71,7 +87,7 @@
     backdrop-filter: blur(8px);
   }
   .eyebrow {
-    @apply inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-brand-cyan;
+    @apply inline-flex items-center gap-2 self-start font-mono text-xs uppercase tracking-meta text-ink-muted;
   }
   /* Subtle dotted/grid backdrop used behind sections.
      The grid image AND its radial fade-mask live on a ::before layer so the mask only fades the

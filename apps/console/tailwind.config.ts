@@ -5,19 +5,44 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand palette (see /brand).
-        brand: {
-          indigo: '#7C3AED',
-          violet: '#B6A4FD',
-          cyan: '#A8F326',
-        },
-        // Surface scale for the dark theme.
+        /**
+         * Instrument palette, shared with runs-on.dev and advancelabs.dev.
+         *
+         * The action colour is WHITE, not green. Green is reserved for live state — a running
+         * audit, a passing check, a value that just changed. Spending it on every button is what
+         * made the old palette read as decoration rather than signal.
+         *
+         * `brand.cyan` used to be defined here as `#A8F326`, which is acid green, not cyan. Every
+         * `text-brand-cyan` in the codebase rendered green. The names now say what the values are.
+         */
+        paper: '#101010',
+        // Cards sit BELOW the page, not above it. Depth comes from recession, not from glow.
+        card: '#080808',
+        rule: '#212121',
+        'rule-strong': '#2e2e2e',
         ink: {
+          DEFAULT: '#f3f3f3',
+          muted: '#9c9c9c',
+          faint: '#6b6b6b',
+          // Retained: the old surface scale is still referenced by chart and graph code.
           950: '#05060f',
           900: '#0a0c1b',
           850: '#0e1124',
           800: '#141833',
           700: '#1c2142',
+        },
+        /** The one accent. Live state only — never a default button fill. */
+        pulse: '#98ff38',
+        /** Secondary emphasis. Never a call to action. */
+        annotate: '#b6a4fd',
+        /**
+         * Legacy aliases. `brand.cyan` is kept pointing at the green it always was so nothing
+         * breaks mid-migration, but new code should use `pulse` (state) or `ink` (text).
+         */
+        brand: {
+          indigo: '#7C3AED',
+          violet: '#B6A4FD',
+          cyan: '#A8F326',
         },
       },
       fontFamily: {
@@ -28,67 +53,39 @@ export default {
       maxWidth: {
         content: '72rem',
       },
+      letterSpacing: {
+        meta: '0.08em',
+      },
       backgroundImage: {
         'grid-fade':
           'linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px)',
-        'radial-glow':
-          'radial-gradient(60% 60% at 50% 0%, rgba(124,58,237,0.22) 0%, rgba(168,243,38,0.06) 40%, transparent 70%)',
-      },
-      boxShadow: {
-        glow: '0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px -20px rgba(168,243,38,0.35)',
-        'glow-cyan': '0 0 0 1px rgba(168,243,38,0.2), 0 18px 50px -18px rgba(168,243,38,0.4)',
       },
       keyframes: {
         'fade-up': {
           '0%': { opacity: '0', transform: 'translateY(16px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
-        },
-        'gradient-pan': {
-          '0%,100%': { backgroundPosition: '0% 50%' },
-          '50%': { backgroundPosition: '100% 50%' },
-        },
-        float: {
-          '0%,100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        'aurora-1': {
-          '0%,100%': { transform: 'translate(-10%, -10%) scale(1)' },
-          '50%': { transform: 'translate(10%, 6%) scale(1.25)' },
-        },
-        'aurora-2': {
-          '0%,100%': { transform: 'translate(8%, 4%) scale(1.1)' },
-          '50%': { transform: 'translate(-6%, -8%) scale(0.95)' },
-        },
         // Continuous horizontal scroll for the answer-engine marquee (one wordmark set wide).
         marquee: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },
         },
-        // Orbiting border sweeps for StarBorder (adapted from React Bits).
-        'star-movement-bottom': {
-          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
-          '100%': { transform: 'translate(-100%, 0%)', opacity: '0' },
-        },
-        'star-movement-top': {
-          '0%': { transform: 'translate(0%, 0%)', opacity: '1' },
-          '100%': { transform: 'translate(100%, 0%)', opacity: '0' },
-        },
       },
       animation: {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.22,1,0.36,1) both',
-        shimmer: 'shimmer 2.4s linear infinite',
-        'gradient-pan': 'gradient-pan 6s ease infinite',
-        float: 'float 6s ease-in-out infinite',
-        'aurora-1': 'aurora-1 18s ease-in-out infinite',
-        'aurora-2': 'aurora-2 22s ease-in-out infinite',
         marquee: 'marquee 32s linear infinite',
-        'star-movement-bottom': 'star-movement-bottom 6s linear infinite alternate',
-        'star-movement-top': 'star-movement-top 6s linear infinite alternate',
       },
+      /*
+       * REMOVED, and deliberately not replaced:
+       *   gradient-pan  an animated gradient headline is the strongest "generated site" tell
+       *   aurora-1/2    the blurred colour blobs behind the hero
+       *   float         decorative bob with no state behind it
+       *   shimmer       ditto
+       *   star-movement orbiting border sweeps (StarBorder)
+       *   radial-glow   the purple/green hero wash
+       *   shadow glow   glow-as-depth; depth is a rule now
+       * Motion has to report something real. None of these did.
+       */
     },
   },
   plugins: [],

@@ -29,7 +29,7 @@ export function ToolsShowcase(): React.ReactElement {
                 className="flex h-full flex-col gap-4 p-6 focus-visible:outline-none"
               >
                 <div className="flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-brand-violet/20 to-brand-indigo/10 text-brand-cyan">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-rule bg-paper text-ink-muted">
                     <Icon name={tool.icon} className="h-5 w-5" />
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[0.7rem] font-medium uppercase tracking-wide text-slate-400">

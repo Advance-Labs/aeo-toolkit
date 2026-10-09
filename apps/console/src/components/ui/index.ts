@@ -1,9 +1,6 @@
 /** Console design system — primitives + React-Bits-style visuals. */
-export { AuroraBackground } from './AuroraBackground';
-export { GradientText } from './GradientText';
-export { ShinyText } from './ShinyText';
+export { Accent } from './Accent';
 export { CountUp } from './CountUp';
-export { StarBorder } from './StarBorder';
 export { SpotlightCard } from './SpotlightCard';
 export { Reveal } from './Reveal';
 export { Button } from './Button';

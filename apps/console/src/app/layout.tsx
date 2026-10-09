@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter, JetBrains_Mono, Syne } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { Footer } from '@/components/ui/Footer';
 import { Header } from '@/components/Header';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -61,9 +62,9 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       lang="en"
       className={`${sans.variable} ${display.variable} ${mono.variable} ${brand.variable}`}
     >
-      {/* Deep ground for the liquid-glass system (v3): shared by chrome, sheets, and tool pages — the old
-          navy + aurora backdrop was the generic-gradient layer this redesign removes. */}
-      <body className="relative min-h-screen overflow-x-hidden bg-[#0a0a0b] antialiased">
+      {/* Instrument ground, shared by chrome, sheets and tool pages. #101010 `paper`; cards
+          recede to #080808 `card`, so depth comes from a rule rather than a glow. */}
+      <body className="relative min-h-screen overflow-x-hidden bg-paper antialiased">
         <JsonLd data={[organizationSchema(), websiteSchema(), softwareApplicationSchema()]} />
         <Header />
         <main className="relative">{children}</main>
@@ -73,6 +74,9 @@ export default function RootLayout({ children }: { children: ReactNode }): React
             them — so self-hosted/Docker installs are unaffected and no data leaves them. */}
         <SpeedInsights />
         <Analytics />
+        {/* Third tracker, and the only one that is OUR property rather than the platform's.
+            Gated on NEXT_PUBLIC_GA_MEASUREMENT_ID so self-hosted installs stay silent. */}
+        <GoogleAnalytics />
       </body>
     </html>
   );

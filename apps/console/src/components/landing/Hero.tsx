@@ -1,4 +1,4 @@
-import { Badge, Button, Container, GradientText, Reveal, StarBorder } from '@/components/ui';
+import { Badge, Button, Container, Accent, Reveal } from '@/components/ui';
 import { HeroVisual } from './HeroVisual';
 
 /**
@@ -18,7 +18,7 @@ export function Hero(): React.ReactElement {
             </Badge>
 
             <h1 className="max-w-2xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl">
-              Get cited by <GradientText>ChatGPT, Claude &amp; Perplexity.</GradientText>
+              Get cited by <Accent>ChatGPT, Claude &amp; Perplexity.</Accent>
             </h1>
 
             <p className="max-w-xl text-pretty text-lg leading-relaxed text-slate-400">
@@ -37,12 +37,12 @@ export function Hero(): React.ReactElement {
               </Button>
             </div>
 
-            <StarBorder className="mt-1">
-              <p className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300">
-                <CheckIcon />
-                Free to start · No account required · five tools, one console
-              </p>
-            </StarBorder>
+            {/* Was <StarBorder>: two gradient bars orbiting the border on a 6s loop. The
+                sentence is a fact about the product; it never needed motion to be read. */}
+            <p className="mt-1 flex items-center gap-2 border-l border-rule-strong pl-4 text-sm text-ink-muted">
+              <CheckIcon />
+              Free to start · No account required · five tools, one console
+            </p>
           </Reveal>
 
           <Reveal delay={0.15} className="order-first lg:order-last">

@@ -119,7 +119,7 @@ export function PillarCard({ pillar }: PillarCardProps): JSX.Element {
             <span
               aria-hidden="true"
               className={cn(
-                'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br to-transparent',
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-rule bg-paper',
                 meta.ring,
                 meta.accent,
               )}
