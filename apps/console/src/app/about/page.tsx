@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 import type { Metadata } from 'next';
-import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import {
   ORG_LEGAL_NAME,
@@ -106,7 +106,7 @@ export default function AboutPage(): JSX.Element {
             <Breadcrumb trail={TRAIL} />
             <Badge tone="cyan">About</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              The studio behind <GradientText>AEO Toolkit</GradientText>
+              The studio behind <Accent>AEO Toolkit</Accent>
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{ANSWER_FIRST}</p>
           </header>
@@ -120,7 +120,7 @@ export default function AboutPage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">Our mission</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Open tools for the era of <GradientText>AI search</GradientText>
+                Open tools for the era of <Accent>AI search</Accent>
               </h2>
               <p className="text-base leading-relaxed text-slate-400">
                 Search is moving from ten blue links to direct answers from ChatGPT, Claude,
@@ -140,7 +140,7 @@ export default function AboutPage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">What we build</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Products shipped by <GradientText>Advance Labs</GradientText>
+                Products shipped by <Accent>Advance Labs</Accent>
               </h2>
               <p className="text-base leading-relaxed text-slate-400">
                 We focus on a small number of products and build each one carefully, clean-room in
@@ -183,7 +183,7 @@ export default function AboutPage(): JSX.Element {
               <div className="flex flex-col gap-3 lg:sticky lg:top-24">
                 <span className="eyebrow">Who we are</span>
                 <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                  A small <GradientText>Canadian studio</GradientText>
+                  A small <Accent>Canadian studio</Accent>
                 </h2>
               </div>
             </Reveal>
@@ -215,7 +215,7 @@ export default function AboutPage(): JSX.Element {
             <SpotlightCard className="mx-auto flex max-w-3xl flex-col items-center gap-6 p-8 text-center sm:p-10">
               <div className="flex flex-col gap-3">
                 <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                  Learn more about <GradientText>Advance Labs</GradientText>
+                  Learn more about <Accent>Advance Labs</Accent>
                 </h2>
                 <p className="text-base leading-relaxed text-slate-400">
                   Visit the main site, read the company story, or explore our open-source work on

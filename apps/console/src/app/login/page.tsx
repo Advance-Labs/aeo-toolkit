@@ -12,7 +12,7 @@
  */
 
 import { useState, type FormEvent, type JSX } from 'react';
-import { Badge, Button, GradientText, Input, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Button, Accent, Input, Section, SpotlightCard } from '@/components/ui';
 import { createBrowserSupabase } from '@/lib/auth/client';
 import { SITE_URL } from '@/lib/seo';
 
@@ -64,7 +64,7 @@ export default function LoginPage(): JSX.Element {
             <Badge tone="cyan">Account</Badge>
           </div>
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Sign in to <GradientText>AEO Toolkit</GradientText>
+            Sign in to <Accent>AEO Toolkit</Accent>
           </h1>
           <p className="text-base leading-relaxed text-slate-400">
             All tools are free and open — an account lets you track usage and manage billing.

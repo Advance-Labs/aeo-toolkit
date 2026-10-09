@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
-import { GradientText } from './GradientText';
+import { Accent } from './Accent';
 
 /** Eyebrow + headline + subtitle block used to introduce a section. */
 export function SectionHeading({
@@ -29,7 +29,7 @@ export function SectionHeading({
     >
       {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
       <h2 className="max-w-2xl text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl md:text-[2.75rem]">
-        {title} {gradient ? <GradientText>{gradient}</GradientText> : null}
+        {title} {gradient ? <Accent>{gradient}</Accent> : null}
       </h2>
       {subtitle ? (
         <p

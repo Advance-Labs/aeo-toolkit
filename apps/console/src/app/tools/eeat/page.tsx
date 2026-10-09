@@ -1,5 +1,5 @@
 import type { JSX, ReactNode } from 'react';
-import { Badge, Breadcrumb, Container, GradientText, Reveal, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Reveal, Section, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { EeatScanner } from '@/components/eeat/EeatScanner.js';
@@ -219,7 +219,7 @@ export default function EeatToolPage(): JSX.Element {
             </Reveal>
             <Reveal delay={0.05}>
               <h1 className="text-balance text-4xl font-semibold leading-tight text-white sm:text-5xl">
-                Score your <GradientText>Experience, Expertise, Authority &amp; Trust</GradientText>
+                Score your <Accent>Experience, Expertise, Authority &amp; Trust</Accent>
               </h1>
             </Reveal>
             <Reveal delay={0.1}>

@@ -6,14 +6,22 @@ type Variant = 'primary' | 'secondary' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
 const BASE =
-  'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap';
+  'inline-flex items-center justify-center gap-2 rounded-lg font-medium tracking-meta uppercase '
+  + 'transition-opacity duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 '
+  + 'focus-visible:outline-pulse disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap';
 
+/*
+ * The action colour is WHITE, not green — the runs-on.dev rule. Green is `pulse` and it is
+ * reserved for live state; spending it on every button is what turned a signal into decoration.
+ *
+ * Primary used to be `bg-[linear-gradient(180deg,#c6ff5c,#a8f326)]` with `shadow-glow` and a
+ * `brightness-110` hover. A gradient fill under a glow under a brightness shift is three effects
+ * doing one job. The hover is now `opacity: .9` and nothing else.
+ */
 const VARIANTS: Record<Variant, string> = {
-  primary:
-    'text-[#0c0f05] shadow-glow border border-[#dcff8c]/60 bg-[linear-gradient(180deg,#c6ff5c,#a8f326)] hover:brightness-110 active:brightness-95',
-  secondary:
-    'text-white border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] hover:border-white/25',
-  ghost: 'text-slate-300 hover:text-white hover:bg-white/[0.06]',
+  primary: 'bg-ink text-paper hover:opacity-90 active:opacity-80',
+  secondary: 'text-ink border border-rule-strong bg-transparent hover:border-ink/40',
+  ghost: 'text-ink-muted hover:text-ink',
 };
 
 const SIZES: Record<Size, string> = {

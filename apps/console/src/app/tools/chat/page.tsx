@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import { ChatWorkspace } from '@/components/chat/ChatWorkspace.js';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { Badge, Breadcrumb, Container, GradientText, Reveal } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Reveal } from '@/components/ui';
 import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 
 const SITE_URL = process.env.MCP_PUBLIC_URL ?? 'https://aeo-toolkit-ten.vercel.app';
@@ -105,12 +105,6 @@ export default function ChatToolPage(): JSX.Element {
       <JsonLd data={[webPageLd, breadcrumbLd, howToLd, faqLd]} />
 
       <div className="relative">
-        {/* Subtle radial glow behind the hero */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-radial-glow opacity-60"
-        />
-
         <Container className="flex flex-col gap-12 py-12 sm:py-16">
           {/* Hero */}
           <header className="flex max-w-3xl flex-col gap-5">
@@ -122,7 +116,7 @@ export default function ChatToolPage(): JSX.Element {
             </Reveal>
             <Reveal delay={0.05}>
               <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
-                Chat with your <GradientText>GA4 + Search Console</GradientText> data
+                Chat with your <Accent>GA4 + Search Console</Accent> data
               </h1>
             </Reveal>
             <Reveal delay={0.1}>

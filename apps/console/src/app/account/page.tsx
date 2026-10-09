@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createSupabaseClient } from '@advance-labs/storage';
-import { Badge, Button, GradientText, Section, SpotlightCard } from '@/components/ui';
+import { Badge, Button, Accent, Section, SpotlightCard } from '@/components/ui';
 import { AUTH_ENABLED } from '@/lib/auth';
 import { getUser } from '@/lib/auth/server';
 import { BILLING_ENABLED } from '@/lib/billing/stripe';
@@ -188,7 +188,7 @@ export default async function AccountPage(): Promise<JSX.Element> {
               <Badge tone="cyan">Account</Badge>
             </div>
             <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Accounts aren&rsquo;t <GradientText>enabled yet</GradientText>
+              Accounts aren&rsquo;t <Accent>enabled yet</Accent>
             </h1>
           </header>
           <SpotlightCard className="flex flex-col gap-3 p-6 text-center sm:p-8">
@@ -229,7 +229,7 @@ export default async function AccountPage(): Promise<JSX.Element> {
         <header className="flex flex-col gap-3">
           <Badge tone="cyan">Account</Badge>
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Your <GradientText>{planMeta.name}</GradientText> plan
+            Your <Accent>{planMeta.name}</Accent> plan
           </h1>
           <p className="text-sm leading-relaxed text-slate-400">
             Signed in as <span className="font-medium text-white">{user.email ?? 'your account'}</span>.

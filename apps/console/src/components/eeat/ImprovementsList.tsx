@@ -48,7 +48,7 @@ export function ImprovementsList({ improvements }: ImprovementsListProps): JSX.E
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-brand-violet/25 to-transparent text-brand-violet"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-rule bg-paper text-annotate"
           >
             <svg
               width="18"

@@ -5,7 +5,7 @@ import {
   Badge,
   Breadcrumb,
   Container,
-  GradientText,
+  Accent,
   Reveal,
   Section,
   SpotlightCard,
@@ -202,7 +202,7 @@ export default function AeoGuidePage(): JSX.Element {
             <Breadcrumb trail={TRAIL} />
             <Badge tone="cyan">The complete guide</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
-              Answer Engine <GradientText>Optimization</GradientText>
+              Answer Engine <Accent>Optimization</Accent>
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{ANSWER_FIRST}</p>
           </header>
@@ -214,7 +214,7 @@ export default function AeoGuidePage(): JSX.Element {
         <Container>
           <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
             <h2 className="text-3xl font-semibold tracking-tight text-white">
-              Why citations are the <GradientText>new rankings</GradientText>
+              Why citations are the <Accent>new rankings</Accent>
             </h2>
             <p className="text-base leading-relaxed text-slate-300">
               When an AI assistant answers a question directly, the searcher never sees a results
@@ -248,7 +248,7 @@ export default function AeoGuidePage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">The four layers</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                What answer engines actually <GradientText>check</GradientText>
+                What answer engines actually <Accent>check</Accent>
               </h2>
             </div>
           </Reveal>
@@ -278,7 +278,7 @@ export default function AeoGuidePage(): JSX.Element {
             <div className="flex max-w-2xl flex-col gap-3">
               <span className="eyebrow">How to do AEO</span>
               <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Six steps, each with a <GradientText>free tool</GradientText>
+                Six steps, each with a <Accent>free tool</Accent>
               </h2>
             </div>
           </Reveal>

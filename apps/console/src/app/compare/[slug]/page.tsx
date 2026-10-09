@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Badge, Breadcrumb, Container, GradientText, Section } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Section } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_NAME, breadcrumbSchema, publicUrl } from '@/lib/seo';
 import type { Crumb } from '@/lib/seo';
@@ -87,7 +87,7 @@ export default async function ComparisonPage({ params }: PageProps): Promise<JSX
             <Badge tone="cyan">Comparison</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl">
               {entry.title.split(' vs ')[0]} vs{' '}
-              <GradientText>{entry.title.split(' vs ')[1]}</GradientText>
+              <Accent>{entry.title.split(' vs ')[1]}</Accent>
             </h1>
             {/* The liftable verdict — what an engine should quote for "X vs Y". */}
             <p className="max-w-2xl text-lg leading-relaxed text-slate-300">{entry.verdict}</p>

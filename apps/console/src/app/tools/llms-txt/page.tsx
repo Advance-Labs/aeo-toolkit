@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { Badge, Breadcrumb, Button, Container, GradientText, Reveal, SectionHeading } from '@/components/ui';
+import { Badge, Breadcrumb, Button, Container, Accent, Reveal, SectionHeading } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_URL, breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { GeneratorView } from '@/components/llms-txt/GeneratorView.js';
@@ -75,7 +75,7 @@ export default function LlmsTxtToolPage(): JSX.Element {
             <Reveal className="flex max-w-2xl flex-col gap-5">
               <Badge tone="cyan">AI Crawl Map · Free Tool</Badge>
               <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl">
-                llms.txt <GradientText>Generator</GradientText>
+                llms.txt <Accent>Generator</Accent>
               </h1>
               <p className="text-balance text-lg leading-relaxed text-slate-300">
                 <span className="font-medium text-white">llms.txt</span> is a plain-text file you

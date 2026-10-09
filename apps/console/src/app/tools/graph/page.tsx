@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { Badge, Breadcrumb, Container, GradientText, Reveal, SpotlightCard } from '@/components/ui';
+import { Badge, Breadcrumb, Container, Accent, Reveal, SpotlightCard } from '@/components/ui';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { breadcrumbSchema, toolBreadcrumbTrail, toolMetadata } from '@/lib/seo';
 import { GraphExplorer } from '@/components/graph/GraphExplorer.js';
@@ -127,7 +127,7 @@ export default function GraphToolPage(): JSX.Element {
           <div className="flex flex-col gap-4">
             <Badge tone="violet">3D Explorer</Badge>
             <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl">
-              Backlink <GradientText>Graph</GradientText>
+              Backlink <Accent>Graph</Accent>
             </h1>
             <p className="max-w-2xl text-pretty text-base leading-relaxed text-slate-400 sm:text-lg">
               See any site’s backlink universe as an interactive 3D map. The Backlink Graph renders
