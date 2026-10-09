@@ -14,8 +14,47 @@
  */
 import { resolveRateLimiter, type RateLimiter } from '@advance-labs/storage';
 
-/** Per-caller budget applied at each MCP route entry (one window per caller). */
-export const MCP_DISTRIBUTED_RATE_LIMIT = { limit: 60, windowSeconds: 60 } as const;
+/**
+ * Per-caller budget applied at each MCP route entry (one window per caller).
+ *
+ * 20/60s, lowered from 60/60s. The old number was picked while these endpoints were silently
+ * 404ing for everyone, so it was never a judgement about anonymous public traffic — it was a
+ * placeholder nobody could test. An MCP client issues roughly one tool call per user action,
+ * so 20/min is generous for a human driving Claude or Cursor and ungenerous for a scraper.
+ *
+ * This matters more than a typical read endpoint: `backlink` tools make OUTBOUND fetches to
+ * third parties (DuckDuckGo, Wayback, CommonCrawl) on our IP, so an unbounded caller spends
+ * our reputation with those services as well as our serverless budget.
+ *
+ * Override without a deploy via `MCP_RATE_LIMIT` / `MCP_RATE_LIMIT_WINDOW_SECONDS`.
+ */
+export const MCP_DISTRIBUTED_RATE_LIMIT = { limit: 20, windowSeconds: 60 } as const;
+
+/**
+ * Divisor applied to the per-caller limit when running in production WITHOUT a shared store.
+ *
+ * Without Redis the limiter is per-instance and resets on every cold start, so the real ceiling
+ * is `limit × instances × cold starts` — unbounded in practice. Dividing keeps the aggregate in
+ * the neighbourhood of the intended cap across a handful of instances instead of multiplying by
+ * them. It is a floor for a degraded mode, not a substitute for the shared store.
+ */
+const IN_MEMORY_FALLBACK_DIVISOR = 4;
+
+/** Read a positive integer from the environment, or `undefined` if unset/invalid. */
+function positiveIntFromEnv(
+  env: Record<string, string | undefined>,
+  key: string,
+): number | undefined {
+  const raw = env[key];
+  if (raw === undefined || raw.trim() === '') return undefined;
+  const parsed = Number(raw);
+  // Reject 0, negatives, fractions and NaN: a bad value must not silently disable the limiter.
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    console.warn(`[mcp-rate-limit] ignoring ${key}="${raw}" — expected a positive integer.`);
+    return undefined;
+  }
+  return parsed;
+}
 
 /** Default public origin used when `MCP_PUBLIC_URL` is not configured. */
 const DEFAULT_PUBLIC_URL = 'https://console.aeo-toolkit.example.com';
@@ -87,9 +126,36 @@ export function createMcpRateLimiter(
 ): RateLimiter {
   const redisUrl = env.UPSTASH_REDIS_REST_URL;
   const redisToken = env.UPSTASH_REDIS_REST_TOKEN;
+  const hasSharedStore =
+    redisUrl !== undefined &&
+    redisUrl.length > 0 &&
+    redisToken !== undefined &&
+    redisToken.length > 0;
+
+  const configuredLimit =
+    positiveIntFromEnv(env, 'MCP_RATE_LIMIT') ?? MCP_DISTRIBUTED_RATE_LIMIT.limit;
+  const windowSeconds =
+    positiveIntFromEnv(env, 'MCP_RATE_LIMIT_WINDOW_SECONDS') ??
+    MCP_DISTRIBUTED_RATE_LIMIT.windowSeconds;
+
+  // Degraded mode: no shared counter, so tighten rather than hand each instance a full budget.
+  // Math.max(1, …) because a divisor must never round the limit to 0 and close the endpoint.
+  const limit = hasSharedStore
+    ? configuredLimit
+    : Math.max(1, Math.floor(configuredLimit / IN_MEMORY_FALLBACK_DIVISOR));
+
+  if (!hasSharedStore && env.NODE_ENV === 'production') {
+    console.warn(
+      `[mcp-rate-limit] No UPSTASH_REDIS_REST_URL/TOKEN — per-caller limit tightened to ${limit} ` +
+        `per ${windowSeconds}s (from ${configuredLimit}) because the in-memory limiter is ` +
+        'PER-INSTANCE and resets on cold start. Provision the shared store before listing these ' +
+        'servers in public directories.',
+    );
+  }
+
   return resolveRateLimiter({
-    limit: MCP_DISTRIBUTED_RATE_LIMIT.limit,
-    windowSeconds: MCP_DISTRIBUTED_RATE_LIMIT.windowSeconds,
+    limit,
+    windowSeconds,
     ...(redisUrl !== undefined ? { redisUrl } : {}),
     ...(redisToken !== undefined ? { redisToken } : {}),
   });
