@@ -7,6 +7,11 @@
  * second, finer scrape limiter inside the live HTTP client throttles outbound GETs
  * to the free sources (DuckDuckGo, Wayback, CommonCrawl).
  *
+ * WHY THIS IS ITS OWN SERVER: see docs/adr/0004-three-mcp-servers.md. The split is on
+ * the AUTH SEAM — this server and `ai-visibility` are keyless, `search` is not, and MCP
+ * scopes auth per server. NOTE: that ADR has an OPEN question about folding this server
+ * and `ai-visibility` together, since nothing separates the two keyless ones.
+ *
  * BYOK: `generate_outreach_email` takes the LLM API key as a request-scoped tool
  * argument — keys are never read from the environment, persisted, or logged.
  *

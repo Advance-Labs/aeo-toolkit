@@ -2,6 +2,11 @@
  * Cross-engine search MCP server (Google Search Console + Bing Webmaster Tools),
  * mounted as a Next.js App Router route handler.
  *
+ * WHY THIS IS A SEPARATE SERVER: it is the authed side of the auth seam the three
+ * servers are split on. MCP scopes auth per server, so keeping Google out of the two
+ * keyless servers requires this one to be its own endpoint — which is also why the ROOT
+ * /.well-known/oauth-* documents 404 on purpose. See docs/adr/0004-three-mcp-servers.md.
+ *
  * Unlike the other two servers, this one takes TWO request-scoped BYOK credentials:
  * the `Authorization` bearer token (a Google access token) and the `x-bing-api-key`
  * header (a Bing Webmaster API key). Both are read per request, so the

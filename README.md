@@ -148,7 +148,7 @@ for (const page of pages) {
 
 ## Connect the MCP servers
 
-The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
+The three MCP servers are **hosted, not installed**. (Three and not one because the split is on the auth seam -- see [ADR-0004](docs/adr/0004-three-mcp-servers.md).) They are Streamable-HTTP endpoints, so there is
 nothing to `npm install` and no local process to run — point any MCP client at the URL.
 
 **Claude Code** — one command per server:

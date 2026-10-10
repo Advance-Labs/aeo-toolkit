@@ -6,6 +6,12 @@
  * as GET/POST handlers. A per-caller distributed rate-limit gate runs before the
  * transport hand-off (reusing `@advance-labs/storage`'s limiter via `@/mcp/shared`).
  *
+ * WHY THIS IS ITS OWN SERVER, not folded in with the other two: the split is on the
+ * AUTH SEAM, not on subject matter. This server and `backlink` are keyless; `search`
+ * needs Google. MCP scopes auth per SERVER, so merging would either gate these keyless
+ * tools behind a Google login or advertise tools that 401 on call. See
+ * docs/adr/0004-three-mcp-servers.md before proposing a merge.
+ *
  * BYOK: every tool that calls Perplexity takes the API key as a request-scoped
  * tool argument — keys are never read from the environment, persisted, or logged.
  *

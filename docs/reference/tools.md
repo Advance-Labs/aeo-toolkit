@@ -29,6 +29,9 @@ in the console with a matching route handler.
 ## MCP servers — 3
 
 Served from the console as Streamable-HTTP route handlers via the `mcp-handler` adapter.
+**Why three and not one:** the split is on the AUTH SEAM, and MCP scopes auth per server.
+See [ADR-0004](../adr/0004-three-mcp-servers.md), which also carries the open question about
+folding the two keyless servers together.
 **31 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
