@@ -8,10 +8,10 @@ function collectRegisteredNames(): { names: string[]; server: unknown } {
 }
 
 describe('registerSearchTools', () => {
-  it('registers exactly nineteen tools', () => {
+  it('registers exactly twenty tools', () => {
     const { names, server } = collectRegisteredNames();
     registerSearchTools(server as never, {} as never);
-    expect(names).toHaveLength(19);
+    expect(names).toHaveLength(20);
   });
 
   it('keeps every existing GSC tool name unchanged', () => {
@@ -28,6 +28,7 @@ describe('registerSearchTools', () => {
       'gsc_traffic_drop',
       'gsc_cannibalization',
       'gsc_decay',
+      'gsc_url_inspect',
     ]) {
       expect(names).toContain(name);
     }

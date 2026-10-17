@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ToolResult, ToolSuccessResult } from '@advance-labs/mcp-core';
-import type { Ga4Report, GscReport, GscSite, Ga4Property } from '@advance-labs/types';
+import type {
+  Ga4Report,
+  GscReport,
+  GscSite,
+  GscUrlInspection,
+  Ga4Property,
+} from '@advance-labs/types';
 
 import type { ClientFactory, Ga4Like, GscLike, ToolContext } from '../context.js';
 import {
@@ -14,7 +20,21 @@ import {
   gscTrafficDrop,
   gscCannibalization,
   gscDecay,
+  gscUrlInspect,
 } from './handlers.js';
+
+const emptyInspection: GscUrlInspection = {
+  verdict: 'PASS',
+  coverageState: 'Submitted and indexed',
+  indexingState: '',
+  robotsTxtState: '',
+  pageFetchState: '',
+  lastCrawlTime: '2026-10-01T00:00:00Z',
+  googleCanonical: 'https://x.com/a',
+  userCanonical: 'https://x.com/a',
+  sitemap: [],
+  referringUrlCount: 0,
+};
 
 /** Narrow a `ToolResult` to its success arm, failing the test if it is an error. */
 function expectSuccess(result: ToolResult): ToolSuccessResult {
@@ -52,6 +72,8 @@ function makeCtx(opts: {
   const gsc: GscLike = {
     query: opts.gsc?.query ?? vi.fn(async (): Promise<GscReport> => ({ rows: [] })),
     listSites: opts.gsc?.listSites ?? vi.fn(async (): Promise<GscSite[]> => []),
+    inspectUrl:
+      opts.gsc?.inspectUrl ?? vi.fn(async (): Promise<GscUrlInspection> => emptyInspection),
   };
   const ga4Factory = vi.fn((_token: string) => ga4);
   const gscFactory = vi.fn((_token: string) => gsc);
@@ -368,5 +390,27 @@ describe('gscDecay', () => {
       decaying: [{ key: '/old', declinePct: 0.8, lostRank: true }],
     });
     expect(res.content[0]?.text).toContain('seasonality');
+  });
+});
+
+describe('gscUrlInspect', () => {
+  it('returns one compact row per URL in input order, with a per-URL error row on failure', async () => {
+    const inspectUrl = vi.fn<GscLike['inspectUrl']>(async (_site, url) => {
+      if (url.endsWith('/bad')) throw new Error('403 not owner');
+      return { ...emptyInspection, googleCanonical: url };
+    });
+    const { ctx } = makeCtx({ gsc: { inspectUrl } });
+    const urls = ['https://x.com/a', 'https://x.com/bad', 'https://x.com/c', 'https://x.com/d'];
+
+    const res = expectSuccess(await gscUrlInspect(ctx, { siteUrl: 'sc-domain:x.com', urls }));
+
+    expect(inspectUrl).toHaveBeenCalledTimes(4);
+    expect(inspectUrl).toHaveBeenCalledWith('sc-domain:x.com', 'https://x.com/a');
+    const rows = (res.structuredContent as { rows: Record<string, unknown>[] }).rows;
+    expect(rows.map((r) => r['url'])).toEqual(urls);
+    expect(rows[1]).toEqual({ url: 'https://x.com/bad', error: '403 not owner' });
+    expect(rows[0]).toMatchObject({ verdict: 'PASS', googleCanonical: 'https://x.com/a' });
+    expect(rows[0]).not.toHaveProperty('error');
+    expect(res.content[0]?.text).toContain('Inspected 3 of 4 URLs');
   });
 });

@@ -139,6 +139,19 @@ export const gscDecayShape = {
   limit: z.number().int().positive().max(1000).default(25).describe('Max decaying pages.'),
 } as const;
 
+/** `gsc_url_inspect({ siteUrl, urls })`. */
+export const gscUrlInspectShape = {
+  siteUrl: z
+    .string()
+    .min(1)
+    .describe('Exact GSC property string, e.g. "sc-domain:example.com" or "https://example.com/".'),
+  urls: z
+    .array(z.string().url())
+    .min(1)
+    .max(25)
+    .describe('1-25 absolute URLs, each belonging to the property.'),
+} as const;
+
 /** Empty-input tools (`list_ga4_properties`, `list_gsc_sites`). */
 export const emptyShape = {} as const;
 
@@ -150,3 +163,4 @@ export type ComparePeriodsInput = z.infer<z.ZodObject<typeof comparePeriodsShape
 export type GscTrafficDropInput = z.infer<z.ZodObject<typeof gscTrafficDropShape>>;
 export type GscCannibalizationInput = z.infer<z.ZodObject<typeof gscCannibalizationShape>>;
 export type GscDecayInput = z.infer<z.ZodObject<typeof gscDecayShape>>;
+export type GscUrlInspectInput = z.infer<z.ZodObject<typeof gscUrlInspectShape>>;

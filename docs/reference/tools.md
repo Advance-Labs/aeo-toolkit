@@ -1,7 +1,7 @@
 ---
 title: Tool reference
 description: >-
-  All ten tools — five browser tools, three MCP servers with 31 tools, a content agent, and the Chrome extension — and the routes behind them.
+  All ten tools — five browser tools, three MCP servers with 32 tools, a content agent, and the Chrome extension — and the routes behind them.
 ---
 
 The suite is **ten tools**, delivered from **two deployables**: a single Next.js app
@@ -29,7 +29,7 @@ in the console with a matching route handler.
 ## MCP servers — 3
 
 Served from the console as Streamable-HTTP route handlers via the `mcp-handler` adapter.
-**31 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+**32 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
 AI Visibility and Backlink need no login. **Search has one**: an anonymous request gets a 401
@@ -64,7 +64,7 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 The search server was `GA4 + GSC` at `/api/mcp/ga-gsc/mcp`; that path still works as a compatibility
 alias so existing client configs need no change, but new configs should point at `/api/mcp/search/mcp`.
 
-### Search server — 19 tools
+### Search server — 20 tools
 
 | Tool | Engine | Notes |
 |---|---|---|
@@ -78,6 +78,7 @@ alias so existing client configs need no change, but new configs should point at
 | `gsc_traffic_drop` | Google | |
 | `gsc_cannibalization` | Google | |
 | `gsc_decay` | Google | |
+| `gsc_url_inspect` | Google | up to 25 URLs per call; read-only, cannot request indexing |
 | `list_bing_sites` | Bing | |
 | `bing_traffic_stats` | Bing | |
 | `bing_top_queries` | Bing | |

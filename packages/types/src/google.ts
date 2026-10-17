@@ -55,6 +55,23 @@ export interface GscReport {
   rows: GscRow[];
 }
 
+/** `indexStatusResult` of a URL Inspection, flattened. Absent API fields map to `''` / `[]` / `0`. */
+export interface GscUrlInspection {
+  /** PASS | PARTIAL | FAIL | NEUTRAL | VERDICT_UNSPECIFIED. */
+  verdict: string;
+  /** Human-readable coverage, e.g. "Submitted and indexed". */
+  coverageState: string;
+  indexingState: string;
+  robotsTxtState: string;
+  pageFetchState: string;
+  /** RFC 3339 timestamp, or '' if Google has never crawled the URL. */
+  lastCrawlTime: string;
+  googleCanonical: string;
+  userCanonical: string;
+  sitemap: string[];
+  referringUrlCount: number;
+}
+
 export interface GoogleOAuthTokens {
   accessToken: string;
   refreshToken?: string;

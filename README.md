@@ -26,7 +26,7 @@ Point the auditor at a URL and it returns a weighted, per-rule report in about a
 <a href="https://advancelabs.dev/tools"><img src="docs/assets/landing.webp" alt="AEO Toolkit — Your next customer asks an AI. Free, open instruments that measure whether the engines can find, parse, and cite you." width="100%"></a>
 
 Those five are the browser tools. The full suite is **ten**: these five, plus three
-MCP servers (`ai-visibility`, `backlink`, `search`) exposing 31 tools to Claude or any MCP
+MCP servers (`ai-visibility`, `backlink`, `search`) exposing 32 tools to Claude or any MCP
 client, plus a scheduled content agent ([`@advance-labs/blogging`](packages/blogging)) and the
 [Chrome extension](apps/chrome-extension). See [`docs/reference/tools.md`](docs/reference/tools.md)
 for the full map.

@@ -114,7 +114,7 @@ it lists every tool and the connection steps. In short:
 |--------|-----|------|
 | AI Visibility (5 tools) | `https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp` | none |
 | Backlink (7 tools) | `https://aeo.advancelabs.dev/api/mcp/backlink/mcp` | none |
-| Search — Google + Bing (19 tools) | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | Google sign-in (BYOK); Bing key optional |
+| Search — Google + Bing (20 tools) | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | Google sign-in (BYOK); Bing key optional |
 
 **Claude Code:**
 ```bash

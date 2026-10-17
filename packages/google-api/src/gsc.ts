@@ -1,10 +1,16 @@
 /**
  * Google Search Console client (searchconsole.googleapis.com webmasters v3).
  *
- * Wraps `searchAnalytics.query` and `sites.list`. All HTTP flows through an injectable
+ * Wraps `searchAnalytics.query`, `sites.list`, sitemap submit and URL Inspection. All HTTP flows through an injectable
  * {@link Fetcher} so the logic is unit-testable without a live network.
  */
-import type { GscQueryRequest, GscReport, GscRow, GscSite } from '@advance-labs/types';
+import type {
+  GscQueryRequest,
+  GscReport,
+  GscRow,
+  GscSite,
+  GscUrlInspection,
+} from '@advance-labs/types';
 import {
   asNumber,
   asRecord,
@@ -16,6 +22,8 @@ import {
 } from './http.js';
 
 const GSC_BASE = 'https://searchconsole.googleapis.com/webmasters/v3';
+/** URL Inspection lives on the v1 base, not webmasters/v3. */
+const GSC_INSPECT_URL = 'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect';
 
 export interface GscClientOptions {
   /** OAuth 2.0 access token with the `webmasters.readonly` scope. */
@@ -95,6 +103,39 @@ export class GscClient {
       accessToken: this.accessToken,
     });
   }
+
+  /**
+   * Inspect a URL's Google index status. LIVE HTTP: POSTs `{ inspectionUrl, siteUrl }` to
+   * `v1/urlInspection/index:inspect`. Works with the read-only scope; quota is ~2,000
+   * inspections per property per day. `siteUrl` must be the exact property string and
+   * `inspectionUrl` must belong to it.
+   */
+  async inspectUrl(siteUrl: string, inspectionUrl: string): Promise<GscUrlInspection> {
+    const json = await requestJson(this.fetcher, GSC_INSPECT_URL, {
+      method: 'POST',
+      accessToken: this.accessToken,
+      body: { inspectionUrl, siteUrl },
+    });
+    return mapInspection(json);
+  }
+}
+
+/** Map a raw `index:inspect` response's `indexStatusResult` into {@link GscUrlInspection}. */
+export function mapInspection(json: unknown): GscUrlInspection {
+  const r = asRecord(asRecord(asRecord(json)['inspectionResult'])['indexStatusResult']);
+  const strings = (v: unknown): string[] => (Array.isArray(v) ? v.map(asString) : []);
+  return {
+    verdict: asString(r['verdict']),
+    coverageState: asString(r['coverageState']),
+    indexingState: asString(r['indexingState']),
+    robotsTxtState: asString(r['robotsTxtState']),
+    pageFetchState: asString(r['pageFetchState']),
+    lastCrawlTime: asString(r['lastCrawlTime']),
+    googleCanonical: asString(r['googleCanonical']),
+    userCanonical: asString(r['userCanonical']),
+    sitemap: strings(r['sitemap']),
+    referringUrlCount: strings(r['referringUrls']).length,
+  };
 }
 
 /** Map a raw `searchAnalytics.query` JSON response into the {@link GscReport} contract. */
