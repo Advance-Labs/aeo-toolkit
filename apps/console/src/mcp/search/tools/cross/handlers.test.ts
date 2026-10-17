@@ -11,6 +11,11 @@ function ctxWithEngines(opts: { gsc?: Partial<GscLike>; bing?: Partial<BingLike>
   const gsc: GscLike = {
     query: opts.gsc?.query ?? (async (): Promise<GscReport> => ({ rows: [] })),
     listSites: opts.gsc?.listSites ?? (async () => []),
+    inspectUrl:
+      opts.gsc?.inspectUrl ??
+      (async () => {
+        throw new Error('inspectUrl is not used by cross tools');
+      }),
   };
   const bing: BingLike = {
     listSites: opts.bing?.listSites ?? (async () => []),
@@ -42,7 +47,10 @@ function ctxWithEngines(opts: { gsc?: Partial<GscLike>; bing?: Partial<BingLike>
 }
 
 /** Narrow a `ToolResult` to its structured payload, failing the test if it errored. */
-function payload(result: { isError?: boolean; structuredContent?: Record<string, unknown> }): Record<string, unknown> {
+function payload(result: {
+  isError?: boolean;
+  structuredContent?: Record<string, unknown>;
+}): Record<string, unknown> {
   expect(result.isError).toBeFalsy();
   return result.structuredContent ?? {};
 }

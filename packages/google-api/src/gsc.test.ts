@@ -136,3 +136,74 @@ describe('GscClient.submitSitemap', () => {
     ).rejects.toBeInstanceOf(GoogleApiError);
   });
 });
+
+describe('GscClient.inspectUrl', () => {
+  const response = {
+    inspectionResult: {
+      indexStatusResult: {
+        verdict: 'PASS',
+        coverageState: 'Submitted and indexed',
+        indexingState: 'INDEXING_ALLOWED',
+        robotsTxtState: 'ALLOWED',
+        pageFetchState: 'SUCCESSFUL',
+        lastCrawlTime: '2026-10-01T12:00:00Z',
+        googleCanonical: 'https://example.com/a',
+        userCanonical: 'https://example.com/a',
+        sitemap: ['https://example.com/sitemap.xml'],
+        referringUrls: ['https://example.com/', 'https://example.com/b'],
+      },
+    },
+  };
+
+  it('POSTs {inspectionUrl, siteUrl} to the v1 endpoint and maps indexStatusResult', async () => {
+    const mock = jsonFetcher(response);
+    const client = new GscClient({ accessToken: 'tok-i', fetcher: mock.fetcher });
+
+    const out = await client.inspectUrl('sc-domain:example.com', 'https://example.com/a');
+
+    expect(mock.calls).toHaveLength(1);
+    const call = mock.calls[0];
+    if (!call) throw new Error('expected a recorded call');
+    expect(call.url).toBe('https://searchconsole.googleapis.com/v1/urlInspection/index:inspect');
+    expect(call.init?.method).toBe('POST');
+    expect(call.init?.headers?.['Authorization']).toBe('Bearer tok-i');
+    expect(parseBody(call)).toEqual({
+      inspectionUrl: 'https://example.com/a',
+      siteUrl: 'sc-domain:example.com',
+    });
+    expect(out).toEqual({
+      verdict: 'PASS',
+      coverageState: 'Submitted and indexed',
+      indexingState: 'INDEXING_ALLOWED',
+      robotsTxtState: 'ALLOWED',
+      pageFetchState: 'SUCCESSFUL',
+      lastCrawlTime: '2026-10-01T12:00:00Z',
+      googleCanonical: 'https://example.com/a',
+      userCanonical: 'https://example.com/a',
+      sitemap: ['https://example.com/sitemap.xml'],
+      referringUrlCount: 2,
+    });
+  });
+
+  it('maps a never-crawled URL (sparse response) to empty fields', async () => {
+    const mock = jsonFetcher({
+      inspectionResult: {
+        indexStatusResult: { verdict: 'NEUTRAL', coverageState: 'URL is unknown to Google' },
+      },
+    });
+    const client = new GscClient({ accessToken: 't', fetcher: mock.fetcher });
+    const out = await client.inspectUrl('sc-domain:example.com', 'https://example.com/new');
+    expect(out.verdict).toBe('NEUTRAL');
+    expect(out.lastCrawlTime).toBe('');
+    expect(out.sitemap).toEqual([]);
+    expect(out.referringUrlCount).toBe(0);
+  });
+
+  it('throws GoogleApiError on a non-2xx response', async () => {
+    const mock = errorFetcher(403, 'not owner');
+    const client = new GscClient({ accessToken: 't', fetcher: mock.fetcher });
+    await expect(client.inspectUrl('sc-domain:x.com', 'https://x.com/')).rejects.toBeInstanceOf(
+      GoogleApiError,
+    );
+  });
+});

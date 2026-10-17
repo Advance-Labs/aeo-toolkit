@@ -223,6 +223,11 @@ export const MCP_SERVERS: readonly McpServerMeta[] = [
           'Catch pages bleeding clicks before they fall off page one, flagging whether each also lost rank — which separates a competitor problem from seasonality.',
       },
       {
+        name: 'gsc_url_inspect',
+        summary:
+          'Check whether Google has indexed up to 25 URLs per call (verdict, coverage state, last crawl, canonicals). Read-only; it cannot request indexing.',
+      },
+      {
         name: 'list_bing_sites',
         summary: 'List the Bing Webmaster Tools sites the connected API key can access.',
       },

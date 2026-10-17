@@ -33,6 +33,7 @@ import {
   gscTrafficDropShape,
   gscCannibalizationShape,
   gscDecayShape,
+  gscUrlInspectShape,
 } from './tools/gsc/schemas.js';
 import {
   comparePeriodsTool,
@@ -45,6 +46,7 @@ import {
   gscTrafficDrop,
   gscCannibalization,
   gscDecay,
+  gscUrlInspect,
 } from './tools/gsc/handlers.js';
 import {
   bingIndexHealthShape,
@@ -69,7 +71,7 @@ export type { ToolContext } from './tools/context.js';
 export { defaultClientFactory } from './tools/context.js';
 
 /**
- * Register all nineteen tools onto `server`. The `ctx` is captured per
+ * Register all twenty tools onto `server`. The `ctx` is captured per
  * registration; the HTTP route builds a fresh `ctx` (with the request-scoped
  * bearer token and Bing API key) per request and re-registers onto a
  * per-request server instance.
@@ -185,6 +187,19 @@ export function registerSearchTools(server: McpServer, ctx: ToolContext): void {
       'Search Console cannot rule out seasonality on its own.',
     inputSchema: gscDecayShape,
     handler: (input) => gscDecay(ctx, input),
+  });
+
+  registerTool(server, {
+    name: 'gsc_url_inspect',
+    title: 'Inspect URLs in Google index',
+    description:
+      'Check whether Google has indexed up to 25 URLs, via the Search Console URL Inspection API. ' +
+      'Returns one row per URL: verdict, coverageState, lastCrawlTime, googleCanonical, ' +
+      'userCanonical, or an error if that URL failed. Read-only. The quota is about 2,000 ' +
+      'inspections per property per day. It does NOT request indexing (Google offers no API for ' +
+      'that). siteUrl must be the exact property string and every URL must belong to it.',
+    inputSchema: gscUrlInspectShape,
+    handler: (input) => gscUrlInspect(ctx, input),
   });
 
   registerTool(server, {

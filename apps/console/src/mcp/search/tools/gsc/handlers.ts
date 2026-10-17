@@ -28,6 +28,7 @@ import type {
   GscTrafficDropInput,
   GscCannibalizationInput,
   GscDecayInput,
+  GscUrlInspectInput,
 } from './schemas.js';
 
 /** `list_ga4_properties()` — GA4 Admin listing (currently a stub in @advance-labs/google-api). */
@@ -289,5 +290,45 @@ export async function gscDecay(ctx: ToolContext, input: GscDecayInput): Promise<
       criteria: { minImpressions: input.minImpressions, minDeclinePct: input.minDeclinePct },
       decaying,
     },
+  );
+}
+
+/** URL Inspection calls in flight at once; the API is quota-limited per property, not per second. */
+const INSPECT_CONCURRENCY = 3;
+
+/** `gsc_url_inspect({ siteUrl, urls })` — one compact row per URL; a failed URL gets an `error` row. */
+export async function gscUrlInspect(
+  ctx: ToolContext,
+  input: GscUrlInspectInput,
+): Promise<ToolResult> {
+  const gsc = await gscFor(ctx);
+  const rows = new Array<Record<string, unknown>>(input.urls.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < input.urls.length) {
+      const i = next++;
+      const url = input.urls[i] as string;
+      try {
+        const r = await gsc.inspectUrl(input.siteUrl, url);
+        rows[i] = {
+          url,
+          verdict: r.verdict,
+          coverageState: r.coverageState,
+          lastCrawlTime: r.lastCrawlTime,
+          googleCanonical: r.googleCanonical,
+          userCanonical: r.userCanonical,
+        };
+      } catch (err) {
+        rows[i] = { url, error: err instanceof Error ? err.message : String(err) };
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: INSPECT_CONCURRENCY }, worker));
+
+  const failed = rows.filter((r) => 'error' in r).length;
+  return jsonResult(
+    `Inspected ${rows.length - failed} of ${rows.length} URLs on ${input.siteUrl}` +
+      (failed > 0 ? ` (${failed} failed, see the error rows).` : '.'),
+    { siteUrl: input.siteUrl, rows },
   );
 }

@@ -22,6 +22,7 @@ export interface Ga4Like {
 export interface GscLike {
   query: GscClient['query'];
   listSites: GscClient['listSites'];
+  inspectUrl: GscClient['inspectUrl'];
 }
 
 /** Minimal structural surface of the Bing client a tool needs (for mocking). */
