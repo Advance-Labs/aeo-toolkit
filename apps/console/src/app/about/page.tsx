@@ -240,6 +240,14 @@ export default function AboutPage(): JSX.Element {
                   About Advance Labs
                 </a>
                 <a
+                  href="https://advancelabs.dev/services/aeo-audit"
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/[0.08]"
+                >
+                  AEO audit
+                </a>
+                <a
                   href="https://github.com/Advance-Labs"
                   target="_blank"
                   rel="noopener"

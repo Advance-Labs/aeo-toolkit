@@ -64,6 +64,10 @@ export function Footer(): React.ReactElement {
                 { href: 'https://github.com/Advance-Labs', label: 'GitHub' },
                 { href: CHROME_STORE_URL, label: 'Chrome extension' },
                 { href: 'https://advancelabs.dev', label: 'Advance Labs' },
+                {
+                  href: 'https://advancelabs.dev/services/aeo-audit',
+                  label: 'AEO audit (done for you)',
+                },
               ]}
             />
           </div>

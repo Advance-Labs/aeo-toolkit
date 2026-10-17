@@ -337,6 +337,16 @@ export default function AeoGuidePage(): JSX.Element {
               </Link>
               .
             </p>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Rather have it done for you? An{' '}
+              <a
+                href="https://advancelabs.dev/services/aeo-audit"
+                className="font-medium text-brand-cyan hover:underline"
+              >
+                AEO audit
+              </a>{' '}
+              runs all four layers across your whole site in three days.
+            </p>
           </div>
         </Container>
       </Section>
