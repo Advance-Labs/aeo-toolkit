@@ -133,6 +133,16 @@ export default async function GlossaryTermPage({ params }: PageProps): Promise<J
                 </Link>
               ))}
             </div>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Want this checked across your whole site? Get an{' '}
+              <a
+                href="https://advancelabs.dev/services/aeo-audit"
+                className="font-medium text-brand-cyan hover:underline"
+              >
+                AEO audit
+              </a>
+              .
+            </p>
           </div>
         </Container>
       </Section>

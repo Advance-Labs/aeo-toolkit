@@ -22,6 +22,7 @@
 **Try it without installing anything:** the five tools run free in the browser at
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
+Want it done for you? [AEO audit](https://advancelabs.dev/services/aeo-audit) by Advance Labs.
 
 <a href="https://advancelabs.dev/tools"><img src="docs/assets/landing.webp" alt="AEO Toolkit — Your next customer asks an AI. Free, open instruments that measure whether the engines can find, parse, and cite you." width="100%"></a>
 
