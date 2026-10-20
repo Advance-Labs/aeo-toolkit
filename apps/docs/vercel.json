@@ -3,6 +3,18 @@
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@advance-labs/docs",
   "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)",
+      "destination": "/aeo-toolkit/",
+      "permanent": true
+    },
+    {
+      "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)/",
+      "destination": "/aeo-toolkit/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/aeo-toolkit",

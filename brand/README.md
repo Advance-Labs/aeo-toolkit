@@ -1,5 +1,8 @@
 # AEO Toolkit — Brand
 
+> **2026-10-20:** `apps/console` and the internal packages it uses moved to a private repository.
+> References to them below describe the hosted platform; the code is no longer in this repo.
+
 The brand that shipped with the September 2026 website redesign. In one line: **a calibrated
 instrument, printed.** Near-black ground, one acid-green signal colour, violet as the
 secondary, mono labels like the margin notes on a lab sheet, Syne headlines, and the Advance

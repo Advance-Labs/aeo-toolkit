@@ -8,7 +8,6 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@advance-labs/console",
     "@advance-labs/chrome-extension"
   ]
 }

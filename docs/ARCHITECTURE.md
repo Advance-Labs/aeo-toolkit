@@ -3,6 +3,9 @@ title: Architecture
 description: >-
   How ten AEO tools collapse into three shared engines and two deployables, and how data flows through the audit and Google pipelines.
 ---
+> **2026-10-20:** `apps/console` and the internal packages it uses moved to a private repository.
+> References to them below describe the hosted platform; the code is no longer in this repo.
+
 
 ## The reuse thesis
 
@@ -100,7 +103,7 @@ their on/off state from whether their environment variables are present — ther
 feature flag. With none set, every tool is free and open exactly as it is today.
 
 This is deliberate: adding keys is the only action that can ever wall a tool, and unsetting them
-rolls back instantly. See [`ACTIVATION.md`](ACTIVATION.md) for the switches and
+rolls back instantly. See the activation runbook (in the private platform repo) for the switches and
 [`CONVENTIONS.md`](CONVENTIONS.md#security-invariants) for the invariant that keeps the managed tier
 closed-when-dormant rather than open-when-dormant.
 

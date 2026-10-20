@@ -145,14 +145,6 @@ export default defineConfig({
         },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
         {
-          label: 'Operating the console',
-          items: [
-            { label: 'Self-hosting', slug: 'self-hosting' },
-            { label: 'Deployment', slug: 'deployment' },
-            { label: 'Activation', slug: 'activation' },
-          ],
-        },
-        {
           label: 'Contributing',
           items: [{ label: 'Conventions', slug: 'conventions' }],
         },

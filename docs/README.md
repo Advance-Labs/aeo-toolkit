@@ -19,9 +19,6 @@ entirely on your own infrastructure if you want it to.
 | Understand how the pieces fit | [Architecture](ARCHITECTURE.md) |
 | See every tool and its route | [Tool reference](reference/tools.md) |
 | Use a package on its own | [Package reference](reference/packages.md) |
-| Run the whole thing yourself | [Self-hosting](SELF-HOSTING.md) |
-| Deploy it to Vercel | [Deployment](DEPLOYMENT.md) |
-| Turn on auth and billing | [Activation runbook](ACTIVATION.md) |
 | Contribute code | [Conventions](CONVENTIONS.md) |
 
 ## What's in the suite
@@ -53,7 +50,7 @@ docker compose up      # or run the whole console locally
 
 ## A note on the archive
 
-[`archive/`](archive/) holds superseded planning documents — the original nine-app build plan, the
+`archive/` holds superseded planning documents — the original nine-app build plan, the
 per-tool specs, and the managed-tier runbooks. They are kept for design history and are **not**
 published to this site. Every file there carries a banner saying so. If you are looking for how the
 repository works today, everything above is current; nothing in the archive is.
