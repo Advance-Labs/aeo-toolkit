@@ -5,7 +5,12 @@
   "outputDirectory": "dist",
   "redirects": [
     {
-      "source": "/aeo-toolkit/(self-hosting|deployment|activation)/?",
+      "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)",
+      "destination": "/aeo-toolkit/",
+      "permanent": true
+    },
+    {
+      "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)/",
       "destination": "/aeo-toolkit/",
       "permanent": true
     }
