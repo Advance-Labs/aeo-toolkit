@@ -1,5 +1,13 @@
 # @advance-labs/net-guard
 
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [b700d8e]
+- Updated dependencies [da9de33]
+  - @advance-labs/types@0.3.0
+
 ## 0.2.2
 
 ### Patch Changes
