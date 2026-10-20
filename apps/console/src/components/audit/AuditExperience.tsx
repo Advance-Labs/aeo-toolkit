@@ -6,8 +6,6 @@ import { ThinkingOrb } from 'thinking-orbs';
 import { CHROME_STORE_URL } from '@/lib/seo';
 import type {
   AuditReport,
-  Finding,
-  FindingSeverity,
   GeneratedTemplate,
   Score,
   ScoreCategory,
@@ -22,7 +20,7 @@ import {
   requestReportPdf,
 } from '@/components/audit/client.js';
 import { AuditInputCard } from '@/components/audit/AuditInputCard';
-
+import { FixCards } from '@/components/audit/FixCards';
 type Status = 'idle' | 'auditing' | 'done' | 'error';
 
 /* -------------------------------------------------------------------------- */
@@ -72,36 +70,6 @@ function gradeChipClasses(grade: ScoreGrade): string {
       return 'bg-orange-500/12 text-orange-300 border-orange-400/30';
     case 'F':
       return 'bg-red-500/12 text-red-300 border-red-400/30';
-  }
-}
-
-function severityChipClasses(severity: FindingSeverity): string {
-  switch (severity) {
-    case 'critical':
-      return 'bg-red-500/12 text-red-300 border-red-400/30';
-    case 'high':
-      return 'bg-orange-500/12 text-orange-300 border-orange-400/30';
-    case 'medium':
-      return 'bg-amber-500/12 text-amber-300 border-amber-400/30';
-    case 'low':
-      return 'bg-cyan-500/12 text-cyan-300 border-cyan-400/30';
-    case 'info':
-      return 'bg-white/5 text-slate-300 border-white/15';
-  }
-}
-
-function severityRank(severity: FindingSeverity): number {
-  switch (severity) {
-    case 'critical':
-      return 0;
-    case 'high':
-      return 1;
-    case 'medium':
-      return 2;
-    case 'low':
-      return 3;
-    case 'info':
-      return 4;
   }
 }
 
@@ -648,68 +616,6 @@ function CategoryBars({ categories }: { categories: ScoreCategory[] }): JSX.Elem
   );
 }
 
-function FixCards({ findings }: { findings: Finding[] }): JSX.Element {
-  const sorted = [...findings.filter((f) => !f.passed)].sort((a, b) => {
-    const bySeverity = severityRank(a.severity) - severityRank(b.severity);
-    if (bySeverity !== 0) return bySeverity;
-    return b.weight - a.weight;
-  });
-
-  if (sorted.length === 0) {
-    return (
-      <p
-        role="status"
-        className="flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200"
-      >
-        <CheckIcon />
-        No issues found — everything passed.
-      </p>
-    );
-  }
-
-  return (
-    <ol className="flex flex-col gap-3" aria-label="Prioritized fixes">
-      {sorted.map((finding) => (
-        <li
-          key={finding.id}
-          className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 transition-colors hover:border-white/15"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="text-sm font-semibold text-white">{finding.title}</h3>
-            <span
-              className={cn(
-                'shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide',
-                severityChipClasses(finding.severity),
-              )}
-            >
-              {finding.severity}
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-slate-400">{finding.description}</p>
-          <p className="mt-2 text-sm text-slate-200">
-            <span className="font-medium text-brand-cyan">Fix: </span>
-            {finding.recommendation}
-          </p>
-          {finding.affectedUrls && finding.affectedUrls.length > 0 ? (
-            <AffectedUrls urls={finding.affectedUrls} />
-          ) : null}
-          {finding.docsUrl ? (
-            <a
-              href={finding.docsUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand-cyan underline-offset-2 hover:underline"
-            >
-              Learn more
-              <ExternalIcon />
-            </a>
-          ) : null}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 function TemplateCard({ template }: { template: GeneratedTemplate }): JSX.Element {
   const handleDownload = useCallback(() => {
     if (typeof document === 'undefined' || typeof URL.createObjectURL !== 'function') return;
@@ -777,96 +683,6 @@ function WarningIcon(): JSX.Element {
       aria-hidden="true"
     >
       <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
-    </svg>
-  );
-}
-
-/** Show this many URLs before collapsing the rest behind a disclosure. */
-const URLS_SHOWN_INLINE = 3;
-
-/**
- * The specific URLs a finding applies to.
- *
- * This used to render as a bare count ("Affects 21 URLs"), which names a problem without
- * locating it. Rules like `tech.sitemap-covers-pages` are only actionable once you can see
- * which pages are missing, so the URLs are listed: inline when there are few, behind a native
- * <details> when there are many so one finding cannot push the rest of the report off-screen.
- *
- * Makes no completeness claim — rules cap this list, and the finding's own description carries
- * the true total (e.g. "21 of 45 crawled pages").
- *
- * Mirrors `FixList` in @advance-labs/ui, which this component deliberately duplicates for its
- * dark-theme variant; keep the two in step.
- */
-function AffectedUrls({ urls }: { urls: readonly string[] }): JSX.Element {
-  const label = `${urls.length} affected URL${urls.length === 1 ? '' : 's'}`;
-  const list = (
-    <ul className="mt-1.5 flex flex-col gap-1">
-      {urls.map((url) => (
-        <li
-          key={url}
-          className="truncate font-mono text-[11px] leading-relaxed text-slate-400"
-          title={url}
-        >
-          {url}
-        </li>
-      ))}
-    </ul>
-  );
-
-  if (urls.length <= URLS_SHOWN_INLINE) {
-    return (
-      <div className="mt-2">
-        <p className="text-xs font-medium text-slate-300">{label}</p>
-        {list}
-      </div>
-    );
-  }
-
-  return (
-    <details className="group/urls mt-2">
-      <summary className="cursor-pointer list-none text-xs font-medium text-slate-300 underline-offset-2 hover:text-white hover:underline">
-        {label}
-        <span className="ml-1 text-slate-500 group-open/urls:hidden">(show)</span>
-        <span className="ml-1 hidden text-slate-500 group-open/urls:inline">(hide)</span>
-      </summary>
-      {list}
-    </details>
-  );
-}
-
-function CheckIcon(): JSX.Element {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function ExternalIcon(): JSX.Element {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M14 4h6v6M20 4l-9 9M19 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5" />
     </svg>
   );
 }
