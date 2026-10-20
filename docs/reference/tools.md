@@ -11,7 +11,7 @@ library under `packages/`.
 > The tools were originally nine standalone apps. [ADR-0003](../adr/0003-single-vercel-deployment.md)
 > consolidated every HTTP deployable into the console; the standalone apps were deleted and their
 > logic preserved in the `@advance-labs/*` packages. The historical per-tool specs are in
-> [`../archive/tools/`](../archive/tools/).
+> `archive/tools/` (no longer in this repo).
 
 ## Browser tools — 5
 

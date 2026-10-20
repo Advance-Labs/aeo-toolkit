@@ -3,6 +3,9 @@ title: Conventions
 description: >-
   Package layout, code style, testing, and the seven security invariants binding on every contribution.
 ---
+> **2026-10-20:** `apps/console` and the internal packages it uses moved to a private repository.
+> References to them below describe the hosted platform; the code is no longer in this repo.
+
 
 House style for every package and app in the monorepo. If you are adding a package, copy the shape of
 an existing one — [`packages/net-guard`](../packages/net-guard) is a good small template,
@@ -166,5 +169,5 @@ Binding on all code, not just the managed tier. CI and review check for these.
 - Mark stubbed integrations `// STUB:` with a TODO and a typed interface, so the wiring point is
   obvious.
 - **Retire planning docs when they ship.** A design doc that describes work already delivered belongs
-  in [`archive/`](archive/) with a banner, not in `docs/` where it reads as current. Most of the
+  in `archive/` with a banner, not in `docs/` where it reads as current. Most of the
   drift this repo has accumulated came from skipping this step.

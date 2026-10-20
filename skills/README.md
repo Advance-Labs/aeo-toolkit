@@ -1,6 +1,6 @@
 # AEO Toolkit skills
 
-Claude Skills that turn the [`ga-gsc` MCP server](../apps/console/src/mcp/search) from a set
+Claude Skills that turn the [`ga-gsc` MCP server](https://aeo.advancelabs.dev/mcp) from a set
 of tools into a set of **workflows**.
 
 The MCP server answers questions like "what are the numbers". These skills answer the
@@ -36,7 +36,7 @@ A skill is instructions, not data. Every one of these calls the `ga-gsc` MCP ser
 holds the Google OAuth connection to your Search Console account. Without it the skill has
 nothing to read.
 
-Setup is in [`apps/console/src/mcp/search`](../apps/console/src/mcp/search). You will need
+Connect it from [aeo.advancelabs.dev/mcp](https://aeo.advancelabs.dev/mcp). You will need
 Search Console access for the property you want to analyse; the server handles the OAuth flow
 and stores tokens encrypted.
 

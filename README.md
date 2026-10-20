@@ -17,7 +17,13 @@
 
 </div>
 
-> Open-source TypeScript monorepo for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+> Open-source TypeScript packages for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+> **Open core.** This repo is the open-source half of the AEO Toolkit: the audit engine, crawler,
+> parser, schema validator and the Chrome extension, all Apache-2.0 and published to npm. The
+> hosted platform behind [advancelabs.dev/tools](https://advancelabs.dev/tools) and the three
+> MCP servers (the console, OAuth, billing, the Google and Bing integrations) moved to a
+> private repository on 2026-10-20. Code published here before that date stays Apache-2.0.
 
 **Try it without installing anything:** the five tools run free in the browser at
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
@@ -28,7 +34,7 @@ Want it done for you? [AEO audit](https://advancelabs.dev/services/aeo-audit) by
 
 Those five are the browser tools. The full suite is **ten**: these five, plus three
 MCP servers (`ai-visibility`, `backlink`, `search`) exposing 32 tools to Claude or any MCP
-client, plus a scheduled content agent ([`@advance-labs/blogging`](packages/blogging)) and the
+client, plus a scheduled content agent and the
 [Chrome extension](apps/chrome-extension). See [`docs/reference/tools.md`](docs/reference/tools.md)
 for the full map.
 
@@ -80,18 +86,10 @@ pnpm --filter @advance-labs/chrome-extension package
 | [`@advance-labs/crawler`](packages/crawler) | Multi-threaded web crawler with robots.txt compliance, sitemap parsing, and per-host rate limiting |
 | [`@advance-labs/html-parser`](packages/html-parser) | Extracts meta tags, Open Graph, Twitter Cards, headings, images, links, and JSON-LD from HTML |
 | [`@advance-labs/schema-validator`](packages/schema-validator) | Validates Schema.org JSON-LD structured data against known types |
-| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 54 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
-| [`@advance-labs/google-api`](packages/google-api) | Google Search Console + GA4 client — list properties, fetch impressions, submit sitemaps |
-| [`@advance-labs/storage`](packages/storage) | Supabase token store with AES-256-GCM encryption, in-memory and Upstash rate limiters |
-| [`@advance-labs/mcp-core`](packages/mcp-core) | MCP (Model Context Protocol) transport helpers for exposing AEO tools to AI agents |
-| [`@advance-labs/ui`](packages/ui) | React components for rendering AEO audit results — score rings, rule lists, diff views |
-| [`@advance-labs/backlinks`](packages/backlinks) | Backlink graph building and link analysis |
-| [`@advance-labs/llm`](packages/llm) | Provider-agnostic LLM client used by the content audits |
-| [`@advance-labs/pdf`](packages/pdf) | Renders audit reports to PDF |
+| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 57 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
 
-Plus `blogging`, `net-guard`, `orchestrator`, `types` and `config`. Applications live in
-[`apps/console`](apps/console) (the Next.js app behind the hosted tools) and
-[`apps/chrome-extension`](apps/chrome-extension).
+Plus [`@advance-labs/net-guard`](packages/net-guard) and [`@advance-labs/types`](packages/types). The one
+application here is [`apps/chrome-extension`](apps/chrome-extension); the hosted console is not open source.
 
 ---
 
@@ -100,7 +98,7 @@ Plus `blogging`, `net-guard`, `orchestrator`, `types` and `config`. Applications
 Six packages are published to npm and usable on their own:
 
 ```bash
-npm i @advance-labs/scoring      # the 54-rule audit engine
+npm i @advance-labs/scoring      # the 57-rule audit engine
 npm i @advance-labs/net-guard    # SSRF-safe fetch: re-checks every redirect hop
 npm i @advance-labs/crawler      # polite crawler with robots.txt + rate limiting
 npm i @advance-labs/html-parser
@@ -108,9 +106,7 @@ npm i @advance-labs/schema-validator
 npm i @advance-labs/types        # shared types, a dependency of the above
 ```
 
-> The remaining packages stay workspace-internal (`private: true`) — they are glue for this
-> repo rather than things worth supporting standalone. The hosted tools at
-> [advancelabs.dev/tools](https://advancelabs.dev/tools) need no install at all.
+> The hosted tools at [advancelabs.dev/tools](https://advancelabs.dev/tools) need no install at all.
 
 ```bash
 git clone https://github.com/Advance-Labs/aeo-toolkit.git
@@ -118,17 +114,9 @@ cd aeo-toolkit
 pnpm install
 pnpm build          # turbo builds every package
 pnpm test           # the full suite, no network
-pnpm dev --filter=@advance-labs/console   # run the console locally
 ```
 
-Or run the whole console in Docker with no accounts and no keys:
-
-```bash
-docker compose up --build   # then open http://localhost:3000
-```
-
-See [`docs/SELF-HOSTING.md`](docs/SELF-HOSTING.md) for the full self-hosting guide, or read the
-full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit)**.
+Read the full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit)**.
 
 Once built, the packages compose like this:
 
@@ -215,8 +203,7 @@ AEO Toolkit automates auditing all of these.
 
 ```
 aeo-toolkit/
-├── packages/          # 16 shared libraries (crawler, parser, scorer, etc.)
-├── apps/console/      # Next.js app behind the hosted tools
+├── packages/          # the six published libraries, plus shared config
 ├── apps/chrome-extension/
 ├── apps/docs/         # Astro + Starlight docs site (renders ../../docs)
 ├── docs/              # the documentation itself
@@ -229,7 +216,7 @@ Built with [Turborepo](https://turbo.build) · TypeScript 5 · Vitest · React 1
 
 ## Design
 
-The console follows one visual system: a near-black ground, a single acid-green signal
+Advance Labs' products follow one visual system: a near-black ground, a single acid-green signal
 colour, mono lab-sheet labels, Syne headlines, and the Advance Labs sphere as the mark. The
 palette, type, tokens and rules are in [`brand/README.md`](brand/README.md), with the assets
 beside it. Anything a user sees should follow it, and

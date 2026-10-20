@@ -6,7 +6,7 @@ description: >-
 ---
 
 The original 9-tool build plan is **complete** — see the
-[archived build plan](archive/BUILD-PLAN.md) for what shipped and
+archived build plan for what shipped and
 [ADR-0003](adr/0003-single-vercel-deployment.md) for how it was consolidated into one
 deployment. This page is the forward-looking roadmap.
 
@@ -69,7 +69,7 @@ site has to ship them:
 Tracked as `TODO(lead)` markers in the code rather than issues, since they depend on
 production configuration: live delivery counts and a citation snapshot in the account panel,
 a public route for the guarantee terms, and a citation-coverage snapshot at onboarding.
-The [activation runbook](ACTIVATION.md) covers turning the tier on.
+The activation runbook (in the private platform repo) covers turning the tier on.
 
 ## Out of scope here
 
