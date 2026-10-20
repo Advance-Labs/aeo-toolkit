@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 import type { Metadata } from 'next';
-import { Archivo, IBM_Plex_Mono, Instrument_Serif, Syne } from 'next/font/google';
+import localFont from 'next/font/local';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { publicUrl } from '@/lib/seo';
 import { Motion } from '@/components/landing-v2/Motion';
@@ -23,23 +23,36 @@ import { assetUrl } from '@/lib/asset-url';
  * islands, both no-ops under prefers-reduced-motion and absent without JavaScript.
  */
 
-const v2Sans = Archivo({ subsets: ['latin'], variable: '--font-v2-sans', display: 'swap' });
-const v2Mono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const v2Sans = localFont({
+  src: '../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2',
+  weight: '100 900',
+  variable: '--font-v2-sans',
+  display: 'swap',
+});
+const v2Mono = localFont({
+  src: [
+    {
+      path: '../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2',
+      weight: '400',
+    },
+    {
+      path: '../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2',
+      weight: '500',
+    },
+  ],
   variable: '--font-v2-mono',
   display: 'swap',
 });
 // Display voice: Syne — wide, arty, unmistakably not a default.
-const v2Display = Syne({
-  subsets: ['latin'],
-  weight: ['700', '800'],
+const v2Display = localFont({
+  src: '../../node_modules/@fontsource-variable/syne/files/syne-latin-wght-normal.woff2',
+  weight: '400 800',
   variable: '--font-v2-display',
   display: 'swap',
 });
 // Cursive accent: Instrument Serif italic, for the one phrase per headline that turns.
-const v2Serif = Instrument_Serif({
-  subsets: ['latin'],
+const v2Serif = localFont({
+  src: '../../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2',
   weight: '400',
   style: 'italic',
   variable: '--font-v2-serif',
@@ -66,7 +79,9 @@ const faqLd: Record<string, unknown> = {
 
 export default function LandingPage(): JSX.Element {
   return (
-    <div className={`v2 ${v2Sans.variable} ${v2Mono.variable} ${v2Display.variable} ${v2Serif.variable} relative`}>
+    <div
+      className={`v2 ${v2Sans.variable} ${v2Mono.variable} ${v2Display.variable} ${v2Serif.variable} relative`}
+    >
       {/* The light field the glass refracts — fixed, so it also glows through the chrome. */}
       <div className="v2-backdrop" aria-hidden="true" />
       <JsonLd data={faqLd} />

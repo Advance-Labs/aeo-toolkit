@@ -143,7 +143,7 @@ export default defineConfig({
             { label: 'Roadmap', slug: 'roadmap' },
           ],
         },
-        { label: 'Reference', autogenerate: { directory: 'reference' } },
+        { label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
         {
           label: 'Operating the console',
           items: [
@@ -163,7 +163,7 @@ export default defineConfig({
             { label: 'SEO + AEO plan', slug: 'seo-aeo-plan' },
           ],
         },
-        { label: 'Decisions', autogenerate: { directory: 'adr' } },
+        { label: 'Decisions', items: [{ autogenerate: { directory: 'adr' } }] },
       ],
     }),
   ],

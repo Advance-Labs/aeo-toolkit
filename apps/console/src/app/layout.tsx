@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Inter, JetBrains_Mono, Syne } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Analytics } from '@vercel/analytics/next';
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 import { Footer } from '@/components/ui/Footer';
@@ -10,11 +10,32 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { organizationSchema, websiteSchema, softwareApplicationSchema, SITE_URL } from '@/lib/seo';
 import './globals.css';
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const display = Syne({ subsets: ['latin'], weight: ['600', '700', '800'], variable: '--font-display', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
+// Build from checked package assets so CI does not depend on Google Fonts responses.
+const sans = localFont({
+  src: '../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
+  weight: '100 900',
+  variable: '--font-sans',
+  display: 'swap',
+});
+const display = localFont({
+  src: '../../node_modules/@fontsource-variable/syne/files/syne-latin-wght-normal.woff2',
+  weight: '400 800',
+  variable: '--font-display',
+  display: 'swap',
+});
+const mono = localFont({
+  src: '../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
+  weight: '100 800',
+  variable: '--font-mono',
+  display: 'swap',
+});
 // v2 identity face — the wordmark and landing headlines share it.
-const brand = Syne({ subsets: ['latin'], weight: ['700'], variable: '--font-brand', display: 'swap' });
+const brand = localFont({
+  src: '../../node_modules/@fontsource-variable/syne/files/syne-latin-wght-normal.woff2',
+  weight: '400 800',
+  variable: '--font-brand',
+  display: 'swap',
+});
 
 // SITE_URL is imported from '@/lib/seo' — the single source of truth (falls back to the
 // canonical https://aeo.advancelabs.dev). Previously this file redefined it with a divergent

@@ -34,6 +34,9 @@
     "typescript": "^5.7.2"
   },
   "pnpm": {
+    "overrides": {
+      "proxy-addr": "2.0.8"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "sharp"
