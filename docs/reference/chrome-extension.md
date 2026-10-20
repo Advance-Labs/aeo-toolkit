@@ -26,12 +26,12 @@ The extension runs `auditRules`, which is defined in
 export const auditRules = [...technicalSeoRules, ...aeoRules];
 ```
 
-That is **29 technical-SEO rules + 11 AEO rules = 40**, across 9 categories.
+In the Chrome Web Store build (0.2.0, scoring 0.2.x) that is **29 technical-SEO rules + 11 AEO rules = 40**, across 9 categories. Scoring 0.3.0 makes it 31 + 13 = 44, which the next extension build will run.
 
 The **14 E-E-A-T signals** in
 [`packages/scoring/src/eeat-rules.ts`](../../packages/scoring/src/eeat-rules.ts) are a separate
 scorer with a different shape. They are not findings; they are weighted boolean signals grouped
-into four pillars, and `auditRules` does not include them. 40 + 14 = 54, which is the figure the
+into four pillars, and `auditRules` does not include them. 44 + 14 = 58 (40 + 14 = 54 before 0.3.0), which is the figure the
 hosted audit and the paid service quote because those do run both.
 
 Verify rather than trust this page:

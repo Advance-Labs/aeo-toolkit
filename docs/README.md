@@ -29,7 +29,7 @@ MCP clients, one scheduled content agent, and a Chrome extension. All of it is s
 Next.js app plus the extension — see [ADR-0003](adr/0003-single-vercel-deployment.md) for why.
 
 Underneath sit **16 packages**, of which six are published to npm. The keystone is
-`@advance-labs/scoring`: a weighted rule engine running **54 rules** across technical SEO, AEO, and
+`@advance-labs/scoring`: a weighted rule engine running **58 rules** across technical SEO, AEO, and
 E-E-A-T, whose output four separate tool surfaces render.
 
 ```bash
