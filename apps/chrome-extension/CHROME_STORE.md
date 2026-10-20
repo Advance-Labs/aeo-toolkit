@@ -116,9 +116,9 @@ Check these before each release rather than copying them forward:
 | **9 categories** | distinct `category:` literals across those two files | `grep -rhoE "category: '[a-z-]+'" packages/scoring/src/{technical-seo,aeo}-rules.ts \| sort -u \| wc -l` |
 | **0 to 100 score + letter grade** | `packages/scoring/src/grade.ts` | — |
 
-Do **not** describe the extension as running 54 rules. That figure counts the 14 E-E-A-T
+Do **not** describe the extension as running 58 rules (54 before scoring 0.3.0). That figure counts the 14 E-E-A-T
 signals in `eeat-rules.ts`, which are a separate scorer that `auditRules` does not include and
-the extension does not run. 54 is a true statement about the toolkit and a false one about this
+the extension does not run. 58 is a true statement about the toolkit and a false one about this
 build.
 
 ### Short description (≤132 chars)

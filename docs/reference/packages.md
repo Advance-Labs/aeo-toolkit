@@ -14,7 +14,7 @@ Every package is ESM-only, built with `tsup`, tested with Vitest, and extends a 
 ## Published to npm
 
 ```bash
-npm i @advance-labs/scoring      # the 54-rule audit engine
+npm i @advance-labs/scoring      # the 58-rule audit engine
 npm i @advance-labs/net-guard    # SSRF-safe fetch: re-checks every redirect hop
 npm i @advance-labs/crawler      # polite crawler with robots.txt + rate limiting
 ```

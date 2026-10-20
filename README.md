@@ -50,7 +50,7 @@ As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 
 ## The audit
 
-54 rules across crawlability, AI-bot access, structured data, metadata, answer readiness and
+58 rules across crawlability, AI-bot access, structured data, metadata, answer readiness and
 E-E-A-T, run against up to 50 pages, scored out of 100, with a prioritised fix list and templates
 for any crawl-hint file you're missing. Free, no account, and your data stays yours.
 
@@ -62,7 +62,7 @@ for any crawl-hint file you're missing. Free, no account, and your data stays yo
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)** puts the same engine on your toolbar. Open any page, click the icon, and get a 0 to 100 AI-readiness score with a letter grade and a list of what to fix. Export it as a PDF.
 
-It runs **40 checks across 9 categories**: the 29 technical-SEO rules plus the 11 AEO rules, which is `auditRules` in [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts). The 14 E-E-A-T signals are a separate scorer the extension does not run, which is why this says 40 and the hosted audit above says 54.
+It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **40 checks across 9 categories** in the version on the Chrome Web Store (0.2.0, built on scoring 0.2.x). Scoring 0.3.0 adds four, so the next build from this repo runs 44 (31 technical-SEO + 13 AEO). The 14 E-E-A-T signals are a separate scorer the extension does not run, which is why the extension's number is lower than the hosted audit's 58.
 
 Everything happens in your browser. No account, no server, no analytics, no telemetry. The only network requests are to the audited site's own `robots.txt`, `sitemap.xml`, and `llms.txt`, which is what the host permission is for. Nothing is stored, because nothing is sent.
 
@@ -86,7 +86,7 @@ pnpm --filter @advance-labs/chrome-extension package
 | [`@advance-labs/crawler`](packages/crawler) | Multi-threaded web crawler with robots.txt compliance, sitemap parsing, and per-host rate limiting |
 | [`@advance-labs/html-parser`](packages/html-parser) | Extracts meta tags, Open Graph, Twitter Cards, headings, images, links, and JSON-LD from HTML |
 | [`@advance-labs/schema-validator`](packages/schema-validator) | Validates Schema.org JSON-LD structured data against known types |
-| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 57 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
+| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 58 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
 
 Plus [`@advance-labs/net-guard`](packages/net-guard) and [`@advance-labs/types`](packages/types). The one
 application here is [`apps/chrome-extension`](apps/chrome-extension); the hosted console is not open source.
@@ -98,7 +98,7 @@ application here is [`apps/chrome-extension`](apps/chrome-extension); the hosted
 Six packages are published to npm and usable on their own:
 
 ```bash
-npm i @advance-labs/scoring      # the 57-rule audit engine
+npm i @advance-labs/scoring      # the 58-rule audit engine
 npm i @advance-labs/net-guard    # SSRF-safe fetch: re-checks every redirect hop
 npm i @advance-labs/crawler      # polite crawler with robots.txt + rate limiting
 npm i @advance-labs/html-parser
