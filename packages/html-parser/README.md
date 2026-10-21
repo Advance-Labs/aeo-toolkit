@@ -8,6 +8,12 @@ and raw structured-data blocks. **No network and no filesystem access** — fetc
 the job of `@advance-labs/crawler`, and full schema.org validation is the job of
 `@advance-labs/schema-validator`; this package only collects the raw blocks they need.
 
+## Install
+
+```bash
+npm install @advance-labs/html-parser
+```
+
 ## Usage
 
 ```ts
@@ -67,3 +73,7 @@ All shapes are imported from `@advance-labs/types`; this package never redefines
 
 **Implemented.** All extractors are real (cheerio-backed) with no network/filesystem
 dependency and no stubs. Unit-tested with rich-page and sparse-page fixtures.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).

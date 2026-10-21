@@ -7,6 +7,7 @@
 import { jsPDF } from 'jspdf';
 import type { AuditPayload } from '../lib/types.js';
 import { toCheckRows } from '../lib/audit.js';
+import { TOOLS_URL } from './links.js';
 
 const MARGIN = 14;
 const LINE = 6;
@@ -109,6 +110,17 @@ export function exportAuditPdf(payload: AuditPayload): string {
     newPageIfNeeded(lines.length * 5);
     doc.text(lines, MARGIN, y);
     y += lines.length * 5;
+  }
+
+  // One quiet line at the foot of every page.
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(120);
+  for (let page = 1; page <= doc.getNumberOfPages(); page++) {
+    doc.setPage(page);
+    doc.textWithLink('More free tools: advancelabs.dev/tools', MARGIN, pageHeight - 7, {
+      url: TOOLS_URL,
+    });
   }
 
   const filename = `aeo-audit-${safeHost(payload.pageUrl)}-${Date.now()}.pdf`;

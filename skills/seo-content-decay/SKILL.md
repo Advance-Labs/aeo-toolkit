@@ -1,6 +1,6 @@
 ---
 name: seo-content-decay
-description: Find pages quietly losing search traffic before they fall off page one, and decide which are worth refreshing. Use when someone asks which content needs updating, what to refresh, whether pages are declining, or wants a proactive content-maintenance list. Requires the aeo-toolkit ga-gsc MCP server.
+description: Find pages quietly losing search traffic before they fall off page one, and decide which are worth refreshing. Use when someone asks which content needs updating, what to refresh, whether pages are declining, or wants a proactive content-maintenance list. Requires the aeo-toolkit aeo-search MCP server.
 ---
 
 # Detecting content decay

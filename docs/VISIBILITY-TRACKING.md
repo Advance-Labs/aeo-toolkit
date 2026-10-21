@@ -16,17 +16,14 @@ That is an **off-page, over-time outcome**, and it lives in a separate companion
 This doc explains what the tracker is, why it lives outside this repo, and how the two
 systems fit together — so anyone working in the toolkit understands the full retainer loop.
 
-> **Where the code lives:** the tracker is implemented in the private
-> private `Advance-Labs/advance-labs` repo under
-> `scripts/aeo-tracker/` (CLI + canonical, unit-tested logic) and
-> `web/src/app/api/cron/aeo-tracker/` (the Vercel Cron runner). This repo (the toolkit)
-> stays a clean, public, Apache-2.0 audit suite; the tracker is operational/retainer tooling.
+> **Where the code lives:** the tracker is closed-source operational tooling and is not in this
+> repo. This repo (the toolkit) stays a clean, public, Apache-2.0 audit suite.
 
 ---
 
 ## The two halves of a retainer
 
-| | **AEO Toolkit (this repo)** | **Visibility Tracker (advance-labs repo)** |
+| | **AEO Toolkit (this repo)** | **Visibility Tracker (hosted service)** |
 |---|---|---|
 | Question | Is the site *built* to be cited? | Is the site *actually* being cited, over time? |
 | Layer | On-page (the site itself) | Off-page (the AI engines' answers) |
@@ -85,5 +82,4 @@ That is the toolkit and the tracker working as one retainer instrument — the a
 
 - This repo: `docs/ARCHITECTURE.md`, `docs/SEO-AEO-PLAN.md`,
   `packages/scoring`, the audit engine the retainer baseline is built on.
-- advance-labs repo: `scripts/aeo-tracker/README.md` — the tracker's full technical docs
-  (data model, setup, both runners, extending).
+- The retainer itself: [advancelabs.dev/services/ai-visibility](https://advancelabs.dev/services/ai-visibility).

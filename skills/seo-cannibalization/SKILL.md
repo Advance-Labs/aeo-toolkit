@@ -1,6 +1,6 @@
 ---
 name: seo-cannibalization
-description: Find queries where two or more of a site's own pages compete against each other in search, splitting clicks and suppressing rankings. Use when someone asks about keyword cannibalization, overlapping or duplicate content, which of two similar pages to keep, or why similar pages both rank poorly. Requires the aeo-toolkit ga-gsc MCP server.
+description: Find queries where two or more of a site's own pages compete against each other in search, splitting clicks and suppressing rankings. Use when someone asks about keyword cannibalization, overlapping or duplicate content, which of two similar pages to keep, or why similar pages both rank poorly. Requires the aeo-toolkit aeo-search MCP server.
 ---
 
 # Finding and resolving keyword cannibalization

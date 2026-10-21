@@ -6,6 +6,12 @@ It is pure TypeScript with no runtime dependencies beyond `@advance-labs/types` 
 schema data arrives via an injected `ScoringContext`, so every function is unit-testable without
 any network or filesystem access.
 
+## Install
+
+```bash
+npm install @advance-labs/scoring
+```
+
 ## Usage
 
 ```ts
@@ -72,3 +78,7 @@ All domain shapes (`Score`, `Finding`, `ScoreCategory`, `ScoringContext`, `Audit
 Implemented. Pure, deterministic, dependency-free scoring logic with full Vitest coverage
 (happy path + edge cases for every export, including empty and single-page contexts). No stubs —
 this package requires no live third-party credentials.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).

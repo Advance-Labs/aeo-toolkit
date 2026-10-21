@@ -2,6 +2,12 @@
 
 The single source of truth for shared domain types across the AEO Toolkit. No runtime dependencies.
 
+## Install
+
+```bash
+npm install @advance-labs/types
+```
+
 ## Usage
 
 ```ts
@@ -26,3 +32,7 @@ import type { AuditReport, Score, ScoringContext, CrawlResult, ParsedHtml } from
 ## Status
 
 ✅ Implemented. This package only ships types plus a `TYPES_VERSION` constant.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).
