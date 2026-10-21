@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/chrome-extension",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "AEO/GEO Chrome MV3 extension — runs a client-side AI-readiness audit on the active tab and exports a PDF.",
