@@ -60,14 +60,18 @@ export function longRedirectChains(ctx: ScoringContext, maxHops: number): Url[] 
  * never terminates, so hop-count thresholds never fire on it — the request simply fails with
  * "too many redirects" and the page is invisible to crawlers and users alike.
  *
- * Includes the requested URL in the visited set, which catches the self-referential case
- * (a URL 3xx-ing to itself) that a chain-internal comparison alone would miss.
+ * The chain lists the URLs that answered with a redirect, starting with the page's own URL, so a
+ * cycle shows up as a URL answering twice. A URL 3xx-ing to itself repeats until the crawler's hop
+ * cap, so it is caught the same way. A single http -> https or apex -> www hop is not a loop.
  */
 export function redirectLoops(ctx: ScoringContext): Url[] {
   const out: Url[] = [];
   for (const page of ctx.crawl.pages) {
     if (page.redirectChain.length === 0) continue;
-    const seen = new Set<string>([normalizeUrl(page.url)]);
+    // Each hop is the URL that ANSWERED with a redirect, and the first hop is the page's own URL
+    // (see fetchResource). So a loop is a URL answering twice; seeding `seen` with page.url made
+    // every ordinary redirect (http -> https, apex -> www) read as a critical loop.
+    const seen = new Set<string>();
     for (const hop of page.redirectChain) {
       const key = normalizeUrl(hop.url);
       if (seen.has(key)) {

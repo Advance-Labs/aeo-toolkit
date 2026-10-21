@@ -50,8 +50,10 @@ describe('crawl', () => {
     // Root is fetched first; cap is enforced regardless of discovered links.
     expect(result.pages[0]?.url).toBe('https://example.com/');
     expect(result.https).toBe(true);
-    // We never fetched more page URLs than the cap (robots/sitemap probes excluded).
-    const pageFetches = fetched.filter(
+    // We never fetched more page URLs than the cap (robots/sitemap probes excluded). The first
+    // call is the root-resolution probe (resolveRoot), so it is not a crawled page either.
+    expect(fetched[0]).toBe('https://example.com/');
+    const pageFetches = fetched.slice(1).filter(
       (u) =>
         !u.endsWith('/robots.txt') &&
         !u.endsWith('/sitemap.xml') &&
@@ -209,6 +211,45 @@ describe('crawl', () => {
     const child = result.pages.find((p) => p.url === 'https://example.com/child');
     expect(child?.depth).toBe(1);
     expect(child?.discoveredFrom).toBe('https://example.com/');
+  });
+
+  // Regression (kuzynbuilds.com, 2026-10-20): the root 308s to www, so every link on the real
+  // pages was off-origin and the crawl stopped after one page.
+  it('crawls from where an apex -> www redirect lands', async () => {
+    const { fetcher } = fakeSite({
+      'https://example.com/': () => makeResponse({ status: 308, headers: { location: 'https://www.example.com/' } }),
+      'https://www.example.com/robots.txt': () => makeResponse({ status: 404 }),
+      'https://www.example.com/sitemap.xml': () => makeResponse({ status: 404 }),
+      'https://www.example.com/': () => htmlResponse(HTML(['/about', '/contact'])),
+      'https://www.example.com/about': () => htmlResponse(HTML([])),
+      'https://www.example.com/contact': () => htmlResponse(HTML([])),
+    });
+    const result = await crawl('https://example.com/', { maxPages: 10, delay: instantDelay, fetcher });
+    expect(result.rootUrl).toBe('https://www.example.com/');
+    expect(result.pages.map((p) => p.finalUrl).sort()).toEqual([
+      'https://www.example.com/',
+      'https://www.example.com/about',
+      'https://www.example.com/contact',
+    ]);
+  });
+
+  it('reports https for an http root that redirects to https', async () => {
+    const { fetcher } = fakeSite({
+      'http://example.com/': () => makeResponse({ status: 301, headers: { location: 'https://example.com/' } }),
+      'https://example.com/': () => htmlResponse(HTML([])),
+    });
+    const result = await crawl('http://example.com/', { maxPages: 1, followSitemap: false, respectRobotsTxt: false, delay: instantDelay, fetcher });
+    expect(result.https).toBe(true);
+    expect(result.rootUrl).toBe('https://example.com/');
+  });
+
+  it('does not follow a root redirect to a different site', async () => {
+    const { fetcher } = fakeSite({
+      'https://example.com/': () => makeResponse({ status: 301, headers: { location: 'https://parked.example.net/' } }),
+      'https://parked.example.net/': () => htmlResponse(HTML([])),
+    });
+    const result = await crawl('https://example.com/', { maxPages: 1, followSitemap: false, respectRobotsTxt: false, delay: instantDelay, fetcher });
+    expect(result.rootUrl).toBe('https://example.com/');
   });
 
   it('marks https=false for an http root (edge case)', async () => {

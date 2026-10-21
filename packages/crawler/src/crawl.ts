@@ -31,7 +31,9 @@ export interface CrawlRuntimeOptions extends CrawlOptions {
 }
 
 /**
- * Crawl a site starting at `rootUrl`. Strategy:
+ * Crawl a site starting at `requestedUrl`. Strategy:
+ *   0. Resolve the root: if it redirects to the same site on another origin (http -> https,
+ *      apex <-> www), crawl from there. `CrawlResult.rootUrl` is that resolved root.
  *   1. Fetch + parse robots.txt (used both as a gate when `respectRobotsTxt` and as a sitemap source).
  *   2. Detect well-known site files (robots/sitemap/llms.txt/favicon).
  *   3. Seed the frontier from sitemaps (sitemap-first), then fall back to BFS link-following.
@@ -40,7 +42,7 @@ export interface CrawlRuntimeOptions extends CrawlOptions {
  * Returns a `CrawlResult` with every fetched page, the discovered sitemap, parsed robots, file
  * presence, and timing metadata. All I/O goes through the injected/default fetcher.
  */
-export async function crawl(rootUrl: Url, opts: CrawlRuntimeOptions): Promise<CrawlResult> {
+export async function crawl(requestedUrl: Url, opts: CrawlRuntimeOptions): Promise<CrawlResult> {
   const fetcher = resolveFetcher(opts.fetcher);
   const startedAt = new Date().toISOString();
 
@@ -53,6 +55,9 @@ export async function crawl(rootUrl: Url, opts: CrawlRuntimeOptions): Promise<Cr
   const followSitemap = opts.followSitemap ?? true;
   const includeSubdomains = opts.includeSubdomains ?? false;
   const rateLimitMs = opts.perHostRateLimitMs ?? DEFAULT_PER_HOST_RATE_LIMIT_MS;
+
+  // --- 0. Crawl the site where it actually lives (http -> https, apex <-> www) ---
+  const rootUrl = await resolveRoot(requestedUrl, fetcher, requestTimeoutMs, userAgent);
 
   const https = isHttps(rootUrl);
   const limit = pLimit(concurrency);
@@ -249,6 +254,27 @@ function isHtml(contentType: string | undefined): boolean {
   if (!contentType) return true; // be permissive when the server omits content-type
   return /text\/html|application\/xhtml\+xml/i.test(contentType);
 }
+
+/**
+ * Where to crawl from. When the requested URL redirects to the same site on another origin
+ * (http -> https, example.com <-> www.example.com), crawl from there: otherwise every link on the
+ * real pages is off-origin, the crawl stops at one page, and an http root scores as "not HTTPS".
+ * A path-only redirect (/ -> /home) or a redirect to another site keeps the requested URL, so its
+ * redirect chain is still recorded on the root page. Network failures also keep it.
+ */
+async function resolveRoot(requested: Url, fetcher: Fetcher, requestTimeoutMs: number, userAgent: string): Promise<Url> {
+  try {
+    const res = await fetchResource(requested, { fetcher, requestTimeoutMs, userAgent, includeBody: false });
+    const from = new URL(requested);
+    const to = new URL(res.finalUrl);
+    if (to.origin === from.origin || bareHost(to.hostname) !== bareHost(from.hostname)) return requested;
+    return to.origin + from.pathname + from.search;
+  } catch {
+    return requested;
+  }
+}
+
+const bareHost = (host: string): string => host.toLowerCase().replace(/^www\./, '');
 
 function originOf(url: Url): string {
   try {
