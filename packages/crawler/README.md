@@ -7,6 +7,12 @@ per host, captures redirect chains, and detects the well-known crawl-hint / trus
 through an injectable `Fetcher` (default: the global `fetch`), so callers and tests never need a
 live network.
 
+## Install
+
+```bash
+npm install @advance-labs/crawler
+```
+
 ## Usage
 
 ```ts
@@ -57,3 +63,7 @@ All domain shapes (`CrawlResult`, `PageResource`, `RobotsTxt`, `SitemapEntry`, `
 **Implemented.** No stubs. The single I/O seam is the injectable `Fetcher` (defaults to global
 `fetch` on Node 20+); pass a fake in tests to stay network-free. robots.txt directive parsing is
 provided by `robots-parser`; sitemap parsing by `fast-xml-parser`.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).

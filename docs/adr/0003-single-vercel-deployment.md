@@ -4,6 +4,9 @@ description: >-
   Why nine independently-deployable apps were consolidated into one Next.js console, and what that traded away.
 ---
 
+> **2026-10-20:** `apps/console` and the files it mentions below moved to a private repository, so
+> the paths and `docs/DEPLOYMENT.md` named here are not in this repo. The record is kept as written.
+
 - **Status:** Accepted
 - **Date:** 2026-06-03
 

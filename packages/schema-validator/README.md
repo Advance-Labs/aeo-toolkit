@@ -6,6 +6,12 @@ properties that matter for answer-engine optimization (AEO). This is a clean-roo
 rebuild of the `structured-data-testing-tool` capability. It is pure and network-free: HTML is
 parsed in-process with `cheerio`, so it is fully unit-testable without live HTTP.
 
+## Install
+
+```bash
+npm install @advance-labs/schema-validator
+```
+
 ## Usage
 
 ```ts
@@ -62,3 +68,7 @@ have defined).
 **Implemented** — all three extractors, schema.org type normalization, AEO required-property
 validation, and the aggregate report are fully implemented with no stubs. No live network or
 filesystem I/O: callers supply the HTML.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).

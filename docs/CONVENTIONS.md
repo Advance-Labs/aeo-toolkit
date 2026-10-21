@@ -82,10 +82,11 @@ export default defineConfig({ test: { environment: 'node', include: ['src/**/*.t
 
 ## Apps
 
-There are two, and adding a third needs a good reason — [ADR-0003](adr/0003-single-vercel-deployment.md)
+This repo holds one app, the Chrome extension. The hosted console is a second app that lives in a
+private repository, and adding a third needs a good reason, see [ADR-0003](adr/0003-single-vercel-deployment.md)
 consolidated nine apps into one on purpose.
 
-- **`apps/console`** — Next.js App Router. New browser tools are a route under `src/app/tools/` plus a
+- **`apps/console`** (closed source, not in this repo): Next.js App Router. New browser tools are a route under `src/app/tools/` plus a
   route handler under `src/app/api/`. Handlers are `runtime = 'nodejs'`, `dynamic = 'force-dynamic'`
   POST endpoints returning JSON. New MCP servers are route handlers via the `mcp-handler` adapter.
 - **`apps/chrome-extension`** — Vite + `@crxjs/vite-plugin`, MV3. Workspace deps are bundled; there is

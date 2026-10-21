@@ -7,6 +7,7 @@ import { CheckList } from './CheckList.js';
 import { SiteFiles } from './SiteFiles.js';
 import { exportAuditPdf } from './pdf.js';
 import { useAudit } from './useAudit.js';
+import { TOOLS_URL } from './links.js';
 
 /** Root popup view: runs the audit on mount and renders score + checks + export. */
 export function App(): JSX.Element {
@@ -75,6 +76,14 @@ export function App(): JSX.Element {
           </footer>
         </>
       )}
+
+      {/* Plain link, no network call: opens a tab only on click. */}
+      <p className="tools-link">
+        More free tools at{' '}
+        <a href={TOOLS_URL} target="_blank" rel="noreferrer">
+          advancelabs.dev/tools
+        </a>
+      </p>
     </main>
   );
 }

@@ -4,6 +4,12 @@ SSRF-guarded HTTP fetch seam. Closes finding **C1** of the Autopilot security re
 crawler/backlinks HTTP layer follows redirects with no private-IP guard, so a user-supplied URL can
 reach `169.254.169.254` (cloud metadata), `localhost`, or RFC-1918 hosts.
 
+## Install
+
+```bash
+npm install @advance-labs/net-guard
+```
+
 ## Use it for any untrusted URL
 
 ```ts
@@ -29,3 +35,7 @@ if (!res.ok) {
 
 All logic is pure and injected (`resolve`, `fetchImpl`) — unit-tested with zero network. See
 [`docs/CONVENTIONS.md`](../../docs/CONVENTIONS.md) security invariant #1.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/Advance-Labs/aeo-toolkit/blob/main/LICENSE).

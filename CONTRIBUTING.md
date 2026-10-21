@@ -1,5 +1,9 @@
 # Contributing
 
+The hosted console behind [advancelabs.dev/tools](https://advancelabs.dev/tools) and the MCP
+servers is closed source and is not in this repo. This repo takes contributions to the six npm
+packages, the Chrome extension, the docs site and the skills.
+
 ## Setup
 
 ```bash

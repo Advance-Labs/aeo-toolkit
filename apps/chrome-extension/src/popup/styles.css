@@ -416,6 +416,17 @@ button:disabled {
   color: var(--ink-faint);
 }
 
+.tools-link {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.tools-link a {
+  color: var(--ink-soft);
+}
+
 /* ── Scrollbar, so the checklist does not paint a light strip on the dark ── */
 
 .check-rows::-webkit-scrollbar {

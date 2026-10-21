@@ -1,6 +1,6 @@
 ---
 name: seo-traffic-drop
-description: Diagnose why organic search traffic dropped, using the site's own Google Search Console data. Use when someone reports traffic is down, asks what caused a drop, wants to know which pages lost clicks, or asks whether a decline is a ranking problem. Requires the aeo-toolkit ga-gsc MCP server.
+description: Diagnose why organic search traffic dropped, using the site's own Google Search Console data. Use when someone reports traffic is down, asks what caused a drop, wants to know which pages lost clicks, or asks whether a decline is a ranking problem. Requires the aeo-toolkit aeo-search MCP server.
 ---
 
 # Diagnosing a search traffic drop
