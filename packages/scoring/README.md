@@ -25,7 +25,7 @@ import type { ScoringContext } from '@advance-labs/types';
 declare const ctx: ScoringContext;
 
 const score = await auditScore(ctx); // combined technical + AEO Score
-const report = await buildAuditReport(ctx, { durationMs: 4200, version: '0.1.0' });
+const report = await buildAuditReport(ctx, { durationMs: 4200, version: '0.3.1' });
 const eeat = eeatScore(ctx); // four-pillar E-E-A-T report
 const templates = generateTemplates(ctx); // starter files for anything missing
 
@@ -53,12 +53,12 @@ const { categories, score: custom } = await runRules(ctx, [...technicalSeoRules,
 | `aggregateScore(categories)` | fn | Combine categories into an overall `Score` |
 | `scoreToGrade(n)` | fn | 0–100 → `ScoreGrade` letter |
 | `clampScore(n)` | fn | Clamp arbitrary number into 0–100 |
-| `technicalSeoRules` | `Rule[]` | 24 technical-SEO + on-page rules across 8 categories |
-| `aeoRules` | `Rule[]` | 10 answer-engine-optimization heuristics |
+| `technicalSeoRules` | `Rule[]` | 31 technical-SEO + on-page rules across 8 categories (crawlability, indexing, metadata, content, structured-data, social, mobile, security) |
+| `aeoRules` | `Rule[]` | 13 answer-engine-optimization heuristics (one `aeo` category) |
 | `eeatScore(ctx)` | fn | Four-pillar `EeatReport` (Experience/Expertise/Authoritativeness/Trust) |
-| `eeatSignalDefs` | array | Inspectable E-E-A-T signal metadata (no detect fns) |
+| `eeatSignalDefs` | array | The 14 E-E-A-T signals as inspectable metadata (no detect fns) |
 | `auditScore(ctx)` | async fn | `runRules` with technical + AEO rules → `Score` |
-| `auditRules` | `Rule[]` | The combined technical + AEO rule set |
+| `auditRules` | `Rule[]` | The combined technical + AEO rule set (44 checks) |
 | `buildAuditReport(ctx, opts)` | async fn | Full `AuditReport`: score, topFixes, templates, meta |
 | `prioritizeFixes(findings)` | fn | Sort failed findings by severity then weight |
 | `generateTemplates(ctx)` | fn | Starter `robots.txt` / `llms.txt` / `sitemap.xml` for missing files |

@@ -5,7 +5,7 @@ description: >-
 ---
 
 The AEO Toolkit answers **"is this site built to be cited?"** — it crawls a site, scores it
-against the 58 AEO / E-E-A-T / technical rules, and renders a scorecard. That is a
+against the 44 technical SEO and AEO checks (plus a separate 14-signal E-E-A-T scan), and renders a scorecard. That is a
 **point-in-time, on-page diagnostic**.
 
 It does **not** answer the question a retainer client actually pays for: **"is it working —
@@ -17,7 +17,7 @@ This doc explains what the tracker is, why it lives outside this repo, and how t
 systems fit together — so anyone working in the toolkit understands the full retainer loop.
 
 > **Where the code lives:** the tracker is implemented in the private
-> [`Advance-Labs/advance-labs`](https://github.com/Advance-Labs/advance-labs) repo under
+> private `Advance-Labs/advance-labs` repo under
 > `scripts/aeo-tracker/` (CLI + canonical, unit-tested logic) and
 > `web/src/app/api/cron/aeo-tracker/` (the Vercel Cron runner). This repo (the toolkit)
 > stays a clean, public, Apache-2.0 audit suite; the tracker is operational/retainer tooling.
@@ -30,7 +30,7 @@ systems fit together — so anyone working in the toolkit understands the full r
 |---|---|---|
 | Question | Is the site *built* to be cited? | Is the site *actually* being cited, over time? |
 | Layer | On-page (the site itself) | Off-page (the AI engines' answers) |
-| Method | Crawl → 58-rule score → PDF | Ask AI engines the money queries → record cited?/rank |
+| Method | Crawl → 44-check score → PDF | Ask AI engines the money queries → record cited?/rank |
 | Cadence | Point-in-time (per audit) | Recurring (weekly time-series) |
 | Output | Scorecard + prioritized fixes | `cited 0% → 67%`, `avg rank 4.0 → 1.5` deltas |
 | Role | Baseline + the fix list | Proof the fixes moved the needle |
@@ -83,7 +83,7 @@ That is the toolkit and the tracker working as one retainer instrument — the a
 
 ## See also
 
-- This repo: `docs/ARCHITECTURE.md`, `docs/SEO-AEO-PLAN.md`, `packages/scoring`,
-  `packages/pdf` — the audit/scorecard engine the retainer baseline is built on.
+- This repo: `docs/ARCHITECTURE.md`, `docs/SEO-AEO-PLAN.md`,
+  `packages/scoring`, the audit engine the retainer baseline is built on.
 - advance-labs repo: `scripts/aeo-tracker/README.md` — the tracker's full technical docs
   (data model, setup, both runners, extending).

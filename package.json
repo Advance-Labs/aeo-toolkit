@@ -2,7 +2,7 @@
   "name": "aeo-toolkit",
   "version": "0.0.0",
   "private": true,
-  "description": "Open-source suite of ten AEO / technical-SEO / AI-visibility tools (Answer Engine Optimization toolkit).",
+  "description": "Open core of the AEO Toolkit: audit engine packages (crawler, parser, schema validator, scoring), the Chrome extension and Claude skills. The hosted browser tools and MCP servers are proprietary.",
   "license": "Apache-2.0",
   "type": "module",
   "engines": {

@@ -1,34 +1,35 @@
 ---
 title: Tool reference
 description: >-
-  All ten tools — five browser tools, three MCP servers with 32 tools, a content agent, and the Chrome extension — and the routes behind them.
+  The hosted platform (six browser tools, three MCP servers with 32 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
 ---
 
-The suite is **ten tools**, delivered from **two deployables**: a single Next.js app
-(`apps/console`) and a Chrome extension (`apps/chrome-extension`). Everything else is a shared
-library under `packages/`.
+The hosted platform is proprietary and moved to a private repository on 2026-10-20: **six browser
+tools**, **three MCP servers** with 32 tools, and a scheduled content agent, all served from
+advancelabs.dev. This repo holds the open core: the six npm packages, the Chrome extension
+(`apps/chrome-extension`) and the skills. Routes and engines below describe the hosted platform; its
+code is not in this repo.
 
 > The tools were originally nine standalone apps. [ADR-0003](../adr/0003-single-vercel-deployment.md)
-> consolidated every HTTP deployable into the console; the standalone apps were deleted and their
-> logic preserved in the `@advance-labs/*` packages. The historical per-tool specs are in
-> `archive/tools/` (no longer in this repo).
+> consolidated every HTTP deployable into one hosted app; the standalone apps were deleted and their
+> logic preserved in the `@advance-labs/*` packages.
 
-## Browser tools — 5
+## Browser tools (6)
 
-Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tools). Each is a route
-in the console with a matching route handler.
+Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tools).
 
 | Tool | Route | API | Engine |
 |---|---|---|---|
 | Technical SEO + AEO audit | `/tools/audit` | `/api/audit/technical` (+ `/pdf`) | `crawler` → `html-parser` → `schema-validator` → `scoring` |
-| E-E-A-T scanner | `/tools/eeat` | `/api/audit/eeat` | `scoring` (`eeatRules`) |
+| E-E-A-T scanner | `/tools/eeat` | `/api/audit/eeat` | `scoring` (`eeatScore`, 14 signals) |
 | llms.txt generator | `/tools/llms-txt` | `/api/generate` | `crawler` + `html-parser` |
-| GA4 + GSC chat | `/tools/chat` | `/api/chat` | `google-api` + `llm` (BYOK) |
-| Backlink graph (3D) | `/tools/graph` | `/api/graph` (+ `/stream`, `/expand`) | `backlinks` + WebGL |
+| GA4 + GSC chat | `/tools/chat` | `/api/chat` | hosted Google clients + BYOK LLM |
+| Backlink graph (3D) | `/tools/graph` | `/api/graph` (+ `/stream`, `/expand`) | hosted backlink engine + WebGL |
+| Authority | `/tools/authority` | hosted | hosted |
 
 ## MCP servers — 3
 
-Served from the console as Streamable-HTTP route handlers via the `mcp-handler` adapter.
+Served by the hosted platform as Streamable-HTTP route handlers via the `mcp-handler` adapter.
 **32 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
@@ -91,7 +92,7 @@ alias so existing client configs need no change, but new configs should point at
 
 Bing authentication is BYOK via an `X-Bing-Api-Key` request header, or a static `BING_API_KEY`
 environment variable as a fallback. A missing Bing key does not fail the server: Bing tools return
-their own credential error, but the ten Google tools keep working — the server degrades to
+their own credential error, but the eleven Google tools keep working, and the server degrades to
 Google-only rather than failing outright.
 
 > **`engine_divergence` and the two engines' date windows.** Bing's `GetQueryStats` takes no date
@@ -100,8 +101,7 @@ Google-only rather than failing outright.
 > sides, by a different route: it fetches Bing once and buckets the rows locally on each row's own
 > date, which works because Bing returns one row per (query x date) rather than one aggregate per
 > query. Verified against the live API on 2026-09-09 (`maxRowsForOneQuery=3` across
-> `distinctDates=6`); re-check with `pnpm --filter @advance-labs/bing-api verify:bing` if Bing's
-> response shape ever looks off. When an engine cannot answer a half, that key is reported as
+> `distinctDates=6`). When an engine cannot answer a half, that key is reported as
 > `insufficient_data` — never as zero clicks, which would manufacture a confident verdict out of
 > an API failure.
 
@@ -115,7 +115,7 @@ drop*, *are my pages competing*, *what needs refreshing*. They build on `gsc_tra
 
 The blogging agent runs as a **Vercel Cron** (`/api/cron/blogging`, daily 13:00 UTC), not a separate
 app. Its pipeline — research → draft → edit → dedup → schedule → publish → self-correct — lives in
-[`@advance-labs/blogging`](../../packages/blogging).
+the hosted platform (the code is in the private repository).
 
 ## Chrome extension — 1
 
@@ -125,12 +125,16 @@ fetches for `robots.txt`, `sitemap.xml`, and `llms.txt`. Exports a PDF via `jsPD
 
 ## The scoring engine
 
-All audit surfaces share one rule engine: **54 rules** across three sets.
+All audit surfaces share one rule engine. The code is the source of truth:
 
-| Rule set | Rules | Covers |
+| Rule set | Count | Covers |
 |---|---|---|
-| `technicalSeoRules` | 29 | robots/sitemap/llms.txt, HTTPS, meta, Open Graph, canonical, structured data, content, mobile |
-| `aeoRules` | 11 | answerability, answer-engine schema, GPTBot/ClaudeBot/PerplexityBot directives, content extractability |
-| `eeatRules` | 14 | Experience, Expertise, Authoritativeness, Trust |
+| `technicalSeoRules` | 31 | robots/sitemap/llms.txt, HTTPS, meta, Open Graph, canonical, structured data, content, mobile |
+| `aeoRules` | 13 | answerability, answer-engine schema, GPTBot/ClaudeBot/PerplexityBot directives, content extractability |
+| `auditRules` (the two above) | 44 | what the hosted technical audit runs |
+| `eeatSignalDefs` | 14 | the separate E-E-A-T scan: Experience, Expertise, Authoritativeness, Trust |
 
-`singlePageMode` runs the same rules minus multi-page crawl signals — this is what the extension uses.
+44 + 14 = 58 is the engine total, never what a single audit runs. The Chrome Web Store build (0.2.0)
+runs 40 checks and the next build runs 44.
+
+`mode: 'single-page'` runs the same rules minus multi-page crawl signals; this is what the extension uses.

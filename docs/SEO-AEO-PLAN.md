@@ -110,7 +110,7 @@ Why it matters for AEO: `FAQPage`/`HowTo` give answer engines pre-extracted Q→
 
 | Signal | Source |
 |--------|--------|
-| Rankings / CTR / impressions | Google Search Console (already integrated via `/tools/chat` + ga-gsc MCP) |
+| Rankings / CTR / impressions | Google Search Console (already integrated via `/tools/chat` + the aeo-search MCP server) |
 | Traffic / engagement | GA4 (integrated) |
 | **AI visibility** (are we cited?) | our own **`ai-visibility` MCP** (Perplexity citation checks) + manual ChatGPT/Claude prompts |
 | Core Web Vitals | Vercel Speed Insights / CrUX |
