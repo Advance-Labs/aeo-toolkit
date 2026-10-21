@@ -1,7 +1,7 @@
 ---
 title: Chrome extension
 description: >-
-  AEO/GEO Auditor: the audit engine on your toolbar. What the 40 checks are, why that number is not 54, and what the extension does and does not send anywhere.
+  AEO/GEO Auditor: the audit engine on your toolbar. What the 40 checks are, why that number is not 44 or 58, and what the extension does and does not send anywhere.
 ---
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)**
@@ -14,10 +14,10 @@ list of findings, and a PDF export.
 - **Source:** [`apps/chrome-extension`](../../apps/chrome-extension)
 - **Publishing runbook:** [`CHROME_STORE.md`](../../apps/chrome-extension/CHROME_STORE.md)
 
-## Why it says 40 checks and the hosted audit says 54
+## Why it says 40 checks and the hosted audit says 44
 
-Both numbers are right, and they describe different things. Quoting the wrong one either
-overstates a free tool or understates a paid one, so it is worth being precise.
+These numbers are all right, and they describe different things. Quoting the wrong one either
+overstates the store build or understates the hosted audit, so it is worth being precise.
 
 The extension runs `auditRules`, which is defined in
 [`packages/scoring/src/audit.ts`](../../packages/scoring/src/audit.ts) as:
@@ -31,8 +31,8 @@ In the Chrome Web Store build (0.2.0, scoring 0.2.x) that is **29 technical-SEO 
 The **14 E-E-A-T signals** in
 [`packages/scoring/src/eeat-rules.ts`](../../packages/scoring/src/eeat-rules.ts) are a separate
 scorer with a different shape. They are not findings; they are weighted boolean signals grouped
-into four pillars, and `auditRules` does not include them. 44 + 14 = 58 (40 + 14 = 54 before 0.3.0), which is the figure the
-hosted audit and the paid service quote because those do run both.
+into four pillars, and `auditRules` does not include them. 44 + 14 = 58 is the engine total. The hosted technical audit runs the 44 checks and the E-E-A-T scan is a
+separate tool with its own 14 signals, so 58 is never what a single audit runs.
 
 Verify rather than trust this page:
 

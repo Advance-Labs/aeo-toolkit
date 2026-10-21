@@ -25,18 +25,19 @@
 > MCP servers (the console, OAuth, billing, the Google and Bing integrations) moved to a
 > private repository on 2026-10-20. Code published here before that date stays Apache-2.0.
 
-**Try it without installing anything:** the five tools run free in the browser at
+**Try it without installing anything:** the six browser tools run free in the browser at
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
-Want it done for you? [AEO audit](https://advancelabs.dev/services/aeo-audit) by Advance Labs.
+Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advancelabs.dev/services/ai-visibility).
 
 <a href="https://advancelabs.dev/tools"><img src="docs/assets/landing.webp" alt="AEO Toolkit — Your next customer asks an AI. Free, open instruments that measure whether the engines can find, parse, and cite you." width="100%"></a>
 
-Those five are the browser tools. The full suite is **ten**: these five, plus three
-MCP servers (`ai-visibility`, `backlink`, `search`) exposing 32 tools to Claude or any MCP
-client, plus a scheduled content agent and the
-[Chrome extension](apps/chrome-extension). See [`docs/reference/tools.md`](docs/reference/tools.md)
-for the full map.
+The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
+GA4 + GSC chat, backlink graph, authority) and **three MCP servers** (`ai-visibility`, `backlink`,
+`search`) exposing 32 tools to Claude or any MCP client. They are proprietary and run on
+advancelabs.dev. This repo is the open core: the audit engine packages, the
+[Chrome extension](apps/chrome-extension) and the [skills](skills). See
+[`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
 
 ---
 
@@ -50,9 +51,11 @@ As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 
 ## The audit
 
-58 rules across crawlability, AI-bot access, structured data, metadata, answer readiness and
-E-E-A-T, run against up to 50 pages, scored out of 100, with a prioritised fix list and templates
-for any crawl-hint file you're missing. Free, no account, and your data stays yours.
+The hosted technical audit runs **44 checks** (31 technical SEO + 13 AEO) across crawlability,
+AI-bot access, structured data, metadata and answer readiness, scored out of 100, with a prioritised
+fix list and templates for any crawl-hint file you're missing. The E-E-A-T scan is a separate
+tool that scores **14 signals**. The engine defines 58 in total (44 + 14), but the audit itself
+runs 44. Free, no account, and your data stays yours.
 
 <img src="docs/assets/audit-tool.webp" alt="The LLM &amp; Technical SEO Audit tool" width="100%">
 
@@ -62,7 +65,7 @@ for any crawl-hint file you're missing. Free, no account, and your data stays yo
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)** puts the same engine on your toolbar. Open any page, click the icon, and get a 0 to 100 AI-readiness score with a letter grade and a list of what to fix. Export it as a PDF.
 
-It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **40 checks across 9 categories** in the version on the Chrome Web Store (0.2.0, built on scoring 0.2.x). Scoring 0.3.0 adds four, so the next build from this repo runs 44 (31 technical-SEO + 13 AEO). The 14 E-E-A-T signals are a separate scorer the extension does not run, which is why the extension's number is lower than the hosted audit's 58.
+It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **40 checks across 9 categories** in the version on the Chrome Web Store (0.2.0, built on scoring 0.2.x). Scoring 0.3.0 adds four, so the next build from this repo runs 44 (31 technical-SEO + 13 AEO). The 14 E-E-A-T signals are a separate scorer the extension does not run, 58 is the engine total (44 + 14), not what any one audit runs.
 
 Everything happens in your browser. No account, no server, no analytics, no telemetry. The only network requests are to the audited site's own `robots.txt`, `sitemap.xml`, and `llms.txt`, which is what the host permission is for. Nothing is stored, because nothing is sent.
 
@@ -86,7 +89,7 @@ pnpm --filter @advance-labs/chrome-extension package
 | [`@advance-labs/crawler`](packages/crawler) | Multi-threaded web crawler with robots.txt compliance, sitemap parsing, and per-host rate limiting |
 | [`@advance-labs/html-parser`](packages/html-parser) | Extracts meta tags, Open Graph, Twitter Cards, headings, images, links, and JSON-LD from HTML |
 | [`@advance-labs/schema-validator`](packages/schema-validator) | Validates Schema.org JSON-LD structured data against known types |
-| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 58 technical SEO, AEO, and E-E-A-T rules — returns a numeric score with per-rule explanations |
+| [`@advance-labs/scoring`](packages/scoring) | Scores pages on 44 technical SEO and AEO checks, plus a separate 14-signal E-E-A-T scorer, with per-rule explanations |
 
 Plus [`@advance-labs/net-guard`](packages/net-guard) and [`@advance-labs/types`](packages/types). The one
 application here is [`apps/chrome-extension`](apps/chrome-extension); the hosted console is not open source.
@@ -98,7 +101,7 @@ application here is [`apps/chrome-extension`](apps/chrome-extension); the hosted
 Six packages are published to npm and usable on their own:
 
 ```bash
-npm i @advance-labs/scoring      # the 58-rule audit engine
+npm i @advance-labs/scoring      # the 44-check audit engine
 npm i @advance-labs/net-guard    # SSRF-safe fetch: re-checks every redirect hop
 npm i @advance-labs/crawler      # polite crawler with robots.txt + rate limiting
 npm i @advance-labs/html-parser
@@ -120,17 +123,27 @@ Read the full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs
 
 Once built, the packages compose like this:
 
-```ts
+```js
 import { crawl } from '@advance-labs/crawler'
 import { parseHtml } from '@advance-labs/html-parser'
-import { scorePage } from '@advance-labs/scoring'
+import { analyzeStructuredData } from '@advance-labs/schema-validator'
+import { buildAuditReport } from '@advance-labs/scoring'
 
-const pages = await crawl('https://example.com')
-for (const page of pages) {
-  const parsed = parseHtml(page.html)
-  const score = scorePage(parsed)
-  console.log(page.url, score.total, score.rules)
-}
+const result = await crawl('https://example.com/', { maxPages: 2 })
+const html = result.pages.filter((p) => p.ok && p.body && p.contentType?.includes('html'))
+
+const report = await buildAuditReport(
+  {
+    crawl: result,
+    pages: html.map((p) => parseHtml(p.body, p.finalUrl)),
+    structuredData: html.map((p) => analyzeStructuredData(p.body, p.finalUrl)),
+    mode: 'full-site',
+  },
+  { durationMs: 0, version: '1.0.0' },
+)
+
+console.log(report.url, report.score.overall, report.score.grade)
+console.log(report.topFixes.slice(0, 3).map((f) => f.title))
 ```
 
 ---
@@ -169,7 +182,7 @@ Drop `--scope user` to register them in the current project only. Check the resu
 |---|---|---|
 | `aeo-visibility` | 5 | None to connect. Citation checks take a Perplexity key per request. |
 | `aeo-backlink` | 7 | None. |
-| `aeo-search` | 19 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
+| `aeo-search` | 20 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
 
 Three things that trip people up:
 

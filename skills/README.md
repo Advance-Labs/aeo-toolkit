@@ -1,6 +1,6 @@
 # AEO Toolkit skills
 
-Claude Skills that turn the [`ga-gsc` MCP server](https://aeo.advancelabs.dev/mcp) from a set
+Claude Skills that turn the [`aeo-search` MCP server](https://aeo.advancelabs.dev/mcp) from a set
 of tools into a set of **workflows**.
 
 The MCP server answers questions like "what are the numbers". These skills answer the
@@ -32,7 +32,7 @@ do not need to name the skill.
 
 ## They need the MCP server
 
-A skill is instructions, not data. Every one of these calls the `ga-gsc` MCP server, which
+A skill is instructions, not data. Every one of these calls the `aeo-search` MCP server, which
 holds the Google OAuth connection to your Search Console account. Without it the skill has
 nothing to read.
 
@@ -59,6 +59,6 @@ Same bar as the rest of the repo: a skill should encode judgement a tool descrip
 be explicit about what the data cannot answer, and never assert a cause it cannot evidence.
 
 The frontmatter `description` is what decides whether the skill activates, so write it as
-*when to use this*, not as a title. `skills.test.ts` in the console app validates the
-frontmatter and checks that every tool a skill mentions is actually registered on the server,
-so a renamed tool fails CI instead of silently breaking the skill.
+*when to use this*, not as a title. A test in the private platform repo reads these skills, validates the
+frontmatter and checks that every tool a skill mentions is registered on the server, so a
+renamed tool fails CI there instead of silently breaking the skill.

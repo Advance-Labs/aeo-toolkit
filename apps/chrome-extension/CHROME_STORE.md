@@ -116,7 +116,7 @@ Check these before each release rather than copying them forward:
 | **9 categories** | distinct `category:` literals across those two files | `grep -rhoE "category: '[a-z-]+'" packages/scoring/src/{technical-seo,aeo}-rules.ts \| sort -u \| wc -l` |
 | **0 to 100 score + letter grade** | `packages/scoring/src/grade.ts` | — |
 
-Do **not** describe the extension as running 58 rules (54 before scoring 0.3.0). That figure counts the 14 E-E-A-T
+Do **not** describe the extension as running 58 rules. The store build (0.2.0) runs 40 and the next build runs 44. The 58 figure counts the 14 E-E-A-T
 signals in `eeat-rules.ts`, which are a separate scorer that `auditRules` does not include and
 the extension does not run. 58 is a true statement about the toolkit and a false one about this
 build.
@@ -241,7 +241,7 @@ The store requires a privacy section. Use these answers:
 **Live since 2026-09-02**: item `bdkkjpbipgolopjhndknigaaokdabnad`. The canonical link is
 `https://chromewebstore.google.com/detail/bdkkjpbipgolopjhndknigaaokdabnad` — the store's own
 share button appends `?utm_source=item-share-cp`; drop it. The URL is held once in each repo:
-`CHROME_STORE_URL` in `apps/console/src/lib/seo.ts` here, and `CHROME_STORE` in
+`CHROME_STORE_URL` in the private platform repo, and `CHROME_STORE` in
 `web/src/content/site.js` in the `advance-labs` repo (where it is also an `ORG.sameAs` entry).
 
 **The store is publish-once. A green `main` ships nothing.**

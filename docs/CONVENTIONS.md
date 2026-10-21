@@ -55,8 +55,8 @@ packages/<name>/
 }
 ```
 
-Add `"private": true` unless the package is genuinely useful standalone. Ten of sixteen are internal —
-that is the default, not the exception. Publishing is a support commitment.
+Add `"private": true` unless the package is genuinely useful standalone. Internal is the default, not the
+exception (here only `config` is private; the hosted platform keeps the rest). Publishing is a support commitment.
 
 ### Config files
 
@@ -126,7 +126,7 @@ anything a user sees.
 
 ## Testing
 
-Vitest. **868 tests currently pass**; keep it that way.
+Vitest. The full suite passes on `main`; keep it that way.
 
 - Unit-test pure logic against fixtures (sample HTML, sitemaps, API payloads).
 - No live network in tests — mock the injected fetcher, and the Google and LLM clients.

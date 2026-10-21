@@ -9,8 +9,9 @@ description: >-
 ChatGPT, Claude, Perplexity, Gemini — cite your site when answering questions in your domain.
 Traditional SEO gets you ranked on the results page. AEO gets you *quoted* in the answer.
 
-This toolkit automates auditing for that. It is Apache-2.0-licensed, TypeScript throughout, and runs
-entirely on your own infrastructure if you want it to.
+This toolkit automates auditing for that. The open core in this repo (the audit engine packages, the
+Chrome extension and the skills) is Apache-2.0 and TypeScript throughout. The hosted tools at
+advancelabs.dev/tools and the three MCP servers are proprietary and not self-hostable.
 
 ## Start here
 
@@ -23,21 +24,20 @@ entirely on your own infrastructure if you want it to.
 
 ## What's in the suite
 
-**Ten tools from two deployables.** Five browser tools (technical audit, E-E-A-T scanner, llms.txt
-generator, GA4+GSC chat, 3D backlink graph), three MCP servers exposing 32 tools to Claude and other
-MCP clients, one scheduled content agent, and a Chrome extension. All of it is served from a single
-Next.js app plus the extension — see [ADR-0003](adr/0003-single-vercel-deployment.md) for why.
+**Hosted (proprietary).** Six browser tools (technical audit, E-E-A-T scanner, llms.txt generator,
+GA4+GSC chat, backlink graph, authority) and three MCP servers exposing 32 tools to Claude and other
+MCP clients. They run on advancelabs.dev and their code lives in a private repository.
 
-Underneath sit **16 packages**, of which six are published to npm. The keystone is
-`@advance-labs/scoring`: a weighted rule engine running **58 rules** across technical SEO, AEO, and
-E-E-A-T, whose output four separate tool surfaces render.
+**Open core (this repo).** Six packages published to npm, the Chrome extension and the skills. The
+keystone is `@advance-labs/scoring`: a weighted rule engine whose audit runs **44 checks** (31
+technical SEO + 13 AEO). The E-E-A-T scan is a separate scorer with **14 signals**; the engine
+defines 58 in total.
 
 ```bash
 git clone https://github.com/Advance-Labs/aeo-toolkit.git
 cd aeo-toolkit
 pnpm install && pnpm build
-pnpm test              # 868 tests
-docker compose up      # or run the whole console locally
+pnpm test
 ```
 
 ## Background
