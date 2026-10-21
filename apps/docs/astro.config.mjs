@@ -91,9 +91,9 @@ export default defineConfig({
       // consumes two segments of the base path. Ending the base at `apps/docs/` therefore lands
       // on `/edit/main/docs/<file>.md`, which is the file's real location on the default branch.
       editLink: { baseUrl: `${REPO}/edit/main/apps/docs/` },
-      // Brand: the Advance Labs sphere as logo + favicon, Signal-green accent on the ink ground.
+      // Brand: the AEO Toolkit mark ("the climb") as logo, on a dark tile as favicon, Signal-green accent on the ink ground.
       // Tokens and rules in ../../brand/README.md; overrides in src/styles/brand.css.
-      logo: { src: './public/favicon.png', alt: 'AEO Toolkit' },
+      logo: { src: './public/mark.png', alt: 'AEO Toolkit' },
       favicon: '/favicon.png',
       customCss: ['./src/styles/brand.css'],
       social: [{ icon: 'github', label: 'GitHub', href: REPO }],

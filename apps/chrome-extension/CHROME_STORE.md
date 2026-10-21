@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../../brand/logo-dark.png">
-    <img src="../../brand/logo.png" alt="AEO Toolkit" width="280">
-  </picture>
+  <img src="../../brand/mark-256.png" alt="AEO Toolkit" width="128">
 </p>
 
 # Publishing to the Chrome Web Store
@@ -38,7 +35,7 @@ ever leaves the browser**, and there are no server calls, accounts, or API keys.
 pnpm --filter @advance-labs/chrome-extension package
 ```
 
-This generates the brand icons (`pnpm icons`), runs `vite build` (producing `dist/`),
+This runs `vite build` (producing `dist/`),
 and then zips the build output into
 `apps/chrome-extension/aeo-extension.zip` — the file you upload to the store.
 The zip contains the `manifest.json` at its root (Chrome requires the manifest
@@ -80,8 +77,8 @@ Prepare these before submission (the store will not publish without them):
 
 | Asset | Spec | Notes |
 | --- | --- | --- |
-| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | Generated from the brand mark `src/icons/icon.svg` by `pnpm icons` (`scripts/generate-icons.mjs`, via `sharp`) into `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). The `package` script runs `icons` automatically, so the store zip always contains them. |
-| **Store icon** | 128×128 PNG | The icon shown on the store listing page — `public/icons/icon-128.png`, the Advance Labs sphere rasterized at 128px (see `brand/README.md`). |
+| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | The AEO Toolkit mark on a dark tile, committed as `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). |
+| **Store icon** | 128×128 PNG | The icon shown on the store listing page — `public/icons/icon-128.png`, the AEO Toolkit mark at 128px (see `brand/README.md`). |
 | **Screenshots** | 1280×800 or 640×400 PNG/JPEG, 1–5 images | Capture the popup: score gauge, the site-file (robots/sitemap/llms) grid, and the checklist. |
 | **Small promo tile** (optional) | 440×280 PNG/JPEG | Improves discoverability. Generate with `pnpm promo-tiles` → `store-assets/small-tile-440x280.png`. |
 | **Marquee promo tile** (optional) | 1400×560 PNG/JPEG | Only needed for featured placement. Generate with `pnpm promo-tiles` → `store-assets/marquee-1400x560.png`. |

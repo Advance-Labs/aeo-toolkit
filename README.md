@@ -1,9 +1,6 @@
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.png">
-  <img src="brand/logo.png" alt="AEO Toolkit" width="360">
-</picture>
+<img src="brand/mark-256.png" alt="AEO Toolkit" width="128">
 
 # AEO Toolkit — AI Search Optimization Suite
 

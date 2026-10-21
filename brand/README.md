@@ -5,30 +5,30 @@
 
 The brand that shipped with the September 2026 website redesign. In one line: **a calibrated
 instrument, printed.** Near-black ground, one acid-green signal colour, violet as the
-secondary, mono labels like the margin notes on a lab sheet, Syne headlines, and the Advance
-Labs sphere as the mark.
+secondary, mono labels like the margin notes on a lab sheet, Syne headlines, and the AEO
+Toolkit mark, "the climb", a sphere with a rising line.
 
 ## Mark
 
-The mark is the **Advance Labs sphere**, the crumpled-paper polyhedron from
-[advancelabs.dev](https://advancelabs.dev). AEO Toolkit is an Advance Labs product and carries the
-studio's mark; the wordmark carries the product name.
+The mark is **the climb**: the Advance Labs sphere carrying a Signal-green rising line. It
+replaces the plain sphere, which now stays the studio mark on advancelabs.dev only.
 
 | File | Use |
 |------|-----|
-| [`mark-256.png`](mark-256.png) | The mark alone, square, transparent. Favicons, app icons, avatars. |
+| [`mark-256.png`](mark-256.png) | The mark alone, square, transparent. In-page logos, READMEs. |
+| [`icon-256.png`](icon-256.png) | The mark on a rounded `#0A0A0B` tile. Favicons, app icons, avatars. |
 | [`mark-512.png`](mark-512.png) | Same, for social cards, README and print. |
 | [`logo-dark.png`](logo-dark.png) | Horizontal lockup (mark + wordmark in Signal green) for **dark** backgrounds. Transparent. |
 | [`logo.png`](logo.png) | Horizontal lockup (mark + wordmark in Ink) for **light** backgrounds. Transparent. |
 | [`logo-dark-preview.png`](logo-dark-preview.png) | The dark lockup composited on the `#0A0A0B` ground, for previews. |
 | [`social-preview.png`](social-preview.png) | 1280×640 card for the GitHub repository social preview (upload under Settings). |
 
-The sphere is a photographed object, so the assets are rasters with alpha; there is no vector
-version. The 1024 px master is the `MoonAinB.png` served by advancelabs.dev.
+The mark is a raster with alpha; there is no vector version. The lockups (`logo*.png`,
+`social-preview.png`) still carry the plain sphere and are stale until regenerated with the new mark.
 
 In `apps/console`, use `BrandMark` / `BrandLockup` from `src/components/BrandMark.tsx` rather
-than these files. The Chrome extension's icons are generated from `src/icons/icon.svg`, which
-embeds the same sphere.
+than these files. The Chrome extension's icons are committed PNGs in
+`apps/chrome-extension/public/icons/`.
 
 ## Wordmark
 
@@ -105,11 +105,7 @@ problem in a smaller box.
 | Favicons, app icons, avatars | Same, wherever the host renders on an unknown ground |
 | Anywhere we own the ground (site, docs, README on GitHub's dark UI) | The transparent mark, as above |
 
-Clear space and the 16 px mark minimum **collide on small tiles** — a quarter-width inset on a
-16 px icon leaves a 10 px sphere, under the mark's own floor. Clear space is what gives, because
-it is breathing room and legibility is a requirement. The inset therefore tightens as the tile
-shrinks: the sphere takes 64% of the tile at 128 and 48, 78% at 32, 88% at 16. That table lives
-in `apps/chrome-extension/scripts/generate-icons.mjs`; change it there, not by hand-editing PNGs.
+The tile icons were produced at 16/32/48/64/128/180/192/256/512/1024 px with the sphere inset tightening as the tile shrinks (clear space yields to legibility at 16 px). They are committed rasters; regenerate from the master, do not hand-edit.
 
 ## Previous brand
 
