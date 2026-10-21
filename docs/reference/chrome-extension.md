@@ -96,8 +96,6 @@ That generates the icons, runs `vite build`, and zips `dist/` into
 where Chrome requires it. To run an unpacked build, load `dist/` via `chrome://extensions` with
 Developer mode on.
 
-Icons are generated from `src/icons/icon.svg` by `scripts/generate-icons.mjs`. They composite
-the Advance Labs sphere onto a rounded `#0A0A0B` tile rather than shipping it on transparency,
-because the sphere is off-white with no outline and would otherwise be close to invisible on the
-Chrome Web Store's white listing card and in the light-mode toolbar. See
-[`brand/README.md`](../../brand/README.md) under "App icons".
+Icons are committed PNGs in `public/icons/` (not generated). They carry the AEO Toolkit mark on a
+rounded `#0A0A0B` tile so the icon holds up on the Chrome Web Store's white listing card and the
+light-mode toolbar. See [`brand/README.md`](../../brand/README.md) under "App icons".

@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="../../brand/logo-dark.png">
-    <img src="../../brand/logo.png" alt="AEO Toolkit" width="280">
-  </picture>
+  <img src="../../brand/mark-256.png" alt="AEO Toolkit" width="128">
 </p>
 
 # @advance-labs/chrome-extension
@@ -55,9 +52,8 @@ Then load the unpacked extension:
 | Script | What it does |
 | --- | --- |
 | `dev` | `vite` dev build with HMR for the popup + content/background reload. |
-| `icons` | Rasterize `src/icons/icon.svg` (the brand mark) → `public/icons/icon-{16,32,48,128}.png` via `sharp`. |
 | `build` | `vite build` → production `dist/` (the loadable/zippable extension). |
-| `package` | `icons`, then `build`, then zip `dist/` into a store-uploadable `aeo-extension.zip` (manifest at the archive root). |
+| `package` | `build`, then zip `dist/` into a store-uploadable `aeo-extension.zip` (manifest at the archive root). |
 | `typecheck` | `tsc --noEmit` under strict mode. |
 | `test` | `vitest run` — unit tests for the pure pipeline (mocks `@advance-labs/*` + I/O). |
 
@@ -93,7 +89,7 @@ are required.
 pnpm --filter @advance-labs/chrome-extension package
 ```
 
-This first generates the brand icons, then builds `dist/` and zips its **contents** (so
+This builds `dist/` and zips its **contents** (so
 `manifest.json` sits at the archive root, as Chrome requires) into
 `apps/chrome-extension/aeo-extension.zip`. See [`CHROME_STORE.md`](./CHROME_STORE.md) for the
 full listing/submission walkthrough — required icon sizes (16/32/48/128 PNG), screenshots, the
@@ -101,10 +97,9 @@ privacy disclosures (all analysis is local; **zero server calls**), and version-
 
 ### Toolbar & store icons
 
-The toolbar and store icons are rasterized from the **brand mark** — `src/icons/icon.svg`
-(the Advance Labs sphere; see [`brand/README.md`](../../brand/README.md)) — into
-`public/icons/icon-{16,32,48,128}.png` by `scripts/generate-icons.mjs` (`pnpm icons`). Chrome
-MV3 will not accept SVG for the action icon or the store listing, so these PNGs are required.
-`manifest.config.ts` wires the `icons` map and `action.default_icon` (16/48/128) to them;
-`public/` is copied to the build root, so they resolve at `dist/icons/*`. The 128px PNG is
-also the Chrome Web Store listing icon.
+The toolbar and store icons are the AEO Toolkit mark ("the climb") on a rounded `#0A0A0B` tile
+(see [`brand/README.md`](../../brand/README.md)), committed as `public/icons/icon-{16,32,48,128}.png`.
+They are not generated; replace the PNGs to change them. Chrome MV3 will not accept SVG for the action
+icon or the store listing. `manifest.config.ts` wires the `icons` map and `action.default_icon`
+(16/48/128) to them; `public/` is copied to the build root, so they resolve at `dist/icons/*`. The
+128px PNG is also the Chrome Web Store listing icon.

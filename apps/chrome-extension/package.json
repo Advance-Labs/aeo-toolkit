@@ -6,10 +6,9 @@
   "description": "AEO/GEO Chrome MV3 extension — runs a client-side AI-readiness audit on the active tab and exports a PDF.",
   "scripts": {
     "dev": "vite",
-    "icons": "node scripts/generate-icons.mjs",
     "promo-tiles": "node scripts/generate-promo-tiles.mjs",
     "build": "vite build",
-    "package": "pnpm icons && pnpm build && rimraf aeo-extension.zip && cd dist && zip -r -FS ../aeo-extension.zip . -x '.*'",
+    "package": "pnpm build && rimraf aeo-extension.zip && cd dist && zip -r -FS ../aeo-extension.zip . -x '.*'",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
