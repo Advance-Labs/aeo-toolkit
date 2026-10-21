@@ -64,7 +64,8 @@ describe('tech.no-redirect-loops', () => {
         pages: [
           ...c.crawl.pages,
           page('https://good.example.com/api/connection', {
-            redirectChain: [{ url: 'https://good.example.com/api/connection', status: 308 }],
+            // As fetchResource records it: the URL answers 308 to itself until the hop cap.
+            redirectChain: Array.from({ length: 11 }, () => ({ url: 'https://good.example.com/api/connection', status: 308 })),
           }),
         ],
       },
@@ -83,6 +84,7 @@ describe('tech.no-redirect-loops', () => {
           ...c.crawl.pages,
           page('https://good.example.com/a', {
             redirectChain: [
+              { url: 'https://good.example.com/a', status: 301 },
               { url: 'https://good.example.com/b', status: 301 },
               { url: 'https://good.example.com/a', status: 301 },
             ],
@@ -102,12 +104,25 @@ describe('tech.no-redirect-loops', () => {
           ...c.crawl.pages,
           page('https://good.example.com/old', {
             redirectChain: [
+              { url: 'https://good.example.com/old', status: 301 },
               { url: 'https://good.example.com/mid', status: 301 },
-              { url: 'https://good.example.com/new', status: 301 },
             ],
           }),
         ],
       },
+    }));
+    expect((await finding(ctx, 'tech.no-redirect-loops'))?.passed).toBe(true);
+  });
+
+  // Regression: the chain starts with the page's own URL, which used to read as a revisit, so
+  // every redirecting page failed this critical rule (kuzynbuilds.com apex -> www, 2026-10-20).
+  it.each([
+    ['apex -> www', 'https://good.example.com/', 308],
+    ['http -> https', 'http://good.example.com/', 301],
+  ])('does not flag a single %s hop', async (_label, from, status) => {
+    const ctx = ctxWith((c) => ({
+      ...c,
+      crawl: { ...c.crawl, pages: [...c.crawl.pages, page(from, { redirectChain: [{ url: from, status }] })] },
     }));
     expect((await finding(ctx, 'tech.no-redirect-loops'))?.passed).toBe(true);
   });
