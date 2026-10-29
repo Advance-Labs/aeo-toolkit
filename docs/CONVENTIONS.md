@@ -101,13 +101,16 @@ anything a user sees.
   and `landing-v2.css` (`--bg`, `--v2-signal`, `--v2-rule`, …) or the Tailwind palette in
   `tailwind.config.ts`. A literal hex in a component is a review comment unless it is the graph
   palette or an OG image.
-- **One Signal per view.** `#A8F326` marks the primary action or the live figure. The second
-  green on a screen is a bug.
-- **The mark is the Advance Labs sphere**, rendered through `BrandMark` / `BrandLockup` in
+- **Two dusk tones, no green, no violet.** Colour is Dusk 1 `#f2b27a` and Dusk 2 `#d98a7a` on
+  ink `#1a1916` and paper `#ece8e1`. Anything else is a bug.
+- **Pixel art stays pixel art.** Coarse cell, 4x4 Bayer dither, hard-edged upscaling, flat facets,
+  square corners, hard-offset shadows. No blur, no smoothing, no rounded corners.
+- **The mark is the faceted sphere**, rendered through `BrandMark` / `BrandLockup` in
   `apps/console/src/components/BrandMark.tsx`. Don't inline logos, don't reintroduce the old tile
   (`@advance-labs/ui`'s `Logo` is deprecated), don't tint the sphere.
-- **Labels are mono and uppercase; headlines are Syne; numbers are tabular.** Copy carries no
-  exclamation marks, and every figure in it must trace to a file in this repo.
+- **Labels are Geist Pixel Square, uppercase; headings and body are Geist Sans; code is Geist Mono.**
+  Numbers are tabular. Copy carries no exclamation marks, and every figure in it must trace to a
+  file in this repo.
 - **Motion is opt-in.** Gate scroll and pointer effects on `prefers-reduced-motion` and
   `(hover: hover)`; the page must render complete without them.
 - **Cosmetic PRs stay cosmetic.** A design change touches `apps/console` (and `packages/ui` only
