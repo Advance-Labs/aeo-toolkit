@@ -8,6 +8,7 @@ import { SiteFiles } from './SiteFiles.js';
 import { exportAuditPdf } from './pdf.js';
 import { useAudit } from './useAudit.js';
 import { TOOLS_URL } from './links.js';
+import markUrl from './mark.svg';
 
 /** Root popup view: runs the audit on mount and renders score + checks + export. */
 export function App(): JSX.Element {
@@ -29,7 +30,10 @@ export function App(): JSX.Element {
   return (
     <main className="app">
       <header className="app-header">
-        <h1>AEO / GEO Auditor</h1>
+        <h1>
+          <img src={markUrl} alt="" width={22} height={22} />
+          AEO / GEO Auditor
+        </h1>
         <button
           type="button"
           className="rerun"
@@ -46,7 +50,7 @@ export function App(): JSX.Element {
         // The 40 audit rules run synchronously against the already-loaded tab DOM
         // (no network crawl — see useAudit.ts), so this is the "solving" phase.
         <div className="loading" role="status">
-          <ThinkingOrb state="solving" size={64} theme="auto" aria-hidden="true" />
+          <ThinkingOrb state="solving" size={64} theme="light" aria-hidden="true" />
           <p>Analyzing the active tab — fully client-side.</p>
         </div>
       )}

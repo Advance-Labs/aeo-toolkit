@@ -1,51 +1,53 @@
 /**
- * AEO/GEO Auditor popup, in the September 2026 Advance Labs brand.
- * See brand/README.md at the repo root. In one line: a calibrated instrument, printed.
+ * AEO/GEO Auditor popup, in the "field" brand: light concrete ground, ink line work, dusk
+ * accents, Geist Sans headlines and Geist Mono uppercase labels, square corners with small
+ * corner ticks on panels. The faceted sphere is the brand object (header mark).
  *
- * TYPE: the brand specifies Syne for display and IBM Plex / JetBrains Mono for labels. This
- * popup uses SYSTEM STACKS instead, deliberately. MV3's default content security policy blocks
- * remote resources, so a webfont would have to be committed to the repo and bundled into the
- * extension, and there are no font binaries in this repo today (the console self-hosts via
- * next/font at build time, which produces .next artefacts, not source). Shipping ~100KB of
- * font files into a 380px popup to set two headings is the wrong trade. What actually carries
- * the brand here is the palette, the mono uppercase tracked labels, the tabular figures, and
- * the restraint. If webfonts are ever added to the repo for other reasons, wire them in here.
+ * Fonts are bundled (variable woff2 from the `geist` package) and loaded from the extension
+ * itself: MV3's default CSP blocks remote resources.
  *
- * SIGNAL DISCIPLINE: the brand allows ONE Signal (#A8F326) element per view. Here that is the
- * Export PDF button, because it is the only action the view is trying to produce. The score
- * gauge does NOT use Signal: it uses the OK/Warn scale, which the brand reserves for audit
- * results. Violet is present as a secondary and never carries a call to action.
+ * GREEN DISCIPLINE: #98ff38 means ONLY "this check passes" / a live state. Result text uses a
+ * darker green so it stays readable on the light ground; failures use rose/red.
  */
 
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: block;
+}
+
 :root {
-  /* Ground and ink */
-  --bg: #0a0a0b;
-  --raised: #131315;
-  --fg: #f4f4f5;
-  --ink-soft: #b6b6bd;
-  --ink-faint: #9a9aa6;
-  --rule: rgba(255, 255, 255, 0.09);
-  --rule-strong: rgba(255, 255, 255, 0.16);
+  --bg: #ece8e1;
+  --card: #f6f3ee;
+  --ink: #1a1916;
+  --ink-soft: #524e47;
+  --ink-faint: #78736a;
+  --rule: rgba(26, 25, 22, 0.14);
+  --rule-strong: rgba(26, 25, 22, 0.32);
 
-  /* The one accent */
-  --signal: #a8f326;
-  --signal-hover: #c3ff57;
+  --peach: #f2b27a;
+  --rose: #d98a7a;
+  --accent: #a84b2a;
+  --dusk: linear-gradient(135deg, #8a93a3 0%, #c9b8ad 38%, #f2c39a 72%, #e9a88f 100%);
 
-  /* Secondary. Never a call to action. */
-  --accent2: #b6a4fd;
+  /* Live / passing state only. */
+  --live: #98ff38;
 
-  /* Audit results only */
-  --ok: #3fbf8a;
-  --warn: #d9974f;
-  /*
-   * The brand table stops at OK and Warn. A failing result needs a third colour, and the
-   * obvious #dc2626 measures about 4.0:1 on this ground, which is under the 4.5:1 body-text
-   * floor. This is the same family lifted until it clears: #f87171 measures ~7.6:1 on #0a0a0b.
-   */
-  --bad: #f87171;
+  /* Result text on the light ground. */
+  --ok: #2a7a1c;
+  --warn: #a84b2a;
+  --bad: #b3352b;
 
-  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 * {
@@ -57,55 +59,68 @@ body {
   width: 380px;
   font-family: var(--sans);
   font-size: 13px;
-  color: var(--fg);
+  color: var(--ink);
   background: var(--bg);
-  /* Off-white on near-black, never pure white on pure black. */
   -webkit-font-smoothing: antialiased;
 }
 
 .app {
-  padding: 14px 14px 16px;
+  padding: 0 14px 14px;
 }
 
-/* ── Header ─────────────────────────────────────────────────────────────── */
+/* ── Header: the one place the dusk sky shows ───────────────────────────── */
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 10px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
+  margin: 0 -14px 14px;
+  padding: 12px 14px;
+  background: var(--dusk);
+  border-bottom: 1px solid var(--ink);
 }
 
 .app-header h1 {
-  font-family: var(--mono);
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
   margin: 0;
-  color: var(--fg);
+  color: var(--ink);
+}
+
+.app-header h1 img {
+  display: block;
 }
 
 /* ── Buttons ────────────────────────────────────────────────────────────── */
 
 button {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  border-radius: 6px;
-  border: 1px solid var(--rule-strong);
-  background: var(--raised);
-  color: var(--ink-soft);
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
   padding: 5px 10px;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  transition: background 0.12s, color 0.12s;
 }
 
 button:hover:not(:disabled) {
-  color: var(--fg);
-  border-color: var(--ink-faint);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 button:disabled {
@@ -113,19 +128,18 @@ button:disabled {
   cursor: default;
 }
 
-/* The single Signal element. */
+/* The single primary action: solid ink. */
 .export {
-  background: var(--signal);
-  color: #0a0a0b;
-  border-color: var(--signal);
+  background: var(--ink);
+  color: var(--bg);
   font-weight: 700;
-  text-transform: uppercase;
+  padding: 7px 14px;
 }
 
 .export:hover:not(:disabled) {
-  background: var(--signal-hover);
-  border-color: var(--signal-hover);
-  color: #0a0a0b;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--card);
 }
 
 /* ── Audited URL ────────────────────────────────────────────────────────── */
@@ -133,6 +147,7 @@ button:disabled {
 .audited-url {
   font-family: var(--mono);
   font-size: 10px;
+  letter-spacing: 0.02em;
   color: var(--ink-faint);
   margin: 0 0 10px;
   overflow: hidden;
@@ -150,7 +165,7 @@ button:disabled {
 .loading {
   text-align: center;
   padding: 28px 0;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
   font-size: 12px;
 }
 
@@ -161,31 +176,57 @@ button:disabled {
 /* ── Error ──────────────────────────────────────────────────────────────── */
 
 .error {
-  background: rgba(248, 113, 113, 0.08);
-  border: 1px solid rgba(248, 113, 113, 0.28);
+  background: rgba(217, 138, 122, 0.16);
+  border: 1px solid var(--bad);
   color: var(--bad);
-  border-radius: 8px;
   padding: 12px;
   font-size: 12px;
 }
 
 .error button {
   margin-top: 8px;
+  border-color: var(--bad);
+  color: var(--bad);
 }
 
 /* ── Gauge ──────────────────────────────────────────────────────────────── */
 
 .gauge {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 6px 0 14px;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
 }
 
-/*
- * The band class is set on .gauge by ScoreGauge.tsx, and everything inside inherits its
- * colour from --band. That keeps the score colour in this file rather than in the component.
- */
+.gauge::before,
+.gauge::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ink);
+}
+
+.gauge::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.gauge::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* The band class is set on .gauge by ScoreGauge.tsx; colour lives here. */
 .gauge-ok {
   --band: var(--ok);
 }
@@ -196,13 +237,8 @@ button:disabled {
   --band: var(--bad);
 }
 
-/*
- * Deliberately --rule-strong rather than --rule. At 0.09 alpha the unfilled remainder is so
- * faint that the ring reads as a green arc with an unexplained gap, instead of as a dial with
- * a filled portion. The track has to be visible for the fill to mean anything.
- */
 .gauge-track {
-  stroke: var(--rule-strong);
+  stroke: var(--rule);
 }
 
 .gauge-arc {
@@ -210,28 +246,35 @@ button:disabled {
 }
 
 .gauge-score {
-  font-family: var(--mono);
-  font-size: 30px;
+  font-family: var(--sans);
+  font-size: 34px;
   font-weight: 700;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
-  fill: var(--band);
+  fill: var(--ink);
 }
 
 .gauge-grade {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  fill: var(--ink-faint);
+  fill: var(--ink-soft);
+}
+
+.gauge svg {
+  flex: none;
+  width: 100px;
+  height: 100px;
 }
 
 .gauge-meta {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  flex-direction: column;
+  gap: 6px;
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
@@ -249,15 +292,16 @@ button:disabled {
   font-weight: 700;
 }
 
-/* ── Section labels: mono, uppercase, tracked, like a lab sheet ─────────── */
+/* ── Section labels ─────────────────────────────────────────────────────── */
 
 .section-title {
   font-family: var(--mono);
   font-size: 10px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: var(--ink-faint);
-  margin: 14px 0 8px;
+  margin: 0 0 8px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -282,26 +326,38 @@ button:disabled {
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.02em;
-  border-radius: 4px;
   padding: 3px 8px;
-  border: 1px solid var(--rule);
-  background: var(--raised);
+  border: 1px solid var(--rule-strong);
+  background: var(--card);
+  color: var(--ink-soft);
 }
 
 .sf-yes {
-  color: var(--ok);
-  border-color: rgba(63, 191, 138, 0.32);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.sf-yes > span:first-child {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--live);
+  color: var(--ink);
 }
 
 .sf-no {
   color: var(--bad);
-  border-color: rgba(248, 113, 113, 0.28);
+  border-color: rgba(179, 53, 43, 0.4);
 }
 
 /* ── Checklist ──────────────────────────────────────────────────────────── */
 
 .checklist {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .checklist-tabs {
@@ -312,37 +368,32 @@ button:disabled {
 
 .tab {
   font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   padding: 3px 9px;
+  border-color: var(--rule-strong);
+  color: var(--ink-soft);
 }
 
-/*
- * Violet, not Signal: a selected tab is a state, and the brand keeps Signal for the one
- * action per view. Violet on the raised surface, with the text at full weight so it reads
- * as selected rather than merely tinted.
- */
 .tab-active {
-  background: rgba(182, 164, 253, 0.14);
-  color: var(--accent2);
-  border-color: rgba(182, 164, 253, 0.4);
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
   font-weight: 700;
 }
 
 .tab-active:hover:not(:disabled) {
-  color: var(--accent2);
-  border-color: rgba(182, 164, 253, 0.6);
+  background: var(--ink);
+  color: var(--bg);
 }
 
 .check-rows {
+  position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 230px;
+  max-height: 166px;
   overflow-y: auto;
+  background: var(--card);
   border: 1px solid var(--rule);
-  border-radius: 8px;
-  background: var(--raised);
 }
 
 .check {
@@ -357,28 +408,37 @@ button:disabled {
 }
 
 .check-icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+  line-height: 14px;
+  text-align: center;
   font-family: var(--mono);
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.45;
 }
 
 .check-pass .check-icon {
-  color: var(--ok);
+  background: var(--live);
+  color: var(--ink);
 }
 
 .check-fail .check-icon {
-  color: var(--bad);
+  background: var(--bad);
+  color: var(--card);
 }
 
 .check-title {
   font-weight: 600;
-  color: var(--fg);
+  color: var(--ink);
   font-size: 12px;
+  letter-spacing: -0.005em;
 }
 
 .check-rec {
   font-size: 11px;
-  color: var(--warn);
+  color: var(--accent);
   margin-top: 3px;
   line-height: 1.45;
 }
@@ -386,7 +446,7 @@ button:disabled {
 .check-cat {
   font-family: var(--mono);
   font-size: 9px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-top: 3px;
@@ -413,21 +473,23 @@ button:disabled {
 .exported {
   font-family: var(--mono);
   font-size: 10px;
-  color: var(--ink-faint);
+  color: var(--ink-soft);
 }
 
 .tools-link {
   margin: 10px 0 0;
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
   color: var(--ink-faint);
   text-align: center;
 }
 
 .tools-link a {
-  color: var(--ink-soft);
+  color: var(--accent);
 }
 
-/* ── Scrollbar, so the checklist does not paint a light strip on the dark ── */
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
 
 .check-rows::-webkit-scrollbar {
   width: 8px;
@@ -439,7 +501,6 @@ button:disabled {
 
 .check-rows::-webkit-scrollbar-thumb {
   background: var(--rule-strong);
-  border-radius: 4px;
 }
 
 .check-rows::-webkit-scrollbar-thumb:hover {

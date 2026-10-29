@@ -77,9 +77,9 @@ Prepare these before submission (the store will not publish without them):
 
 | Asset | Spec | Notes |
 | --- | --- | --- |
-| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | The AEO Toolkit mark on a dark tile, committed as `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). |
+| **Extension icons** | 16×16, 32×32, 48×48, 128×128 PNG | The faceted sphere mark (tile at 16/32, transparent mark at 48/128), committed as `public/icons/icon-{16,32,48,128}.png`; Vite copies `public/` into `dist/`, so they resolve at `dist/icons/*`. `manifest.config.ts` already wires the `icons` map and `action.default_icon` (16/48/128). |
 | **Store icon** | 128×128 PNG | The icon shown on the store listing page — `public/icons/icon-128.png`, the AEO Toolkit mark at 128px (see `brand/README.md`). |
-| **Screenshots** | 1280×800 or 640×400 PNG/JPEG, 1–5 images | Capture the popup: score gauge, the site-file (robots/sitemap/llms) grid, and the checklist. |
+| **Screenshots** | 1280×800 or 640×400 PNG/JPEG, 1–5 images | Marketing frames built from the real popup; sources and exports in `store/` (see `store/README.md`). |
 | **Small promo tile** (optional) | 440×280 PNG/JPEG | Improves discoverability. Generate with `pnpm promo-tiles` → `store-assets/small-tile-440x280.png`. |
 | **Marquee promo tile** (optional) | 1400×560 PNG/JPEG | Only needed for featured placement. Generate with `pnpm promo-tiles` → `store-assets/marquee-1400x560.png`. |
 

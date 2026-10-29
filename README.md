@@ -77,7 +77,7 @@ runs 44. Free, no account, and your data stays yours.
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)** puts the same engine on your toolbar. Open any page, click the icon, and get a 0 to 100 AI-readiness score with a letter grade and a list of what to fix. Export it as a PDF.
 
-It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **40 checks across 9 categories** in the version on the Chrome Web Store (0.2.0, built on scoring 0.2.x). Scoring 0.3.0 adds four, so the next build from this repo runs 44 (31 technical-SEO + 13 AEO). The 14 E-E-A-T signals are a separate scorer the extension does not run, 58 is the engine total (44 + 14), not what any one audit runs.
+It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **44 checks across 9 categories** (31 technical-SEO + 13 AEO) from extension 0.3.0, built on scoring 0.3.x. The Chrome Web Store build before that (0.2.0) ran 40, so the listing changes when 0.3.0 is published. The 14 E-E-A-T signals are a separate scorer the extension does not run, 58 is the engine total (44 + 14), not what any one audit runs.
 
 Everything happens in your browser. No account, no server, no analytics, no telemetry. The only network requests are to the audited site's own `robots.txt`, `sitemap.xml`, and `llms.txt`, which is what the host permission is for. Nothing is stored, because nothing is sent.
 

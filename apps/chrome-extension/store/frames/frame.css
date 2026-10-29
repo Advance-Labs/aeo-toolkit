@@ -1,0 +1,23 @@
+/* Shared styles for the store listing frames. Fonts are the same bundled Geist files as the popup. */
+@font-face { font-family: 'Geist'; src: url('../../src/popup/fonts/Geist-Variable.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Geist Mono'; src: url('../../src/popup/fonts/GeistMono-Variable.woff2') format('woff2'); font-weight: 100 900; }
+:root {
+  --bg: #ece8e1; --card: #f6f3ee; --ink: #1a1916; --ink-soft: #524e47; --accent: #a84b2a;
+  --dusk: linear-gradient(160deg, #8a93a3 0%, #c9b8ad 34%, #f2c39a 68%, #e9a88f 100%);
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { background: var(--bg); font-family: 'Geist', sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+.shot { position: relative; width: 1280px; height: 800px; overflow: hidden; background: var(--bg); }
+.sky { position: absolute; top: 0; right: 0; bottom: 0; width: 600px; background: var(--dusk); border-left: 2px solid var(--ink); }
+.sphere-bg { position: absolute; width: 520px; height: 520px; left: -150px; bottom: -170px; opacity: .16; }
+.copy { position: absolute; left: 72px; top: 0; bottom: 0; width: 560px; display: flex; flex-direction: column; justify-content: center; }
+.label { font-family: 'Geist Mono', monospace; font-size: 17px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+.label img { width: 34px; height: 34px; }
+h1 { font-size: 82px; line-height: .98; font-weight: 700; letter-spacing: -.045em; }
+p.sub { margin-top: 30px; font-size: 27px; line-height: 1.38; color: var(--ink-soft); letter-spacing: -.01em; max-width: 500px; }
+.win { position: absolute; right: 90px; top: 70px; width: 440px; height: 660px; overflow: hidden; border: 2px solid var(--ink); background: var(--bg); }
+.win img { display: block; width: 440px; }
+.tick { position: absolute; width: 22px; height: 22px; border: 2px solid var(--ink); }
+.tick.tl { left: 36px; top: 36px; border-right: 0; border-bottom: 0; }
+.tick.br { right: 36px; bottom: 36px; border-left: 0; border-top: 0; }
+h1 { text-wrap: balance; }
