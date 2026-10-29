@@ -14,22 +14,17 @@ The mark is the faceted sphere: flat facets, lit faces in dusk, unlit faces in c
 
 | File | Use |
 |------|-----|
-| [`aeo-toolkit-mark-256.png`](aeo-toolkit-mark-256.png) | The pixel-direction mark, square. README header, in-page logos. |
-| [`mark-256.png`](mark-256.png), [`mark-512.png`](mark-512.png), [`mark.svg`](mark.svg) | Earlier mark files (see "Stale assets" below). |
-| [`icon-256.png`](icon-256.png) | Earlier mark on a rounded dark tile (see "Stale assets"). |
-| [`logo.png`](logo.png), [`logo-dark.png`](logo-dark.png), [`logo-dark-preview.png`](logo-dark-preview.png) | Earlier horizontal lockups (see "Stale assets"). |
-| [`social-preview.png`](social-preview.png) | 1280×640 GitHub social card (see "Stale assets"). |
+| [`aeo-toolkit-mark-256.png`](aeo-toolkit-mark-256.png), [`mark-256.png`](mark-256.png), [`mark-512.png`](mark-512.png) | The mark alone, square, transparent. In-page logos, READMEs. `mark-512.png` is a 2x upscale of the 256 raster. |
+| [`mark.svg`](mark.svg) | Vector mark. |
+| [`icon-256.png`](icon-256.png) | The mark on a rounded paper tile (an app-icon exception to the square-corner rule), for avatars and app icons. |
+| [`logo.png`](logo.png) | Horizontal lockup (mark + wordmark in Ink) for **light** backgrounds. Transparent. |
+| [`logo-dark.png`](logo-dark.png) | Horizontal lockup (mark on a Card tile, wordmark in Card) for **dark** backgrounds. Transparent. |
+| [`logo-dark-preview.png`](logo-dark-preview.png) | The dark lockup composited on the `#1a1916` ground, for previews. |
+| [`social-preview.png`](social-preview.png) | 1280×640 GitHub social card: the live hero with "AEO Toolkit · 44 checks · open core". Upload under Settings. |
 
 In `apps/console`, use `BrandMark` / `BrandLockup` from `src/components/BrandMark.tsx` rather
 than these files. The Chrome extension's icons are committed PNGs in
 `apps/chrome-extension/public/icons/`.
-
-### Stale assets
-
-`logo*.png`, `icon-256.png`, `mark-256.png`, `mark-512.png` and `social-preview.png` predate the pixel
-direction. They show the previous near-black and acid-green palette (the social card also has a
-violet gradient and an out-of-date rule count) and have not been regenerated. Do not use them in new
-work; regenerate them from the current mark.
 
 ## Palette
 

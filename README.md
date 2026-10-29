@@ -18,7 +18,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 
 </div>
 
-> Open-source TypeScript packages for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+> Open-source TypeScript packages for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > **Open core.** This repo is the open-source half of the AEO Toolkit: the audit engine, crawler,
 > parser, schema validator and the Chrome extension, all Apache-2.0 and published to npm. The
@@ -27,7 +27,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 > private repository on 2026-10-20. Code published here before that date stays Apache-2.0.
 
 **Try it without installing anything:** the six browser tools run free in the browser at
-**[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
+**[advancelabs.dev/tools](https://advancelabs.dev/tools)**, with no sign-up and no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
 Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advancelabs.dev/services/ai-visibility).
 
@@ -57,7 +57,7 @@ The hosted site is drawn in dithered pixel art: a figure pushing a faceted spher
 
 ## What is AEO?
 
-**Answer Engine Optimization (AEO)** is the practice of structuring your content so that AI assistants — ChatGPT, Perplexity, Claude, Gemini — cite your site when answering questions in your domain. Traditional SEO gets you ranked on the blue-link results page. AEO gets you *quoted* in the AI answer.
+**Answer Engine Optimization (AEO)** is the practice of structuring your content so that AI assistants (ChatGPT, Perplexity, Claude, Gemini) cite your site when answering questions in your domain. Traditional SEO gets you ranked on the blue-link results page. AEO gets you *quoted* in the AI answer.
 
 As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 
@@ -163,9 +163,9 @@ console.log(report.topFixes.slice(0, 3).map((f) => f.title))
 ## Connect the MCP servers
 
 The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
-nothing to `npm install` and no local process to run — point any MCP client at the URL.
+nothing to `npm install` and no local process to run. Point any MCP client at the URL.
 
-**Claude Code** — one command per server:
+**Claude Code**: one command per server:
 
 ```bash
 claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
@@ -176,7 +176,7 @@ claude mcp add --transport http --scope user aeo-search     https://aeo.advancel
 Drop `--scope user` to register them in the current project only. Check the result with
 `claude mcp list`.
 
-**Claude.ai / Claude Desktop** — Settings → Connectors → Add custom connector, then paste the URL.
+**Claude.ai / Claude Desktop**: Settings → Connectors → Add custom connector, then paste the URL.
 
 **Cursor** (`~/.cursor/mcp.json`), Windsurf, or any client that takes a JSON block:
 
@@ -213,12 +213,12 @@ Three things that trip people up:
 
 ## Why AEO?
 
-When a user asks ChatGPT "what is the best tool for X?", the answer comes from indexed content that AI models trust — not from ad-auction bidding. The trust signals for AI citation are:
+When a user asks ChatGPT "what is the best tool for X?", the answer comes from indexed content that AI models trust, not from ad-auction bidding. The trust signals for AI citation are:
 
 - **Structured data** (JSON-LD `Organization`, `FAQPage`, `HowTo`)
-- **`llms.txt`** — the AI equivalent of `robots.txt`
-- **Canonical, server-rendered HTML** — AI crawlers prefer static content
-- **Topical authority** — consistent, in-depth coverage of a topic
+- **`llms.txt`**: the AI equivalent of `robots.txt`
+- **Canonical, server-rendered HTML**: AI crawlers prefer static content
+- **Topical authority**: consistent, in-depth coverage of a topic
 
 AEO Toolkit automates auditing all of these.
 
@@ -255,16 +255,16 @@ beside it. Anything a user sees should follow it, and
 
 Built and maintained by [Advance Labs](https://advancelabs.dev) · [All Advance Labs products](https://advancelabs.dev/lab)
 
-AEO Toolkit is built and maintained by **[Advance Labs Inc.](https://advancelabs.dev)** — a software studio building [Creatin](https://www.creatin.ca), [Cartrix](https://www.cartrix.live), and this toolkit.
+AEO Toolkit is built and maintained by **[Advance Labs Inc.](https://advancelabs.dev)**, a software studio building [Creatin](https://www.creatin.ca), [Cartrix](https://www.cartrix.live), and this toolkit.
 
-This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, JSON-LD Organization schema, SSG-rendered pages, and canonical URLs — all patterns the scoring engine teaches.
+This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, JSON-LD Organization schema, SSG-rendered pages, and canonical URLs, all patterns the scoring engine teaches.
 
 ---
 
 ## Code of Conduct
 
-We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) — be respectful and constructive in all project spaces, and report unacceptable behavior to [conduct@advancelabs.dev](mailto:conduct@advancelabs.dev).
+We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/): be respectful and constructive in all project spaces, and report unacceptable behavior to [conduct@advancelabs.dev](mailto:conduct@advancelabs.dev).
 
 ---
 
-<sub>© 2026 Advance Labs Inc. — <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
+<sub>© 2026 Advance Labs Inc. · <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
