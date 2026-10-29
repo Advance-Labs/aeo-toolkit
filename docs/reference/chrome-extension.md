@@ -1,7 +1,7 @@
 ---
 title: Chrome extension
 description: >-
-  AEO/GEO Auditor: the audit engine on your toolbar. What the 40 checks are, why that number is not 44 or 58, and what the extension does and does not send anywhere.
+  AEO/GEO Auditor: the audit engine on your toolbar. What the 44 checks are (40 in the store build before 0.3.0), why that number is not 58, and what the extension does and does not send anywhere.
 ---
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)**
@@ -14,10 +14,9 @@ list of findings, and a PDF export.
 - **Source:** [`apps/chrome-extension`](../../apps/chrome-extension)
 - **Publishing runbook:** [`CHROME_STORE.md`](../../apps/chrome-extension/CHROME_STORE.md)
 
-## Why it says 40 checks and the hosted audit says 44
+## Why it says 44 checks (40 before 0.3.0)
 
-These numbers are all right, and they describe different things. Quoting the wrong one either
-overstates the store build or understates the hosted audit, so it is worth being precise.
+These numbers all describe different things, so it is worth being precise about which one you quote.
 
 The extension runs `auditRules`, which is defined in
 [`packages/scoring/src/audit.ts`](../../packages/scoring/src/audit.ts) as:
@@ -26,7 +25,7 @@ The extension runs `auditRules`, which is defined in
 export const auditRules = [...technicalSeoRules, ...aeoRules];
 ```
 
-In the Chrome Web Store build (0.2.0, scoring 0.2.x) that is **29 technical-SEO rules + 11 AEO rules = 40**, across 9 categories. Scoring 0.3.0 makes it 31 + 13 = 44, which the next extension build will run.
+From extension 0.3.0 (scoring 0.3.x) that is **31 technical-SEO rules + 13 AEO rules = 44**, across 9 categories; `auditRules.length` is 44 in the built bundle. The Chrome Web Store build before this (0.2.0, scoring 0.2.x) ran 29 + 11 = 40, so the store listing changes from 40 to 44 when 0.3.0 is published. Rules that do not apply to a page are dropped, so one audit can show fewer than 44 results.
 
 The **14 E-E-A-T signals** in
 [`packages/scoring/src/eeat-rules.ts`](../../packages/scoring/src/eeat-rules.ts) are a separate

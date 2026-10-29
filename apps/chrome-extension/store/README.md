@@ -12,6 +12,7 @@ Editable HTML/CSS sources for every listing image. Re-render with `store/render.
 | Screenshot 5 | `5-private.png` | 1280x800 | Local-only, no account |
 | Small promo tile | `promo-small-440x280.png` | 440x280 | Sphere + 3 words |
 | Marquee | `promo-marquee-1400x560.png` | 1400x560 | Sphere + headline |
+| Popup capture | `auditor-popup.png` | 760x1200 | Standalone 2x popup (advancelabs.dev, 88 B), for the studio site page. Not a store asset |
 | Store icon | `store-icon-128x128.png` | 128x128 | 96x96 artwork, 16px transparent padding (only asset with alpha) |
 
 Screenshots, tiles and the marquee are 24-bit PNG with no alpha. Sources: `frames/*.html`
