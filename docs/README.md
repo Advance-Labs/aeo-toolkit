@@ -42,9 +42,8 @@ pnpm test
 
 ## Background
 
-- [Visibility tracking](VISIBILITY-TRACKING.md) — why an on-page audit is only half a retainer, and
+- [Visibility tracking](VISIBILITY-TRACKING.md) — why an on-page audit is only half the picture, and
   where the over-time citation tracking lives.
-- [SEO + AEO plan](SEO-AEO-PLAN.md) — how the project's own site dogfoods the product.
 - [Decisions](adr/0001-monorepo-pnpm-turborepo.md) — the ADRs behind the monorepo, the clean-room
   TypeScript rebuild, and the single-deployment consolidation.
 

@@ -91,7 +91,7 @@ export default defineConfig({
       // consumes two segments of the base path. Ending the base at `apps/docs/` therefore lands
       // on `/edit/main/docs/<file>.md`, which is the file's real location on the default branch.
       editLink: { baseUrl: `${REPO}/edit/main/apps/docs/` },
-      // Brand: the AEO Toolkit mark ("the climb") as logo, on a dark tile as favicon, Signal-green accent on the ink ground.
+      // Brand: the faceted-sphere mark as logo, on a paper tile as favicon; paper ground, ink text, dusk accents.
       // Tokens and rules in ../../brand/README.md; overrides in src/styles/brand.css.
       logo: { src: './public/mark.png', alt: 'AEO Toolkit' },
       favicon: '/favicon.png',
@@ -152,7 +152,6 @@ export default defineConfig({
           label: 'Background',
           items: [
             { label: 'Visibility tracking', slug: 'visibility-tracking' },
-            { label: 'SEO + AEO plan', slug: 'seo-aeo-plan' },
           ],
         },
         { label: 'Decisions', autogenerate: { directory: 'adr' } },

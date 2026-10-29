@@ -15,9 +15,6 @@ before starting. Ordering within a section is rough priority, not commitment.
 
 ## Scoring engine
 
-- **Starter rules** — [#10 `tech.charset-declared`](https://github.com/Advance-Labs/aeo-toolkit/issues/10),
-  [#11 `aeo.content-freshness`](https://github.com/Advance-Labs/aeo-toolkit/issues/11),
-  [#12 `tech.hreflang-valid`](https://github.com/Advance-Labs/aeo-toolkit/issues/12).
 - **Opportunity scoring** — rank findings by expected impact rather than severity
   ([#30](https://github.com/Advance-Labs/aeo-toolkit/issues/30)).
 - The rule set is never finished — see *Adding a scoring rule* in
@@ -36,7 +33,7 @@ before starting. Ordering within a section is rough priority, not commitment.
 The hosted tools at [advancelabs.dev/tools](https://advancelabs.dev/tools) and the three MCP
 servers are a closed-source service, so their roadmap is not tracked here. Use the
 [free tools](https://advancelabs.dev/tools) and the
-[AI visibility retainer](https://advancelabs.dev/services/ai-visibility) page for what is live.
+[AI visibility service](https://advancelabs.dev/services/ai-visibility) page for what is live.
 
 ## Out of scope here
 
