@@ -15,13 +15,14 @@ export default defineManifest({
     'Client-side AEO/GEO audit of the active tab: meta, structured data, robots.txt, sitemap, llms.txt, AI-bot rules. Exports a PDF.',
   version: `${major}.${minor}.${patch}`,
   version_name: version,
-  // PNGs are committed in public/icons/ (the AEO Toolkit mark on a dark tile).
+  // PNGs are committed in public/icons/ (the faceted sphere mark; tile version at 16/32).
   // Vite serves public/ from the build root, so the files
   // land at dist/icons/* — manifest paths are relative to the project root and
   // must start with a letter (no `public/` prefix). Chrome MV3 requires raster
   // icons here; SVG is not accepted for the toolbar or store listing.
   icons: {
     16: 'icons/icon-16.png',
+    32: 'icons/icon-32.png',
     48: 'icons/icon-48.png',
     128: 'icons/icon-128.png',
   },
