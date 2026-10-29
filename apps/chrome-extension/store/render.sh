@@ -6,11 +6,13 @@ cd "$(dirname "$0")"
 S=store-render
 ab(){ agent-browser --session $S "$@"; }
 render() { # file w h out
-  ab set viewport $2 $3 >/dev/null
+  [[ $4 == [A-Za-z0-9._-]##.png ]] || { echo "bad output name: $4" >&2; exit 1; }
+  ab set viewport "$2" "$3" >/dev/null
   ab open "file://$PWD/frames/$1" >/dev/null
   ab wait 600 >/dev/null
   ab screenshot "$PWD/export/.raw-$4" >/dev/null
-  node -e "require('sharp')('export/.raw-$4').flatten({background:'#ece8e1'}).removeAlpha().png().toFile('export/$4').then(()=>require('fs').unlinkSync('export/.raw-$4'))"
+  # Paths go in as argv, never spliced into the JS source.
+  node -e 'const [raw,out]=process.argv.slice(1);require("sharp")(raw).flatten({background:"#ece8e1"}).removeAlpha().png().toFile(out).then(()=>require("fs").unlinkSync(raw))' "export/.raw-$4" "export/$4"
 }
 for f in frames/screenshot-*.html; do n=${f:t:r}; render ${f:t} 1280 800 ${n#screenshot-}.png; done
 render promo-small.html 440 280 promo-small-440x280.png
