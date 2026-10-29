@@ -2,6 +2,7 @@
 # Renders every frame in frames/ to export/ as 24-bit PNG (no alpha) with agent-browser + sharp.
 # Usage: store/render.sh   (from anywhere; needs `pnpm install` done for sharp)
 set -e
+setopt extendedglob
 cd "$(dirname "$0")"
 S=store-render
 ab(){ agent-browser --session $S "$@"; }
