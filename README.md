@@ -1,10 +1,14 @@
 <div align="center">
 
-<img src="brand/mark-256.png" alt="AEO Toolkit" width="128">
+<img src="brand/aeo-toolkit-mark-256.png" alt="AEO Toolkit mark: a faceted sphere in dusk and ink" width="96">
 
-# AEO Toolkit — AI Search Optimization Suite
+# AEO Toolkit
 
-### Rank in ChatGPT, Claude, Perplexity &amp; AI Overviews
+**The next big thing will be a lot of small things.**
+
+Open-source AI search optimization: 44 small checks that decide whether ChatGPT, Claude and Perplexity cite you.
+
+<a href="https://advancelabs.dev/tools"><img src="docs/assets/banner.webp" alt="The AEO Toolkit homepage: 'The next big thing will be a lot of small things' beside a faceted sphere being pushed uphill" width="100%"></a>
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-A8F326?style=flat-square&labelColor=0A0A0B)](LICENSE)
@@ -27,14 +31,27 @@
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
 Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advancelabs.dev/services/ai-visibility).
 
-<a href="https://advancelabs.dev/tools"><img src="docs/assets/landing.webp" alt="AEO Toolkit — Your next customer asks an AI. Free, open instruments that measure whether the engines can find, parse, and cite you." width="100%"></a>
-
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
 GA4 + GSC chat, backlink graph, authority) and **three MCP servers** (`ai-visibility`, `backlink`,
 `search`) exposing 32 tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
+
+---
+
+## What it looks like
+
+The hosted site is a faceted sphere in which every facet is one of the audit's small checks.
+
+| | |
+|---|---|
+| <img src="docs/assets/step-audit.webp" alt="Step one, crawl and score: a faceted sphere beside a live audit panel"> | <img src="docs/assets/44-checks.webp" alt="The 44 checks, laid out as a grid grouped by category"> |
+| **Crawl and score.** Up to 50 pages against every rule. | **44 small things.** Each check is open source. |
+| <img src="docs/assets/audit-tool.webp" alt="The LLM and Technical SEO Audit tool"> | <img src="docs/assets/track.webp" alt="The Track page: see who AI recommends, and whether it is you"> |
+| **The audit tool.** Free, no sign-up. | **Track.** See who AI recommends. |
+
+<img src="docs/assets/mcp.webp" alt="The MCP page: connect the three servers to Claude and Cursor" width="100%">
 
 ---
 
@@ -53,8 +70,6 @@ AI-bot access, structured data, metadata and answer readiness, scored out of 100
 fix list and templates for any crawl-hint file you're missing. The E-E-A-T scan is a separate
 tool that scores **14 signals**. The engine defines 58 in total (44 + 14), but the audit itself
 runs 44. Free, no account, and your data stays yours.
-
-<img src="docs/assets/audit-tool.webp" alt="The LLM &amp; Technical SEO Audit tool" width="100%">
 
 ---
 
