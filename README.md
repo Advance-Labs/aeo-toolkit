@@ -8,17 +8,17 @@
 
 Open-source AI search optimization: 44 small checks that decide whether ChatGPT, Claude and Perplexity cite you.
 
-<a href="https://advancelabs.dev/tools"><img src="docs/assets/banner.webp" alt="The AEO Toolkit homepage: 'The next big thing will be a lot of small things' beside a faceted sphere being pushed uphill" width="100%"></a>
+<a href="https://advancelabs.dev/tools"><img src="docs/assets/banner.webp" alt="The AEO Toolkit homepage in pixel art: 'The next big thing will be a lot of small things' above a dithered figure pushing a faceted sphere up a slope" width="100%"></a>
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-A8F326?style=flat-square&labelColor=0A0A0B)](LICENSE)
-[![Made by Advance Labs](https://img.shields.io/badge/Made%20by-Advance%20Labs-7C3AED?style=flat-square&labelColor=0A0A0B)](https://advancelabs.dev)
-[![Brand](https://img.shields.io/badge/Brand-guide-B6A4FD?style=flat-square&labelColor=0A0A0B)](brand/README.md)
-[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-AEO%2FGEO_Auditor-A8F326?style=flat-square&logo=googlechrome&logoColor=white&labelColor=0A0A0B)](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-F2B27A?style=flat-square&labelColor=1A1916)](LICENSE)
+[![Made by Advance Labs](https://img.shields.io/badge/Made%20by-Advance%20Labs-D98A7A?style=flat-square&labelColor=1A1916)](https://advancelabs.dev)
+[![Brand](https://img.shields.io/badge/Brand-guide-F2B27A?style=flat-square&labelColor=1A1916)](brand/README.md)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-AEO%2FGEO_Auditor-D98A7A?style=flat-square&logo=googlechrome&logoColor=white&labelColor=1A1916)](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)
 
 </div>
 
-> Open-source TypeScript packages for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+> Open-source TypeScript packages for **Answer Engine Optimization (AEO)**, Generative Engine Optimization (GEO), and AI citation visibility. Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 > **Open core.** This repo is the open-source half of the AEO Toolkit: the audit engine, crawler,
 > parser, schema validator and the Chrome extension, all Apache-2.0 and published to npm. The
@@ -27,7 +27,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 > private repository on 2026-10-20. Code published here before that date stays Apache-2.0.
 
 **Try it without installing anything:** the six browser tools run free in the browser at
-**[advancelabs.dev/tools](https://advancelabs.dev/tools)** — no sign-up, no account.
+**[advancelabs.dev/tools](https://advancelabs.dev/tools)**, with no sign-up and no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
 Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advancelabs.dev/services/ai-visibility).
 
@@ -42,22 +42,22 @@ advancelabs.dev. This repo is the open core: the audit engine packages, the
 
 ## What it looks like
 
-The hosted site is a faceted sphere in which every facet is one of the audit's small checks.
+The hosted site is drawn in dithered pixel art: a figure pushing a faceted sphere up a slope under a dusk sky.
 
 | | |
 |---|---|
-| <img src="docs/assets/step-audit.webp" alt="Step one, crawl and score: a faceted sphere beside a live audit panel"> | <img src="docs/assets/44-checks.webp" alt="The 44 checks, laid out as a grid grouped by category"> |
-| **Crawl and score.** Up to 50 pages against every rule. | **44 small things.** Each check is open source. |
-| <img src="docs/assets/audit-tool.webp" alt="The LLM and Technical SEO Audit tool"> | <img src="docs/assets/track.webp" alt="The Track page: see who AI recommends, and whether it is you"> |
+| <img src="docs/assets/step-audit.webp" alt="Step one, crawl and score: a pixel-art faceted sphere beside a dark audit panel"> | <img src="docs/assets/44-checks.webp" alt="The 44 small things: a category list beside a carousel of check cards, each with its fix"> |
+| **Crawl and score.** Up to 50 pages against every rule. | **44 small things.** Pick a category and flip through the checks. The scoring engine is Apache-2.0. |
+| <img src="docs/assets/audit-tool.webp" alt="The LLM and Technical SEO Audit tool: a URL field and Run audit button on a dark panel"> | <img src="docs/assets/track.webp" alt="The Track page: the pixel figure pushing a dusk-coloured sphere beside the heading about who AI recommends"> |
 | **The audit tool.** Free, no sign-up. | **Track.** See who AI recommends. |
 
-<img src="docs/assets/mcp.webp" alt="The MCP page: connect the three servers to Claude and Cursor" width="100%">
+<img src="docs/assets/mcp.webp" alt="The MCP page: Connect the AEO Toolkit to your AI client" width="100%">
 
 ---
 
 ## What is AEO?
 
-**Answer Engine Optimization (AEO)** is the practice of structuring your content so that AI assistants — ChatGPT, Perplexity, Claude, Gemini — cite your site when answering questions in your domain. Traditional SEO gets you ranked on the blue-link results page. AEO gets you *quoted* in the AI answer.
+**Answer Engine Optimization (AEO)** is the practice of structuring your content so that AI assistants (ChatGPT, Perplexity, Claude, Gemini) cite your site when answering questions in your domain. Traditional SEO gets you ranked on the blue-link results page. AEO gets you *quoted* in the AI answer.
 
 As AI-powered search becomes the default discovery layer, AEO is the new SEO.
 
@@ -163,9 +163,9 @@ console.log(report.topFixes.slice(0, 3).map((f) => f.title))
 ## Connect the MCP servers
 
 The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
-nothing to `npm install` and no local process to run — point any MCP client at the URL.
+nothing to `npm install` and no local process to run. Point any MCP client at the URL.
 
-**Claude Code** — one command per server:
+**Claude Code**: one command per server:
 
 ```bash
 claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
@@ -176,7 +176,7 @@ claude mcp add --transport http --scope user aeo-search     https://aeo.advancel
 Drop `--scope user` to register them in the current project only. Check the result with
 `claude mcp list`.
 
-**Claude.ai / Claude Desktop** — Settings → Connectors → Add custom connector, then paste the URL.
+**Claude.ai / Claude Desktop**: Settings → Connectors → Add custom connector, then paste the URL.
 
 **Cursor** (`~/.cursor/mcp.json`), Windsurf, or any client that takes a JSON block:
 
@@ -213,12 +213,12 @@ Three things that trip people up:
 
 ## Why AEO?
 
-When a user asks ChatGPT "what is the best tool for X?", the answer comes from indexed content that AI models trust — not from ad-auction bidding. The trust signals for AI citation are:
+When a user asks ChatGPT "what is the best tool for X?", the answer comes from indexed content that AI models trust, not from ad-auction bidding. The trust signals for AI citation are:
 
 - **Structured data** (JSON-LD `Organization`, `FAQPage`, `HowTo`)
-- **`llms.txt`** — the AI equivalent of `robots.txt`
-- **Canonical, server-rendered HTML** — AI crawlers prefer static content
-- **Topical authority** — consistent, in-depth coverage of a topic
+- **`llms.txt`**: the AI equivalent of `robots.txt`
+- **Canonical, server-rendered HTML**: AI crawlers prefer static content
+- **Topical authority**: consistent, in-depth coverage of a topic
 
 AEO Toolkit automates auditing all of these.
 
@@ -241,9 +241,11 @@ Built with [Turborepo](https://turbo.build) · TypeScript 5 · Vitest · React 1
 
 ## Design
 
-Advance Labs' products follow one visual system: a near-black ground, a single acid-green signal
-colour, mono lab-sheet labels, Syne headlines, and the Advance Labs sphere as the mark. The
-palette, type, tokens and rules are in [`brand/README.md`](brand/README.md), with the assets
+The site is pixel art: a figure pushing a faceted sphere under a dithered dusk sky. Art is drawn
+at a coarse cell, snapped to a small palette (ink, paper, two dusk oranges) with a 4x4 Bayer
+ordered dither and scaled up with hard edges. Labels use Geist Pixel Square, headings and body
+Geist Sans, code Geist Mono. Corners are square and shadows are hard-offset. The palette, type,
+tokens and rules are in [`brand/README.md`](brand/README.md), with the assets
 beside it. Anything a user sees should follow it, and
 [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md#design-and-brand) says how in code.
 
@@ -253,16 +255,16 @@ beside it. Anything a user sees should follow it, and
 
 Built and maintained by [Advance Labs](https://advancelabs.dev) · [All Advance Labs products](https://advancelabs.dev/lab)
 
-AEO Toolkit is built and maintained by **[Advance Labs Inc.](https://advancelabs.dev)** — a software studio building [Creatin](https://www.creatin.ca), [Cartrix](https://www.cartrix.live), and this toolkit.
+AEO Toolkit is built and maintained by **[Advance Labs Inc.](https://advancelabs.dev)**, a software studio building [Creatin](https://www.creatin.ca), [Cartrix](https://www.cartrix.live), and this toolkit.
 
-This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, JSON-LD Organization schema, SSG-rendered pages, and canonical URLs — all patterns the scoring engine teaches.
+This project dogfoods its own tooling: `advancelabs.dev` ships with `llms.txt`, JSON-LD Organization schema, SSG-rendered pages, and canonical URLs, all patterns the scoring engine teaches.
 
 ---
 
 ## Code of Conduct
 
-We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) — be respectful and constructive in all project spaces, and report unacceptable behavior to [conduct@advancelabs.dev](mailto:conduct@advancelabs.dev).
+We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/): be respectful and constructive in all project spaces, and report unacceptable behavior to [conduct@advancelabs.dev](mailto:conduct@advancelabs.dev).
 
 ---
 
-<sub>© 2026 Advance Labs Inc. — <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
+<sub>© 2026 Advance Labs Inc. · <a href="https://advancelabs.dev">advancelabs.dev</a></sub>
