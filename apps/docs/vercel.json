@@ -13,6 +13,16 @@
       "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)/",
       "destination": "/aeo-toolkit/",
       "permanent": true
+    },
+    {
+      "source": "/aeo-toolkit/seo-aeo-plan",
+      "destination": "https://github.com/Advance-Labs/aeo-toolkit/blob/main/docs/SEO-AEO-PLAN.md",
+      "permanent": true
+    },
+    {
+      "source": "/aeo-toolkit/seo-aeo-plan/",
+      "destination": "https://github.com/Advance-Labs/aeo-toolkit/blob/main/docs/SEO-AEO-PLAN.md",
+      "permanent": true
     }
   ],
   "rewrites": [
