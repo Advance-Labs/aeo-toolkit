@@ -102,7 +102,6 @@ Why it matters for AEO: `FAQPage`/`HowTo` give answer engines pre-extracted Q→
 - Open-source flywheel: the Apache-2.0 repo + the free tools earn natural links/mentions.
 - Submit the **Chrome extension** (Web Store listing links back), the **MCP servers** to MCP
   directories, and the tools to AEO/SEO tool roundups.
-- Digital PR around "we rebuilt SellOnLLM's tools open-source".
 
 ---
 
