@@ -4,6 +4,34 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { visit } from 'unist-util-visit';
+import { ExpressiveCodeTheme } from '@astrojs/starlight/expressive-code';
+
+/**
+ * Code blocks in the brand palette (../../brand/README.md): ink and accent-brown on paper, dusk on
+ * ink. Defined as two minimal VS Code themes instead of a stock one, because every stock theme
+ * brings the blues and purples the brand rules out. Each text colour clears 4.5:1 on its ground.
+ */
+function brandCodeTheme(/** @type {'light' | 'dark'} */ type) {
+  const c =
+    type === 'light'
+      ? { bg: '#f6f3ee', fg: '#1a1916', comment: '#6b665d', keyword: '#a84b2a', string: '#7a5230', type: '#4a4740', punct: '#6b665d' }
+      : { bg: '#24231f', fg: '#ece8e1', comment: '#8f897f', keyword: '#f2b27a', string: '#d98a7a', type: '#c4bfb6', punct: '#a39e94' };
+  return new ExpressiveCodeTheme({
+    name: `aeo-${type}`,
+    type,
+    colors: { 'editor.background': c.bg, 'editor.foreground': c.fg },
+    tokenColors: [
+      { scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: c.comment, fontStyle: 'italic' } },
+      { scope: ['keyword', 'storage', 'keyword.operator.new', 'variable.language'], settings: { foreground: c.keyword } },
+      { scope: ['string', 'markup.inline.raw', 'constant.other.symbol'], settings: { foreground: c.string } },
+      { scope: ['constant.numeric', 'constant.language', 'support.constant'], settings: { foreground: c.keyword } },
+      { scope: ['entity.name.function', 'support.function'], settings: { foreground: c.fg, fontStyle: 'bold' } },
+      { scope: ['entity.name.type', 'support.type', 'entity.name.tag', 'support.class'], settings: { foreground: c.type } },
+      { scope: ['punctuation', 'meta.brace', 'keyword.operator'], settings: { foreground: c.punct } },
+      { scope: ['variable', 'entity.other.attribute-name', 'meta.object-literal.key'], settings: { foreground: c.fg } },
+    ],
+  });
+}
 
 const SITE = process.env.DOCS_SITE_URL ?? 'https://docs.advancelabs.dev';
 const REPO = 'https://github.com/Advance-Labs/aeo-toolkit';
@@ -96,6 +124,11 @@ export default defineConfig({
       logo: { src: './public/mark.png', alt: 'AEO Toolkit' },
       favicon: '/favicon.png',
       customCss: ['./src/styles/brand.css'],
+      expressiveCode: {
+        themes: [brandCodeTheme('dark'), brandCodeTheme('light')],
+        // Square corners, and no blurred shadow: the brand's elevation is a hard offset or nothing.
+        styleOverrides: { borderRadius: '0', frames: { frameBoxShadowCssValue: 'none' } },
+      },
       social: [{ icon: 'github', label: 'GitHub', href: REPO }],
       components: {
         // Adds the parent-brand credit line under Starlight's default footer.
