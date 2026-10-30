@@ -15,36 +15,33 @@ weeks, because it reuses the engine the first one paid for.
 
 Three engines do most of the work:
 
-- **Crawl → parse → detect → score** is one pipeline, built once in `packages/`, used by four tools.
-- **MCP transport + OAuth + rate limiting** is one middleware, built once, used by three servers.
+- **Crawl → parse → detect → score** is one pipeline, built once in `packages/` (this repo), used by
+  four hosted tools and the Chrome extension.
+- **MCP transport + OAuth + rate limiting** is one middleware, used by three servers (hosted, private).
 - **GA4 + GSC + Google OAuth** is one client, used by the chat tool, the search MCP server, and the
-  blogging agent.
+  blogging agent (hosted, private).
 
 ```
-                          ┌──────────────────────────────┐
-                          │   @advance-labs/scoring      │  keystone
-                          │  technicalSeoRules (31)      │
-                          │  aeoRules (13)               │
-                          │  eeatSignalDefs (14)         │
-                          └──────────────┬───────────────┘
-                                         │ consumes
-        ┌───────────────┬────────────────┼────────────────┬───────────────┐
-        │               │                │                │               │
-    crawler        html-parser    schema-validator       pdf              ui
-   (network)      (pure parse)    (pure detect)       (reports)        (React)
-        │               │                │                │               │
-        └───────────────┴────────┬───────┴────────────────┴───────────────┘
-                                 │ rendered by
-        ┌────────────────────────┴────────────────────────┐
-        │                                                 │
-   apps/console                                  apps/chrome-extension
-   ├── /tools/audit  /tools/eeat  /tools/llms-txt         └── single-page mode
-   ├── /tools/chat   /tools/graph                             (client-only)
-   ├── /api/mcp/{ai-visibility, backlink, search}
-   └── /api/cron/blogging
-                │                    │                  │
-           mcp-core            google-api            blogging
-                                                     + backlinks
+                ┌──────────────────────────────┐
+                │   @advance-labs/scoring      │  keystone
+                │  technicalSeoRules (31)      │
+                │  aeoRules (13)               │
+                │  eeatSignalDefs (14)         │
+                └──────────────┬───────────────┘
+                               │ consumes
+        ┌──────────────┬───────┴───────┬──────────────┐
+        │              │               │              │
+    crawler       html-parser   schema-validator   net-guard
+   (network)     (pure parse)    (pure detect)   (SSRF guard)
+        │              │               │              │
+        └──────────────┴───────┬───────┴──────────────┘
+                               │ rendered by
+        ┌──────────────────────┴──────────────────────┐
+        │                                             │
+ apps/chrome-extension (this repo)         hosted platform (private repo)
+ └── single-page mode, client-only         ├── 6 browser tools at /tools/*
+                                           ├── 3 MCP servers at /api/mcp/*
+                                           └── crons (content agent, tracker)
 ```
 
 ## Two deployables
@@ -85,7 +82,8 @@ URL ─▶ crawler ─▶ CrawledPage[] ─▶ html-parser ─▶ ParsedHtml[]
 
 ## Data flow — the Google connectors
 
-Used by the GA4+GSC chat tool, the search MCP server, and the blogging agent.
+Hosted platform only (private repo). Used by the GA4+GSC chat tool, the search MCP server, and the
+blogging agent.
 
 ```
 Google OAuth ─▶ google-api (Ga4Client + GscClient) ─▶ metrics
@@ -96,21 +94,10 @@ Google OAuth ─▶ google-api (Ga4Client + GscClient) ─▶ metrics
    (+ llm, BYOK)      (+ mcp-core)           (+ llm, blogging)
 ```
 
-## Dormant by default
-
-The console ships with its commercial layer inert. Auth, billing, and the managed tier each derive
-their on/off state from whether their environment variables are present — there is no separate
-feature flag. With none set, every tool is free and open exactly as it is today.
-
-This is deliberate: adding keys is the only action that can ever wall a tool, and unsetting them
-rolls back instantly. See the activation runbook (in the private platform repo) for the switches and
-[`CONVENTIONS.md`](CONVENTIONS.md#security-invariants) for the invariant that keeps the managed tier
-closed-when-dormant rather than open-when-dormant.
-
 ## Runtime
 
 - Node 20+ everywhere. ESM-only packages built with `tsup`.
-- Next.js App Router on Vercel Fluid Compute — Node runtime, not edge.
+- The hosted platform runs Next.js App Router on Vercel Fluid Compute (Node runtime, not edge).
 - Extension is fully client-side; the only network calls are same-origin site-file fetches.
 - All network, clock, and storage I/O is injected, so the whole suite unit-tests with zero network.
 

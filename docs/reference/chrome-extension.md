@@ -45,11 +45,13 @@ grep -rhoE "category: '[a-z-]+'" packages/scoring/src/{technical-seo,aeo}-rules.
 | Category | Rules | What it looks at |
 |---|---:|---|
 | Crawlability | 8 | `robots.txt`, and specifically whether GPTBot, PerplexityBot and ClaudeBot are permitted. Sitemap presence, `lastmod` trustworthiness, redirect chains, broken pages. |
-| Answer engine optimization | 11 | Question-shaped headings, answerable depth, Organization identity consistency, AI crawlers unblocked, `llms.txt`, extractability as paragraphs plus lists and tables. |
-| Metadata | 7 | Title and description presence and length, exactly one H1, heading hierarchy, declared language. |
-| Indexing | 4 | Indexability, declared canonical, canonicals that resolve, titles unique across pages. |
+| Answer engine optimization | 13 | Question-shaped headings, answerable depth, FAQ, article-author, Organization and breadcrumb schema, identity consistency, AI crawlers unblocked, `llms.txt`, server-rendered content, extractability as paragraphs plus lists and tables, dated content (`dateModified`). |
+| Metadata | 8 | Title and description presence and length, exactly one H1, heading hierarchy, declared language, declared charset. |
+| Indexing | 5 | Indexability, declared canonical, canonicals that resolve, titles unique across pages, valid `hreflang`. |
 | Content | 4 | Alt-text coverage, internal linking, thin content, headings used structurally. |
-| Social, mobile, security | 4 | OpenGraph, Twitter Card, mobile viewport, HTTPS. |
+| Social | 2 | OpenGraph, Twitter Card. |
+| Mobile | 1 | Mobile viewport. |
+| Security | 1 | HTTPS. |
 | Structured data | 2 | JSON-LD presence and validity, read recursively into `@graph`. |
 
 ## What it sends
@@ -95,6 +97,5 @@ That generates the icons, runs `vite build`, and zips `dist/` into
 where Chrome requires it. To run an unpacked build, load `dist/` via `chrome://extensions` with
 Developer mode on.
 
-Icons are committed PNGs in `public/icons/` (not generated). They carry the AEO Toolkit mark on a
-rounded `#0A0A0B` tile so the icon holds up on the Chrome Web Store's white listing card and the
-light-mode toolbar. See [`brand/README.md`](../../brand/README.md) under "App icons".
+Icons are committed PNGs in `public/icons/` (not generated). They carry the AEO Toolkit mark, the
+faceted sphere. See [`brand/README.md`](../../brand/README.md) under "Mark".

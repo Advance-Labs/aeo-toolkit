@@ -1,105 +1,142 @@
-/* AEO Toolkit brand for Starlight — see ../../../../docs/BRAND.md.
+/* AEO Toolkit brand for Starlight: the October 2026 pixel brand. Tokens and rules live in
+   ../../../../brand/README.md. Warm paper ground, ink text, two dusk oranges as the only colour,
+   Geist type, square corners. No green, no violet, no gradients.
    Only Starlight's own custom properties are overridden so upgrades stay painless. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+/* Labels, nav and buttons use Geist Pixel Square. It is self-hosted from the `geist` package
+   (SIL OFL 1.1) because the brand names this one cut and Google Fonts serves the family. */
+@font-face {
+  font-family: 'Geist Pixel Square';
+  src: url('../fonts/GeistPixel-Square.woff2') format('woff2');
+  font-display: swap;
+}
 
 :root {
-  --sl-font: 'Inter', system-ui, sans-serif;
-  --sl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  /* Signal green as the accent on both themes. */
-  --sl-color-accent-low: #2f4210;
-  --sl-color-accent: #a8f326;
-  --sl-color-accent-high: #dcff8c;
+  --sl-font: 'Geist', system-ui, sans-serif;
+  --sl-font-mono: 'Geist Mono', ui-monospace, monospace;
+  --aeo-font-label: 'Geist Pixel Square', var(--sl-font-mono);
+
+  --aeo-ink: #1a1916;
+  --aeo-faint: #78736a;
+  --aeo-stone: #c4bfb6;
+  --aeo-card: #f6f3ee;
+  --aeo-page: #ece8e1;
+  --aeo-dusk-1: #f2b27a;
+  --aeo-dusk-2: #d98a7a;
+  --aeo-accent-text: #a84b2a;
 }
 
-/* Dark theme: the console's ink ground. */
+/* Dark theme: the ink ground the brand uses behind the dark lockup, with card-coloured text. */
 :root[data-theme='dark'] {
-  --sl-color-white: #f4f4f5;
-  --sl-color-gray-1: #e7e7ea;
-  --sl-color-gray-2: #b6b6bd;
-  --sl-color-gray-3: #9a9aa6;
-  --sl-color-gray-4: #4a4a55;
-  --sl-color-gray-5: #26262c;
-  --sl-color-gray-6: #141416;
-  --sl-color-black: #0a0a0b;
-  --sl-color-bg-nav: #0a0a0b;
-  --sl-color-bg-sidebar: #0a0a0b;
-  --sl-color-hairline: rgba(255, 255, 255, 0.09);
+  --sl-color-white: var(--aeo-card);
+  --sl-color-gray-1: var(--aeo-page);
+  --sl-color-gray-2: var(--aeo-stone);
+  --sl-color-gray-3: #a39e94;
+  --sl-color-gray-4: var(--aeo-faint);
+  --sl-color-gray-5: #3a3832;
+  --sl-color-gray-6: #24231f;
+  --sl-color-black: var(--aeo-ink);
+  --sl-color-bg-nav: var(--aeo-ink);
+  --sl-color-bg-sidebar: var(--aeo-ink);
+  --sl-color-hairline: #2e2c28;
+
+  /* Accent surfaces (current page, buttons) are card on ink; accent text is Dusk 1. */
+  --sl-color-accent-low: #3a2a20;
+  --sl-color-accent: var(--aeo-card);
+  --sl-color-accent-high: var(--aeo-dusk-1);
+  --sl-color-text-accent: var(--aeo-dusk-1);
+  --sl-color-text-invert: var(--aeo-ink);
+  --aeo-link: var(--aeo-dusk-1);
 }
 
-/* Light theme: paper. Accent darkens so green text stays legible on white. */
+/* Light theme: paper. Ink is the primary surface colour, as for the brand's primary buttons. */
 :root[data-theme='light'] {
-  --sl-color-accent-low: #edffc7;
-  --sl-color-accent: #5c8a00;
-  --sl-color-accent-high: #2f4210;
-  --sl-color-white: #16150f;
-  --sl-color-black: #f4f4f5;
-  --sl-color-gray-6: #ffffff;
+  --sl-color-white: var(--aeo-ink);
+  --sl-color-gray-1: #2a2824;
+  --sl-color-gray-2: #3a3731;
+  --sl-color-gray-3: #5c5850;
+  --sl-color-gray-4: var(--aeo-faint);
+  --sl-color-gray-5: var(--aeo-stone);
+  --sl-color-gray-6: #ddd8cf;
+  --sl-color-gray-7: var(--aeo-card);
+  --sl-color-black: var(--aeo-page);
+  --sl-color-bg-nav: var(--aeo-card);
+  --sl-color-bg-inline-code: var(--aeo-card);
+  --sl-color-hairline: #d6d1c8;
+
+  --sl-color-accent-low: #f7dcc6;
+  --sl-color-accent: var(--aeo-ink);
+  --sl-color-accent-high: var(--aeo-accent-text);
+  --sl-color-text-accent: var(--aeo-accent-text);
+  --sl-color-text-invert: var(--aeo-card);
+  --aeo-link: var(--aeo-accent-text);
 }
 
-/* The wordmark stays Syne Bold (brand/README.md); body headings move to Inter 600 with tight
-   tracking to match the parent Advance Labs type scale (see ninebrains DESIGN.md). */
+/* Type: Geist Sans headings, heavy and tight like the landing hero. */
 .site-title {
-  font-family: 'Syne', var(--sl-font);
-  letter-spacing: -0.01em;
+  font-family: var(--sl-font);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--sl-color-white);
 }
 .sl-markdown-content h1,
 h1#_top {
-  font-family: 'Inter', var(--sl-font);
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 .sl-markdown-content h2,
 .sl-markdown-content h3 {
-  font-family: 'Inter', var(--sl-font);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
-/* Mono, uppercase labels for sidebar group headings — the lab-sheet voice. */
+/* Labels: Geist Pixel, uppercase and tracked, the lab-sheet voice. */
 .sidebar-content details > summary .large,
-.sidebar-content > ul > li > .large {
-  font-family: var(--sl-font-mono);
+.sidebar-content > ul > li > .large,
+.right-sidebar h2,
+.sl-markdown-content th {
+  font-family: var(--aeo-font-label);
   font-size: 0.78rem;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* Secondary accent: the site's violet (#B6A4FD / #7C3AED). Signal stays for the one thing that
-   matters on a page; violet carries links, inline code, and the quiet structural glow. */
-:root {
-  --aeo-violet: #b6a4fd;
-  --aeo-violet-deep: #7c3aed;
-}
+/* Links: accent text with a dusk underline. Dusk is a highlight, never body text. */
 .sl-markdown-content a:not(.sl-anchor-link) {
-  color: var(--aeo-violet);
-  text-decoration-color: color-mix(in srgb, var(--aeo-violet) 45%, transparent);
+  color: var(--aeo-link);
+  text-decoration-color: var(--aeo-dusk-2);
+  text-underline-offset: 0.18em;
 }
 .sl-markdown-content a:not(.sl-anchor-link):hover {
-  color: var(--sl-color-accent-high);
+  color: var(--sl-color-white);
+  text-decoration-color: var(--aeo-dusk-1);
 }
 .sl-markdown-content code:not(pre code) {
-  color: var(--aeo-violet);
-  background: color-mix(in srgb, var(--aeo-violet) 12%, transparent);
+  color: var(--sl-color-white);
+  background: var(--sl-color-bg-inline-code);
+  border: 1px solid var(--sl-color-hairline);
 }
 .sl-markdown-content blockquote {
-  border-inline-start-color: var(--aeo-violet-deep);
+  border-inline-start-color: var(--aeo-dusk-2);
 }
 .sl-markdown-content th {
-  border-bottom: 1px solid color-mix(in srgb, var(--aeo-violet) 40%, transparent);
-}
-/* A faint violet-to-signal rule under the header, like the shader wash on the landing. */
-header.header {
-  border-bottom: 1px solid transparent;
-  border-image: linear-gradient(90deg, var(--aeo-violet-deep), var(--aeo-violet) 45%, var(--sl-color-accent) 100%) 1;
-}
-:root[data-theme='light'] {
-  --aeo-violet: #6d4bd8;
+  border-bottom: 1px solid var(--aeo-faint);
 }
 
-/* Slit line (runs-on.dev / Instrument): a hairline that fades out at both ends instead of a
-   flat rule. Dark mode only — the light theme keeps Starlight's plain hairline. */
-:root[data-theme='dark'] .sl-markdown-content hr {
-  height: 1px;
-  border: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16) 20%, rgba(255, 255, 255, 0.16) 80%, transparent);
+/* Square corners everywhere the theme rounds them. Elevation is never a blur. */
+.sidebar-content a,
+.sl-markdown-content code,
+site-search button,
+starlight-theme-select select,
+.pagination-links a,
+kbd,
+.sl-link-card,
+.card,
+.starlight-aside {
+  border-radius: 0;
+}
+.pagination-links a {
+  box-shadow: none;
 }

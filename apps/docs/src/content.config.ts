@@ -13,6 +13,9 @@ import { glob } from 'astro/loaders';
  * `archive/` is excluded: those files are historical by design and carry "do not follow this"
  * banners, so publishing them would undo the point of archiving them.
  *
+ * `SEO-AEO-PLAN.md` is excluded: it plans the hosted console's own site, which is in the private
+ * repository, so on this site it would describe code a reader cannot find.
+ *
  * `legal/` is excluded because both files say "NOT LEGAL TEXT — draft skeleton" and are gated on
  * counsel review. On a public docs site they would read as binding terms. They stay in the repo.
  */
@@ -20,7 +23,7 @@ export const collections = {
   docs: defineCollection({
     loader: glob({
       base: '../../docs',
-      pattern: ['**/[^_]*.{md,mdx}', '!archive/**', '!legal/**'],
+      pattern: ['**/[^_]*.{md,mdx}', '!archive/**', '!legal/**', '!SEO-AEO-PLAN.md'],
       // Two normalisations:
       //  1. docs/ uses SCREAMING-CASE filenames (ARCHITECTURE.md) -> /architecture, not /ARCHITECTURE.
       //  2. README.md becomes the directory index, so docs/README.md is both GitHub's folder
