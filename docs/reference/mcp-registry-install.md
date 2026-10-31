@@ -95,9 +95,17 @@ Without it, the Bing tools return a credential error and the Google tools keep w
 **aeo-visibility** needs no sign-in. The tools backed by Perplexity take your own Perplexity API
 key as a tool argument. The key is used for that request only and is never stored or logged.
 
-**aeo-backlink** needs no sign-in and takes no key.
+**aeo-backlink** needs no sign-in. Six of its seven tools take no key; `generate_outreach_email`
+takes your own model API key as a tool argument, used for that request only and never stored or logged.
 
 ## Compatibility alias
 
 The old path `/api/mcp/ga-gsc/mcp` still reaches the search server, so existing configs keep
 working. New configs should use `/api/mcp/search/mcp`.
+
+## See also
+
+- [Connection details for every client](https://aeo.advancelabs.dev/mcp) on the AEO Toolkit site.
+- [Where to list your MCP server](https://advancelabs.dev/guides/where-to-list-your-mcp-server):
+  how these servers were published to the registry, and what the Claude and ChatGPT directories require.
+- [AEO Toolkit](https://advancelabs.dev/lab/aeo-toolkit) by Advance Labs.
