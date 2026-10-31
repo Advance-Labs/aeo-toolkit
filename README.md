@@ -162,6 +162,11 @@ console.log(report.topFixes.slice(0, 3).map((f) => f.title))
 
 ## Connect the MCP servers
 
+[![mcptry](https://mcptry.com/badge/dev.advancelabs/aeo-backlink)](https://mcptry.com/servers/dev.advancelabs/aeo-backlink)
+
+Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=dev.advancelabs)
+as `dev.advancelabs/aeo-search`, `dev.advancelabs/aeo-visibility` and `dev.advancelabs/aeo-backlink`.
+
 The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
 nothing to `npm install` and no local process to run. Point any MCP client at the URL.
 
@@ -194,7 +199,7 @@ Drop `--scope user` to register them in the current project only. Check the resu
 |---|---|---|
 | `aeo-visibility` | 5 | None to connect. Citation checks take a Perplexity key per request. |
 | `aeo-backlink` | 7 | None. |
-| `aeo-search` | 19 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
+| `aeo-search` | 20 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
 
 Three things that trip people up:
 
