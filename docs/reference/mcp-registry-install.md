@@ -9,18 +9,18 @@ The AEO Toolkit runs three hosted MCP servers. They are listed in the official
 (published 2026-10-31, version 1.0.0, all three active). There is nothing to install locally: each
 server is a Streamable-HTTP endpoint, and you point your client at its URL.
 
-**31 tools in total.** Every tool is read-only (`readOnlyHint: true`, `destructiveHint: false`).
+**32 tools in total.** Every tool is read-only (`readOnlyHint: true`, `destructiveHint: false`).
 
 ## The servers
 
 | Registry name | Endpoint | Tools | Sign-in |
 |---|---|---|---|
-| `dev.advancelabs/aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 19 | OAuth 2.1 with Google consent |
+| `dev.advancelabs/aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 20 | OAuth 2.1 with Google consent |
 | `dev.advancelabs/aeo-visibility` | `https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp` | 5 | None |
 | `dev.advancelabs/aeo-backlink` | `https://aeo.advancelabs.dev/api/mcp/backlink/mcp` | 7 | None |
 
 **aeo-search** reads Google Search Console, GA4 and Bing Webmaster data. The full tool list is in
-the [tool reference](tools.md).
+the [tool reference](tools.md#search-server--20-tools).
 
 **aeo-visibility** has five tools: `analyze_website_aeo`, `check_ai_visibility`,
 `discover_ranking_prompts`, `get_visibility_report` and `compare_competitor_visibility`.
