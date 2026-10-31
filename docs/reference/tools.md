@@ -1,11 +1,11 @@
 ---
 title: Tool reference
 description: >-
-  The hosted platform (six browser tools, three MCP servers with 32 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
+  The hosted platform (six browser tools, three MCP servers with 31 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
 ---
 
 The hosted platform is proprietary and moved to a private repository on 2026-10-20: **six browser
-tools**, **three MCP servers** with 32 tools, and a scheduled content agent, all served from
+tools**, **three MCP servers** with 31 tools, and a scheduled content agent, all served from
 advancelabs.dev. This repo holds the open core: the six npm packages, the Chrome extension
 (`apps/chrome-extension`) and the skills. Routes and engines below describe the hosted platform; its
 code is not in this repo.
@@ -30,7 +30,7 @@ Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tool
 ## MCP servers — 3
 
 Served by the hosted platform as Streamable-HTTP route handlers via the `mcp-handler` adapter.
-**32 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+**31 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
 AI Visibility and Backlink need no login. **Search has one**: an anonymous request gets a 401
