@@ -33,7 +33,7 @@ Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advance
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
 GA4 + GSC chat, backlink graph, authority) and **three MCP servers** (`ai-visibility`, `backlink`,
-`search`) exposing 31 tools to Claude or any MCP client. They are proprietary and run on
+`search`) exposing 32 tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
