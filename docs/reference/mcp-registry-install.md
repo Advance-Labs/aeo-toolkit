@@ -6,7 +6,7 @@ description: >-
 
 The AEO Toolkit runs three hosted MCP servers. They are listed in the official
 [MCP Registry](https://registry.modelcontextprotocol.io) under the `dev.advancelabs` namespace
-(published 2026-10-31, version 1.0.0, all three active). There is nothing to install locally: each
+(published 2026-10-31, all three active). There is nothing to install locally: each
 server is a Streamable-HTTP endpoint, and you point your client at its URL.
 
 **32 tools in total.** Every tool is read-only (`readOnlyHint: true`, `destructiveHint: false`).
