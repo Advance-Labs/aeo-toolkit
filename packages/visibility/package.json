@@ -1,0 +1,58 @@
+{
+  "name": "@advance-labs/visibility",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "AI-answer visibility checks: ask an answer engine a buyer question through the Vercel AI Gateway, then detect whether a brand was named, cited, and in what position.",
+  "keywords": [
+    "aeo",
+    "geo",
+    "ai-search",
+    "visibility",
+    "llm",
+    "citations",
+    "ai-sdk"
+  ],
+  "license": "Apache-2.0",
+  "author": "Lucas Krawczak <lucas@advancelabs.dev> (https://advancelabs.dev/lucas)",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rimraf dist .turbo"
+  },
+  "peerDependencies": {
+    "ai": "^6.0.0"
+  },
+  "devDependencies": {
+    "@advance-labs/config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "ai": "^6.0.271",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/visibility"
+  },
+  "homepage": "https://docs.advancelabs.dev/aeo-toolkit"
+}
