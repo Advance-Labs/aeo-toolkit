@@ -72,6 +72,20 @@ export function collectSources(result: ResultLike): string[] {
   return [...urls];
 }
 
+/**
+ * Gateway-reported cost summed across ALL steps. Tool-backed engines take 2-3 steps (search, then answer);
+ * the top-level providerMetadata only describes the last one. Undefined when no step reported a cost.
+ */
+export function totalCost(result: { steps?: { providerMetadata?: unknown }[]; providerMetadata?: unknown }): number | undefined {
+  const steps = result.steps?.length ? result.steps : [{ providerMetadata: result.providerMetadata }];
+  let sum: number | undefined;
+  for (const st of steps) {
+    const c = gatewayCost(st.providerMetadata);
+    if (c !== undefined) sum = (sum ?? 0) + c;
+  }
+  return sum;
+}
+
 function gatewayCost(meta: unknown): number | undefined {
   const raw = (meta as { gateway?: { cost?: unknown } } | undefined)?.gateway?.cost;
   const n = typeof raw === 'string' ? Number(raw) : raw;
@@ -103,7 +117,8 @@ export async function askEngine(
     providerOptions: { gateway: { tags: ['feature:visibility', ...(opts.tags ?? [])] } },
   });
 
-  const u = result.usage;
+  // totalUsage = sum over every step (usage alone is only the final step).
+  const u = result.totalUsage ?? result.usage;
   return {
     text: result.text || '',
     sources: collectSources(result as ResultLike),
@@ -112,6 +127,6 @@ export async function askEngine(
     usage: u
       ? { inputTokens: u.inputTokens, outputTokens: u.outputTokens, totalTokens: u.totalTokens }
       : undefined,
-    costUsd: gatewayCost(result.providerMetadata),
+    costUsd: totalCost(result),
   };
 }

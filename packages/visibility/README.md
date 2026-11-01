@@ -61,3 +61,9 @@ results", not a replay of chatgpt.com or gemini.google.com. Do not describe it a
 ## License
 
 Apache-2.0
+
+## Matching notes
+
+- Brand terms match on letter/digit boundaries, not `\b`, so names like `C++` work. A side effect: `_` counts as
+  a boundary, so `linear_app` matches `linear`.
+- `costUsd` is the gateway-reported cost summed over every step of the call (search step plus answer step).

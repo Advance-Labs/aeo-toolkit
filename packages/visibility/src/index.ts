@@ -4,6 +4,7 @@ export { mapPooled } from './pool.js';
 export {
   askEngine,
   collectSources,
+  totalCost,
   engineLabel,
   DEFAULT_ENGINES,
   SEARCH_RESULTS,

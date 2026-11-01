@@ -3,6 +3,7 @@ import { MockLanguageModelV3 } from 'ai/test';
 import {
   analyzeAnswer,
   askEngine,
+  totalCost,
   collectSources,
   DEFAULT_ENGINES,
   engineLabel,
@@ -150,5 +151,19 @@ describe('defaults', () => {
       'google/gemini-3.7-flash',
     ]);
     expect(engineLabel('openai/gpt-5.6-luna')).toBe('openai');
+  });
+});
+
+describe('totalCost', () => {
+  it('sums gateway cost across every step (search step + answer step)', () => {
+    expect(totalCost({ steps: [{ providerMetadata: { gateway: { cost: '0.0012' } } }, { providerMetadata: { gateway: { cost: 0.0030 } } }] }))
+      .toBeCloseTo(0.0042, 10);
+  });
+  it('falls back to top-level metadata when there are no steps', () => {
+    expect(totalCost({ providerMetadata: { gateway: { cost: '0.0033' } } })).toBeCloseTo(0.0033, 10);
+  });
+  it('is undefined when no step reported a cost, and skips unparseable values', () => {
+    expect(totalCost({ steps: [{ providerMetadata: {} }, { providerMetadata: { gateway: { cost: 'n/a' } } }] })).toBeUndefined();
+    expect(totalCost({ steps: [{ providerMetadata: { gateway: { cost: 'n/a' } } }, { providerMetadata: { gateway: { cost: '0.002' } } }] })).toBeCloseTo(0.002, 10);
   });
 });
