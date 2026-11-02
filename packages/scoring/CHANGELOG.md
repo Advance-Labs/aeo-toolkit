@@ -1,5 +1,14 @@
 # @advance-labs/scoring
 
+## 0.3.2
+
+### Patch Changes
+
+- d6e9f7d: README: add an install line and the Apache-2.0 licence line.
+- 48b9519: Correct the README: 31 technical SEO and 13 AEO rules (44 in `auditRules`), 14 E-E-A-T signals, and a current version in the usage example.
+- Updated dependencies [d6e9f7d]
+  - @advance-labs/types@0.3.1
+
 ## 0.3.1
 
 ### Patch Changes

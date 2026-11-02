@@ -1,6 +1,6 @@
 {
   "name": "@advance-labs/visibility",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "AI-answer visibility checks: ask an answer engine a buyer question through the Vercel AI Gateway, then detect whether a brand was named, cited, and in what position.",
   "keywords": [
