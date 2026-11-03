@@ -13,6 +13,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-F2B27A?style=flat-square&labelColor=1A1916)](LICENSE)
 [![Made by Advance Labs](https://img.shields.io/badge/Made%20by-Advance%20Labs-D98A7A?style=flat-square&labelColor=1A1916)](https://advancelabs.dev)
+[![MCP servers live](https://whobuildsagents.com/badge/advancelabs.dev.svg)](https://whobuildsagents.com/advancelabs.dev)
 [![Brand](https://img.shields.io/badge/Brand-guide-F2B27A?style=flat-square&labelColor=1A1916)](brand/README.md)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-AEO%2FGEO_Auditor-D98A7A?style=flat-square&logo=googlechrome&logoColor=white&labelColor=1A1916)](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)
 
