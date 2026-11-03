@@ -1,7 +1,10 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { crx } from '@crxjs/vite-plugin';
+import { fileURLToPath } from 'node:url';
 import manifest from './manifest.config.js';
+
+const STUB = fileURLToPath(new URL('./src/lib/jspdf-optional-stub.ts', import.meta.url));
 
 // MV3 forbids remotely hosted code, and the Chrome Web Store rejects on a string
 // match, not on reachability. jsPDF hardcodes a PDFObject CDN URL for its
@@ -34,6 +37,31 @@ const ATTRIBUTION_ONLY = new Set([
   'https://github.com/foliojs/pdfkit/blob/master/lib/security.js',
 ]);
 
+// The store flags minified legacy polyfills as obfuscation ("Red Titanium", rejected
+// 2026-10-14, 10-22, 10-30). The cited snippet was core-js's IE Object.create shim,
+// pulled in by canvg, which jsPDF imports only for SVG/HTML rendering we never use.
+// Fail the build if that shape comes back through any dependency.
+const OBFUSCATION_LOOKALIKES = ['IE_PROTO', 'ActiveXObject', 'core-js_shared__'];
+
+function forbidObfuscationLookalikes(): Plugin {
+  return {
+    name: 'forbid-obfuscation-lookalikes',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      const hits: string[] = [];
+      for (const file of Object.values(bundle)) {
+        if (file.type !== 'chunk') continue;
+        for (const needle of OBFUSCATION_LOOKALIKES) {
+          if (file.code.includes(needle)) hits.push(`${file.fileName}: ${needle}`);
+        }
+      }
+      if (hits.length) {
+        this.error(`Chunk would read as obfuscated code to store review:\n  ${hits.join('\n  ')}`);
+      }
+    },
+  };
+}
+
 function forbidRemoteCode(): Plugin {
   return {
     name: 'forbid-remote-code',
@@ -58,7 +86,19 @@ function forbidRemoteCode(): Plugin {
 // Vite/Rollup. `cheerio` (pulled in transitively by the parser/validator) is
 // pure JS and bundles cleanly for the browser.
 export default defineConfig({
-  plugins: [stripJspdfRemoteScript(), react(), crx({ manifest }), forbidRemoteCode()],
+  plugins: [
+    stripJspdfRemoteScript(),
+    react(),
+    crx({ manifest }),
+    forbidRemoteCode(),
+    forbidObfuscationLookalikes(),
+  ],
+  resolve: {
+    // jsPDF's optional renderers; see src/lib/jspdf-optional-stub.ts.
+    alias: [
+      { find: /^(canvg|html2canvas|dompurify)$/, replacement: STUB },
+    ],
+  },
   build: {
     target: 'esnext',
     rollupOptions: {
