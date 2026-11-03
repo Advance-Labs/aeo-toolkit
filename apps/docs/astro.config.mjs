@@ -176,6 +176,7 @@ export default defineConfig({
             { label: 'Roadmap', slug: 'roadmap' },
           ],
         },
+        { label: 'Guides', autogenerate: { directory: 'guides' } },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
         {
           label: 'Contributing',
