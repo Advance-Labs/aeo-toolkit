@@ -21,6 +21,10 @@
 >    so the live tile is still the indigo/violet "A" that `brand/README.md` records as retired.
 >
 > **v0.2.0 fixes both.** Package it and upload before pointing any campaign at the listing.
+>
+> **2026-10-14: policy warning (Red Titanium, obfuscated code), listing removed ~2026-11-13 unless
+> a compliant draft is approved.** 0.3.0 was rejected for it on 2026-10-30; 0.3.1 removes the cause.
+> See [§8 Rejection log](#8-rejection-log-read-this-before-adding-a-dependency).
 
 This document describes how to package and submit the **AEO/GEO Auditor** MV3
 extension to the [Chrome Web Store](https://chromewebstore.google.com/). The
@@ -228,7 +232,8 @@ The store requires a privacy section. Use these answers:
    **Privacy practices** tab using the answers above.
 4. Submit for review. MV3 extensions that request `<all_urls>` typically receive
    extra scrutiny; the local-only privacy posture above is the key justification.
-5. After approval, bump the `version` in `package.json` for the next release and
+5. Before submitting, check §8: `ls dist/assets` must show no vendor chunk we do not call.
+6. After approval, bump the `version` in `package.json` for the next release and
    re-run `pnpm --filter @advance-labs/chrome-extension package` to produce the next zip.
 
 ---
@@ -272,3 +277,50 @@ cannot catch this.
 The report version is derived from `package.json` (`EXTENSION_VERSION` in `src/lib/audit.ts`),
 so bumping the version in one place is enough. It was hardcoded until 0.1.1 and would have
 stamped `0.1.0` into every 0.1.1 PDF.
+
+---
+
+## 8. Rejection log: read this before adding a dependency
+
+Every store rejection so far came from something we did not write: a dependency's code, or text
+on an image. Google's review string-matches the **zip**, not the code paths that actually run, so
+"that branch is dead" does not count as a defence. Each row below has a build guard or a script
+so it cannot recur silently. Keep them.
+
+| Date | Version | Violation (ref ID) | What was flagged | Fix that now guards it |
+|---|---|---|---|---|
+| 2026-09-11 | 0.2.0 | Remotely hosted code (**Blue Argon**) | jsPDF hardcodes a PDFObject CDN URL for `output('pdfobjectnewwindow')`. We never call it; the literal alone failed review | `stripJspdfRemoteScript` blanks it; `forbidRemoteCode` fails the build on any script-shaped remote URL (`vite.config.ts`) |
+| 2026-09-13 | 0.2.0 | Impersonation / IP (status text on images) | "Free" baked into a hand-made promo tile | `scripts/generate-promo-tiles.mjs` composites the mark only; see §3 |
+| 2026-10-14 **warning**, then rejected 2026-10-22 and 2026-10-30 | live 0.2.x, then 0.3.0 | Code readability: obfuscated code (**Red Titanium**) | `assets/index.es-*.js` = **canvg + core-js**. The cited snippet was core-js's minified Internet Explorer `Object.create` polyfill: it builds `<script>` tags and a `"java"+"script:"` iframe src from string fragments and probes `ActiveXObject("htmlfile")`, which reads as deliberate concealment | 0.3.1 (PR #120): `canvg`, `html2canvas` and `dompurify` are aliased to `src/lib/jspdf-optional-stub.ts`; `forbidObfuscationLookalikes` fails the build on `IE_PROTO` / `ActiveXObject` / `core-js_shared__` in any chunk |
+
+### Why Red Titanium happened, and why resubmitting didn't help
+
+jsPDF lazily imports three optional renderers: **canvg** (for `addSvgAsImage`), **html2canvas**
+and **dompurify** (for `doc.html()`). Vite bundles every dynamic import into its own chunk whether
+or not it is ever called, so all three shipped. The popup only uses `doc.text()` / `doc.save()`.
+canvg depends on core-js, and core-js still carries polyfills for Internet Explorer that look
+obfuscated once minified.
+
+The warning gave **30 days to get a compliant draft approved, or the live listing is removed**.
+The 0.3.0 resubmission (a reskin) was rejected for the identical snippet because nobody had
+changed the dependency graph; only a new chunk hash. **A rejection that cites a vendor chunk is
+never fixed by resubmitting the same dependencies.** Find which package the chunk is (grep it for
+a library name or licence header), then remove it from the bundle.
+
+### Rules
+
+1. **Never ship an optional library feature we don't call.** When a dependency lazy-loads
+   extras, alias the ones we don't use to the stub in `vite.config.ts` `resolve.alias`. Check
+   `ls dist/assets` after any dependency change: every chunk there should be ours or something we
+   actually call.
+2. **Do not set `minify: false` to "look readable".** It was tried for 0.3.1: unminified output
+   keeps library comments full of `.js` URLs, which trips `forbidRemoteCode`, and Blue Argon
+   shows the reviewer flags bare URLs too. Minification is explicitly allowed by the policy;
+   obfuscation is not.
+3. **Don't weaken the two build guards to get a build green.** If `forbidRemoteCode` or
+   `forbidObfuscationLookalikes` fails, a dependency changed. Remove that code from the bundle;
+   don't widen the allowlist.
+4. **Read the rejection email, not the dashboard.** The dashboard says only "Rejection" and links
+   to the policy index. The email (from `chromewebstore-noreply@google.com`) names the violation
+   ID and quotes the exact file and snippet.
+5. **A warning is a deadline.** Put the removal date in the tracker the day the email arrives.
