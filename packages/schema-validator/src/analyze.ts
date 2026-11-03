@@ -9,7 +9,29 @@ import { extractMicrodata } from './microdata.js';
 import { extractRdfa } from './rdfa.js';
 import { isAeoSchemaType, normalizeTypes } from './types-map.js';
 
-const ARTICLE_TYPES: ReadonlySet<string> = new Set(['Article', 'NewsArticle', 'BlogPosting']);
+// Article and every schema.org subtype of it (https://schema.org/Article, "More specific Types").
+// TechArticle, ScholarlyArticle and Report are common on docs/guide pages and are Articles.
+const ARTICLE_TYPES: ReadonlySet<string> = new Set([
+  'Article',
+  'AdvertiserContentArticle',
+  'NewsArticle',
+  'AnalysisNewsArticle',
+  'AskPublicNewsArticle',
+  'BackgroundNewsArticle',
+  'OpinionNewsArticle',
+  'ReportageNewsArticle',
+  'ReviewNewsArticle',
+  'Report',
+  'SatiricalArticle',
+  'ScholarlyArticle',
+  'MedicalScholarlyArticle',
+  'SocialMediaPosting',
+  'BlogPosting',
+  'LiveBlogPosting',
+  'DiscussionForumPosting',
+  'TechArticle',
+  'APIReference',
+]);
 const FAQ_QA_TYPES: ReadonlySet<string> = new Set(['FAQPage', 'QAPage']);
 
 /** All short types an item declares (its `type` field may join several with commas). */
