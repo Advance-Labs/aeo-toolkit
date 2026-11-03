@@ -1,5 +1,13 @@
 # @advance-labs/net-guard
 
+## 0.2.4
+
+### Patch Changes
+
+- d6e9f7d: README: add an install line and the Apache-2.0 licence line.
+- Updated dependencies [d6e9f7d]
+  - @advance-labs/types@0.3.1
+
 ## 0.2.3
 
 ### Patch Changes
