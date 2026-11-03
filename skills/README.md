@@ -13,6 +13,7 @@ are guesses, when to say "I don't know" — is the part that does not fit in a t
 | [`seo-traffic-drop`](seo-traffic-drop/SKILL.md) | Traffic dropped. What caused it? | `gsc_traffic_drop`, `list_gsc_sites` |
 | [`seo-cannibalization`](seo-cannibalization/SKILL.md) | Are my own pages competing? | `gsc_cannibalization`, `list_gsc_sites` |
 | [`seo-content-decay`](seo-content-decay/SKILL.md) | What content needs refreshing? | `gsc_decay`, `gsc_traffic_drop`, `list_gsc_sites` |
+| [`seo-high-intent-ctr`](seo-high-intent-ctr/SKILL.md) | Which buyer-intent searches do I rank for but lose the click on? | `gsc_search_analytics`, `gsc_ctr_gaps`, `list_gsc_sites` |
 
 ## Install
 
