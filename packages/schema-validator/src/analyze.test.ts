@@ -174,6 +174,19 @@ describe('nested @type collection (ADV-173)', () => {
     expect(r.hasPerson).toBe(true);
   });
 
+  it.each(['TechArticle', 'ScholarlyArticle', 'Report', 'APIReference'])(
+    'counts the Article subtype %s as an Article',
+    (type) => {
+      const html = `<script type="application/ld+json">${JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': type,
+        headline: 'A guide',
+        author: { '@type': 'Person', name: 'Lucas Krawczak' },
+      })}</script>`;
+      expect(analyzeStructuredData(html, 'https://example.com/guide').hasArticle).toBe(true);
+    },
+  );
+
   it('handles an array-valued nested @type', () => {
     const html = `<script type="application/ld+json">${JSON.stringify({
       '@context': 'https://schema.org',
