@@ -67,6 +67,16 @@ describe('runRules', () => {
     expect(score.criticalCount).toBe(1);
   });
 
+  it('grades the score it shows: 59.7 displays as 60 and grades D, not F', async () => {
+    // Seen live on amazon.com and adidas.com ("60, grade F") and microsoft.com ("80, grade C").
+    const { score } = await runRules(goodContext(), [
+      { ...passRule, weight: 597 },
+      { ...failRule, weight: 403 },
+    ]);
+    expect(score.overall).toBe(60);
+    expect(score.grade).toBe('D');
+  });
+
   it('runs async rules and folds a thrown rule into a failed finding', async () => {
     const ctx = goodContext();
     const { categories, score } = await runRules(ctx, [asyncRule, throwingRule]);

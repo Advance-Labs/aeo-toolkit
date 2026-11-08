@@ -162,10 +162,12 @@ export function aggregateScore(categories: ScoreCategory[]): Score {
     }
   }
 
-  const overall = weightTotal > 0 ? clampScore(weightedSum / weightTotal) : 100;
+  // Round once and grade the rounded number, so the grade always matches the score shown
+  // (unrounded 79.6 used to display "80" and grade C).
+  const overall = Math.round(weightTotal > 0 ? clampScore(weightedSum / weightTotal) : 100);
 
   return {
-    overall: Math.round(overall),
+    overall,
     grade: scoreToGrade(overall),
     categories,
     passedCount,
