@@ -12,7 +12,7 @@ import { fetchResource } from './fetch-resource.js';
 import { parseRobotsTxt, emptyRobotsTxt } from './robots.js';
 import { parseSitemapDocument } from './sitemap.js';
 import { detectSiteFiles } from './site-files.js';
-import { extractLinks, hostOf, sameOrigin, sameRegistrableSite } from './links.js';
+import { canonicalUrl, extractLinks, hostOf, sameOrigin, sameRegistrableSite } from './links.js';
 import { PerHostRateLimiter } from './rate-limit.js';
 import {
   DEFAULT_CONCURRENCY,
@@ -92,7 +92,9 @@ export async function crawl(requestedUrl: Url, opts: CrawlRuntimeOptions): Promi
   // Frontier holds {url, depth, discoveredFrom}. Root is depth 0 and first in line.
   const queued = new Set<Url>();
   const frontier: Array<{ url: Url; depth: number; from?: Url }> = [];
-  const enqueue = (url: Url, depth: number, from?: Url): void => {
+  const enqueue = (rawUrl: Url, depth: number, from?: Url): void => {
+    // `https://x.com` (the requested root) and `https://x.com/` (its sitemap entry) are one page.
+    const url = canonicalUrl(rawUrl);
     if (queued.has(url) || !inScope(url) || depth > maxDepth || !allowed(url)) return;
     queued.add(url);
     frontier.push(from === undefined ? { url, depth } : { url, depth, from });

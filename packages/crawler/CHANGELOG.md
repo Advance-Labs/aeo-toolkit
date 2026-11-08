@@ -1,5 +1,11 @@
 # @advance-labs/crawler
 
+## 0.2.6
+
+### Patch Changes
+
+- fc5b188: Treat `https://example.com` and `https://example.com/` as one page. The requested root and its sitemap entry were queued under two keys, so the homepage was fetched twice and a site could fail `tech.unique-titles` against itself. Frontier URLs now go through an exported `canonicalUrl` (empty path becomes `/`, fragment stripped, query kept, non-root trailing slashes untouched).
+
 ## 0.2.5
 
 ### Patch Changes

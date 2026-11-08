@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractLinks, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
+import { extractLinks, canonicalUrl, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
 
 const BASE = 'https://example.com/blog/';
 
@@ -65,5 +65,20 @@ describe('hostOf', () => {
   it('returns the host, or empty string for an unparseable url (edge case)', () => {
     expect(hostOf('https://example.com:8080/x')).toBe('example.com:8080');
     expect(hostOf('not a url')).toBe('');
+  });
+});
+
+describe('canonicalUrl', () => {
+  it('gives the bare origin its slash, strips fragments, keeps query and nested slashes', () => {
+    expect(canonicalUrl('https://example.com')).toBe('https://example.com/');
+    expect(canonicalUrl('https://example.com/')).toBe('https://example.com/');
+    expect(canonicalUrl('https://Example.com:443/a#x')).toBe('https://example.com/a');
+    expect(canonicalUrl('https://example.com/a?x=1&y=2#z')).toBe('https://example.com/a?x=1&y=2');
+    expect(canonicalUrl('https://example.com/a')).toBe('https://example.com/a');
+    expect(canonicalUrl('https://example.com/a/')).toBe('https://example.com/a/');
+  });
+
+  it('returns unparseable input unchanged', () => {
+    expect(canonicalUrl('not a url')).toBe('not a url');
   });
 });
