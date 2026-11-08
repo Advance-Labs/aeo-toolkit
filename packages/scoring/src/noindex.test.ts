@@ -115,8 +115,16 @@ describe('indexability rules still see noindex pages', () => {
     expect(f?.passed).toBe(false);
   });
 
-  it('canonical-present keeps inspecting noindex pages', async () => {
+  it('canonical-present does not ask a noindex page for a canonical', async () => {
     const f = (await findings(withLogin())).get('tech.canonical-present');
+    expect(f?.affectedUrls ?? []).not.toContain(LOGIN);
+  });
+
+  it('canonical-resolves still inspects noindex pages (a malformed canonical is flagged)', async () => {
+    const ctx = withLogin();
+    ctx.pages = ctx.pages.map((p) => (p.url === LOGIN ? { ...p, meta: { ...p.meta, canonical: 'not a url' } } : p));
+    const f = (await findings(ctx)).get('tech.canonical-resolves');
+    expect(f?.passed).toBe(false);
     expect(f?.affectedUrls).toContain(LOGIN);
   });
 });

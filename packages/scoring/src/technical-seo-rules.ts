@@ -304,9 +304,9 @@ export const technicalSeoRules: Rule[] = [
     title: 'Canonical URL is declared',
     description: 'A canonical tag consolidates duplicate URLs to one preferred address.',
     recommendation: 'Add <link rel="canonical"> to every indexable page.',
-    // Canonical checks keep seeing noindex pages: a canonical on a page you meant to index is
-    // exactly what they verify, and pages are only excluded from scoring, not from inspection.
-    includesNoindexPages: true,
+    // Scored without noindex pages: its own recommendation says "every indexable page", and a page
+    // that opted out of search has no use for a canonical. (An accidental noindex is caught by
+    // tech.indexable, which does see those pages.) canonical-resolves below still sees them.
     evaluate: (ctx) => {
       const missing = pagesFailing(ctx, (p) => Boolean(p.meta.canonical));
       return missing.length === 0 ? { passed: true } : { passed: false, affectedUrls: missing };
