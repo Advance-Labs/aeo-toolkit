@@ -1,5 +1,13 @@
 # @advance-labs/crawler
 
+## 0.2.7
+
+### Patch Changes
+
+- 333a915: Honour `nofollow`: links on a page whose robots meta or `X-Robots-Tag` says `nofollow` (or `none`) are not followed, and `<a rel="nofollow">` links are skipped. The page itself is still fetched and recorded. Exports `pageForbidsFollow`.
+- Updated dependencies [333a915]
+  - @advance-labs/types@0.4.0
+
 ## 0.2.6
 
 ### Patch Changes

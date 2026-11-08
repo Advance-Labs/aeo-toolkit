@@ -1,5 +1,17 @@
 # @advance-labs/scoring
 
+## 0.4.0
+
+### Minor Changes
+
+- 333a915: Stop scoring pages that opt out of indexing. Pages marked `noindex` (meta robots or `X-Robots-Tag`) are left out of per-page rule scoring (titles, descriptions, thin content, headings, Open Graph, structured data, ...) and listed in the new `AuditReport.excludedPages` (`reason: 'noindex'`); they still count in `pagesCrawled`. Rules that inspect indexability opt back in with the new `Rule.includesNoindexPages`: `tech.indexable` (now ignores a noindex page the sitemap deliberately leaves out, still flags the homepage, any listed noindex page, and every noindex page when there is no sitemap), `tech.canonical-present` and `tech.canonical-resolves`. If every page is noindex nothing is excluded.
+
+### Patch Changes
+
+- 6fedb90: Grade the rounded overall score, so the letter grade always matches the number shown. A raw 59.7 displayed as 60 but graded F (seen on amazon.com and adidas.com), and 79.6 displayed as 80 but graded C.
+- Updated dependencies [333a915]
+  - @advance-labs/types@0.4.0
+
 ## 0.3.2
 
 ### Patch Changes
