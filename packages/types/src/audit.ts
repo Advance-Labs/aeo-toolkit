@@ -22,6 +22,8 @@ export interface AuditReport {
   generatedAt: string;
   score: Score;
   pagesCrawled: number;
+  /** Crawled pages left out of per-page rule scoring, with why. Present only when non-empty. */
+  excludedPages?: Array<{ url: Url; reason: 'noindex' }>;
   /** Prioritized fix list (failed findings, highest-impact first). */
   topFixes: Finding[];
   /** Generated templates for missing files. */

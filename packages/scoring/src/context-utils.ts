@@ -148,10 +148,70 @@ export function pagesFailing(ctx: ScoringContext, pred: (page: ParsedHtml) => bo
   return out;
 }
 
+/** Directive tokens of a robots meta / X-Robots-Tag value, lower-cased. `none` means noindex+nofollow. */
+function robotsTokens(value: string | undefined, agentOk: (agent: string) => boolean): string[] {
+  const out: string[] = [];
+  for (const raw of (value ?? '').toLowerCase().split(',')) {
+    // X-Robots-Tag allows a leading user-agent: "googlebot: noindex". Only count agents that
+    // are search engines; "otherbot: noindex" says nothing about us.
+    const m = /^\s*([a-z0-9._-]+)\s*:\s*(.+)$/.exec(raw);
+    if (m && m[1] !== undefined && m[2] !== undefined) {
+      if (agentOk(m[1])) out.push(m[2].trim());
+    } else if (raw.trim()) out.push(raw.trim());
+  }
+  return out.flatMap((t) => (t === 'none' ? ['noindex', 'nofollow'] : [t]));
+}
+const isSearchAgent = (a: string): boolean => a === 'googlebot' || a === 'bingbot';
+
 /** Whether a robots `<meta>` directive on a page marks it noindex. */
 export function isNoindex(page: ParsedHtml): boolean {
-  const robots = page.meta.robots?.toLowerCase() ?? '';
-  return robots.includes('noindex');
+  return robotsTokens(page.meta.robots, () => true).includes('noindex');
+}
+
+/** Whether an `X-Robots-Tag` response header marks the page noindex. */
+export function isNoindexHeader(headers: Record<string, string> | undefined): boolean {
+  return robotsTokens(headers?.['x-robots-tag'], isSearchAgent).includes('noindex');
+}
+
+/** Normalized URLs of crawled pages that are noindex by meta robots or X-Robots-Tag. */
+export function noindexUrls(ctx: ScoringContext): Set<string> {
+  const out = new Set<string>();
+  for (const p of ctx.pages) if (isNoindex(p)) out.add(normalizeUrl(p.url));
+  for (const c of ctx.crawl.pages) {
+    if (isNoindexHeader(c.headers)) {
+      out.add(normalizeUrl(c.url));
+      out.add(normalizeUrl(c.finalUrl));
+    }
+  }
+  return out;
+}
+
+/**
+ * The context rules are scored against: parsed pages that opted out of indexing are removed
+ * (and, when `structuredData` lines up one-to-one with `pages`, their structured data too), and
+ * reported in `excluded`. `crawl` is left whole: robots/sitemap/redirect/broken-page rules are
+ * about the site and the crawl, not about indexed pages. If EVERY page is noindex the full
+ * context is returned untouched, since there is nothing left to score.
+ */
+export function withoutNoindexPages(ctx: ScoringContext): {
+  ctx: ScoringContext;
+  excluded: Array<{ url: Url; reason: 'noindex' }>;
+} {
+  const noindex = noindexUrls(ctx);
+  const keep = ctx.pages.map((p) => !noindex.has(normalizeUrl(p.url)));
+  const excluded = ctx.pages
+    .filter((_, i) => !keep[i])
+    .map((p) => ({ url: p.url, reason: 'noindex' as const }));
+  if (excluded.length === 0 || excluded.length === ctx.pages.length) return { ctx, excluded: [] };
+  const aligned = ctx.structuredData.length === ctx.pages.length;
+  return {
+    ctx: {
+      ...ctx,
+      pages: ctx.pages.filter((_, i) => keep[i]),
+      structuredData: aligned ? ctx.structuredData.filter((_, i) => keep[i]) : ctx.structuredData,
+    },
+    excluded,
+  };
 }
 
 /**

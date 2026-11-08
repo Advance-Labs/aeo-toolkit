@@ -12,7 +12,7 @@ import { fetchResource } from './fetch-resource.js';
 import { parseRobotsTxt, emptyRobotsTxt } from './robots.js';
 import { parseSitemapDocument } from './sitemap.js';
 import { detectSiteFiles } from './site-files.js';
-import { canonicalUrl, extractLinks, hostOf, sameOrigin, sameRegistrableSite } from './links.js';
+import { canonicalUrl, extractLinks, hostOf, pageForbidsFollow, sameOrigin, sameRegistrableSite } from './links.js';
 import { PerHostRateLimiter } from './rate-limit.js';
 import {
   DEFAULT_CONCURRENCY,
@@ -123,7 +123,7 @@ export async function crawl(requestedUrl: Url, opts: CrawlRuntimeOptions): Promi
       if (pages.length >= maxPages) break;
       pages.push(page);
       // Only follow links from successful HTML responses.
-      if (page.ok && isHtml(page.contentType) && page.body) {
+      if (page.ok && isHtml(page.contentType) && page.body && !pageForbidsFollow(page.headers, page.body)) {
         for (const link of extractLinks(page.body, page.finalUrl)) {
           enqueue(link, page.depth + 1, page.finalUrl);
         }

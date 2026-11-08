@@ -14,6 +14,7 @@ import {
   firstPage,
   firstStructured,
   isNoindex,
+  isNoindexHeader,
   longRedirectChains,
   meanOverPages,
   normalizeUrl,
@@ -264,8 +265,28 @@ export const technicalSeoRules: Rule[] = [
     title: 'Pages are indexable (no accidental noindex)',
     description: 'A noindex directive removes a page from search and answer engines.',
     recommendation: 'Remove noindex from pages you want discovered.',
+    // Sees the noindex pages on purpose: finding an accidental one is this rule's whole job.
+    includesNoindexPages: true,
     evaluate: (ctx) => {
-      const noindexed = pagesFailing(ctx, (p) => !isNoindex(p));
+      // A noindex page is a defect only if the site otherwise presents it as indexable. When a
+      // sitemap exists, a noindex page the sitemap does NOT list (a login or checkout page that
+      // was only found by following a link) is a deliberate opt-out. Flagged: the root page,
+      // any noindex page the sitemap lists (contradiction), and every noindex page when there
+      // is no sitemap to tell intent from accident.
+      const listed = new Set(ctx.crawl.sitemap.map((e) => normalizeUrl(e.loc)));
+      const headerNoindex = new Set(
+        ctx.crawl.pages.filter((c) => isNoindexHeader(c.headers)).flatMap((c) => [normalizeUrl(c.url), normalizeUrl(c.finalUrl)]),
+      );
+      const root = normalizeUrl(ctx.crawl.rootUrl);
+      const noindexed = pagesFailing(
+        ctx,
+        (p) => {
+          const key = normalizeUrl(p.url);
+          if (!isNoindex(p) && !headerNoindex.has(key)) return true;
+          const deliberate = listed.size > 0 && key !== root && !listed.has(key);
+          return deliberate;
+        },
+      );
       return noindexed.length === 0
         ? { passed: true }
         : {
@@ -283,6 +304,9 @@ export const technicalSeoRules: Rule[] = [
     title: 'Canonical URL is declared',
     description: 'A canonical tag consolidates duplicate URLs to one preferred address.',
     recommendation: 'Add <link rel="canonical"> to every indexable page.',
+    // Canonical checks keep seeing noindex pages: a canonical on a page you meant to index is
+    // exactly what they verify, and pages are only excluded from scoring, not from inspection.
+    includesNoindexPages: true,
     evaluate: (ctx) => {
       const missing = pagesFailing(ctx, (p) => Boolean(p.meta.canonical));
       return missing.length === 0 ? { passed: true } : { passed: false, affectedUrls: missing };
@@ -307,6 +331,7 @@ export const technicalSeoRules: Rule[] = [
     recommendation:
       'Point every canonical at an absolute URL that returns 200. Check it after any move or domain change.',
     docsUrl: 'https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls',
+    includesNoindexPages: true,
     evaluate: (ctx) => {
       const brokenByUrl = new Map<string, number>();
       for (const p of brokenPages(ctx)) brokenByUrl.set(normalizeUrl(p.url), p.status);

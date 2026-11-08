@@ -22,6 +22,7 @@ import type {
   ScoringContext,
 } from '@advance-labs/types';
 import { clampScore, scoreToGrade } from './grade.js';
+import { withoutNoindexPages } from './context-utils.js';
 
 /** Human-readable labels for each category key, used in `ScoreCategory.label`. */
 const CATEGORY_LABELS: Record<ScoreCategoryKey, string> = {
@@ -118,14 +119,16 @@ export async function runRules(
 ): Promise<{ categories: ScoreCategory[]; score: Score }> {
   const byCategory = new Map<ScoreCategoryKey, Finding[]>();
   const order: ScoreCategoryKey[] = [];
+  const { ctx: scored } = withoutNoindexPages(ctx);
 
   for (const rule of rules) {
+    const view = rule.includesNoindexPages ? ctx : scored;
     // ADV-175: a rule that does not apply to this page contributes nothing at all — no
     // finding and no weight — rather than a pass that overstates coverage or a fail that
     // manufactures work.
-    if (rule.appliesTo && !rule.appliesTo(ctx)) continue;
+    if (rule.appliesTo && !rule.appliesTo(view)) continue;
 
-    const outcome = await evaluateRule(rule, ctx);
+    const outcome = await evaluateRule(rule, view);
     const finding = toFinding(rule, outcome);
     let bucket = byCategory.get(rule.category);
     if (!bucket) {
