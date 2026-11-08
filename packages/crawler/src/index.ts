@@ -19,7 +19,7 @@ export type { SitemapKind, ParsedSitemap } from './sitemap.js';
 export { detectSiteFiles } from './site-files.js';
 export type { DetectSiteFilesOptions } from './site-files.js';
 
-export { extractLinks, canonicalUrl, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
+export { extractLinks, canonicalUrl, pageForbidsFollow, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
 export { PerHostRateLimiter } from './rate-limit.js';
 
 export { resolveFetcher, CrawlerError } from './fetcher.js';

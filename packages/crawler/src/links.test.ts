@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractLinks, canonicalUrl, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
+import { extractLinks, canonicalUrl, pageForbidsFollow, sameOrigin, sameRegistrableSite, hostOf } from './links.js';
 
 const BASE = 'https://example.com/blog/';
 
@@ -80,5 +80,43 @@ describe('canonicalUrl', () => {
 
   it('returns unparseable input unchanged', () => {
     expect(canonicalUrl('not a url')).toBe('not a url');
+  });
+});
+
+describe('rel=nofollow links', () => {
+  it('skips <a rel=nofollow> (any quoting, token list) and keeps everything else', () => {
+    const html = `
+      <a href="/keep">keep</a>
+      <a rel="nofollow" href="/a">a</a>
+      <a href="/b" rel='noopener nofollow'>b</a>
+      <a href="/c" rel=nofollow>c</a>
+      <a href="/d" rel="noopener">d</a>
+      <a href="/e" data-rel="nofollow">e</a>
+      <link rel="canonical" href="/canon">
+    `;
+    expect(extractLinks(html, 'https://example.com/')).toEqual([
+      'https://example.com/keep',
+      'https://example.com/d',
+      'https://example.com/e',
+      'https://example.com/canon',
+    ]);
+  });
+});
+
+describe('pageForbidsFollow', () => {
+  const meta = (c: string): string => `<head><meta name="robots" content="${c}"></head>`;
+  it('is true for nofollow or none in meta robots', () => {
+    expect(pageForbidsFollow({}, meta('noindex, nofollow'))).toBe(true);
+    expect(pageForbidsFollow({}, meta('none'))).toBe(true);
+  });
+  it('is false for noindex alone, index/follow, or no directive', () => {
+    expect(pageForbidsFollow({}, meta('noindex'))).toBe(false);
+    expect(pageForbidsFollow({}, meta('index, follow'))).toBe(false);
+    expect(pageForbidsFollow({}, '<html></html>')).toBe(false);
+  });
+  it('reads X-Robots-Tag, ignoring other agents', () => {
+    expect(pageForbidsFollow({ 'x-robots-tag': 'nofollow' }, '')).toBe(true);
+    expect(pageForbidsFollow({ 'x-robots-tag': 'googlebot: nofollow' }, '')).toBe(true);
+    expect(pageForbidsFollow({ 'x-robots-tag': 'otherbot: nofollow' }, '')).toBe(false);
   });
 });

@@ -92,5 +92,12 @@ export interface Rule<TContext = ScoringContext> {
    * claim we checked something we did not.
    */
   appliesTo?: (ctx: TContext) => boolean;
+  /**
+   * Rules are scored against the pages that ask to be indexed: pages marked `noindex` (meta robots
+   * or X-Robots-Tag) are left out of `ctx.pages` / `ctx.structuredData`, because a page that opted
+   * out of search has no title, description or schema obligations. Set this on a rule whose whole
+   * job is to inspect indexability (it must see the noindex pages), and it gets the full context.
+   */
+  includesNoindexPages?: boolean;
   evaluate: (ctx: TContext) => RuleOutcome | Promise<RuleOutcome>;
 }

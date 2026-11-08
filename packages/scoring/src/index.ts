@@ -23,4 +23,4 @@ export type { BuildAuditReportOptions } from './audit.js';
 export { generateTemplates } from './templates.js';
 
 // Context helpers — useful for apps building their own ad-hoc rules.
-export { KEY_AI_BOTS } from './context-utils.js';
+export { KEY_AI_BOTS, withoutNoindexPages } from './context-utils.js';

@@ -233,6 +233,45 @@ describe('crawl', () => {
     expect(fetched.filter((u) => u === 'https://example.com/')).toHaveLength(1);
   });
 
+  it('fetches a noindex,nofollow page but does not follow its links', async () => {
+    const { fetcher, fetched } = fakeSite({
+      'https://example.com/': () => htmlResponse(HTML(['/login', '/about'])),
+      'https://example.com/login': () =>
+        htmlResponse(`<html><head><meta name="robots" content="noindex, nofollow"></head><body><a href="/behind-login">x</a></body></html>`),
+      'https://example.com/about': () => htmlResponse(HTML([])),
+      'https://example.com/behind-login': () => htmlResponse(HTML([])),
+    });
+    const result = await crawl('https://example.com/', { maxPages: 10, delay: instantDelay, fetcher });
+    expect(result.pages.map((p) => p.finalUrl)).toContain('https://example.com/login');
+    expect(fetched).not.toContain('https://example.com/behind-login');
+  });
+
+  it('follows the links of a noindex-only page', async () => {
+    const { fetcher, fetched } = fakeSite({
+      'https://example.com/': () =>
+        htmlResponse(`<html><head><meta name="robots" content="noindex"></head><body><a href="/next">x</a></body></html>`),
+      'https://example.com/next': () => htmlResponse(HTML([])),
+    });
+    await crawl('https://example.com/', { maxPages: 10, delay: instantDelay, fetcher });
+    expect(fetched).toContain('https://example.com/next');
+  });
+
+  it('honours X-Robots-Tag: nofollow and rel=nofollow links', async () => {
+    const { fetcher, fetched } = fakeSite({
+      'https://example.com/': () =>
+        htmlResponse(`<a href="/hdr">h</a><a rel="nofollow" href="/skip">s</a><a href="/ok">o</a>`),
+      'https://example.com/hdr': () =>
+        makeResponse({ status: 200, headers: { 'content-type': 'text/html', 'x-robots-tag': 'nofollow' }, body: HTML(['/hidden']) }),
+      'https://example.com/skip': () => htmlResponse(HTML([])),
+      'https://example.com/ok': () => htmlResponse(HTML([])),
+      'https://example.com/hidden': () => htmlResponse(HTML([])),
+    });
+    await crawl('https://example.com/', { maxPages: 10, delay: instantDelay, fetcher });
+    expect(fetched).toContain('https://example.com/ok');
+    expect(fetched).not.toContain('https://example.com/skip');
+    expect(fetched).not.toContain('https://example.com/hidden');
+  });
+
   it('crawls from where an apex -> www redirect lands', async () => {
     const { fetcher } = fakeSite({
       'https://example.com/': () => makeResponse({ status: 308, headers: { location: 'https://www.example.com/' } }),

@@ -9,6 +9,7 @@
  */
 import type { AuditReport, Finding, FindingSeverity, Score, ScoringContext } from '@advance-labs/types';
 import { runRules } from './engine.js';
+import { withoutNoindexPages } from './context-utils.js';
 import { technicalSeoRules } from './technical-seo-rules.js';
 import { aeoRules } from './aeo-rules.js';
 import { generateTemplates } from './templates.js';
@@ -66,12 +67,14 @@ export async function buildAuditReport(
   const allFindings = categories.flatMap((c) => c.findings);
   const topFixes = prioritizeFixes(allFindings);
   const templates = generateTemplates(ctx);
+  const { excluded } = withoutNoindexPages(ctx);
 
   return {
     url: ctx.crawl.rootUrl,
     generatedAt: new Date().toISOString(),
     score,
     pagesCrawled: ctx.crawl.pageCount,
+    ...(excluded.length > 0 ? { excludedPages: excluded } : {}),
     topFixes,
     templates,
     meta: {
