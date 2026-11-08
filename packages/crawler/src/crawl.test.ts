@@ -215,6 +215,24 @@ describe('crawl', () => {
 
   // Regression (kuzynbuilds.com, 2026-10-20): the root 308s to www, so every link on the real
   // pages was off-origin and the crawl stopped after one page.
+  it('fetches the homepage once when the root has no slash and the sitemap lists it with one', async () => {
+    const { fetcher, fetched } = fakeSite({
+      'https://example.com/robots.txt': () =>
+        makeResponse({ status: 200, body: 'Sitemap: https://example.com/sitemap.xml' }),
+      'https://example.com/sitemap.xml': () =>
+        makeResponse({
+          status: 200,
+          headers: { 'content-type': 'application/xml' },
+          body: '<urlset><url><loc>https://example.com/</loc></url><url><loc>https://example.com/a?x=1#top</loc></url></urlset>',
+        }),
+      'https://example.com/': () => htmlResponse(HTML(['/a?x=1', 'https://example.com'])),
+      'https://example.com/a?x=1': () => htmlResponse(HTML([])),
+    });
+    const result = await crawl('https://example.com', { maxPages: 10, delay: instantDelay, fetcher });
+    expect(result.pages.map((p) => p.finalUrl)).toEqual(['https://example.com/', 'https://example.com/a?x=1']);
+    expect(fetched.filter((u) => u === 'https://example.com/')).toHaveLength(1);
+  });
+
   it('crawls from where an apex -> www redirect lands', async () => {
     const { fetcher } = fakeSite({
       'https://example.com/': () => makeResponse({ status: 308, headers: { location: 'https://www.example.com/' } }),

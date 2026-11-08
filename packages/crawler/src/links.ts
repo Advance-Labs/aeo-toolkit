@@ -36,6 +36,22 @@ export function extractLinks(html: string, baseUrl: Url): Url[] {
   return out;
 }
 
+/**
+ * Canonical frontier key for a URL: parsed and re-serialised (so an empty path becomes `/`, the
+ * host is lower-cased and default ports dropped) with the fragment stripped. The query string is
+ * kept, and a trailing slash on a non-root path is NOT touched: `/a` and `/a/` are different
+ * resources. Unparseable input is returned unchanged.
+ */
+export function canonicalUrl(url: Url): Url {
+  try {
+    const u = new URL(url);
+    u.hash = '';
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 /** Resolve + normalize a single href; returns `undefined` for non-http(s) or unparseable links. */
 function resolveHref(href: string, baseUrl: Url): Url | undefined {
   let url: URL;
@@ -45,8 +61,7 @@ function resolveHref(href: string, baseUrl: Url): Url | undefined {
     return undefined;
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return undefined;
-  url.hash = '';
-  return url.toString();
+  return canonicalUrl(url.toString());
 }
 
 /** Whether `candidate` shares an origin with `root` (used to keep the crawl on-site). */
