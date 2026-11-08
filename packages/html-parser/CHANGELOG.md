@@ -1,5 +1,12 @@
 # @advance-labs/html-parser
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [333a915]
+  - @advance-labs/types@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes
