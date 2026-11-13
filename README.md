@@ -31,6 +31,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 **[advancelabs.dev/tools](https://advancelabs.dev/tools)**, with no sign-up and no account.
 Point the auditor at a URL and it returns a weighted, per-rule report in about a minute.
 Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advancelabs.dev/services/ai-visibility).
+Want the data underneath? **[DataForAEO](https://dataforaeo.dev)** is data for AEO from Advance Labs: measured AI-assistant demand per page, AI answers and citations, and the [AI crawler list](https://dataforaeo.dev/ai-crawlers).
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
 GA4 + GSC chat, backlink graph, authority) and **three MCP servers** (`ai-visibility`, `backlink`,
