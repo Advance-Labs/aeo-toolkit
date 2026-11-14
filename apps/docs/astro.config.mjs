@@ -93,11 +93,21 @@ function rehypeRepoAwareLinks() {
         return;
       }
 
-      // Everything else lives in the repo, not on this site: point at GitHub.
       const repoRel = path
         .relative(fileURLToPath(new URL('../../', import.meta.url)), targetAbs)
         .split(path.sep)
         .join('/');
+
+      // skills/** is published here too (scripts/generate.mjs mirrors it into docs/skills/), so a
+      // GitHub-correct link to a skill's markdown lands on its rendered page instead of GitHub.
+      const skill = /^skills\/(.+?)(?:\/(?:SKILL|README))?\.md$/i.exec(repoRel);
+      if (skill) {
+        const slug = skill[1] === 'README' ? '' : `${skill[1].toLowerCase()}/`;
+        node.properties.href = `${BASE}/skills/${slug}${hash ? `#${hash}` : ''}`;
+        return;
+      }
+
+      // Everything else lives in the repo, not on this site: point at GitHub.
       const kind = /\.[a-z0-9]+$/i.test(repoRel) ? 'blob' : 'tree';
       node.properties.href = `${REPO}/${kind}/main/${repoRel}${hash ? `#${hash}` : ''}`;
     });
@@ -177,6 +187,9 @@ export default defineConfig({
           ],
         },
         { label: 'Guides', autogenerate: { directory: 'guides' } },
+        // Generated from skills/ and @advance-labs/scoring by scripts/generate.mjs.
+        { label: 'Agent skills', autogenerate: { directory: 'skills' } },
+        { label: 'Audit rules', autogenerate: { directory: 'rules' } },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
         {
           label: 'Contributing',

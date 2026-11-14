@@ -1,0 +1,12 @@
+{
+  "name": "advance-labs",
+  "description": "Advance Labs plugins for Claude Code.",
+  "owner": { "name": "Advance Labs", "url": "https://advancelabs.dev" },
+  "plugins": [
+    {
+      "name": "aeo-toolkit",
+      "source": "./",
+      "description": "24 AEO skills plus the AEO Toolkit MCP servers: make sites reachable, understandable and citable by AI answer engines."
+    }
+  ]
+}

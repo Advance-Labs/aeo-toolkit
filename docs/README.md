@@ -25,10 +25,10 @@ advancelabs.dev/tools and the three MCP servers are proprietary and not self-hos
 ## What's in the suite
 
 **Hosted (proprietary).** Six browser tools (technical audit, E-E-A-T scanner, llms.txt generator,
-GA4+GSC chat, backlink graph, authority) and three MCP servers exposing 31 tools to Claude and other
+GA4+GSC chat, backlink graph, authority) and three MCP servers exposing 32 tools to Claude and other
 MCP clients. They run on advancelabs.dev and their code lives in a private repository.
 
-**Open core (this repo).** Six packages published to npm, the Chrome extension and the skills. The
+**Open core (this repo).** Six packages published to npm, the Chrome extension and the [agent skills](../skills/README.md) (24 skills, one owner for every audit rule, installable with the MCP servers as one Claude Code plugin). The
 keystone is `@advance-labs/scoring`: a weighted rule engine whose audit runs **44 checks** (31
 technical SEO + 13 AEO). The E-E-A-T scan is a separate scorer with **14 signals**; the engine
 defines 58 in total.

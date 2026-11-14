@@ -4,14 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "rimraf .astro node_modules/.astro && astro build",
+    "dev": "node scripts/generate.mjs && astro dev",
+    "build": "node scripts/generate.mjs && rimraf .astro node_modules/.astro && astro build",
     "preview": "astro preview",
     "typecheck": "echo \"docs: schema is validated by astro build\"",
     "lint": "echo \"no lint for docs\"",
-    "clean": "rimraf dist .astro .turbo"
+    "clean": "rimraf dist .astro .turbo",
+    "generate": "node scripts/generate.mjs"
   },
   "dependencies": {
+    "@advance-labs/scoring": "workspace:*",
     "@astrojs/starlight": "^0.36.0",
     "astro": "^5.16.0",
     "sharp": "^0.34.2",

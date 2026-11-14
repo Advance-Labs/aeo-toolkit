@@ -93,6 +93,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@advance-labs/scoring':
+        specifier: workspace:*
+        version: link:../../packages/scoring
       '@astrojs/starlight':
         specifier: ^0.36.0
         version: 0.36.3(astro@5.18.2(@types/node@24.13.3)(@upstash/redis@1.38.0)(jiti@1.21.7)(rollup@4.61.0)(typescript@5.9.3))
