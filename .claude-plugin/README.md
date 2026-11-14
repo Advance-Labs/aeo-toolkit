@@ -35,7 +35,7 @@ none of them writes to your site or to any third-party account.
 | Server | Auth | What a call sends | What it does with it |
 |---|---|---|---|
 | `visibility` | none | a URL to audit, or a question and a domain | Crawls the URL's public pages to score them. Questions are sent to Perplexity Sonar to see whether the domain is cited. |
-| `backlink` | none | a domain, a URL or a topic | Runs web searches and fetches public pages to find mentions, link prospects and contact details published on the target's own site. |
+| `backlink` | none | a domain, a URL or a topic | Searches the web (Brave Search) and the Common Crawl index, fetches public pages to find mentions, link prospects and contact details published on the target's own site, and reads page history from the Internet Archive's Wayback Machine. `generate_outreach_email` sends the draft request to the model provider **you** choose with **your own** API key, which is used for that request only and never stored or logged. |
 | `search` | Google OAuth (or your own Google token; optional Bing API key) | the Search Console, GA4 or Bing property and the report you ask for | Reads reporting data from Google Search Console, GA4 and Bing Webmaster Tools with read-only scopes. The Google refresh token is stored encrypted; reporting data is fetched on request and not kept in our database. |
 
 The skills themselves send nothing anywhere. Without the MCP servers they fall back to local checks
