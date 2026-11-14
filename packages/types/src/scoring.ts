@@ -30,7 +30,10 @@ export interface Finding {
   passed: boolean;
   weight: number;
   affectedUrls?: Url[];
+  /** Primary-source reference for the rule (Google Search Central, schema.org, a spec). */
   docsUrl?: string;
+  /** How to fix it: this rule on the AEO Toolkit docs, linked to the agent skill that owns it. */
+  guideUrl?: string;
 }
 
 export interface ScoreCategory {
