@@ -1,0 +1,72 @@
+# Publishes the Claude Code plugin to the `plugin` branch.
+#
+# The repo root is too big to be a directory-listed plugin (the directory caps plugin files at
+# 5 MiB, and installers would download apps/ and packages/ for nothing). So the plugin ships from a
+# branch that holds ONLY what the plugin is: the manifest, the skills, a README, the license and
+# the icon. skills/ on main stays the single source; this branch is rebuilt from it and never
+# edited by hand. The Claude directory listing and .claude-plugin/marketplace.json point at it.
+name: Plugin branch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.claude-plugin/**'
+      - 'LICENSE'
+      - 'brand/mark-512.png'
+      - '.github/workflows/plugin-branch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plugin-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Assemble the plugin folder
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/plugin"
+          mkdir -p "$out/.claude-plugin" "$out/brand"
+          cp -R skills "$out/skills"
+          cp .claude-plugin/plugin.json "$out/.claude-plugin/plugin.json"
+          cp .claude-plugin/README.md "$out/README.md"
+          cp LICENSE "$out/LICENSE"
+          cp brand/mark-512.png "$out/brand/mark-512.png"
+          find "$out" \( -name .DS_Store -o -name Thumbs.db -o -name desktop.ini \) -delete
+          echo "files: $(find "$out" -type f | wc -l)  size: $(du -sk "$out" | cut -f1) KiB"
+
+      - name: Commit to the plugin branch
+        env:
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin plugin >/dev/null; then
+            git worktree add "$RUNNER_TEMP/branch" origin/plugin
+            git -C "$RUNNER_TEMP/branch" checkout -B plugin
+          else
+            git worktree add --detach "$RUNNER_TEMP/branch"
+            git -C "$RUNNER_TEMP/branch" checkout --orphan plugin
+          fi
+          cd "$RUNNER_TEMP/branch"
+          git rm -rq --ignore-unmatch . >/dev/null
+          cp -R "$RUNNER_TEMP/plugin/." .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "plugin branch already matches main@${SRC_SHA}"
+            exit 0
+          fi
+          git commit -q -m "plugin: build from main@${SRC_SHA}"
+          git push origin plugin
