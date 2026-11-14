@@ -1,0 +1,11 @@
+{
+  "name": "@advance-labs/wordpress-collector",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "WordPress plugin that sends AI-assistant requests (ChatGPT-User, Claude-User, Perplexity-User...) to the AEO Toolkit AI demand collector. Not published to npm; the plugin folder is zipped for WordPress.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node --test"
+  }
+}
