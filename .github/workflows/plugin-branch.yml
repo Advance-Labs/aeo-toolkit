@@ -61,7 +61,8 @@ jobs:
             git -C "$RUNNER_TEMP/branch" checkout --orphan plugin
           fi
           cd "$RUNNER_TEMP/branch"
-          git rm -rq --ignore-unmatch . >/dev/null
+          # Empty the tree (an orphan checkout keeps main's files staged, so git rm would refuse).
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -R "$RUNNER_TEMP/plugin/." .
           git add -A
           if git diff --cached --quiet; then
