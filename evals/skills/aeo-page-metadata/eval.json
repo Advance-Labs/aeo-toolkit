@@ -1,0 +1,13 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our homepage, served at https://northwind.example/. Its head is basically empty. Our share image is https://northwind.example/og.png (1200x630, alt text: Northwind dashboard showing cash, burn and receivables). Fix the page metadata.",
+  "expectPass": [
+    "tech.meta-title-present",
+    "tech.meta-description-present",
+    "tech.lang-declared",
+    "tech.charset-declared",
+    "tech.viewport-mobile",
+    "tech.open-graph-complete",
+    "tech.twitter-card"
+  ]
+}

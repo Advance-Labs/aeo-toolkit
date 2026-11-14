@@ -116,6 +116,12 @@ Same bar as the rest of the repo:
 The frontmatter `description` decides whether the skill activates, so write it as *when to use
 this* (including the phrase "Use when"), not as a title.
 
+Behavioural evals live in `evals/skills/<skill>/`: a small broken site plus the prompt a user
+would type. CI checks that every fixture really fails its target rules. To run the agents, use
+`SKILL_EVALS=1 pnpm --filter @advance-labs/chrome-extension exec vitest run src/lib/skill-evals.test.ts`.
+Each run copies the site and only the skill under test into a temp dir, runs `claude -p`, and
+re-audits. Add an eval when you add a skill whose rules can be checked on a single page.
+
 Two tests keep the skills honest:
 - `packages/scoring/src/skills-map.test.ts` here checks rule ownership.
 - A test in the private platform repo checks frontmatter, and checks that every MCP tool a skill

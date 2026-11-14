@@ -1,0 +1,8 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our static website (served as-is at https://northwind.example/). Add an llms.txt for it.",
+  "expectPass": [
+    "tech.llms-txt-present",
+    "aeo.llms-txt-present"
+  ]
+}

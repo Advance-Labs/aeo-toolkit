@@ -23,6 +23,7 @@ import type {
 } from '@advance-labs/types';
 import { clampScore, scoreToGrade } from './grade.js';
 import { withoutNoindexPages } from './context-utils.js';
+import { ruleGuideUrl } from './guide-url.js';
 
 /** Human-readable labels for each category key, used in `ScoreCategory.label`. */
 const CATEGORY_LABELS: Record<ScoreCategoryKey, string> = {
@@ -60,6 +61,8 @@ function toFinding(rule: Rule, outcome: RuleOutcome): Finding {
     finding.affectedUrls = outcome.affectedUrls;
   }
   if (rule.docsUrl) finding.docsUrl = rule.docsUrl;
+  const guideUrl = ruleGuideUrl(rule.id);
+  if (guideUrl) finding.guideUrl = guideUrl;
   return finding;
 }
 

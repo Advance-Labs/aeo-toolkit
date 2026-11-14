@@ -1,0 +1,8 @@
+{
+  "pageUrl": "https://northwind.example/pricing/",
+  "prompt": "This folder is our pricing page, served at https://northwind.example/pricing/. Facts you can use: Starter is 49 USD/month for one ledger; Team is 99 USD/month for three ledgers and adds scheduled email reports; Group is 199 USD/month for five ledgers with consolidated reporting. Every plan connects to QuickBooks and Xero, includes a 14-day free trial, and can be cancelled monthly. Annual billing saves two months. Setup usually takes one day. Rewrite the page so AI assistants can quote clear answers from it.",
+  "expectPass": [
+    "aeo.question-headings",
+    "aeo.answerable-content"
+  ]
+}

@@ -24,3 +24,4 @@ export { generateTemplates } from './templates.js';
 
 // Context helpers — useful for apps building their own ad-hoc rules.
 export { KEY_AI_BOTS, withoutNoindexPages } from './context-utils.js';
+export { ruleGuideUrl } from './guide-url.js';

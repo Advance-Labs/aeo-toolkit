@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our static website (served as-is at https://northwind.example/). We want ChatGPT, Claude and Perplexity to be able to read and cite it, and we are fine with AI training crawlers too. Fix whatever in this site stops AI crawlers.",
+  "expectPass": [
+    "aeo.ai-bots-allowed"
+  ]
+}

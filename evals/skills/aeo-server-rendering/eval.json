@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our homepage, served as a static file at https://northwind.example/. AI crawlers seem to see an empty page. Fix it so the content is there without JavaScript, keeping the same text.",
+  "expectPass": [
+    "aeo.content-server-rendered"
+  ]
+}

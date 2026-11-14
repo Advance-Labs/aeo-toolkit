@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our homepage, served at https://northwind.example/. Our SEO audit says our structured data is invalid. Fix it.",
+  "expectPass": [
+    "tech.structured-data-valid"
+  ]
+}

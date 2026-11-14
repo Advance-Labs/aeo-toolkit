@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our static website, served at https://northwind.example/. Company facts: legal name Northwind Analytics Inc., founded 2021, logo at https://northwind.example/logo.png, LinkedIn https://www.linkedin.com/company/northwind-analytics, GitHub https://github.com/northwind-analytics. Make sure AI assistants can tell who runs this site.",
+  "expectPass": [
+    "aeo.organization-schema"
+  ]
+}
