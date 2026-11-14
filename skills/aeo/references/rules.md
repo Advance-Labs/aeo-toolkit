@@ -1,0 +1,64 @@
+# Rule → skill map
+
+Generated from `skills/rule-map.json`. Do not edit by hand; `packages/scoring/src/skills-map.test.ts` fails if this drifts.
+
+| Rule id | Owning skill |
+|---|---|
+| `aeo.ai-bots-allowed` | [`aeo-ai-crawler-access`](../../aeo-ai-crawler-access/SKILL.md) |
+| `aeo.answerable-content` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `aeo.article-author-schema` | [`aeo-article-author-schema`](../../aeo-article-author-schema/SKILL.md) |
+| `aeo.breadcrumbs` | [`aeo-site-structure`](../../aeo-site-structure/SKILL.md) |
+| `aeo.content-extractability` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `aeo.content-freshness` | [`aeo-content-freshness`](../../aeo-content-freshness/SKILL.md) |
+| `aeo.content-server-rendered` | [`aeo-server-rendering`](../../aeo-server-rendering/SKILL.md) |
+| `aeo.entity-identity-consistent` | [`aeo-organization-entity`](../../aeo-organization-entity/SKILL.md) |
+| `aeo.faq-qa-schema` | [`aeo-faq-qa-schema`](../../aeo-faq-qa-schema/SKILL.md) |
+| `aeo.llms-txt-present` | [`aeo-llms-txt`](../../aeo-llms-txt/SKILL.md) |
+| `aeo.organization-schema` | [`aeo-organization-entity`](../../aeo-organization-entity/SKILL.md) |
+| `aeo.question-headings` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `aeo.speakable-structured-answers` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `eeat.auth.breadcrumbs` | [`aeo-site-structure`](../../aeo-site-structure/SKILL.md) |
+| `eeat.auth.internal-linking` | [`aeo-site-structure`](../../aeo-site-structure/SKILL.md) |
+| `eeat.auth.organization-schema` | [`aeo-organization-entity`](../../aeo-organization-entity/SKILL.md) |
+| `eeat.auth.outbound-references` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `eeat.exp.content-depth` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `eeat.exp.faq-howto-review-schema` | [`aeo-faq-qa-schema`](../../aeo-faq-qa-schema/SKILL.md) |
+| `eeat.expertise.about-page` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `eeat.expertise.article-markup` | [`aeo-article-author-schema`](../../aeo-article-author-schema/SKILL.md) |
+| `eeat.expertise.person-schema` | [`aeo-article-author-schema`](../../aeo-article-author-schema/SKILL.md) |
+| `eeat.trust.canonical-coverage` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `eeat.trust.contact-page` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `eeat.trust.https` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `eeat.trust.og-completeness` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `eeat.trust.privacy-terms` | [`aeo-eeat-trust-signals`](../../aeo-eeat-trust-signals/SKILL.md) |
+| `tech.canonical-present` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.canonical-resolves` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.charset-declared` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.content-not-thin` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `tech.heading-hierarchy` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `tech.headings-present` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `tech.hreflang-valid` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.https` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.image-alt-coverage` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.indexable` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.internal-linking` | [`aeo-site-structure`](../../aeo-site-structure/SKILL.md) |
+| `tech.lang-declared` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.llms-txt-present` | [`aeo-llms-txt`](../../aeo-llms-txt/SKILL.md) |
+| `tech.meta-description-length` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.meta-description-present` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.meta-title-length` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.meta-title-present` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.no-broken-pages` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.no-redirect-loops` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.open-graph-complete` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.robots-present` | [`aeo-ai-crawler-access`](../../aeo-ai-crawler-access/SKILL.md) |
+| `tech.short-redirect-chains` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.single-h1` | [`aeo-answer-first-content`](../../aeo-answer-first-content/SKILL.md) |
+| `tech.sitemap-covers-pages` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.sitemap-lastmod-trustworthy` | [`aeo-content-freshness`](../../aeo-content-freshness/SKILL.md) |
+| `tech.sitemap-present` | [`aeo-indexability`](../../aeo-indexability/SKILL.md) |
+| `tech.structured-data-present` | [`aeo-structured-data-validation`](../../aeo-structured-data-validation/SKILL.md) |
+| `tech.structured-data-valid` | [`aeo-structured-data-validation`](../../aeo-structured-data-validation/SKILL.md) |
+| `tech.twitter-card` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.unique-titles` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
+| `tech.viewport-mobile` | [`aeo-page-metadata`](../../aeo-page-metadata/SKILL.md) |
