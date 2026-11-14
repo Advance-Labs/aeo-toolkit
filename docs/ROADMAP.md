@@ -24,7 +24,7 @@ before starting. Ordering within a section is rough priority, not commitment.
 
 ## Chrome extension and packages
 
-- Keep the extension's 40 checks and the npm packages' behaviour in step with the scoring engine
+- Keep the extension's 44 checks and the npm packages' behaviour in step with the scoring engine
   (the extension runs the rule set from the Chrome Web Store build, not the latest scoring release).
 - Package READMEs and the [package reference](reference/packages.md) stay accurate as versions move.
 

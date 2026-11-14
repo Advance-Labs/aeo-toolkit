@@ -162,6 +162,37 @@ console.log(report.topFixes.slice(0, 3).map((f) => f.title))
 
 ---
 
+## Agent skills: AEO for coding agents
+
+The MCP servers tell an agent **what is wrong**. The [skills](skills) tell it **how to fix it** in
+the stack it is working in, then how to check the fix landed. There are 24, and every one of the 58
+scoring rules has exactly one owning skill ([`skills/rule-map.json`](skills/rule-map.json), enforced
+in CI). The fixes cover AI crawler access, server rendering, llms.txt, indexability, Organization
+and author markup, answer-first content, metadata, freshness, trust signals and citation earning,
+plus measurement workflows on Search Console, Bing, GA4 and Perplexity.
+
+One command installs all the skills **and** the three MCP servers into Claude Code:
+
+```bash
+/plugin install aeo-toolkit --marketplace Advance-Labs/aeo-toolkit
+```
+
+Or add the marketplace first and pick it from the list:
+
+```bash
+/plugin marketplace add Advance-Labs/aeo-toolkit
+/plugin install aeo-toolkit@advance-labs
+```
+
+The search server asks for Google sign-in on first use (`/mcp` → Authenticate). Other agents can
+copy any `skills/<name>/` directory into their own skills folder. Every skill is also published
+as a readable guide at **[docs.advancelabs.dev/aeo-toolkit/skills](https://docs.advancelabs.dev/aeo-toolkit/skills/)**.
+
+> Already added the servers with `claude mcp add`? The plugin registers its own copies
+> (`plugin:aeo-toolkit:*`), so remove the manual ones to avoid duplicate tools.
+
+---
+
 ## Connect the MCP servers
 
 [![mcptry](https://mcptry.com/badge/dev.advancelabs/aeo-backlink)](https://mcptry.com/servers/dev.advancelabs/aeo-backlink)
