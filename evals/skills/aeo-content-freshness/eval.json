@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/blog/month-end-close/",
+  "prompt": "This folder holds one blog post, served at https://northwind.example/blog/month-end-close/. It was first published on 2026-10-02 and substantively revised on 2026-11-01 (the reconciliation section was rewritten). Make the page's dates clear to search and answer engines.",
+  "expectPass": [
+    "aeo.content-freshness"
+  ]
+}
