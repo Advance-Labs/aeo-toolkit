@@ -7,8 +7,8 @@
  * Requires PHP:      7.4
  * Author:            Advance Labs
  * Author URI:        https://advancelabs.dev
- * License:           Apache-2.0
- * License URI:       https://www.apache.org/licenses/LICENSE-2.0
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       aeo-ai-demand-collector
  *
  * @package AeoAiDemandCollector
