@@ -1,5 +1,11 @@
 # @advance-labs/types
 
+## 0.5.0
+
+### Minor Changes
+
+- 31f8cd0: Findings now carry `guideUrl`: the rule's fix guide on docs.advancelabs.dev, which links to the agent skill that owns the rule. `docsUrl` still points at the primary source. Also exports `ruleGuideUrl(id)` for consumers that build their own findings, such as E-E-A-T signals.
+
 ## 0.4.0
 
 ### Minor Changes

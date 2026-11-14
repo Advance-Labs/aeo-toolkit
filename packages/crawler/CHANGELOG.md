@@ -1,5 +1,12 @@
 # @advance-labs/crawler
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies [31f8cd0]
+  - @advance-labs/types@0.5.0
+
 ## 0.2.7
 
 ### Patch Changes
