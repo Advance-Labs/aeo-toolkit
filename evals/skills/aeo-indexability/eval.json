@@ -1,0 +1,8 @@
+{
+  "pageUrl": "https://northwind.example/",
+  "prompt": "This folder is our homepage, served at https://northwind.example/ (the only URL for it). It has launched, so it should now be indexable. Fix the page so search and answer engines can index it properly.",
+  "expectPass": [
+    "tech.indexable",
+    "tech.canonical-present"
+  ]
+}

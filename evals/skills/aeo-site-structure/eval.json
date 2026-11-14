@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/guides/month-end/checklist/",
+  "prompt": "This folder holds one page, served at https://northwind.example/guides/month-end/checklist/. The trail is Home (https://northwind.example/) > Guides (https://northwind.example/guides/) > Month-end (https://northwind.example/guides/month-end/) > Checklist. Make the site structure clear to search and answer engines on this page.",
+  "expectPass": [
+    "aeo.breadcrumbs"
+  ]
+}

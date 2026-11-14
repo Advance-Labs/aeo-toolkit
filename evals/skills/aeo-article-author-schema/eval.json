@@ -1,0 +1,7 @@
+{
+  "pageUrl": "https://northwind.example/blog/month-end-close/",
+  "prompt": "This folder holds one blog post from our site, served at https://northwind.example/blog/month-end-close/. The author is Priya Raman, our Controller; her author page is https://northwind.example/team/priya-raman/ and her LinkedIn is https://www.linkedin.com/in/priya-raman-cpa. The publisher is Northwind Analytics Inc. Mark up the post so answer engines know who wrote it.",
+  "expectPass": [
+    "aeo.article-author-schema"
+  ]
+}
