@@ -39,7 +39,7 @@ Rule IDs this skill owns, with what the audit actually checks (from `@advance-la
 
 | Rule | Passes when | Read it carefully |
 |---|---|---|
-| `aeo.question-headings` | At least one heading across **all audited pages** is question-like: it ends in `?`, or its first word is who, what, when, where, why, how, which, can, should, is, are, do, does or will | One heading anywhere is enough. "How to ..." and "Who we are" both count. A pass proves little. |
+| `aeo.question-headings` | At least a quarter of audited pages (minimum one) have a question-like heading: it ends in `?`, or its first word is who, what, when, where, why, how, which, can, should, is, are, do, does or will | "How to ..." and "Who we are" both count, so a pass still proves little. |
 | `aeo.answerable-content` | Mean visible word count across pages is 300 or more **and** at least one `<ul>` or `<ol>` exists somewhere | Site-wide mean, not per page. |
 | `aeo.content-extractability` | Mean `<p>` count per page is 3 or more **and** at least one list or table exists somewhere | Same caveat. |
 | `aeo.speakable-structured-answers` | Any page has Speakable, HowTo or QAPage schema, a "how to" or "step-by-step" heading, or FAQ/QA schema | A "how to" heading alone passes it. Low weight; do not chase it. |
@@ -130,8 +130,8 @@ that is not visible on the page.
 - **Turning every heading into a question.** Over-optimization that hurts readers.
 - **Padding to reach 300 or 600 words.** The thresholds are heuristics. Padding makes the page
   worse and gets no credit from Google, which says it has no preferred word count.
-- **Treating a green audit as the goal.** `aeo.question-headings` passes with one question heading
-  on the whole site. A pass says nothing about whether any page is quotable.
+- **Treating a green audit as the goal.** `aeo.question-headings` passes when a quarter of pages
+  have one question-like heading. A pass says nothing about whether any page is quotable.
 - **Hiding the answer in an accordion or tab that loads on click.** Content that is not in the
   initial HTML may not be read.
 - **Fixing `tech.content-not-thin` by adding boilerplate.** The check counts nav and footer text,

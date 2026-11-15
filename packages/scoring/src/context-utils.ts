@@ -24,6 +24,17 @@ export const KEY_AI_BOTS: readonly AiBotName[] = [
   'Google-Extended',
 ];
 
+/**
+ * Bots that fetch pages to answer or cite in an assistant, as opposed to collecting training
+ * data. Blocking these removes a site from answers; blocking training bots does not.
+ */
+export const SEARCH_AI_BOTS: readonly AiBotName[] = [
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'PerplexityBot',
+  'Perplexity-User',
+];
+
 /** First parsed page, or `undefined` when no pages were parsed. */
 export function firstPage(ctx: ScoringContext): ParsedHtml | undefined {
   return ctx.pages[0];

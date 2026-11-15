@@ -35,18 +35,16 @@ Rules this skill owns, and what they actually check:
 
 | Rule | Passes when |
 |---|---|
-| `aeo.organization-schema` | Any crawled page has a node whose type is `Organization` or `LocalBusiness` (found at any nesting depth, JSON-LD, Microdata or RDFa). |
+| `aeo.organization-schema` | Any crawled page has a node whose type is `Organization` or a schema.org subtype of it, such as `Corporation`, `NGO` or `LocalBusiness` and its subtypes (found at any nesting depth, JSON-LD, Microdata or RDFa). |
 | `eeat.auth.organization-schema` | Same detection, in the E-E-A-T pillar. |
-| `aeo.entity-identity-consistent` | Fewer than two first-party `Organization` nodes exist, or all of them share one `@id` and one `url`. |
+| `aeo.entity-identity-consistent` | Fewer than two first-party Organization-type nodes (any subtype) exist, or all of them share one `@id` and one `url`. |
 
 Details that change how you read a result:
 
-- **Subtypes are not all detected.** `Corporation`, `NGO`, `NewsMediaOrganization`,
-  `OnlineBusiness` and the other schema.org subtypes are valid, but the audit only counts the
-  exact short type `Organization` plus `LocalBusiness`. A site marked up as `@type: "Corporation"`
-  alone can fail the presence rule while being correct schema.org. Declaring a type array such as
-  `["Organization", "Corporation"]` satisfies presence, but the consistency rule compares only
-  nodes whose type is exactly `Organization`, so such a node is skipped there.
+- **Subtypes count.** `Corporation`, `NGO`, `NewsMediaOrganization`, `OnlineBusiness`,
+  `Restaurant` and the other common subtypes satisfy both rules, alone or in a type array. The
+  list lives in `packages/types/src/organization-types.ts`; a rare leaf type missing from it is a
+  bug to report, not a reason to change correct markup.
 - **"First-party" means the host matches.** Nodes whose `@id` or `url` is on another domain
   (a client on a case-study page) are ignored by the consistency rule. Subdomains of the
   audited host count as the same site, which is the point: `app.example.com` and `example.com`
@@ -151,9 +149,7 @@ Property notes, from Google's Organization documentation:
   or that clearly describe it.
 - `address`, `telephone`, `email`, `vatID`, `iso6523Code` are recommended when true and public.
   Do not add them to look complete.
-- Use the most specific subtype that is accurate (`OnlineStore`, `NGO`, `Corporation`), but see
-  the detection caveat above: keep `Organization` in a type array if you want the audit to count
-  it.
+- Use the most specific subtype that is accurate (`OnlineStore`, `NGO`, `Corporation`).
 
 A node on a subdomain that only points back:
 

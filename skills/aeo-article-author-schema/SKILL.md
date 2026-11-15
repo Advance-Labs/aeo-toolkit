@@ -32,7 +32,7 @@ user; do not choose a name.
 
 | Rule | Passes when |
 |---|---|
-| `aeo.article-author-schema` | Across the crawled pages, at least one `Article`-family node exists **and** at least one `Person` node exists. |
+| `aeo.article-author-schema` | At least one page has an `Article`-family node, and **every** page with one also has a `Person` node. |
 | `eeat.expertise.article-markup` | At least one Article-family node exists. |
 | `eeat.expertise.person-schema` | At least one `Person` node exists. |
 
@@ -43,10 +43,10 @@ What that really means:
   for presence.
 - Detection is **at any nesting depth**, so `author: { "@type": "Person" }` inside the Article
   satisfies the Person check.
-- The rules are **site-wide ORs, not per-page**. A Person anywhere (a founder on the About
-  page) plus an Article anywhere passes `aeo.article-author-schema`, even if no article is
-  attributed to anyone. The audit passing does not prove the author is linked to the article.
-  Check that yourself.
+- `aeo.article-author-schema` is **per page**: a founder Person on the About page no longer
+  covers an unattributed article elsewhere. It still checks "a Person on the same page", not
+  "the Article's `author` is that Person", so confirm the `author` link yourself.
+- The two `eeat.expertise.*` rules are still site-wide presence checks.
 - The toolkit's validator requires `headline` on `Article`, `NewsArticle` and `BlogPosting`, and
   `name` on `Person`. A missing one marks the item invalid (`tech.structured-data-valid`).
   `TechArticle` has no required-property check in the validator, so a headline-less TechArticle

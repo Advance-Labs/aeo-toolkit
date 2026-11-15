@@ -12,7 +12,6 @@ import {
   brokenPages,
   everyPage,
   firstPage,
-  firstStructured,
   isNoindex,
   isNoindexHeader,
   longRedirectChains,
@@ -511,9 +510,13 @@ export const technicalSeoRules: Rule[] = [
     recommendation: 'Add JSON-LD structured data describing the page.',
     docsUrl: 'https://schema.org/',
     evaluate: (ctx) => {
-      const sd = firstStructured(ctx);
-      const total = ctx.structuredData.reduce((acc, r) => acc + r.totalItems, 0);
-      return total > 0 || (sd?.totalItems ?? 0) > 0
+      // A JSON-LD script that fails to parse is recorded as an untyped item so the
+      // invalid-items rule can report it; it is not structured data an engine can read.
+      const total = ctx.structuredData.reduce(
+        (acc, r) => acc + r.items.filter((i) => i.type !== '').length,
+        0,
+      );
+      return total > 0
         ? { passed: true }
         : { passed: false, detail: 'No structured-data items detected.' };
     },
