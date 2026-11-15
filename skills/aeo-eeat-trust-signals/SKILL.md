@@ -1,6 +1,6 @@
 ---
 name: aeo-eeat-trust-signals
-description: Fix the basic trust pages and signals a site is expected to have - About page, Contact page, Privacy and Terms, HTTPS, canonical tags, and links out to authoritative sources. Use when an audit fails eeat.expertise.about-page, eeat.trust.contact-page, eeat.trust.privacy-terms, eeat.trust.https, eeat.trust.canonical-coverage or eeat.auth.outbound-references, or when someone asks about E-E-A-T, "does my site look trustworthy", "do I need an about page", or why an AI engine will not cite a site it cannot identify. Uses the aeo-visibility MCP server (analyze_website_aeo) if connected; works without it.
+description: Fix the basic trust pages and signals a site is expected to have - About page, Contact page, Privacy and Terms, HTTPS, canonical tags, and links out to authoritative sources. Use when an audit fails eeat.expertise.about-page, eeat.trust.contact-page, eeat.trust.privacy-terms, eeat.trust.https, eeat.trust.canonical-coverage or eeat.auth.outbound-references, or when someone asks about E-E-A-T, "does my site look trustworthy", "do I need an about page", or why an AI engine will not cite a site it cannot identify. Uses the aeo-research MCP server (analyze_website_aeo) if connected; works without it.
 ---
 
 # E-E-A-T and trust signals

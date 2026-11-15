@@ -1,6 +1,6 @@
 ---
 name: aeo-structured-data-validation
-description: Check that a site's structured data (JSON-LD, Microdata, RDFa) is present, parses, and is valid, and fix the usual breakage: invalid JSON, missing required properties, duplicate or conflicting blocks from plugins, colliding @id values, HTML entities in JSON-LD. Use when someone asks to validate schema markup, test structured data, debug "structured data present" or "structured data invalid" audit findings, find why Rich Results Test or schema validator shows errors, or untangle duplicate schema from Yoast, Rank Math or a theme. Covers tech.structured-data-present and tech.structured-data-valid. Uses the aeo-visibility MCP server if connected; works without it.
+description: Check that a site's structured data (JSON-LD, Microdata, RDFa) is present, parses, and is valid, and fix the usual breakage: invalid JSON, missing required properties, duplicate or conflicting blocks from plugins, colliding @id values, HTML entities in JSON-LD. Use when someone asks to validate schema markup, test structured data, debug "structured data present" or "structured data invalid" audit findings, find why Rich Results Test or schema validator shows errors, or untangle duplicate schema from Yoast, Rank Math or a theme. Covers tech.structured-data-present and tech.structured-data-valid. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # Validating structured data

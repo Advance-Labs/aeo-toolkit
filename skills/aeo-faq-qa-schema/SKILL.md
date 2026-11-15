@@ -1,6 +1,6 @@
 ---
 name: aeo-faq-qa-schema
-description: Decide whether and how to add FAQPage, QAPage or HowTo structured data, and keep any Q&A markup identical to the questions and answers visible on the page. Use when someone asks to add FAQ schema, FAQPage JSON-LD, Q&A markup, HowTo schema, "FAQ rich results", or fixes an "FAQ or QA schema missing" or "FAQ/HowTo/Review schema" audit finding, or asks whether FAQ schema still works in Google. Covers aeo.faq-qa-schema and eeat.exp.faq-howto-review-schema. Uses the aeo-visibility MCP server if connected; works without it.
+description: Decide whether and how to add FAQPage, QAPage or HowTo structured data, and keep any Q&A markup identical to the questions and answers visible on the page. Use when someone asks to add FAQ schema, FAQPage JSON-LD, Q&A markup, HowTo schema, "FAQ rich results", or fixes an "FAQ or QA schema missing" or "FAQ/HowTo/Review schema" audit finding, or asks whether FAQ schema still works in Google. Covers aeo.faq-qa-schema and eeat.exp.faq-howto-review-schema. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # FAQ, Q&A and HowTo markup: what it is still for

@@ -2,7 +2,7 @@
 
 Answer Engine Optimization for coding agents. This plugin gives Claude Code 24 skills that make a
 website reachable, understandable and citable by AI answer engines (ChatGPT, Claude, Perplexity,
-Gemini, Google AI Overviews, Copilot). It also connects the three hosted AEO Toolkit MCP servers,
+Gemini, Google AI Overviews, Copilot). It also connects the two hosted AEO Toolkit MCP servers,
 which the skills use to detect problems and verify fixes.
 
 Every one of the 58 rules in the open-source AEO Toolkit audit has exactly one owning skill. Each
@@ -25,17 +25,16 @@ added these servers by hand with `claude mcp add`, remove those entries to avoid
 - `skills/`: 24 skills. Markdown instructions and per-stack recipes only. **No scripts, hooks, binaries
   or local commands.** The skills edit files in your project only through Claude Code's normal,
   permissioned editing tools.
-- `.claude-plugin/plugin.json`: three remote MCP servers over HTTPS. Nothing runs locally.
+- `.claude-plugin/plugin.json`: two remote MCP servers over HTTPS. Nothing runs locally.
 
 ## What it sends, and where
 
-All three MCP servers are hosted by Advance Labs at `aeo.advancelabs.dev`. Every tool is **read-only**:
+Both MCP servers are hosted by Advance Labs at `aeo.advancelabs.dev`. Every tool is **read-only**:
 none of them writes to your site or to any third-party account.
 
 | Server | Auth | What a call sends | What it does with it |
 |---|---|---|---|
-| `visibility` | none | a URL to audit, or a question and a domain | Crawls the URL's public pages to score them. Questions are sent to Perplexity Sonar to see whether the domain is cited. |
-| `backlink` | none | a domain, a URL or a topic | Searches the web (Brave Search) and the Common Crawl index, fetches public pages to find mentions, link prospects and contact details published on the target's own site, and reads page history from the Internet Archive's Wayback Machine. `generate_outreach_email` sends the draft request to the model provider **you** choose with **your own** API key, which is used for that request only and never stored or logged. |
+| `research` | none | a URL to audit, a question and a domain, or a domain, URL or topic to research | Crawls the URL's public pages to score them. Questions are sent to Perplexity Sonar, with **your own** Perplexity key, to see whether the domain is cited. Backlink research searches the web (Brave Search) and the Common Crawl index, fetches public pages to find mentions, link prospects and contact details published on the target's own site, and reads page history from the Internet Archive's Wayback Machine. `generate_outreach_email` sends the draft request to the model provider **you** choose with **your own** API key. Keys are used for that request only and never stored or logged. |
 | `search` | Google OAuth (or your own Google token; optional Bing API key) | the Search Console, GA4 or Bing property and the report you ask for | Reads reporting data from Google Search Console, GA4 and Bing Webmaster Tools with read-only scopes. The Google refresh token is stored encrypted; reporting data is fetched on request and not kept in our database. |
 
 The skills themselves send nothing anywhere. Without the MCP servers they fall back to local checks

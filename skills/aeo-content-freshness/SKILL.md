@@ -1,6 +1,6 @@
 ---
 name: aeo-content-freshness
-description: Make a site's "last updated" signals honest and consistent, and decide which pages are worth a real refresh. Use when someone asks about dateModified, datePublished, "last updated" dates on posts, whether to bump dates to look fresh, sitemap lastmod values, a sitemap where every URL has today's date, future dates in a sitemap, or why an audit fails aeo.content-freshness or tech.sitemap-lastmod-trustworthy. Hands off to seo-content-decay to choose which pages to refresh. Uses the aeo-visibility and aeo-search MCP servers if connected; works without them.
+description: Make a site's "last updated" signals honest and consistent, and decide which pages are worth a real refresh. Use when someone asks about dateModified, datePublished, "last updated" dates on posts, whether to bump dates to look fresh, sitemap lastmod values, a sitemap where every URL has today's date, future dates in a sitemap, or why an audit fails aeo.content-freshness or tech.sitemap-lastmod-trustworthy. Hands off to seo-content-decay to choose which pages to refresh. Uses the aeo-research and aeo-search MCP servers if connected; works without them.
 ---
 
 # Content freshness, honestly

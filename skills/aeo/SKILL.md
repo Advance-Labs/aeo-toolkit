@@ -1,6 +1,6 @@
 ---
 name: aeo
-description: Entry point for making a website show up and get cited in AI answers (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews, Copilot). Use when someone asks to "do AEO" on a site, improve AI search visibility, get recommended by ChatGPT, audit a site for answer engines, or fix a list of AEO audit findings, and it is not yet clear which specific fix applies. Runs or reads an audit, groups the failures, orders them by impact, and hands each group to the skill that owns it. Uses the aeo-visibility MCP server if connected; works without it.
+description: Entry point for making a website show up and get cited in AI answers (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews, Copilot). Use when someone asks to "do AEO" on a site, improve AI search visibility, get recommended by ChatGPT, audit a site for answer engines, or fix a list of AEO audit findings, and it is not yet clear which specific fix applies. Runs or reads an audit, groups the failures, orders them by impact, and hands each group to the skill that owns it. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # AEO: audit, triage, hand off
