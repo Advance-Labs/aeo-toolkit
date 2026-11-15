@@ -1,6 +1,6 @@
 ---
 name: aeo-ai-referral-analytics
-description: Measure traffic that AI assistants send to a site, using Google Analytics 4. Use when someone asks "how much traffic comes from ChatGPT/Perplexity/Claude", "are AI answers sending us visitors", "set up an AI traffic channel in GA4", "which pages do AI assistants send people to", or "is our AEO work driving visits". Covers the GA4 query, a reusable referrer regex, landing pages, and why the number is always an undercount. Requires the aeo-toolkit aeo-search MCP server with Google OAuth.
+description: Measure traffic that AI assistants send to a site, using Google Analytics 4. Use when someone asks "how much traffic comes from ChatGPT/Perplexity/Claude", "are AI answers sending us visitors", "set up an AI traffic channel in GA4", "which pages do AI assistants send people to", or "is our AEO work driving visits". Covers the GA4 query, a reusable referrer regex, landing pages, and why the number is always an undercount. Requires the aeo-toolkit MCP server, signed in to an AEO Toolkit account with Google connected.
 ---
 
 # AI referral analytics (GA4)
@@ -85,5 +85,5 @@ Do not "correct" for undercounting with a multiplier. There is no verified one.
 - GA4 Data API schema, https://developers.google.com/analytics/devguides/reporting/data/v1/api-schema (dimension names), verified 2026-11-13.
 - OpenAI Publishers and Developers FAQ, help.openai.com article 12627856 (`utm_source=chatgpt.com`), verified 2026-11-13 via search excerpt only.
 - OpenAI crawler docs, https://platform.openai.com/docs/bots, verified 2026-11-13.
-- Tool behaviour from the aeo-search `ga4_run_report` definition, verified 2026-11-13.
+- Tool behaviour from the aeo-toolkit `ga4_run_report` definition, verified 2026-11-13.
 - Hostnames other than chatgpt.com: NOT verified.

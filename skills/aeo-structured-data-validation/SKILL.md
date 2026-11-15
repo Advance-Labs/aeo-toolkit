@@ -107,7 +107,7 @@ External validators, for a second opinion:
   vocabulary check, independent of Google features. It is the better check for types Google
   has no feature for.
 - Search Console's enhancement reports and the URL Inspection tool show what Google actually
-  indexed after deployment (`gsc_url_inspect` if the aeo-search server is connected).
+  indexed after deployment (`gsc_url_inspect` if the aeo-toolkit server is connected).
 
 ## Decide
 

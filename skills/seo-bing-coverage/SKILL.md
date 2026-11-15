@@ -1,6 +1,6 @@
 ---
 name: seo-bing-coverage
-description: Find where a site performs differently on Google and Bing, and check Bing crawl and index health. Use when someone asks "are we on Bing", "why did Google traffic drop but Bing didn't", "is Bing indexing our pages", "does Bing matter for ChatGPT or Copilot", "compare Google and Bing queries", or "submit our URLs to Bing / IndexNow". Requires the aeo-toolkit aeo-search MCP server with Google OAuth and a Bing Webmaster API key.
+description: Find where a site performs differently on Google and Bing, and check Bing crawl and index health. Use when someone asks "are we on Bing", "why did Google traffic drop but Bing didn't", "is Bing indexing our pages", "does Bing matter for ChatGPT or Copilot", "compare Google and Bing queries", or "submit our URLs to Bing / IndexNow". Requires the aeo-toolkit MCP server, signed in to an AEO Toolkit account with Google connected and a Bing Webmaster key saved on the project.
 ---
 
 # Google vs Bing coverage
@@ -91,5 +91,5 @@ Bingbot, and keep OAI-SearchBot allowed.
 
 - OpenAI crawler docs, https://platform.openai.com/docs/bots (OAI-SearchBot behaviour), verified 2026-11-13.
 - IndexNow documentation, https://www.indexnow.org/documentation (10,000 URL limit, key file, cross-engine sharing), verified 2026-11-13.
-- Tool behaviour from the aeo-search MCP tool definitions, verified 2026-11-13.
+- Tool behaviour from the aeo-toolkit MCP tool definitions, verified 2026-11-13.
 - ChatGPT-uses-Bing and Copilot-uses-Bing: secondary sources only, NOT verified.

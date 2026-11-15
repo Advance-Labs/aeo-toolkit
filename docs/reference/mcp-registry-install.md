@@ -9,13 +9,19 @@ The AEO Toolkit runs three hosted MCP servers. They are listed in the official
 (published 2026-10-31, all three active). There is nothing to install locally: each
 server is a Streamable-HTTP endpoint, and you point your client at its URL.
 
-**32 tools in total.** Every tool is read-only (`readOnlyHint: true`, `destructiveHint: false`).
+**34 distinct tools in total.** Every tool is read-only (`readOnlyHint: true`, `destructiveHint: false`).
 
 ## The servers
 
+> **2026-11-14: two servers.** The registry entries below are unchanged, but behind them there are now
+> two servers: `aeo-research` (`/api/mcp/research/mcp`, no sign-in, the visibility and backlink tools)
+> and the AEO Toolkit account server, which kept the `aeo-search` URL and now signs in with an AEO
+> Toolkit account. The `ai-visibility` and `backlink` URLs stay up as aliases. See the
+> [README](../../README.md#connect-the-mcp-servers) for the current setup.
+
 | Registry name | Endpoint | Tools | Sign-in |
 |---|---|---|---|
-| `dev.advancelabs/aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 20 | OAuth 2.1 with Google consent |
+| `dev.advancelabs/aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 33 | OAuth 2.1 with the AEO Toolkit account |
 | `dev.advancelabs/aeo-visibility` | `https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp` | 5 | None |
 | `dev.advancelabs/aeo-backlink` | `https://aeo.advancelabs.dev/api/mcp/backlink/mcp` | 7 | None |
 
@@ -87,10 +93,11 @@ cannot sign in.
 
 ## How authentication works
 
-**aeo-search** uses OAuth 2.1. An anonymous request gets a `401` with a `WWW-Authenticate` header
-that points the client at the server's discovery metadata. The client then opens a browser for
-Google consent. The Bing tools take a Bing Webmaster API key in an `x-bing-api-key` request header.
-Without it, the Bing tools return a credential error and the Google tools keep working.
+**aeo-search** (now the AEO Toolkit account server) uses OAuth 2.1. An anonymous request gets a `401`
+with a `WWW-Authenticate` header that points the client at the server's discovery metadata. The
+client then opens a browser to sign in to AEO Toolkit. Google and Bing come from the connections on
+your AEO Toolkit project, and AI provider keys from the account settings. A raw Google token as
+`Authorization: Bearer` and a Bing key in `x-bing-api-key` still work for the search tools.
 
 **aeo-visibility** needs no sign-in. The tools backed by Perplexity take your own Perplexity API
 key as a tool argument. The key is used for that request only and is never stored or logged.

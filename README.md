@@ -34,8 +34,8 @@ Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advance
 Want the data underneath? **[DataForAEO](https://dataforaeo.dev)** is data for AEO from Advance Labs: measured AI-assistant demand per page, AI answers and citations, and the [AI crawler list](https://dataforaeo.dev/ai-crawlers).
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
-GA4 + GSC chat, backlink graph, authority) and **two MCP servers** (`research`, `search`)
-exposing 32 tools to Claude or any MCP client. They are proprietary and run on
+GA4 + GSC chat, backlink graph, authority) and **two MCP servers** (`research`, `toolkit`)
+exposing 34 tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
@@ -184,7 +184,7 @@ Or add the marketplace first and pick it from the list:
 /plugin install aeo-toolkit@advance-labs
 ```
 
-The search server asks for Google sign-in on first use (`/mcp` → Authenticate). Other agents can
+The `toolkit` server asks you to sign in to your AEO Toolkit account on first use (`/mcp` → Authenticate). Connect Google and Bing on your project in the AEO Toolkit dashboard, and save AI provider keys under Settings; the server uses them, so you never paste a key into chat. Other agents can
 copy any `skills/<name>/` directory into their own skills folder. Every skill is also published
 as a readable guide at **[docs.advancelabs.dev/aeo-toolkit/skills](https://docs.advancelabs.dev/aeo-toolkit/skills/)**.
 
@@ -207,7 +207,7 @@ nothing to `npm install` and no local process to run. Point any MCP client at th
 
 ```bash
 claude mcp add --transport http --scope user aeo-research https://aeo.advancelabs.dev/api/mcp/research/mcp
-claude mcp add --transport http --scope user aeo-search   https://aeo.advancelabs.dev/api/mcp/search/mcp
+claude mcp add --transport http --scope user aeo-toolkit  https://aeo.advancelabs.dev/api/mcp/search/mcp
 ```
 
 Drop `--scope user` to register them in the current project only. Check the result with
@@ -221,7 +221,7 @@ Drop `--scope user` to register them in the current project only. Check the resu
 {
   "mcpServers": {
     "aeo-research": { "url": "https://aeo.advancelabs.dev/api/mcp/research/mcp" },
-    "aeo-search":   { "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp" }
+    "aeo-toolkit":  { "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp" }
   }
 }
 ```
@@ -229,13 +229,13 @@ Drop `--scope user` to register them in the current project only. Check the resu
 | Server | Tools | Credentials |
 |---|---|---|
 | `aeo-research` | 12 | None to connect. AEO audits and backlink research need nothing; citation checks take a Perplexity key per request. |
-| `aeo-search` | 20 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
+| `aeo-toolkit` | 33 | Sign in with your AEO Toolkit account: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Google, Bing and AI provider keys come from the account. Search Console, GA4, Bing, saved visibility checks, keyword volumes and backlink research. Legacy BYOK (a Google token as `Authorization: Bearer`, an optional `x-bing-api-key`) still works for the Search Console, GA4 and Bing tools. |
 
 Three things that trip people up:
 
 - **The trailing `/mcp` is required.** The bare `/api/mcp/<slug>` returns the adapter's own
   "Not found", which looks like a routing bug and is not.
-- **Only `aeo-search` has a login, and its discovery is path-scoped.** It answers an anonymous
+- **Only `aeo-toolkit` has a login, and its discovery is path-scoped.** It answers an anonymous
   request with a 401 pointing at `/.well-known/oauth-protected-resource/api/mcp/search/mcp`; its
   authorization server is `/api/mcp/oauth`. The ROOT `/.well-known/oauth-*` documents deliberately
   return 404, because `aeo-research` needs no login.
@@ -245,8 +245,8 @@ The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/
 and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
 existing configs need no change.
 
-`/api/mcp/ga-gsc/mcp` still works as a compatibility alias for `aeo-search`; new configs should use
-`/api/mcp/search/mcp`.
+The account server kept the search server's URL. `/api/mcp/toolkit/mcp` and `/api/mcp/ga-gsc/mcp` still work as
+compatibility aliases; new configs should use `/api/mcp/search/mcp`.
 
 ---
 

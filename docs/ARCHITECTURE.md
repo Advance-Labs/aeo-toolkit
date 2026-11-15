@@ -56,8 +56,8 @@ Everything HTTP lives in **one Next.js app**. See
 | `apps/chrome-extension` | MV3 extension, audit runs entirely in the browser | Chrome Web Store |
 
 The two MCP servers are route handlers behind the `mcp-handler` adapter at
-`/api/mcp/<slug>/[transport]`. `aeo-research` needs no sign-in (the old `ai-visibility` and `backlink` paths remain as aliases). `aeo-search` uses OAuth 2.1 with Google
-consent, and its discovery metadata is scoped to its own path. The root `/.well-known/oauth-*`
+`/api/mcp/<slug>/[transport]`. `aeo-research` needs no sign-in (the old `ai-visibility` and `backlink` paths remain as aliases). `aeo-toolkit` (at `/api/mcp/search`) uses OAuth 2.1 with the AEO
+Toolkit account and reads Google, Bing and AI keys from that account; its discovery metadata is scoped to its own path. The root `/.well-known/oauth-*`
 documents deliberately 404, so the keyless server is never pulled into a login. See [`reference/tools.md`](reference/tools.md) for the details.
 The blogging agent is a Vercel Cron, not a service.
 
