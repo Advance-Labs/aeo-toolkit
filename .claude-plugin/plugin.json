@@ -1,6 +1,6 @@
 {
   "name": "aeo-toolkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Answer Engine Optimization for coding agents: 24 skills that fix every AEO Toolkit audit rule in your stack, plus the hosted AI-visibility, backlink and search MCP servers.",
   "author": {
     "name": "Advance Labs",
@@ -24,7 +24,7 @@
       "type": "http",
       "url": "https://aeo.advancelabs.dev/api/mcp/research/mcp"
     },
-    "search": {
+    "toolkit": {
       "type": "http",
       "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp"
     }

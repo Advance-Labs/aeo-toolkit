@@ -1,11 +1,11 @@
 ---
 title: Tool reference
 description: >-
-  The hosted platform (six browser tools, three MCP servers with 32 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
+  The hosted platform (six browser tools, two MCP servers with 34 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
 ---
 
 The hosted platform is proprietary and moved to a private repository on 2026-10-20: **six browser
-tools**, **three MCP servers** with 32 tools, and a scheduled content agent, all served from
+tools**, **two MCP servers** with 34 distinct tools, and a scheduled content agent, all served from
 advancelabs.dev. This repo holds the open core: the six npm packages, the Chrome extension
 (`apps/chrome-extension`) and the skills. Routes and engines below describe the hosted platform; its
 code is not in this repo.
@@ -30,7 +30,7 @@ Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tool
 ## MCP servers — 3
 
 Served by the hosted platform as Streamable-HTTP route handlers via the `mcp-handler` adapter.
-**32 tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+**34 distinct tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
 Every tool on every server is **read-only** — none calls a write method on any upstream API.
 
 AI Visibility and Backlink need no login. **Search has one**: an anonymous request gets a 401
@@ -48,7 +48,7 @@ Nothing to install — these are hosted HTTP endpoints. In Claude Code:
 
 ```bash
 claude mcp add --transport http --scope user aeo-research https://aeo.advancelabs.dev/api/mcp/research/mcp
-claude mcp add --transport http --scope user aeo-search   https://aeo.advancelabs.dev/api/mcp/search/mcp
+claude mcp add --transport http --scope user aeo-toolkit  https://aeo.advancelabs.dev/api/mcp/search/mcp
 ```
 
 For Claude.ai, Cursor and other clients, see the [connection page](https://advancelabs.dev/mcp)
@@ -58,16 +58,16 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 | Server | Endpoint | Auth | Tools |
 |---|---|---|---|
 | Research | `/api/mcp/research/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility`, `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
-| Search (Google + Bing) | `/api/mcp/search/mcp` | Google sign-in (OAuth) or Google BYOK; Bing BYOK optional | see below |
+| AEO Toolkit (account) | `/api/mcp/search/mcp` | AEO Toolkit account sign-in (OAuth); Google, Bing and AI keys come from the account. Legacy Google BYOK + `x-bing-api-key` still work for the search tools | the 20 search tools below, `list_workspaces`, `check_ai_visibility`, `get_visibility_report`, `discover_ranking_prompts`, `analyze_website_aeo`, `get_keyword_volumes` (saved to your workspace), and the 7 backlink tools |
 
-The search server was `GA4 + GSC` at `/api/mcp/ga-gsc/mcp`; that path still works as a compatibility
-alias so existing client configs need no change, but new configs should point at `/api/mcp/search/mcp`.
+The account server kept the search server's URL. `/api/mcp/toolkit/mcp` (the old signed-in server) and
+`/api/mcp/ga-gsc/mcp` still work as compatibility aliases, so existing client configs need no change.
 
 The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/mcp/ai-visibility/mcp`)
 and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
 existing configs need no change.
 
-### Search server — 20 tools
+### Search tools (on the AEO Toolkit server) — 20 tools
 
 | Tool | Engine | Notes |
 |---|---|---|
