@@ -1,6 +1,6 @@
 ---
 name: aeo-llms-txt
-description: Create, fix or decide whether to publish an llms.txt file (and llms-full.txt) for a site. Use when someone asks "add llms.txt", "do I need llms.txt", "does ChatGPT read llms.txt", "generate llms.txt", "llms.txt showing up in Google", or when the audit fails tech.llms-txt-present or aeo.llms-txt-present. Covers the llmstxt.org format, honest adoption status, serving it with noindex, and generating it from source instead of by hand. Uses the aeo-visibility MCP server if connected; works without it.
+description: Create, fix or decide whether to publish an llms.txt file (and llms-full.txt) for a site. Use when someone asks "add llms.txt", "do I need llms.txt", "does ChatGPT read llms.txt", "generate llms.txt", "llms.txt showing up in Google", or when the audit fails tech.llms-txt-present or aeo.llms-txt-present. Covers the llmstxt.org format, honest adoption status, serving it with noindex, and generating it from source instead of by hand. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # llms.txt

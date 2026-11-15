@@ -1,6 +1,6 @@
 ---
 name: aeo-ai-crawler-access
-description: Check and fix whether AI crawlers can reach a site, and decide which ones to allow. Use when someone asks "why isn't ChatGPT or Perplexity citing my site", "should I block GPTBot", "allow AI crawlers", "AI bots blocked", "robots.txt for AI", "Cloudflare is blocking AI bots", or when the audit fails aeo.ai-bots-allowed or tech.robots-present. Covers training bots vs search and user-fetch bots, robots.txt, and CDN/WAF blocking that overrides robots.txt. Uses the aeo-visibility MCP server if connected; works without it.
+description: Check and fix whether AI crawlers can reach a site, and decide which ones to allow. Use when someone asks "why isn't ChatGPT or Perplexity citing my site", "should I block GPTBot", "allow AI crawlers", "AI bots blocked", "robots.txt for AI", "Cloudflare is blocking AI bots", or when the audit fails aeo.ai-bots-allowed or tech.robots-present. Covers training bots vs search and user-fetch bots, robots.txt, and CDN/WAF blocking that overrides robots.txt. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # AI crawler access

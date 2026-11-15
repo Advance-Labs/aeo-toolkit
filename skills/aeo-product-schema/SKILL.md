@@ -1,6 +1,6 @@
 ---
 name: aeo-product-schema
-description: Add or repair Product, Offer and review structured data on e-commerce and DTC product pages so shoppers, Google merchant listings and AI answer engines can read price, availability, brand and identifiers. Use when someone asks about "product schema", "JSON-LD for my products", "price not showing in Google", "merchant listing", "GTIN", "star ratings on product pages", "ChatGPT recommending my product", or when schema price disagrees with the page. Works for Shopify, WooCommerce and Next.js. Uses the aeo-visibility MCP server (analyze_website_aeo, check_ai_visibility) if connected.
+description: Add or repair Product, Offer and review structured data on e-commerce and DTC product pages so shoppers, Google merchant listings and AI answer engines can read price, availability, brand and identifiers. Use when someone asks about "product schema", "JSON-LD for my products", "price not showing in Google", "merchant listing", "GTIN", "star ratings on product pages", "ChatGPT recommending my product", or when schema price disagrees with the page. Works for Shopify, WooCommerce and Next.js. Uses the aeo-research MCP server (analyze_website_aeo, check_ai_visibility) if connected.
 ---
 
 # Product schema for shops

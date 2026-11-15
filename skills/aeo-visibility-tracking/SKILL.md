@@ -1,6 +1,6 @@
 ---
 name: aeo-visibility-tracking
-description: Measure whether AI answer engines actually cite a site, and whether that changes over time. Use when someone asks "are we showing up in AI answers", "is ChatGPT/Perplexity citing us", "did our AEO fixes work", "track our AI visibility", "which prompts should we track", or "how do we compare to competitors in AI search". Covers choosing a prompt set, a baseline, re-measure cadence, answer variance, competitor share, and tying movement to shipped fixes. Requires the aeo-toolkit aeo-visibility MCP server and the user's own Perplexity API key.
+description: Measure whether AI answer engines actually cite a site, and whether that changes over time. Use when someone asks "are we showing up in AI answers", "is ChatGPT/Perplexity citing us", "did our AEO fixes work", "track our AI visibility", "which prompts should we track", or "how do we compare to competitors in AI search". Covers choosing a prompt set, a baseline, re-measure cadence, answer variance, competitor share, and tying movement to shipped fixes. Requires the aeo-toolkit aeo-research MCP server and the user's own Perplexity API key.
 ---
 
 # Tracking AI visibility
@@ -100,6 +100,6 @@ Read this before quoting any number. Per the tool definitions:
 
 ## Sources
 
-Tool behaviour from the aeo-visibility MCP tool definitions and AEO Toolkit `docs/VISIBILITY-TRACKING.md`
+Tool behaviour from the aeo-research MCP tool definitions and AEO Toolkit `docs/VISIBILITY-TRACKING.md`
 (verified 2026-11-13). Perplexity Sonar is the engine the tools call as of that date; recheck
 if the server changes.

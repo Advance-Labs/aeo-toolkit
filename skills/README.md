@@ -83,8 +83,7 @@ Perplexity data, and they need the matching server.
 
 | Server | Endpoint | Auth |
 |---|---|---|
-| `aeo-visibility` | `https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp` | none |
-| `aeo-backlink` | `https://aeo.advancelabs.dev/api/mcp/backlink/mcp` | none |
+| `aeo-research` | `https://aeo.advancelabs.dev/api/mcp/research/mcp` | none (the Perplexity tools take your own key) |
 | `aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | Google sign-in; Bing key optional |
 
 Setup for each client is at [advancelabs.dev/mcp](https://advancelabs.dev/mcp).
