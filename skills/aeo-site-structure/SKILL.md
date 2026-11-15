@@ -30,8 +30,8 @@ What the audit checks (`packages/scoring`, `packages/schema-validator`, `package
 
 | Rule | Passes when |
 |---|---|
-| `aeo.breadcrumbs` | Any audited page has a `BreadcrumbList` in structured data (JSON-LD, microdata or RDFa). Not applied to a single-root-page audit |
-| `eeat.auth.breadcrumbs` | The same signal, counted as an E-E-A-T authority signal |
+| `aeo.breadcrumbs` | At least half of the audited non-root pages have a `BreadcrumbList` in structured data (JSON-LD, microdata or RDFa). Not applied to a single-root-page audit |
+| `eeat.auth.breadcrumbs` | Any audited page has a `BreadcrumbList`, counted as an E-E-A-T authority signal |
 | `tech.internal-linking` | Mean internal links per page is 1 or more |
 | `eeat.auth.internal-linking` | Mean internal links per page is 3 or more |
 

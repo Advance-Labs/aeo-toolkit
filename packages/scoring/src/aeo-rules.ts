@@ -7,10 +7,35 @@
  * markup, organization identity, AI-bot crawl permission, and extractable
  * structure (lists, decent word count). All accessors are defensive.
  */
+import { isOrganizationType } from '@advance-labs/types';
 import type { Rule, ScoringContext } from '@advance-labs/types';
-import { isSingleRootPage, KEY_AI_BOTS, firstStructured, meanOverPages, normalizeUrl } from './context-utils.js';
+import {
+  isSingleRootPage,
+  KEY_AI_BOTS,
+  SEARCH_AI_BOTS,
+  firstStructured,
+  meanOverPages,
+  normalizeUrl,
+} from './context-utils.js';
 
 const ANSWERABLE_MIN_WORDS = 300;
+
+/**
+ * Share of pages that must carry a signal for a site-wide rule to pass. One question heading or
+ * one breadcrumb trail on a 50-page crawl is not a site that uses the pattern.
+ */
+const QUESTION_HEADING_MIN_SHARE = 0.25;
+const BREADCRUMB_MIN_SHARE = 0.5;
+
+/** Whether a URL is a site root (`/`), which has no breadcrumb trail of its own. */
+function isRootUrl(url: string): boolean {
+  try {
+    const path = new URL(url).pathname;
+    return path === '/' || path === '';
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Schema types whose date properties describe the PRIMARY content of a page.
@@ -127,10 +152,15 @@ export const aeoRules: Rule[] = [
     description: 'Headings phrased as questions match how users query AI assistants.',
     recommendation: 'Add headings like "How does X work?" above their answers.',
     evaluate: (ctx) => {
-      const total = ctx.pages.reduce((acc, p) => acc + p.content.questionHeadingCount, 0);
-      return total > 0
+      const withQuestions = ctx.pages.filter((p) => p.content.questionHeadingCount > 0).length;
+      if (withQuestions === 0) return { passed: false, detail: 'No question-phrased headings found.' };
+      const needed = Math.max(1, Math.ceil(ctx.pages.length * QUESTION_HEADING_MIN_SHARE));
+      return withQuestions >= needed
         ? { passed: true }
-        : { passed: false, detail: 'No question-phrased headings found.' };
+        : {
+            passed: false,
+            detail: `Question headings on ${withQuestions} of ${ctx.pages.length} pages; aim for at least ${needed}.`,
+          };
     },
   },
   {
@@ -166,13 +196,19 @@ export const aeoRules: Rule[] = [
     recommendation: 'Add Article JSON-LD with an author of type Person.',
     docsUrl: 'https://schema.org/Article',
     evaluate: (ctx) => {
-      const hasArticle = anyStructured(ctx, (r) => r.hasArticle);
-      const hasPerson = anyStructured(ctx, (r) => r.hasPerson);
-      return hasArticle && hasPerson
+      // Per page, not site-wide: an Article on one page and a Person on another (the founder on
+      // /about, say) used to pass while no article named an author.
+      // ponytail: "a Person on the same page" stands in for "the Article's author is a Person";
+      // read item.properties.author if an unrelated Person on article pages starts passing it.
+      const articlePages = ctx.structuredData.filter((r) => r.hasArticle);
+      if (articlePages.length === 0)
+        return { passed: false, detail: 'Article: no, Author/Person: no article to attribute.' };
+      const unattributed = articlePages.filter((r) => !r.hasPerson).length;
+      return unattributed === 0
         ? { passed: true }
         : {
             passed: false,
-            detail: `Article: ${hasArticle ? 'yes' : 'no'}, Author/Person: ${hasPerson ? 'yes' : 'no'}.`,
+            detail: `${unattributed} of ${articlePages.length} pages with Article markup have no Person author.`,
           };
     },
   },
@@ -215,7 +251,9 @@ export const aeoRules: Rule[] = [
 
       for (const report of ctx.structuredData) {
         for (const item of report.items) {
-          if (item.type !== 'Organization') continue;
+          // `type` may join several (`Organization,Corporation`) and may be any subtype.
+          const types = item.type.split(',').map((t) => t.trim().split(/[/#:]/).pop() ?? '');
+          if (!types.some(isOrganizationType)) continue;
           const id = typeof item.properties['@id'] === 'string' ? item.properties['@id'] : undefined;
           const url = typeof item.properties['url'] === 'string' ? item.properties['url'] : undefined;
 
@@ -258,13 +296,16 @@ export const aeoRules: Rule[] = [
     description: 'Blocking GPTBot/ClaudeBot/PerplexityBot removes you from AI answers.',
     recommendation: 'Allow key AI user-agents in robots.txt unless you must opt out.',
     evaluate: (ctx) => {
-      // Empty directive list means nothing was explicitly blocked — pass.
-      const blocked = ctx.crawl.robots.aiBotDirectives
-        .filter((d) => !d.allowed && (KEY_AI_BOTS as readonly string[]).includes(d.bot))
-        .map((d) => d.bot);
-      return blocked.length === 0
-        ? { passed: true }
-        : { passed: false, detail: `Blocked: ${blocked.join(', ')}.` };
+      // Only the search and user-fetch bots decide whether an assistant can cite the site.
+      // Blocking training bots (GPTBot, ClaudeBot, Google-Extended) is a legitimate opt-out that
+      // leaves citations intact, so it is reported but does not fail the rule.
+      const blockedBots = ctx.crawl.robots.aiBotDirectives.filter((d) => !d.allowed).map((d) => d.bot);
+      const blocked = blockedBots.filter((b) => (SEARCH_AI_BOTS as readonly string[]).includes(b));
+      if (blocked.length > 0) return { passed: false, detail: `Blocked: ${blocked.join(', ')}.` };
+      const training = blockedBots.filter((b) => (KEY_AI_BOTS as readonly string[]).includes(b));
+      return training.length > 0
+        ? { passed: true, detail: `Training opt-out only (${training.join(', ')}); search bots allowed.` }
+        : { passed: true };
     },
   },
   {
@@ -310,9 +351,23 @@ export const aeoRules: Rule[] = [
     recommendation: 'Add BreadcrumbList JSON-LD reflecting your navigation path.',
     docsUrl: 'https://schema.org/BreadcrumbList',
     evaluate: (ctx) => {
-      const sd = firstStructured(ctx);
-      const present = anyStructured(ctx, (r) => r.hasBreadcrumb) || (sd?.hasBreadcrumb ?? false);
-      return present ? { passed: true } : { passed: false, detail: 'No breadcrumb schema.' };
+      // Share of non-root pages, so one trail on a 50-page crawl no longer passes. Reports align
+      // with pages by index in every pipeline; without that, fall back to presence anywhere.
+      const aligned = ctx.structuredData.length === ctx.pages.length && ctx.pages.length > 0;
+      if (!aligned)
+        return anyStructured(ctx, (r) => r.hasBreadcrumb)
+          ? { passed: true }
+          : { passed: false, detail: 'No breadcrumb schema.' };
+      const deep = ctx.pages.map((p, i) => ({ p, sd: ctx.structuredData[i]! })).filter(({ p }) => !isRootUrl(p.url));
+      const pool = deep.length > 0 ? deep : ctx.pages.map((p, i) => ({ p, sd: ctx.structuredData[i]! }));
+      const withTrail = pool.filter(({ sd }) => sd.hasBreadcrumb).length;
+      if (withTrail === 0) return { passed: false, detail: 'No breadcrumb schema.' };
+      return withTrail / pool.length >= BREADCRUMB_MIN_SHARE
+        ? { passed: true }
+        : {
+            passed: false,
+            detail: `Breadcrumbs on ${withTrail} of ${pool.length} non-root pages.`,
+          };
     },
   },
   {

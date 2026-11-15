@@ -28,11 +28,11 @@ Rules owned:
 
 - `tech.robots-present`: passes when `/robots.txt` answers 2xx with a non-HTML content type.
   A 404, or a catch-all that returns the app shell as `text/html`, fails.
-- `aeo.ai-bots-allowed`: fails when robots.txt disallows `/` for any of **GPTBot, ClaudeBot,
-  PerplexityBot, OAI-SearchBot or Google-Extended**. No robots.txt means nothing is blocked
-  and the rule passes. Note the list mixes training bots (GPTBot, ClaudeBot, Google-Extended)
-  with search bots (OAI-SearchBot, PerplexityBot). A site that blocks only the training bots on
-  purpose will fail this rule. Report it as "intentional, rule is blunt", not as a bug.
+- `aeo.ai-bots-allowed`: fails when robots.txt disallows `/` for any of the search and
+  user-fetch bots: **OAI-SearchBot, ChatGPT-User, PerplexityBot or Perplexity-User**. No
+  robots.txt means nothing is blocked and the rule passes. Blocking only the training bots
+  (GPTBot, ClaudeBot, Google-Extended) passes, with a detail line naming them, because a
+  training opt-out does not remove the site from answers.
 
 With the MCP server: call `analyze_website_aeo` on the site root. The result lists AI-bot
 access per bot.

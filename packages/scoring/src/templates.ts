@@ -83,13 +83,14 @@ function sitemapXmlTemplate(ctx: ScoringContext): GeneratedTemplate {
   const origin = originOf(ctx.crawl.rootUrl);
   // Prefer real crawled/sitemap URLs; fall back to the root when none exist.
   const urls = collectUrls(ctx);
-  const today = new Date().toISOString().slice(0, 10);
   const entries = urls.length > 0 ? urls : [origin.endsWith('/') ? origin : `${origin}/`];
 
   const body = entries
     .map(
       (loc) =>
-        `  <url>\n    <loc>${escapeXml(loc)}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`,
+        // No lastmod: we do not know when each page last changed, and stamping today's date on
+        // every entry is the exact pattern tech.sitemap-lastmod-trustworthy flags.
+        `  <url>\n    <loc>${escapeXml(loc)}</loc>\n  </url>`,
     )
     .join('\n');
 

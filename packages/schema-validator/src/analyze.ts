@@ -3,6 +3,7 @@
  * results up into a `StructuredDataReport` with AEO-relevant presence flags.
  */
 import * as cheerio from 'cheerio';
+import { isOrganizationType } from '@advance-labs/types';
 import type { AeoSchemaType, StructuredDataItem, StructuredDataReport } from '@advance-labs/types';
 import { extractJsonLd } from './json-ld.js';
 import { extractMicrodata } from './microdata.js';
@@ -118,8 +119,7 @@ export function analyzeStructuredData(html: string, url: string): StructuredData
       typesPresentSet.add(shortType);
       if (isAeoSchemaType(shortType)) aeoTypesSet.add(shortType);
 
-      if (shortType === 'Organization') hasOrganization = true;
-      if (shortType === 'LocalBusiness') hasOrganization = true; // LocalBusiness ⊂ Organization
+      if (isOrganizationType(shortType)) hasOrganization = true; // Corporation, NGO, Restaurant…
       if (shortType === 'Person') hasPerson = true;
       if (ARTICLE_TYPES.has(shortType)) hasArticle = true;
       if (shortType === 'BreadcrumbList') hasBreadcrumb = true;

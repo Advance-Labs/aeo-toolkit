@@ -39,13 +39,28 @@ const PILLAR_LABELS: Record<EeatPillarKey, string> = {
   trust: 'Trust',
 };
 
-/** Does any crawled or parsed page URL match the given path pattern? */
-function hasPageMatching(ctx: ScoringContext, pattern: RegExp): boolean {
+/** Below this many words a parsed "About" or "Contact" page is a placeholder, not a page. */
+const TRUST_PAGE_MIN_WORDS = 50;
+
+/**
+ * Is there a real page of this kind? A page counts when its URL matches `path` OR its title or
+ * h1 matches `heading` (so `/story` titled "About us" counts; the heading must start with the phrase, so "Learn about X" does not), and, when we parsed it, it has
+ * actual content (so an empty `/about` stub does not).
+ *
+ * A URL seen in the crawl but never parsed still counts on its URL alone: there is no content
+ * to judge, and the E-E-A-T crawl is capped at 12 pages.
+ */
+function hasPageMatching(ctx: ScoringContext, path: RegExp, heading: RegExp): boolean {
+  const parsed = new Set<string>();
   for (const p of ctx.pages) {
-    if (pattern.test(p.url)) return true;
+    parsed.add(p.url);
+    const titled =
+      heading.test(p.meta.title ?? '') || p.headings.some((h) => h.level === 1 && heading.test(h.text));
+    if ((path.test(p.url) || titled) && p.content.wordCount >= TRUST_PAGE_MIN_WORDS) return true;
   }
   for (const p of ctx.crawl.pages) {
-    if (pattern.test(p.url) || pattern.test(p.finalUrl)) return true;
+    if (parsed.has(p.url) || parsed.has(p.finalUrl)) continue;
+    if (path.test(p.url) || path.test(p.finalUrl)) return true;
   }
   return false;
 }
@@ -122,7 +137,11 @@ const SIGNAL_DEFS: SignalDef[] = [
     weight: 4,
     recommendation: 'Publish an About page describing the team and their credentials.',
     detect: (ctx) => ({
-      present: hasPageMatching(ctx, /\/(about|about-us|team|who-we-are)(\/|$|\?)/i),
+      present: hasPageMatching(
+        ctx,
+        /\/(about|about-us|team|who-we-are)(\/|$|\?)/i,
+        /^\s*(about( us)?|our (story|team)|who we are|meet the team)\b/i,
+      ),
     }),
   },
 
@@ -195,7 +214,11 @@ const SIGNAL_DEFS: SignalDef[] = [
     weight: 4,
     recommendation: 'Publish a Contact page with a real way to reach you.',
     detect: (ctx) => ({
-      present: hasPageMatching(ctx, /\/(contact|contact-us|support)(\/|$|\?)/i),
+      present: hasPageMatching(
+        ctx,
+        /\/(contact|contact-us|support)(\/|$|\?)/i,
+        /^\s*(contact( us)?|get in touch)\b/i,
+      ),
     }),
   },
   {
@@ -208,6 +231,7 @@ const SIGNAL_DEFS: SignalDef[] = [
       present: hasPageMatching(
         ctx,
         /\/(privacy|privacy-policy|terms|terms-of-service|tos|legal)(\/|$|\?)/i,
+        /^\s*(privacy (policy|notice)|terms (of (service|use)|and conditions))\b/i,
       ),
     }),
   },
