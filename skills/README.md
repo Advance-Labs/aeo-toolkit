@@ -84,7 +84,7 @@ Perplexity data, and they need the matching server.
 | Server | Endpoint | Auth |
 |---|---|---|
 | `aeo-research` | `https://aeo.advancelabs.dev/api/mcp/research/mcp` | none (the Perplexity tools take your own key) |
-| `aeo-search` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | Google sign-in; Bing key optional |
+| `aeo-toolkit` | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | AEO Toolkit account sign-in. Google, Bing and AI keys are connected once in the account |
 
 Setup for each client is at [advancelabs.dev/mcp](https://advancelabs.dev/mcp).
 
@@ -124,4 +124,4 @@ re-audits. Add an eval when you add a skill whose rules can be checked on a sing
 Two tests keep the skills honest:
 - `packages/scoring/src/skills-map.test.ts` here checks rule ownership.
 - A test in the private platform repo checks frontmatter, and checks that every MCP tool a skill
-  names is registered on one of the three servers.
+  names is registered on one of the servers.

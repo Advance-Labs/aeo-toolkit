@@ -1,6 +1,6 @@
 ---
 name: aeo-indexability
-description: Find and fix reasons search and answer engines cannot index or trust a site's pages. Use when someone asks "why isn't my page indexed", "sitemap missing pages", "noindex by mistake", "canonical points to a 404", "redirect loop", "redirect chain", "broken pages", "hreflang errors", "submit to Google and Bing", "IndexNow", or when the audit fails tech.sitemap-present, tech.sitemap-covers-pages, tech.indexable, tech.canonical-present, tech.canonical-resolves, tech.no-broken-pages, tech.no-redirect-loops, tech.short-redirect-chains, tech.hreflang-valid or tech.https. Covers per-engine submission (Google, Bing, IndexNow). Uses the aeo-search MCP server if connected; works without it.
+description: Find and fix reasons search and answer engines cannot index or trust a site's pages. Use when someone asks "why isn't my page indexed", "sitemap missing pages", "noindex by mistake", "canonical points to a 404", "redirect loop", "redirect chain", "broken pages", "hreflang errors", "submit to Google and Bing", "IndexNow", or when the audit fails tech.sitemap-present, tech.sitemap-covers-pages, tech.indexable, tech.canonical-present, tech.canonical-resolves, tech.no-broken-pages, tech.no-redirect-loops, tech.short-redirect-chains, tech.hreflang-valid or tech.https. Covers per-engine submission (Google, Bing, IndexNow). Uses the aeo-toolkit MCP server if connected; works without it.
 ---
 
 # Indexability

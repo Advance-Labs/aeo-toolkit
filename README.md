@@ -17,7 +17,7 @@ isn't ChatGPT citing my site", "add Organization schema", "is GPTBot blocked").
 /plugin install aeo-toolkit --marketplace Advance-Labs/aeo-toolkit
 ```
 
-The search server asks for Google sign-in on first use (`/mcp` → Authenticate). If you previously
+The `toolkit` server asks you to sign in to your AEO Toolkit account on first use (`/mcp` → Authenticate). Connect Google and Bing on your project in the AEO Toolkit dashboard, and save AI provider keys under Settings; the server uses them, so you never paste a key into chat. If you previously
 added these servers by hand with `claude mcp add`, remove those entries to avoid duplicate tools.
 
 ## What it contains
@@ -35,7 +35,7 @@ none of them writes to your site or to any third-party account.
 | Server | Auth | What a call sends | What it does with it |
 |---|---|---|---|
 | `research` | none | a URL to audit, a question and a domain, or a domain, URL or topic to research | Crawls the URL's public pages to score them. Questions are sent to Perplexity Sonar, with **your own** Perplexity key, to see whether the domain is cited. Backlink research searches the web (Brave Search) and the Common Crawl index, fetches public pages to find mentions, link prospects and contact details published on the target's own site, and reads page history from the Internet Archive's Wayback Machine. `generate_outreach_email` sends the draft request to the model provider **you** choose with **your own** API key. Keys are used for that request only and never stored or logged. |
-| `search` | Google OAuth (or your own Google token; optional Bing API key) | the Search Console, GA4 or Bing property and the report you ask for | Reads reporting data from Google Search Console, GA4 and Bing Webmaster Tools with read-only scopes. The Google refresh token is stored encrypted; reporting data is fetched on request and not kept in our database. |
+| `toolkit` | AEO Toolkit account (OAuth) | the Search Console, GA4 or Bing property and the report you ask for; visibility prompts and a domain; backlink research targets | Reads reporting data from Google Search Console, GA4 and Bing Webmaster Tools with read-only scopes, using the Google connection and Bing key on your AEO Toolkit project. Visibility checks run against the AI engines the dashboard uses and are saved to your workspace. Backlink tools work as on `research`; `generate_outreach_email` uses the AI provider key saved in your account. Google tokens, Bing keys and AI provider keys are stored encrypted in your account; reporting data is fetched on request and not kept in our database. |
 
 The skills themselves send nothing anywhere. Without the MCP servers they fall back to local checks
 (`curl`, view-source) described in each skill's **Detect** step.

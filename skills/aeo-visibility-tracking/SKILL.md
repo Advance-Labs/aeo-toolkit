@@ -39,7 +39,7 @@ Read this before quoting any number. Per the tool definitions:
    track. Ask which competitors matter. Do not invent either.
 2. **Build the prompt set.** Start from the customer, not the tool.
    - Ask the user for real questions: sales calls, support tickets, search queries
-     (`gsc_top_queries` if `aeo-search` is connected, filtered to question-shaped queries).
+     (`gsc_top_queries` if `aeo-toolkit` is connected, filtered to question-shaped queries).
    - Add candidates with `discover_ranking_prompts` (`url`, `topic`, `testCount`: 0 to 10,
      default 3). These are model-generated guesses at what people ask. Treat them as
      suggestions to review, not ground truth. Use `testCount: 0` to just get the list.
