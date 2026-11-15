@@ -1,6 +1,6 @@
 ---
 name: aeo-article-author-schema
-description: Mark up articles and blog posts with Article, BlogPosting or TechArticle JSON-LD whose author is a real Person linked to an author page, with datePublished, dateModified and a publisher that points at the organization. Use when someone asks to add article schema, author markup, byline or author bio schema, fix "article and author schema missing", "author not identified" or "Person schema" audit findings, or improve E-E-A-T attribution for blog and docs content. Covers aeo.article-author-schema, eeat.expertise.person-schema and eeat.expertise.article-markup. Uses the aeo-visibility MCP server if connected; works without it.
+description: Mark up articles and blog posts with Article, BlogPosting or TechArticle JSON-LD whose author is a real Person linked to an author page, with datePublished, dateModified and a publisher that points at the organization. Use when someone asks to add article schema, author markup, byline or author bio schema, fix "article and author schema missing", "author not identified" or "Person schema" audit findings, or improve E-E-A-T attribution for blog and docs content. Covers aeo.article-author-schema, eeat.expertise.person-schema and eeat.expertise.article-markup. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # Articles with a named, linkable author

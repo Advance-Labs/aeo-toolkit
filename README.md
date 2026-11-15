@@ -34,8 +34,8 @@ Want it done for you? Advance Labs runs a [monthly AEO retainer](https://advance
 Want the data underneath? **[DataForAEO](https://dataforaeo.dev)** is data for AEO from Advance Labs: measured AI-assistant demand per page, AI answers and citations, and the [AI crawler list](https://dataforaeo.dev/ai-crawlers).
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
-GA4 + GSC chat, backlink graph, authority) and **three MCP servers** (`ai-visibility`, `backlink`,
-`search`) exposing 32 tools to Claude or any MCP client. They are proprietary and run on
+GA4 + GSC chat, backlink graph, authority) and **two MCP servers** (`research`, `search`)
+exposing 32 tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
@@ -171,7 +171,7 @@ in CI). The fixes cover AI crawler access, server rendering, llms.txt, indexabil
 and author markup, answer-first content, metadata, freshness, trust signals and citation earning,
 plus measurement workflows on Search Console, Bing, GA4 and Perplexity.
 
-One command installs all the skills **and** the three MCP servers into Claude Code:
+One command installs all the skills **and** the two MCP servers into Claude Code:
 
 ```bash
 /plugin install aeo-toolkit --marketplace Advance-Labs/aeo-toolkit
@@ -200,15 +200,14 @@ as a readable guide at **[docs.advancelabs.dev/aeo-toolkit/skills](https://docs.
 Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=dev.advancelabs)
 as `dev.advancelabs/aeo-search`, `dev.advancelabs/aeo-visibility` and `dev.advancelabs/aeo-backlink`.
 
-The three MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
+The two MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
 nothing to `npm install` and no local process to run. Point any MCP client at the URL.
 
 **Claude Code**: one command per server:
 
 ```bash
-claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
-claude mcp add --transport http --scope user aeo-backlink   https://aeo.advancelabs.dev/api/mcp/backlink/mcp
-claude mcp add --transport http --scope user aeo-search     https://aeo.advancelabs.dev/api/mcp/search/mcp
+claude mcp add --transport http --scope user aeo-research https://aeo.advancelabs.dev/api/mcp/research/mcp
+claude mcp add --transport http --scope user aeo-search   https://aeo.advancelabs.dev/api/mcp/search/mcp
 ```
 
 Drop `--scope user` to register them in the current project only. Check the result with
@@ -221,17 +220,15 @@ Drop `--scope user` to register them in the current project only. Check the resu
 ```json
 {
   "mcpServers": {
-    "aeo-visibility": { "url": "https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp" },
-    "aeo-backlink":   { "url": "https://aeo.advancelabs.dev/api/mcp/backlink/mcp" },
-    "aeo-search":     { "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp" }
+    "aeo-research": { "url": "https://aeo.advancelabs.dev/api/mcp/research/mcp" },
+    "aeo-search":   { "url": "https://aeo.advancelabs.dev/api/mcp/search/mcp" }
   }
 }
 ```
 
 | Server | Tools | Credentials |
 |---|---|---|
-| `aeo-visibility` | 5 | None to connect. Citation checks take a Perplexity key per request. |
-| `aeo-backlink` | 7 | None. |
+| `aeo-research` | 12 | None to connect. AEO audits and backlink research need nothing; citation checks take a Perplexity key per request. |
 | `aeo-search` | 20 | Sign in with Google: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Or BYOK: a Google access token as `Authorization: Bearer`, plus an optional `x-bing-api-key`. |
 
 Three things that trip people up:
@@ -241,8 +238,12 @@ Three things that trip people up:
 - **Only `aeo-search` has a login, and its discovery is path-scoped.** It answers an anonymous
   request with a 401 pointing at `/.well-known/oauth-protected-resource/api/mcp/search/mcp`; its
   authorization server is `/api/mcp/oauth`. The ROOT `/.well-known/oauth-*` documents deliberately
-  return 404, because `aeo-visibility` and `aeo-backlink` need no login.
+  return 404, because `aeo-research` needs no login.
 - **Every tool is read-only.** None calls a write method on any upstream API.
+
+The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/mcp/ai-visibility/mcp`)
+and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
+existing configs need no change.
 
 `/api/mcp/ga-gsc/mcp` still works as a compatibility alias for `aeo-search`; new configs should use
 `/api/mcp/search/mcp`.

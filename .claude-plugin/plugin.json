@@ -20,13 +20,9 @@
     "llms-txt"
   ],
   "mcpServers": {
-    "visibility": {
+    "research": {
       "type": "http",
-      "url": "https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp"
-    },
-    "backlink": {
-      "type": "http",
-      "url": "https://aeo.advancelabs.dev/api/mcp/backlink/mcp"
+      "url": "https://aeo.advancelabs.dev/api/mcp/research/mcp"
     },
     "search": {
       "type": "http",

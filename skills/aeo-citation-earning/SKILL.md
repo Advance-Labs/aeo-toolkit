@@ -1,6 +1,6 @@
 ---
 name: aeo-citation-earning
-description: Earn the off-site mentions and links that make a site more likely to be cited by AI answer engines - find where competitors are cited or linked, turn unlinked brand mentions into links, prospect relevant sites, draft honest outreach, and confirm links went live. Use when someone asks about "backlinks", "link building", "who links to my competitor", "unlinked mentions", "guest post prospects", "digital PR", "how do I get cited by ChatGPT or Perplexity", or "did my link go live". Uses the aeo-backlink MCP server (find_prospects, find_mentions, extract_contact_info, check_page_history, generate_outreach_email, verify_page_links, find_competitor_link_sources) and aeo-visibility (check_ai_visibility, compare_competitor_visibility).
+description: Earn the off-site mentions and links that make a site more likely to be cited by AI answer engines - find where competitors are cited or linked, turn unlinked brand mentions into links, prospect relevant sites, draft honest outreach, and confirm links went live. Use when someone asks about "backlinks", "link building", "who links to my competitor", "unlinked mentions", "guest post prospects", "digital PR", "how do I get cited by ChatGPT or Perplexity", or "did my link go live". Uses the aeo-research MCP server (find_prospects, find_mentions, extract_contact_info, check_page_history, generate_outreach_email, verify_page_links, find_competitor_link_sources, check_ai_visibility, compare_competitor_visibility).
 ---
 
 # Earning citations and links off-site
@@ -115,4 +115,4 @@ embarrassed to name.
 
 - Google spam policies, link spam: https://developers.google.com/search/docs/essentials/spam-policies (verified 2026-11-13)
 - Google, Qualify outbound links: https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links (verified 2026-11-13)
-- Tool contracts and search budget: aeo-backlink and aeo-visibility MCP server source (read 2026-11-13)
+- Tool contracts and search budget: aeo-research MCP server source (visibility and backlink tools) (read 2026-11-13)

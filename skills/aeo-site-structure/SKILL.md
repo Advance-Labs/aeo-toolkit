@@ -1,6 +1,6 @@
 ---
 name: aeo-site-structure
-description: Fix breadcrumbs and internal linking so crawlers and answer engines can find pages and understand how the site is organised. Use when someone asks to add breadcrumbs or BreadcrumbList schema, why breadcrumbs don't show in Google, how to improve internal linking, how to find orphan pages, which pages should link to which, how to build a topic hub or pillar page, or when an audit fails aeo.breadcrumbs, eeat.auth.breadcrumbs, tech.internal-linking or eeat.auth.internal-linking. Uses the aeo-visibility MCP server if connected; works without it.
+description: Fix breadcrumbs and internal linking so crawlers and answer engines can find pages and understand how the site is organised. Use when someone asks to add breadcrumbs or BreadcrumbList schema, why breadcrumbs don't show in Google, how to improve internal linking, how to find orphan pages, which pages should link to which, how to build a topic hub or pillar page, or when an audit fails aeo.breadcrumbs, eeat.auth.breadcrumbs, tech.internal-linking or eeat.auth.internal-linking. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # Site structure: breadcrumbs and internal links

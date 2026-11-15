@@ -1,6 +1,6 @@
 ---
 name: aeo-local-business-schema
-description: Add or fix LocalBusiness structured data and keep name, address and phone (NAP) consistent across a site, Google Business Profile and directories, so local searchers and AI answer engines get the right facts. Use when someone asks about "local SEO schema", "LocalBusiness JSON-LD", "opening hours markup", "NAP consistency", "service area", "show up for plumber near me in ChatGPT", or wrong hours or address appearing in answers. Works for WordPress and static HTML. Uses the aeo-visibility MCP server (analyze_website_aeo, check_ai_visibility) if connected.
+description: Add or fix LocalBusiness structured data and keep name, address and phone (NAP) consistent across a site, Google Business Profile and directories, so local searchers and AI answer engines get the right facts. Use when someone asks about "local SEO schema", "LocalBusiness JSON-LD", "opening hours markup", "NAP consistency", "service area", "show up for plumber near me in ChatGPT", or wrong hours or address appearing in answers. Works for WordPress and static HTML. Uses the aeo-research MCP server (analyze_website_aeo, check_ai_visibility) if connected.
 ---
 
 # LocalBusiness schema and NAP consistency

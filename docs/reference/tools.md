@@ -47,9 +47,8 @@ the two keyless servers into a login they don't need.
 Nothing to install — these are hosted HTTP endpoints. In Claude Code:
 
 ```bash
-claude mcp add --transport http --scope user aeo-visibility https://aeo.advancelabs.dev/api/mcp/ai-visibility/mcp
-claude mcp add --transport http --scope user aeo-backlink   https://aeo.advancelabs.dev/api/mcp/backlink/mcp
-claude mcp add --transport http --scope user aeo-search     https://aeo.advancelabs.dev/api/mcp/search/mcp
+claude mcp add --transport http --scope user aeo-research https://aeo.advancelabs.dev/api/mcp/research/mcp
+claude mcp add --transport http --scope user aeo-search   https://aeo.advancelabs.dev/api/mcp/search/mcp
 ```
 
 For Claude.ai, Cursor and other clients, see the [connection page](https://advancelabs.dev/mcp)
@@ -58,12 +57,15 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 
 | Server | Endpoint | Auth | Tools |
 |---|---|---|---|
-| AI Visibility | `/api/mcp/ai-visibility/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility` |
-| Backlink | `/api/mcp/backlink/mcp` | none | `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
+| Research | `/api/mcp/research/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility`, `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
 | Search (Google + Bing) | `/api/mcp/search/mcp` | Google sign-in (OAuth) or Google BYOK; Bing BYOK optional | see below |
 
 The search server was `GA4 + GSC` at `/api/mcp/ga-gsc/mcp`; that path still works as a compatibility
 alias so existing client configs need no change, but new configs should point at `/api/mcp/search/mcp`.
+
+The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/mcp/ai-visibility/mcp`)
+and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
+existing configs need no change.
 
 ### Search server — 20 tools
 
@@ -110,7 +112,7 @@ Google-only rather than failing outright.
 The MCP tools detect and measure; the [agent skills](../../skills/README.md) carry the method for
 fixing what they find. 24 skills cover every one of the 58 scoring rules (each rule has exactly one
 owning skill, see the [audit rules](https://docs.advancelabs.dev/aeo-toolkit/rules/aeo/)) plus measurement workflows on top of the
-search and visibility tools. One command installs the skills together with these three servers:
+search and visibility tools. One command installs the skills together with these two servers:
 
 ```bash
 /plugin install aeo-toolkit --marketplace Advance-Labs/aeo-toolkit

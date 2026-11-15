@@ -30,7 +30,7 @@ before starting. Ordering within a section is rough priority, not commitment.
 
 ## Hosted tools
 
-The hosted tools at [advancelabs.dev/tools](https://advancelabs.dev/tools) and the three MCP
+The hosted tools at [advancelabs.dev/tools](https://advancelabs.dev/tools) and the MCP
 servers are a closed-source service, so their roadmap is not tracked here. Use the
 [free tools](https://advancelabs.dev/tools) and the
 [AI visibility service](https://advancelabs.dev/services/ai-visibility) page for what is live.

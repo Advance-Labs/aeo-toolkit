@@ -1,6 +1,6 @@
 ---
 name: aeo-answer-first-content
-description: Restructure existing pages so an answer engine can lift a clean answer out of them, without wrecking the author's voice. Use when someone asks why ChatGPT, Perplexity or Google AI Overviews don't quote their page, how to write for AI answers, how to structure a post for featured snippets, whether to add FAQ-style or question headings, why a page is flagged as thin, has no headings, has two H1s or skips heading levels, or when an audit fails aeo.question-headings, aeo.answerable-content, aeo.content-extractability, tech.content-not-thin, tech.single-h1 or tech.heading-hierarchy. Uses the aeo-visibility MCP server if connected; works without it.
+description: Restructure existing pages so an answer engine can lift a clean answer out of them, without wrecking the author's voice. Use when someone asks why ChatGPT, Perplexity or Google AI Overviews don't quote their page, how to write for AI answers, how to structure a post for featured snippets, whether to add FAQ-style or question headings, why a page is flagged as thin, has no headings, has two H1s or skips heading levels, or when an audit fails aeo.question-headings, aeo.answerable-content, aeo.content-extractability, tech.content-not-thin, tech.single-h1 or tech.heading-hierarchy. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # Answer-first content

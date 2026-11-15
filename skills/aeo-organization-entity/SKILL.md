@@ -1,6 +1,6 @@
 ---
 name: aeo-organization-entity
-description: Publish one consistent Organization (or Person) entity in JSON-LD, with a stable @id, logo and sameAs links, so answer engines can tell who is behind a site. Use when someone asks to add Organization schema, fix "Organization schema missing" or "organization identity inconsistent" audit findings, set up sameAs or a Wikidata/Knowledge Graph presence, make ChatGPT or Perplexity recognise their brand, or stop two subdomains describing the same company differently. Covers aeo.organization-schema, aeo.entity-identity-consistent and eeat.auth.organization-schema. Uses the aeo-visibility MCP server if connected; works without it.
+description: Publish one consistent Organization (or Person) entity in JSON-LD, with a stable @id, logo and sameAs links, so answer engines can tell who is behind a site. Use when someone asks to add Organization schema, fix "Organization schema missing" or "organization identity inconsistent" audit findings, set up sameAs or a Wikidata/Knowledge Graph presence, make ChatGPT or Perplexity recognise their brand, or stop two subdomains describing the same company differently. Covers aeo.organization-schema, aeo.entity-identity-consistent and eeat.auth.organization-schema. Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # One organization, described the same way everywhere

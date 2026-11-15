@@ -1,6 +1,6 @@
 ---
 name: aeo-server-rendering
-description: Make sure a page's real content is in the HTML the server sends, not built by JavaScript afterward. Use when someone asks "why can't ChatGPT or Perplexity read my site", "AI crawlers see an empty page", "do I need SSR for AEO", "my React or Vite SPA isn't being cited", "prerender my site", "view source is empty", or when the audit fails aeo.content-server-rendered. Covers testing with curl, SSR/SSG/prerender per framework, and content that only appears after hydration (tabs, accordions, client-fetched text). Uses the aeo-visibility MCP server if connected; works without it.
+description: Make sure a page's real content is in the HTML the server sends, not built by JavaScript afterward. Use when someone asks "why can't ChatGPT or Perplexity read my site", "AI crawlers see an empty page", "do I need SSR for AEO", "my React or Vite SPA isn't being cited", "prerender my site", "view source is empty", or when the audit fails aeo.content-server-rendered. Covers testing with curl, SSR/SSG/prerender per framework, and content that only appears after hydration (tabs, accordions, client-fetched text). Uses the aeo-research MCP server if connected; works without it.
 ---
 
 # Content must be in the initial HTML

@@ -11,7 +11,7 @@ Traditional SEO gets you ranked on the results page. AEO gets you *quoted* in th
 
 This toolkit automates auditing for that. The open core in this repo (the audit engine packages, the
 Chrome extension and the skills) is Apache-2.0 and TypeScript throughout. The hosted tools at
-advancelabs.dev/tools and the three MCP servers are proprietary and not self-hostable.
+advancelabs.dev/tools and the MCP servers are proprietary and not self-hostable.
 
 ## Start here
 
@@ -25,7 +25,7 @@ advancelabs.dev/tools and the three MCP servers are proprietary and not self-hos
 ## What's in the suite
 
 **Hosted (proprietary).** Six browser tools (technical audit, E-E-A-T scanner, llms.txt generator,
-GA4+GSC chat, backlink graph, authority) and three MCP servers exposing 32 tools to Claude and other
+GA4+GSC chat, backlink graph, authority) and two MCP servers exposing 32 tools to Claude and other
 MCP clients. They run on advancelabs.dev and their code lives in a private repository.
 
 **Open core (this repo).** Six packages published to npm, the Chrome extension and the [agent skills](../skills/README.md) (24 skills, one owner for every audit rule, installable with the MCP servers as one Claude Code plugin). The
