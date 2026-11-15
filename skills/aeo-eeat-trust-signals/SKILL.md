@@ -23,7 +23,8 @@ It does not matter much, and you should say so, when:
 - The site is a personal blog or a single-purpose tool and the failing rule is only "no
   /terms page". Do not invent legal pages nobody needs. Ask whether the site collects data or
   takes payments before insisting on a privacy policy.
-- The page exists under a URL the rule does not look for (see Detect). That is a false fail.
+- The page exists under a URL the rule does not look for and its title or h1 does not start
+  with the expected words (see Detect). That is a false fail.
 - The user wants rankings. Say plainly that these signals will not move them by themselves.
 
 ## Detect
@@ -32,16 +33,16 @@ The scoring engine (`packages/scoring/src/eeat-rules.ts`) passes each rule like 
 
 | Rule | Passes when |
 |---|---|
-| `eeat.expertise.about-page` | any crawled URL matches `/about`, `/about-us`, `/team` or `/who-we-are` (path segment, case-insensitive) |
-| `eeat.trust.contact-page` | any crawled URL matches `/contact`, `/contact-us` or `/support` |
-| `eeat.trust.privacy-terms` | any crawled URL matches `/privacy`, `/privacy-policy`, `/terms`, `/terms-of-service`, `/tos` or `/legal` (one is enough) |
+| `eeat.expertise.about-page` | a page's URL matches `/about`, `/about-us`, `/team` or `/who-we-are`, or its title or h1 starts with "About", "Our story", "Our team", "Who we are" or "Meet the team" |
+| `eeat.trust.contact-page` | a page's URL matches `/contact`, `/contact-us` or `/support`, or its title or h1 starts with "Contact" or "Get in touch" |
+| `eeat.trust.privacy-terms` | a page's URL matches `/privacy`, `/privacy-policy`, `/terms`, `/terms-of-service`, `/tos` or `/legal`, or its title or h1 starts with "Privacy policy/notice" or "Terms of service/use/and conditions" (one is enough) |
 | `eeat.trust.https` | the crawl was served over HTTPS |
 | `eeat.trust.canonical-coverage` | at least 80% of crawled pages have a canonical tag |
 | `eeat.auth.outbound-references` | at least 1 external link across all crawled pages |
 
-Two consequences. The checks are **URL pattern matches, not content checks**: an empty
-`/about` passes, and a real "Our story" page at `/story` fails. And they only see pages the
-crawl reached, so a footer-only link on a deep page can be missed.
+A parsed page must also have at least 50 words, so an empty `/about` stub fails. A URL the crawl
+found but did not parse still counts on its URL alone. And the checks only see pages the crawl
+reached (12 for E-E-A-T), so a footer-only link on a deep page can be missed.
 
 With the MCP server: call `analyze_website_aeo` with the site URL and read which of these IDs
 fail. Without it: `curl -sI https://example.com/about` for each path, `curl -sI http://example.com`

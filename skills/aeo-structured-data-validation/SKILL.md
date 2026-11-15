@@ -33,7 +33,7 @@ features even for perfect markup. Do not read "no rich results detected" as a ma
 
 | Rule | Passes when |
 |---|---|
-| `tech.structured-data-present` | The total number of detected structured-data items across the crawled pages is greater than zero (JSON-LD, Microdata or RDFa all count). |
+| `tech.structured-data-present` | At least one typed structured-data item was detected across the crawled pages (JSON-LD, Microdata or RDFa all count). A JSON-LD block that fails to parse does not count. |
 | `tech.structured-data-valid` | No detected item is marked invalid. With zero items it passes ("nothing to validate"). |
 
 How the audit defines the words, from `packages/schema-validator`:
@@ -41,10 +41,9 @@ How the audit defines the words, from `packages/schema-validator`:
 - **Present** means at least one *typed* node was extracted. JSON-LD in
   `<script type="application/ld+json">`, `@graph` members and top-level arrays are each
   flattened into items. A node with no `@type` produces no item.
-- **A JSON-LD block that does not parse is counted as one invalid item.** So malformed JSON
-  makes `present` pass (it is an item) and `valid` fail, with the warning "JSON-LD script
-  contains invalid JSON and was skipped". A site with only broken markup therefore shows
-  present-pass, valid-fail. Do not read the present-pass as "the markup works".
+- **A JSON-LD block that does not parse is counted as one invalid item.** It makes `valid`
+  fail, with the warning "JSON-LD script contains invalid JSON and was skipped", and it does not
+  count toward `present`. A site with only broken markup fails both.
 - **Valid** means every top-level item satisfies the required properties the validator defines
   for its type:
 
