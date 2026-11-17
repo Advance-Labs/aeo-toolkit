@@ -25,7 +25,7 @@ The extension runs `auditRules`, which is defined in
 export const auditRules = [...technicalSeoRules, ...aeoRules];
 ```
 
-From extension 0.3.0 (scoring 0.3.x) that is **31 technical-SEO rules + 13 AEO rules = 44**, across 9 categories; `auditRules.length` is 44 in the built bundle. The Chrome Web Store build before this (0.2.0, scoring 0.2.x) ran 29 + 11 = 40, so the store listing changes from 40 to 44 when 0.3.0 is published. Rules that do not apply to a page are dropped, so one audit can show fewer than 44 results.
+From extension 0.3.0 (scoring 0.3.x) that is **31 technical-SEO rules + 13 AEO rules = 44**, across 9 categories; `auditRules.length` is 44 in the built bundle. The Chrome Web Store build before this (0.2.0, scoring 0.2.x) ran 29 + 11 = 40. The store serves 0.3.2 as of 2026-11-17, so the store build runs 44. Rules that do not apply to a page are dropped, so one audit can show fewer than 44 results.
 
 The **14 E-E-A-T signals** in
 [`packages/scoring/src/eeat-rules.ts`](../../packages/scoring/src/eeat-rules.ts) are a separate

@@ -23,7 +23,7 @@ Open-source AI search optimization: 44 small checks that decide whether ChatGPT,
 
 > **Open core.** This repo is the open-source half of the AEO Toolkit: the audit engine, crawler,
 > parser, schema validator and the Chrome extension, all Apache-2.0 and published to npm. The
-> hosted platform behind [advancelabs.dev/tools](https://advancelabs.dev/tools) and the three
+> hosted platform behind [advancelabs.dev/tools](https://advancelabs.dev/tools) and the two
 > MCP servers (the console, OAuth, billing, the Google and Bing integrations) moved to a
 > private repository on 2026-10-20. Code published here before that date stays Apache-2.0.
 
@@ -35,7 +35,7 @@ Want the data underneath? **[DataForAEO](https://dataforaeo.dev)** is data for A
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
 GA4 + GSC chat, backlink graph, authority) and **two MCP servers** (`research`, `toolkit`)
-exposing 34 tools to Claude or any MCP client. They are proprietary and run on
+exposing 38 distinct tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
@@ -79,7 +79,7 @@ runs 44. Free, no account, and your data stays yours.
 
 **[AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad)** puts the same engine on your toolbar. Open any page, click the icon, and get a 0 to 100 AI-readiness score with a letter grade and a list of what to fix. Export it as a PDF.
 
-It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **44 checks across 9 categories** (31 technical-SEO + 13 AEO) from extension 0.3.0, built on scoring 0.3.x. The Chrome Web Store build before that (0.2.0) ran 40, so the listing changes when 0.3.0 is published. The 14 E-E-A-T signals are a separate scorer the extension does not run, 58 is the engine total (44 + 14), not what any one audit runs.
+It runs `auditRules` from [`packages/scoring/src/audit.ts`](packages/scoring/src/audit.ts): **44 checks across 9 categories** (31 technical-SEO + 13 AEO) from extension 0.3.0, built on scoring 0.3.x. The Chrome Web Store serves 0.3.2 (checked 2026-11-17), so the store build runs 44. The 14 E-E-A-T signals are a separate scorer the extension does not run, 58 is the engine total (44 + 14), not what any one audit runs.
 
 Everything happens in your browser. No account, no server, no analytics, no telemetry. The only network requests are to the audited site's own `robots.txt`, `sitemap.xml`, and `llms.txt`, which is what the host permission is for. Nothing is stored, because nothing is sent.
 
@@ -195,10 +195,8 @@ as a readable guide at **[docs.advancelabs.dev/aeo-toolkit/skills](https://docs.
 
 ## Connect the MCP servers
 
-[![mcptry](https://mcptry.com/badge/dev.advancelabs/aeo-backlink)](https://mcptry.com/servers/dev.advancelabs/aeo-backlink)
-
 Listed in the official [MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=dev.advancelabs)
-as `dev.advancelabs/aeo-search`, `dev.advancelabs/aeo-visibility` and `dev.advancelabs/aeo-backlink`.
+as `dev.advancelabs/aeo-research` and `dev.advancelabs/aeo-search` (titled "AEO Toolkit").
 
 The two MCP servers are **hosted, not installed**. They are Streamable-HTTP endpoints, so there is
 nothing to `npm install` and no local process to run. Point any MCP client at the URL.
@@ -229,7 +227,7 @@ Drop `--scope user` to register them in the current project only. Check the resu
 | Server | Tools | Credentials |
 |---|---|---|
 | `aeo-research` | 12 | None to connect. AEO audits and backlink research need nothing; citation checks take a Perplexity key per request. |
-| `aeo-toolkit` | 33 | Sign in with your AEO Toolkit account: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Google, Bing and AI provider keys come from the account. Search Console, GA4, Bing, saved visibility checks, keyword volumes and backlink research. Legacy BYOK (a Google token as `Authorization: Bearer`, an optional `x-bing-api-key`) still works for the Search Console, GA4 and Bing tools. |
+| `aeo-toolkit` | 37 | Sign in with your AEO Toolkit account: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Google, Bing and AI provider keys come from the account. Search Console, GA4, Bing, saved visibility checks, keyword volumes and backlink research. Legacy BYOK (a Google token as `Authorization: Bearer`, an optional `x-bing-api-key`) still works for the Search Console, GA4 and Bing tools. |
 
 Three things that trip people up:
 
@@ -239,7 +237,9 @@ Three things that trip people up:
   request with a 401 pointing at `/.well-known/oauth-protected-resource/api/mcp/search/mcp`; its
   authorization server is `/api/mcp/oauth`. The ROOT `/.well-known/oauth-*` documents deliberately
   return 404, because `aeo-research` needs no login.
-- **Every tool is read-only.** None calls a write method on any upstream API.
+- **No tool edits your site.** Every `aeo-research` tool is read-only. Five `aeo-toolkit` tools act
+  on your account and are annotated as such: three visibility tools save checks to your dashboard
+  (and use plan quota), and `submit_indexnow` and `submit_to_bing` submit URLs.
 
 The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/mcp/ai-visibility/mcp`)
 and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
