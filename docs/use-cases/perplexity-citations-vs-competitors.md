@@ -42,6 +42,10 @@ The method is in the [`aeo-visibility-tracking` skill](../../skills/aeo-visibili
 - The rank of each citation, and which other domains were cited.
 - A competitor table for the prompts you chose.
 
+The dashboard keeps the same question over time. In this sample workspace, a ranking shows how many of 24 answers named each domain, and a panel lists runs that came from an MCP client.
+
+![A sample dashboard: a ranking of domains by how many of 24 answers named them, labelled You, Competitor or Editorial, above a list of checks run from an MCP client with per-engine results.](../assets/dashboard-sample-workspace.webp)
+
 ## Limits
 
 - One call is one sample. Answers vary, so judge a change only against your own noise floor.

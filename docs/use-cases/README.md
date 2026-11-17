@@ -10,6 +10,8 @@ Each page names who the job is for, the real tool and skill names, the steps, an
 
 There are two MCP servers. **aeo-research** needs no sign-in. **aeo-toolkit** needs an AEO Toolkit account and reads Google and Bing data from the connections on your project. Setup is in [Where to find and install AEO Toolkit](../guides/where-to-find-and-install.md).
 
+![Two MCP servers. aeo-research has 12 tools and needs no sign-in. aeo-toolkit has 37 tools, needs an AEO Toolkit account and reaches Search Console, GA4, Bing and the workspace AI engines.](../assets/diagram-mcp-servers.svg)
+
 | Job | Server | Page |
 |---|---|---|
 | Run AEO audits for clients | aeo-research, plus the hosted dashboard | [Agency client audits](agency-client-audits.md) |

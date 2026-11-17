@@ -29,6 +29,8 @@ Prices are in US dollars, per workspace. One check is one question asked of one 
 
 Two things cost you money outside the plan. On the aeo-research server, citation checks use your own Perplexity API key, and outreach drafts use your own model provider key. Done-for-you AI search maintenance is a separate service, scoped on a call.
 
+![Free, Pro and Agency plans on the pricing page, at 0, 29 and 99 dollars a month, each with its list of included limits.](../assets/pricing-plans.webp)
+
 ## Do I need to sign in?
 
 | Surface | Sign-in |
@@ -50,6 +52,8 @@ It depends on where you run the check.
 None of them measures whether a human sees your brand in the ChatGPT or Claude apps.
 
 ## Is it read-only?
+
+![The two MCP servers. IndexNow and Bing URL submission are marked as the two tools that act. The other tools read or save to your dashboard.](../assets/diagram-mcp-servers.svg)
 
 Almost. No tool edits your site, your Search Console, your GA4 property or your Bing settings. Some tools do more than read:
 

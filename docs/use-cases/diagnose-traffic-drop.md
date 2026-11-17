@@ -14,6 +14,8 @@ An SEO, site owner or developer whose organic clicks fell and who needs a specif
 
 Name the pages that lost the clicks. Say whether the loss is a few pages or the whole site. Separate lost rankings from lost demand.
 
+![The diagnosis flow: confirm the property and two equal periods, run gsc_traffic_drop by page, split on a few pages versus the whole site, compare impressions with position to tell lost rankings from less demand from a changed results page, then inspect the worst pages.](../assets/diagram-traffic-drop-flow.svg)
+
 ## Tools and skills
 
 On the **aeo-toolkit** server. Sign in with your AEO Toolkit account. Connect Google on your project first.

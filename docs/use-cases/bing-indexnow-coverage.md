@@ -45,6 +45,10 @@ The method is in the [`seo-bing-coverage` skill](../../skills/seo-bing-coverage/
 
 A classification per query, a crawl and index health read for Bing, and a logged submission run in the dashboard for every submit.
 
+`submit_indexnow` and `submit_to_bing` are the two tools that act. Everything else on the server reads.
+
+![The two MCP servers. On aeo-toolkit, submit_indexnow and submit_to_bing are marked as the two tools that act on a service.](../assets/diagram-mcp-servers.svg)
+
 ## Limits
 
 - `submit_indexnow` and `submit_to_bing` are the two tools that act on an outside service. Each takes up to 100 explicit URLs on your own host, with one submission per site every 5 minutes. IndexNow covers Bing, Yandex, Naver and Seznam. Submission is a notification, not a promise of indexing.

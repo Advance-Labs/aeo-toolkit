@@ -14,6 +14,8 @@ An agency or freelancer who audits several client sites for AI search readiness 
 
 Find what stops each client's site from being read and quoted by answer engines. Fix the biggest causes first. Then show the client whether AI names them.
 
+![The agency routine in five steps: triage with analyze_website_aeo, a full audit as the baseline, the aeo skill routing failing rules, shipping fixes with a re-run loop, and tracking client questions in the dashboard.](../assets/diagram-agency-audit-flow.svg)
+
 ## Tools and skills
 
 - `analyze_website_aeo` on the **aeo-research** server. No sign-in. It crawls 10 pages and returns at most the top 8 fixes. It is a shortlist, not the full audit.
@@ -36,6 +38,10 @@ Find what stops each client's site from being read and quoted by answer engines.
 - A score out of 100 with a grade, and a prioritised fix list per site.
 - A list of failing rule IDs, each with one owning skill. Rule definitions are in the [audit rules](../rules/technical-seo.md).
 - Over time, whether the client was named for each tracked question, and which competitors were named beside it.
+
+A finished report ranks the fixes and shows each page and rule. This one is the team's own site, before and after.
+
+![A sample audit report: three ranked fixes, each showing the page, the rule ID, the fix and what the team changed.](../assets/sample-audit-fixes.webp)
 
 ## Limits
 
