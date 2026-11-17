@@ -186,6 +186,7 @@ export default defineConfig({
             { label: 'Roadmap', slug: 'roadmap' },
           ],
         },
+        { label: 'Use cases', autogenerate: { directory: 'use-cases' } },
         { label: 'Guides', autogenerate: { directory: 'guides' } },
         // Generated from skills/ and @advance-labs/scoring by scripts/generate.mjs.
         { label: 'Agent skills', autogenerate: { directory: 'skills' } },
