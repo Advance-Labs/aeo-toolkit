@@ -40,6 +40,10 @@ Turn a list of failing rules into code changes in your stack, then prove each ch
 
 Code changes in your repo, one group at a time, and a re-run of the same check as proof.
 
+The audit that finds these failures runs this pipeline. The extension skips the crawl and reads the rendered page.
+
+![The audit pipeline: the crawler fetches pages, the parser reads them, the schema validator checks JSON-LD, scoring runs 44 rules, and the report lists the fixes.](../assets/diagram-audit-pipeline.svg)
+
 ## Limits
 
 - `analyze_website_aeo` is a shortlist. A rule that is not in the top 8 can still fail. Use the hosted audit for the full list.

@@ -37,6 +37,10 @@ The method and the referrer regex are in the [`aeo-ai-referral-analytics` skill]
 - "At least N sessions" from AI assistants, with the denominator: AI sessions as a share of all sessions, both counts shown.
 - The pages assistants actually send people to.
 
+The GA4 tools live on the account server, which signs in with your AEO Toolkit account.
+
+![The two MCP servers. The GA4 and Search Console tools are on aeo-toolkit, which needs an AEO Toolkit account. aeo-research needs no sign-in.](../assets/diagram-mcp-servers.svg)
+
 ## Limits
 
 - The number is a floor. Readers who see your brand in an answer and later type your URL arrive as direct or organic.

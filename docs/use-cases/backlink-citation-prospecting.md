@@ -45,6 +45,10 @@ The method is in the [`aeo-citation-earning` skill](../../skills/aeo-citation-ea
 
 A ranked list of targets with the evidence for each, a draft email per target, and a verified yes or no for each link.
 
+These tools sit on the research server, which needs no sign-in.
+
+![The two MCP servers. The backlink tools are among the 12 on aeo-research, which needs no sign-in.](../assets/diagram-mcp-servers.svg)
+
 ## Limits
 
 - No tool can promise a citation. Report before and after citation rates with the number of runs, as in the Perplexity use case.

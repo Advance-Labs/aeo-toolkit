@@ -13,6 +13,8 @@ AEO Toolkit runs two public MCP servers. Both are hosted, so nothing installs lo
 
 The trailing `/mcp` is required. The registry entry for aeo-toolkit keeps the name `aeo-search` because it kept the original URL.
 
+![The two MCP servers: aeo-research with 12 tools and no sign-in, and aeo-toolkit with 37 tools and an AEO Toolkit account sign-in, with what each reaches.](../assets/diagram-mcp-servers.svg)
+
 ## Where it is listed
 
 | Directory | Status on 2026-11-17 |
@@ -40,6 +42,8 @@ curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=dev.advancel
 claude mcp add --transport http --scope user aeo-research https://aeo.advancelabs.dev/api/mcp/research/mcp
 claude mcp add --transport http --scope user aeo-toolkit https://aeo.advancelabs.dev/api/mcp/search/mcp
 ```
+
+![A terminal with the two claude mcp add commands, claude mcp list, and a note to authenticate aeo-toolkit through /mcp.](../assets/terminal-mcp-add.svg)
 
 Drop `--scope user` to register a server for the current project only. Check with `claude mcp list`. For aeo-toolkit, run `/mcp`, select it and choose **Authenticate**. A browser opens for AEO Toolkit sign-in.
 
@@ -77,6 +81,8 @@ The aeo-toolkit server answers an anonymous request with a 401 that points the c
 ### Chrome extension
 
 Install [AEO/GEO Auditor](https://chromewebstore.google.com/detail/aeogeo-auditor/bdkkjpbipgolopjhndknigaaokdabnad) from the Chrome Web Store. See the [extension page](../reference/chrome-extension.md).
+
+![The AEO/GEO Auditor listing on the Chrome Web Store: the name, an Add to Chrome button, a screenshot gallery and the overview text.](../assets/chrome-store-listing.webp)
 
 ## Where the keys come from
 
