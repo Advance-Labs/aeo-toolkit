@@ -25,7 +25,7 @@ advancelabs.dev/tools and the MCP servers are proprietary and not self-hostable.
 ## What's in the suite
 
 **Hosted (proprietary).** Six browser tools (technical audit, E-E-A-T scanner, llms.txt generator,
-GA4+GSC chat, backlink graph, authority) and two MCP servers exposing 34 tools to Claude and other
+GA4+GSC chat, backlink graph, authority) and two MCP servers exposing 38 distinct tools to Claude and other
 MCP clients. They run on advancelabs.dev and their code lives in a private repository.
 
 **Open core (this repo).** Six packages published to npm, the Chrome extension and the [agent skills](../skills/README.md) (24 skills, one owner for every audit rule, installable with the MCP servers as one Claude Code plugin). The

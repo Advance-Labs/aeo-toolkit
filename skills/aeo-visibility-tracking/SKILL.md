@@ -28,6 +28,10 @@ Read this before quoting any number. Per the tool definitions:
   using the user's own key (passed per call, never stored). They do **not** query ChatGPT,
   Claude, Gemini, Copilot or Google AI Overviews. A result is "cited by Perplexity", not
   "cited by AI".
+- That is the `aeo-research` server. On the signed-in `aeo-toolkit` server,
+  `check_ai_visibility`, `get_visibility_report` and `discover_ranking_prompts` run on the
+  engines configured for the user's workspace, need no Perplexity key, save results to the
+  dashboard and use plan quota. Name the engines the result actually lists, and never more.
 - "Cited" means a URL on the **same host** appears in Sonar's returned citation list. Any page
   on the host counts, so a homepage citation and a deep-link citation both read as cited.
   `citationRank` is the position in the citation list, not prominence in the answer text.

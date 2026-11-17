@@ -113,11 +113,11 @@ Check these before each release rather than copying them forward:
 
 | Claim | Where it comes from | Command |
 |---|---|---|
-| **40 checks** | `auditRules = [...technicalSeoRules, ...aeoRules]` in `packages/scoring/src/audit.ts` (29 + 11) | `grep -c "id: '" packages/scoring/src/{technical-seo,aeo}-rules.ts` |
+| **44 checks** | `auditRules = [...technicalSeoRules, ...aeoRules]` in `packages/scoring/src/audit.ts` (31 + 13) | `grep -c "id: '" packages/scoring/src/{technical-seo,aeo}-rules.ts` |
 | **9 categories** | distinct `category:` literals across those two files | `grep -rhoE "category: '[a-z-]+'" packages/scoring/src/{technical-seo,aeo}-rules.ts \| sort -u \| wc -l` |
 | **0 to 100 score + letter grade** | `packages/scoring/src/grade.ts` | — |
 
-Do **not** describe the extension as running 58 rules. The store build (0.2.0) runs 40 and the next build runs 44. The 58 figure counts the 14 E-E-A-T
+Do **not** describe the extension as running 58 rules. The store build (0.3.2 as of 2026-11-17) runs 44; builds before 0.3.0 ran 40. The 58 figure counts the 14 E-E-A-T
 signals in `eeat-rules.ts`, which are a separate scorer that `auditRules` does not include and
 the extension does not run. 58 is a true statement about the toolkit and a false one about this
 build.
@@ -136,7 +136,7 @@ generated from `manifest.config.ts`. Current text, 127 characters:
 Audit any page for how well it answers to AI search, in one click, without sending the page
 anywhere.
 
-AEO/GEO Auditor runs 40 checks across 9 categories against the tab you are looking at, then
+AEO/GEO Auditor runs 44 checks across 9 categories against the tab you are looking at, then
 gives you a 0 to 100 AI-readiness score with a letter grade and a filterable list of what to
 fix. Every check runs inside your browser.
 

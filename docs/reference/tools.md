@@ -1,11 +1,11 @@
 ---
 title: Tool reference
 description: >-
-  The hosted platform (six browser tools, two MCP servers with 34 tools, a content agent) and the open Chrome extension, and which parts live in this repo.
+  The hosted platform (six browser tools, two MCP servers with 38 distinct tools, a content agent) and the open Chrome extension, and which parts live in this repo.
 ---
 
 The hosted platform is proprietary and moved to a private repository on 2026-10-20: **six browser
-tools**, **two MCP servers** with 34 distinct tools, and a scheduled content agent, all served from
+tools**, **two MCP servers** with 38 distinct tools, and a scheduled content agent, all served from
 advancelabs.dev. This repo holds the open core: the six npm packages, the Chrome extension
 (`apps/chrome-extension`) and the skills. Routes and engines below describe the hosted platform; its
 code is not in this repo.
@@ -27,20 +27,23 @@ Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tool
 | Backlink graph (3D) | `/tools/graph` | `/api/graph` (+ `/stream`, `/expand`) | hosted backlink engine + WebGL |
 | Authority | `/tools/authority` | hosted | hosted |
 
-## MCP servers — 3
+## MCP servers — 2
 
 Served by the hosted platform as Streamable-HTTP route handlers via the `mcp-handler` adapter.
-**34 distinct tools total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
-Every tool on every server is **read-only** — none calls a write method on any upstream API.
+**Research has 12 tools and AEO Toolkit has 37; 38 distinct tools in total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+Every research tool is **read-only**. No tool edits your site. Five AEO Toolkit tools act on your
+account and say so in their annotations (`readOnlyHint: false`): `check_ai_visibility`,
+`get_visibility_report` and `discover_ranking_prompts` save to your dashboard and use your plan's
+quota, and `submit_indexnow` and `submit_to_bing` submit URLs to IndexNow and Bing.
 
-AI Visibility and Backlink need no login. **Search has one**: an anonymous request gets a 401
+Research needs no login. **AEO Toolkit has one**: an anonymous request gets a 401
 whose `WWW-Authenticate` names `/.well-known/oauth-protected-resource/api/mcp/search/mcp`, and the
 client then logs in against the authorization server at `/api/mcp/oauth` (Dynamic Client
 Registration, PKCE, and Google's consent screen as the approval step). The tokens it issues name
 the user's stored Google connection, so the tools refresh Google access on their own. A raw Google
 `Authorization: Bearer` token and `x-bing-api-key` still work, unchanged. The ROOT
 `/.well-known/oauth-*` documents return 404 on purpose: advertising OAuth at the root would drag
-the two keyless servers into a login they don't need.
+the keyless research server into a login they don't need.
 
 ### Connecting
 
@@ -58,7 +61,7 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 | Server | Endpoint | Auth | Tools |
 |---|---|---|---|
 | Research | `/api/mcp/research/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility`, `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
-| AEO Toolkit (account) | `/api/mcp/search/mcp` | AEO Toolkit account sign-in (OAuth); Google, Bing and AI keys come from the account. Legacy Google BYOK + `x-bing-api-key` still work for the search tools | the 20 search tools below, `list_workspaces`, `check_ai_visibility`, `get_visibility_report`, `discover_ranking_prompts`, `analyze_website_aeo`, `get_keyword_volumes` (saved to your workspace), and the 7 backlink tools |
+| AEO Toolkit (account) | `/api/mcp/search/mcp` | AEO Toolkit account sign-in (OAuth); Google, Bing and AI keys come from the account. Legacy Google BYOK + `x-bing-api-key` still work for the search tools | 37: the 20 search tools below; `list_workspaces`, `check_ai_visibility`, `get_visibility_report`, `discover_ranking_prompts`, `analyze_website_aeo`, `get_keyword_volumes`, `suggest_keywords` (saved to your workspace); `indexing_status`, `submit_indexnow`, `submit_to_bing`; and the 7 backlink tools |
 
 The account server kept the search server's URL. `/api/mcp/toolkit/mcp` (the old signed-in server) and
 `/api/mcp/ga-gsc/mcp` still work as compatibility aliases, so existing client configs need no change.
@@ -141,7 +144,7 @@ All audit surfaces share one rule engine. The code is the source of truth:
 | `auditRules` (the two above) | 44 | what the hosted technical audit runs |
 | `eeatSignalDefs` | 14 | the separate E-E-A-T scan: Experience, Expertise, Authoritativeness, Trust |
 
-44 + 14 = 58 is the engine total, never what a single audit runs. The Chrome Web Store build (0.2.0)
-runs 40 checks and the next build runs 44.
+44 + 14 = 58 is the engine total, never what a single audit runs. The Chrome Web Store build
+(0.3.2, checked 2026-11-17) runs 44 checks.
 
 `mode: 'single-page'` runs the same rules minus multi-page crawl signals; this is what the extension uses.
