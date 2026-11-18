@@ -10,7 +10,7 @@ describe('ruleGuideUrl', () => {
   it('gives every rule a guide on the docs rules page for its family', () => {
     for (const { id } of [...technicalSeoRules, ...aeoRules, ...eeatSignalDefs]) {
       expect(ruleGuideUrl(id)).toMatch(
-        new RegExp(`^https://docs\\.advancelabs\\.dev/aeo-toolkit/rules/(technical-seo|aeo|eeat)/#${id.replace(/\./g, '\\.')}$`),
+        new RegExp(`^https://advancelabs\\.dev/docs/aeo-toolkit/rules/(technical-seo|aeo|eeat)#${id.replace(/\./g, '\\.')}$`),
       );
     }
   });

@@ -10,8 +10,18 @@
       "permanent": true
     },
     {
+      "source": "/docs/aeo-toolkit/:page(self-hosting|deployment|activation)",
+      "destination": "/docs/aeo-toolkit",
+      "permanent": true
+    },
+    {
       "source": "/aeo-toolkit/:page(self-hosting|deployment|activation)/",
       "destination": "/aeo-toolkit/",
+      "permanent": true
+    },
+    {
+      "source": "/docs/aeo-toolkit/:page(self-hosting|deployment|activation)/",
+      "destination": "/docs/aeo-toolkit",
       "permanent": true
     },
     {
@@ -20,12 +30,30 @@
       "permanent": true
     },
     {
+      "source": "/docs/aeo-toolkit/seo-aeo-plan",
+      "destination": "https://github.com/Advance-Labs/aeo-toolkit/blob/main/docs/SEO-AEO-PLAN.md",
+      "permanent": true
+    },
+    {
       "source": "/aeo-toolkit/seo-aeo-plan/",
+      "destination": "https://github.com/Advance-Labs/aeo-toolkit/blob/main/docs/SEO-AEO-PLAN.md",
+      "permanent": true
+    },
+    {
+      "source": "/docs/aeo-toolkit/seo-aeo-plan/",
       "destination": "https://github.com/Advance-Labs/aeo-toolkit/blob/main/docs/SEO-AEO-PLAN.md",
       "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/docs/aeo-toolkit",
+      "destination": "/"
+    },
+    {
+      "source": "/docs/aeo-toolkit/(.*)",
+      "destination": "/$1"
+    },
     {
       "source": "/aeo-toolkit",
       "destination": "/"
@@ -47,6 +75,15 @@
     },
     {
       "source": "/aeo-toolkit/llms.txt",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/docs/aeo-toolkit/llms.txt",
       "headers": [
         {
           "key": "X-Robots-Tag",

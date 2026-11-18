@@ -48,7 +48,7 @@ delete the stored token.
 
 - Skills source: https://github.com/Advance-Labs/aeo-toolkit/tree/main/skills. This plugin folder is
   generated from it on every push to `main`. Change the skills there, not here.
-- Every skill as a readable guide: https://docs.advancelabs.dev/aeo-toolkit/skills/
-- Every audit rule and the skill that fixes it: https://docs.advancelabs.dev/aeo-toolkit/rules/aeo/
+- Every skill as a readable guide: https://advancelabs.dev/docs/aeo-toolkit/skills
+- Every audit rule and the skill that fixes it: https://advancelabs.dev/docs/aeo-toolkit/rules/aeo
 
 Apache-2.0. Made by Advance Labs.

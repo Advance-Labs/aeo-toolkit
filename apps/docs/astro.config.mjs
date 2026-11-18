@@ -34,15 +34,16 @@ function brandCodeTheme(/** @type {'light' | 'dark'} */ type) {
   });
 }
 
-const SITE = process.env.DOCS_SITE_URL ?? 'https://docs.advancelabs.dev';
+const SITE = process.env.DOCS_SITE_URL ?? 'https://advancelabs.dev';
 const REPO = 'https://github.com/Advance-Labs/aeo-toolkit';
 
 /**
- * `docs.advancelabs.dev` is the umbrella docs domain for every Advance Labs repo, so this one
- * is mounted at its own path rather than the root. Astro prefixes the links it generates, but
+ * Served at advancelabs.dev/docs/aeo-toolkit through a rewrite in the advance-labs repo
+ * (web/next.config.mjs); docs.advancelabs.dev/aeo-toolkit 301s there since 2026-11-18. So this
+ * build is mounted at a path rather than the root. Astro prefixes the links it generates, but
  * NOT the root-absolute hrefs the rewriter below produces, so those apply BASE themselves.
  */
-const BASE = process.env.DOCS_BASE_PATH ?? '/aeo-toolkit';
+const BASE = process.env.DOCS_BASE_PATH ?? '/docs/aeo-toolkit';
 const DOCS_ROOT = fileURLToPath(new URL('../../docs/', import.meta.url));
 
 /**
@@ -82,14 +83,14 @@ function rehypeRepoAwareLinks() {
           .toLowerCase()
           .replace(/(^|\/)readme$/, '$1index')
           .replace(/(^|\/)index$/, '');
-        // Trailing slash matters: it is the form Astro emits, the form the canonical tag and
-        // sitemap advertise, and the only form the proxy serves without a 308. Emitting the
-        // bare path here would make every in-body cross-reference cost a redirect hop.
+        // NO trailing slash: it must match `trailingSlash: 'never'` below, the form the canonical tag
+        // and sitemap advertise. advancelabs.dev 308s "/x/" to "/x", so a slashed in-body link
+        // would cost a redirect hop.
         //
         // NOTE: Astro caches rendered collection entries, and Vercel restores that cache between
         // builds, so editing this function alone does NOT change the output. The build script
         // clears `.astro` for that reason -- see apps/docs/package.json.
-        const path = slug === '' ? `${BASE}/` : `${BASE}/${slug}/`;
+        const path = slug === '' ? BASE : `${BASE}/${slug}`;
         node.properties.href = `${path}${hash ? `#${hash}` : ''}`;
         return;
       }
@@ -103,8 +104,8 @@ function rehypeRepoAwareLinks() {
       // GitHub-correct link to a skill's markdown lands on its rendered page instead of GitHub.
       const skill = /^skills\/(.+?)(?:\/(?:SKILL|README))?\.md$/i.exec(repoRel);
       if (skill) {
-        const slug = skill[1] === 'README' ? '' : `${skill[1].toLowerCase()}/`;
-        node.properties.href = `${BASE}/skills/${slug}${hash ? `#${hash}` : ''}`;
+        const slug = skill[1] === 'README' ? '' : `/${skill[1].toLowerCase()}`;
+        node.properties.href = `${BASE}/skills${slug}${hash ? `#${hash}` : ''}`;
         return;
       }
 
@@ -118,6 +119,9 @@ function rehypeRepoAwareLinks() {
 export default defineConfig({
   site: SITE,
   base: BASE,
+  // advancelabs.dev (Next.js) 308s "/x/" to "/x" before its rewrite proxies here, so every URL this
+  // build emits (links, canonical, sitemap) must be slashless or each page's canonical is a redirect.
+  trailingSlash: 'never',
   markdown: { rehypePlugins: [rehypeRepoAwareLinks] },
   integrations: [
     starlight({
@@ -166,7 +170,7 @@ export default defineConfig({
             '@type': 'SoftwareApplication',
             '@id': 'https://advancelabs.dev/lab/aeo-toolkit#software',
             name: 'AEO Toolkit',
-            url: 'https://docs.advancelabs.dev/aeo-toolkit/',
+            url: 'https://advancelabs.dev/docs/aeo-toolkit',
             applicationCategory: 'DeveloperApplication',
             license: 'https://www.apache.org/licenses/LICENSE-2.0',
             creator: { '@id': 'https://advancelabs.dev/#organization' },
