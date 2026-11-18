@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import yaml from 'js-yaml';
 
 /**
  * Sidebar groups built from the docs folder on disk.
@@ -11,20 +12,22 @@ import path from 'node:path';
  * Same rules as autogenerate: `sidebar.order` first, then alphabetical; `sidebar.hidden` skipped;
  * README/index leads its folder; a folder with more than its index becomes a collapsed subgroup.
  */
-const ORDER = /^sidebar:\s*\n(?:[ \t]+.*\n)*?[ \t]+order:\s*(-?\d+)/m;
-const HIDDEN = /^sidebar:\s*\n(?:[ \t]+.*\n)*?[ \t]+hidden:\s*true/m;
-const TITLE = /^title:\s*["']?(.+?)["']?\s*$/m;
-
 /** Same normalisation as the glob loader's generateId. */
 const toSlug = (rel) => rel.replace(/\.mdx?$/, '').toLowerCase().replace(/(^|\/)readme$/, '$1index');
 
+/**
+ * A real YAML parse, not regexes: scripts/generate.mjs writes `sidebar: {"hidden":true}` in flow
+ * style while hand-written pages use block style, and a regex that read only one form leaked the
+ * hidden skill reference pages into the sidebar.
+ */
 function frontmatter(file) {
   const m = /^---\n([\s\S]*?)\n---/.exec(readFileSync(file, 'utf8').replace(/\r\n/g, '\n'));
-  const fm = m ? `${m[1]}\n` : '';
+  const fm = (m && yaml.load(m[1])) || {};
+  const sb = fm.sidebar ?? {};
   return {
-    order: Number(ORDER.exec(fm)?.[1] ?? Infinity),
-    hidden: HIDDEN.test(fm),
-    title: TITLE.exec(fm)?.[1],
+    order: typeof sb.order === 'number' ? sb.order : Infinity,
+    hidden: sb.hidden === true,
+    title: typeof sb.label === 'string' ? sb.label : fm.title,
   };
 }
 
