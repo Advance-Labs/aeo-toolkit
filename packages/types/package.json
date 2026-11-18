@@ -47,5 +47,5 @@
     "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
     "directory": "packages/types"
   },
-  "homepage": "https://docs.advancelabs.dev/aeo-toolkit"
+  "homepage": "https://advancelabs.dev/docs/aeo-toolkit"
 }

@@ -118,7 +118,7 @@ Google-only rather than failing outright.
 
 The MCP tools detect and measure; the [agent skills](../../skills/README.md) carry the method for
 fixing what they find. 24 skills cover every one of the 58 scoring rules (each rule has exactly one
-owning skill, see the [audit rules](https://docs.advancelabs.dev/aeo-toolkit/rules/aeo/)) plus measurement workflows on top of the
+owning skill, see the [audit rules](https://advancelabs.dev/docs/aeo-toolkit/rules/aeo)) plus measurement workflows on top of the
 search and visibility tools. One command installs the skills together with these two servers:
 
 ```bash

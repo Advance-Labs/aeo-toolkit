@@ -20,7 +20,7 @@ const OUT_SKILLS = path.join(DOCS, 'skills');
 const OUT_RULES = path.join(DOCS, 'rules');
 const LLMS_TXT = fileURLToPath(new URL('../public/llms.txt', import.meta.url));
 const REPO_URL = 'https://github.com/Advance-Labs/aeo-toolkit';
-const SITE = 'https://docs.advancelabs.dev/aeo-toolkit';
+const SITE = 'https://advancelabs.dev/docs/aeo-toolkit';
 const INSTALL = '/plugin install aeo-toolkit --marketplace Advance-Labs/aeo-toolkit';
 
 const ruleMap = JSON.parse(readFileSync(path.join(SKILLS, 'rule-map.json'), 'utf8')).rules;
@@ -265,11 +265,11 @@ const lines = [
   '',
   ...skillPages
     .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name))
-    .map((s) => `- [${s.name}](${SITE}/skills/${s.name}/): ${s.description}`),
+    .map((s) => `- [${s.name}](${SITE}/skills/${s.name}): ${s.description}`),
   '',
   '## Docs',
   '',
-  ...pages.map((p) => `- [${p.title}](${SITE}/${p.slug ? `${p.slug}/` : ''})`),
+  ...pages.map((p) => `- [${p.title}](${SITE}${p.slug ? `/${p.slug}` : ''})`),
   '',
 ];
 mkdirSync(path.dirname(LLMS_TXT), { recursive: true });

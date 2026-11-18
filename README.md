@@ -133,7 +133,7 @@ pnpm build          # turbo builds every package
 pnpm test           # the full suite, no network
 ```
 
-Read the full documentation at **[docs.advancelabs.dev/aeo-toolkit](https://docs.advancelabs.dev/aeo-toolkit)**.
+Read the full documentation at **[advancelabs.dev/docs/aeo-toolkit](https://advancelabs.dev/docs/aeo-toolkit)**.
 
 Once built, the packages compose like this:
 
@@ -186,7 +186,7 @@ Or add the marketplace first and pick it from the list:
 
 The `toolkit` server asks you to sign in to your AEO Toolkit account on first use (`/mcp` → Authenticate). Connect Google and Bing on your project in the AEO Toolkit dashboard, and save AI provider keys under Settings; the server uses them, so you never paste a key into chat. Other agents can
 copy any `skills/<name>/` directory into their own skills folder. Every skill is also published
-as a readable guide at **[docs.advancelabs.dev/aeo-toolkit/skills](https://docs.advancelabs.dev/aeo-toolkit/skills/)**.
+as a readable guide at **[advancelabs.dev/docs/aeo-toolkit/skills](https://advancelabs.dev/docs/aeo-toolkit/skills)**.
 
 > Already added the servers with `claude mcp add`? The plugin registers its own copies
 > (`plugin:aeo-toolkit:*`), so remove the manual ones to avoid duplicate tools.
