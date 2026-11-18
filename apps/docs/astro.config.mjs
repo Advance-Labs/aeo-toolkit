@@ -1,4 +1,5 @@
 // @ts-check
+import { dirItems } from './sidebar.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
@@ -186,12 +187,12 @@ export default defineConfig({
             { label: 'Roadmap', slug: 'roadmap' },
           ],
         },
-        { label: 'Use cases', autogenerate: { directory: 'use-cases' } },
-        { label: 'Guides', autogenerate: { directory: 'guides' } },
+        { label: 'Use cases', items: dirItems(DOCS_ROOT, 'use-cases') },
+        { label: 'Guides', items: dirItems(DOCS_ROOT, 'guides') },
         // Generated from skills/ and @advance-labs/scoring by scripts/generate.mjs.
-        { label: 'Agent skills', autogenerate: { directory: 'skills' } },
-        { label: 'Audit rules', autogenerate: { directory: 'rules' } },
-        { label: 'Reference', autogenerate: { directory: 'reference' } },
+        { label: 'Agent skills', items: dirItems(DOCS_ROOT, 'skills') },
+        { label: 'Audit rules', items: dirItems(DOCS_ROOT, 'rules') },
+        { label: 'Reference', items: dirItems(DOCS_ROOT, 'reference') },
         {
           label: 'Contributing',
           items: [{ label: 'Conventions', slug: 'conventions' }],
@@ -202,7 +203,7 @@ export default defineConfig({
             { label: 'Visibility tracking', slug: 'visibility-tracking' },
           ],
         },
-        { label: 'Decisions', autogenerate: { directory: 'adr' } },
+        { label: 'Decisions', items: dirItems(DOCS_ROOT, 'adr') },
       ],
     }),
   ],
