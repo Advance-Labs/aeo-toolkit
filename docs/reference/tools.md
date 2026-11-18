@@ -71,7 +71,7 @@ The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/
 and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
 existing configs need no change.
 
-### Search tools (on the AEO Toolkit server) — 23 tools
+### Search tools (on the AEO Toolkit server): 23 tools
 
 | Tool | Engine | Notes |
 |---|---|---|
