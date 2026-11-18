@@ -184,7 +184,7 @@ for (const name of readdirSync(SKILLS).filter((d) => statSync(path.join(SKILLS, 
     {
       title,
       description,
-      sidebar: { label: name, order: order.indexOf(name) === -1 ? 999 : order.indexOf(name) },
+      sidebar: { order: order.indexOf(name) === -1 ? 999 : order.indexOf(name) },
       editUrl: `${REPO_URL}/edit/main/skills/${name}/SKILL.md`,
     },
     `${header}\n\n${rewriteLinks(rest, src, out)}`,

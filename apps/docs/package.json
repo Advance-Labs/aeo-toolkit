@@ -20,6 +20,7 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
+    "js-yaml": "^4.2.0",
     "rimraf": "^6.0.1"
   }
 }
