@@ -8,7 +8,7 @@ sidebar:
 
 Both servers are hosted, so almost every problem is the URL, the sign-in or a doubled registration. Work through the checks in this order.
 
-![The two MCP servers. aeo-research has 12 tools, needs no sign-in and reaches Perplexity with your own key. aeo-toolkit has 37 tools, needs an AEO Toolkit account and reaches Search Console, GA4, Bing, the workspace engines and the IndexNow and Bing submission endpoints.](../assets/diagram-mcp-servers.svg)
+![The two MCP servers. aeo-research has 12 tools, needs no sign-in and reaches Perplexity with your own key. aeo-toolkit has 40 tools, needs an AEO Toolkit account and reaches Search Console, GA4, Bing, the workspace engines and the IndexNow and Bing submission endpoints.](../assets/diagram-mcp-servers.svg)
 
 ## The URL must end in /mcp
 
@@ -68,7 +68,7 @@ Then restart the session and run `claude mcp list`. If you want the servers with
 - **Google tools return no sites.** Connect Google on your AEO Toolkit project first. `list_gsc_sites` should then return your properties. `https://example.com/` and `sc-domain:example.com` are different properties.
 - **Bing tools fail.** They need a Bing Webmaster key saved on the project.
 - **Visibility tools stop or refuse.** On aeo-toolkit these run on the workspace's engines and use quota. Plan allowances are on the [pricing page](https://aeo.advancelabs.dev/pricing). On aeo-research they use your own Perplexity key, so check that the key is valid.
-- **A tool looks missing.** aeo-research has 12 tools and aeo-toolkit has 37. If you see far fewer, the server did not finish connecting. Restart the client.
+- **A tool looks missing.** aeo-research has 12 tools and aeo-toolkit has 40. If you see far fewer, the server did not finish connecting. Restart the client.
 
 Two aeo-toolkit tools act on services and are worth knowing about: `submit_indexnow` and `submit_to_bing` send URLs for indexing. The others read.
 
