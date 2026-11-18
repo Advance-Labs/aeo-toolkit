@@ -1,11 +1,11 @@
 ---
 title: Tool reference
 description: >-
-  The hosted platform (six browser tools, two MCP servers with 38 distinct tools, a content agent) and the open Chrome extension, and which parts live in this repo.
+  The hosted platform (six browser tools, two MCP servers with 41 distinct tools, a content agent) and the open Chrome extension, and which parts live in this repo.
 ---
 
 The hosted platform is proprietary and moved to a private repository on 2026-10-20: **six browser
-tools**, **two MCP servers** with 38 distinct tools, and a scheduled content agent, all served from
+tools**, **two MCP servers** with 41 distinct tools, and a scheduled content agent, all served from
 advancelabs.dev. This repo holds the open core: the six npm packages, the Chrome extension
 (`apps/chrome-extension`) and the skills. Routes and engines below describe the hosted platform; its
 code is not in this repo.
@@ -30,11 +30,12 @@ Free, no sign-up, hosted at [advancelabs.dev/tools](https://advancelabs.dev/tool
 ## MCP servers — 2
 
 Served by the hosted platform as Streamable-HTTP route handlers via the `mcp-handler` adapter.
-**Research has 12 tools and AEO Toolkit has 37; 38 distinct tools in total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
-Every research tool is **read-only**. No tool edits your site. Five AEO Toolkit tools act on your
+**Research has 12 tools and AEO Toolkit has 40; 41 distinct tools in total.** The connection page is [`/mcp`](https://advancelabs.dev/mcp).
+Every research tool is **read-only**. No tool edits your site. Six AEO Toolkit tools act on your
 account and say so in their annotations (`readOnlyHint: false`): `check_ai_visibility`,
 `get_visibility_report` and `discover_ranking_prompts` save to your dashboard and use your plan's
-quota, and `submit_indexnow` and `submit_to_bing` submit URLs to IndexNow and Bing.
+quota, `submit_indexnow` and `submit_to_bing` submit URLs to IndexNow and Bing, and
+`install_ai_crawler_collector` creates your collector key if you have none (it never rotates one).
 
 Research needs no login. **AEO Toolkit has one**: an anonymous request gets a 401
 whose `WWW-Authenticate` names `/.well-known/oauth-protected-resource/api/mcp/search/mcp`, and the
@@ -61,7 +62,7 @@ is required — the bare `/api/mcp/<slug>` returns the adapter's own "Not found"
 | Server | Endpoint | Auth | Tools |
 |---|---|---|---|
 | Research | `/api/mcp/research/mcp` | none | `analyze_website_aeo`, `check_ai_visibility`, `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility`, `find_prospects`, `find_mentions`, `extract_contact_info`, `check_page_history`, `generate_outreach_email`, `verify_page_links`, `find_competitor_link_sources` |
-| AEO Toolkit (account) | `/api/mcp/search/mcp` | AEO Toolkit account sign-in (OAuth); Google, Bing and AI keys come from the account. Legacy Google BYOK + `x-bing-api-key` still work for the search tools | 37: the 20 search tools below; `list_workspaces`, `check_ai_visibility`, `get_visibility_report`, `discover_ranking_prompts`, `analyze_website_aeo`, `get_keyword_volumes`, `suggest_keywords` (saved to your workspace); `indexing_status`, `submit_indexnow`, `submit_to_bing`; and the 7 backlink tools |
+| AEO Toolkit (account) | `/api/mcp/search/mcp` | AEO Toolkit account sign-in (OAuth); Google, Bing and AI keys come from the account. Legacy Google BYOK + `x-bing-api-key` still work for the search tools | 40: the 23 search tools below; `list_workspaces`, `check_ai_visibility`, `get_visibility_report`, `discover_ranking_prompts`, `analyze_website_aeo`, `get_keyword_volumes`, `suggest_keywords` (saved to your workspace); `indexing_status`, `submit_indexnow`, `submit_to_bing`; and the 7 backlink tools |
 
 The account server kept the search server's URL. `/api/mcp/toolkit/mcp` (the old signed-in server) and
 `/api/mcp/ga-gsc/mcp` still work as compatibility aliases, so existing client configs need no change.
@@ -70,7 +71,7 @@ The research server replaced two servers on 2026-11-14: `aeo-visibility` (`/api/
 and `aeo-backlink` (`/api/mcp/backlink/mcp`). Both URLs still work and serve their own tools, so
 existing configs need no change.
 
-### Search tools (on the AEO Toolkit server) — 20 tools
+### Search tools (on the AEO Toolkit server): 23 tools
 
 | Tool | Engine | Notes |
 |---|---|---|
@@ -94,9 +95,12 @@ existing configs need no change.
 | `bing_keyword_research` | Bing | no Google Search Console equivalent exists |
 | `compare_engines` | Google + Bing | merged rows with an explicit coverage block |
 | `engine_divergence` | Google + Bing | classifies each query as google_specific / bing_specific / broad |
+| `get_ai_demand` | AI crawler collector | measured AI-assistant fetches per page and day beside search and training crawls, verified vs unverified split, change on the previous period; needs the collector installed; read-only, uses no checks |
+| `verify_ai_crawler` | AI crawler registry | is this User-Agent and IP a real AI crawler: claimed bot, vendor, kind, and whether the IP is in the vendor's published ranges; read-only, uses no checks |
+| `install_ai_crawler_collector` | AI crawler collector | install steps and code for counting AI-assistant requests (Next.js, Cloudflare, WordPress, Vercel drain or other); creates the collector key if none exists, never rotates one; uses no checks |
 
-Bing authentication is BYOK via an `X-Bing-Api-Key` request header, or a static `BING_API_KEY`
-environment variable as a fallback. A missing Bing key does not fail the server: Bing tools return
+On the signed-in server, Bing uses the Webmaster key saved on your project. The legacy path is an
+`X-Bing-Api-Key` request header, or a static `BING_API_KEY` environment variable as a fallback. A missing Bing key does not fail the server: Bing tools return
 their own credential error, but the eleven Google tools keep working, and the server degrades to
 Google-only rather than failing outright.
 

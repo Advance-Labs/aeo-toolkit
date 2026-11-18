@@ -9,17 +9,17 @@ The AEO Toolkit runs two hosted MCP servers. They are listed in the official
 There is nothing to install locally: each server is a Streamable-HTTP endpoint, and you point your
 client at its URL.
 
-**aeo-research has 12 tools and AEO Toolkit has 37 (38 distinct).** No tool edits your site. Every
-research tool is read-only. Five AEO Toolkit tools act on your account and are annotated
-`readOnlyHint: false`: three visibility tools save to your dashboard, and `submit_indexnow` and
-`submit_to_bing` submit URLs.
+**aeo-research has 12 tools and AEO Toolkit has 40 (41 distinct).** No tool edits your site. Every
+research tool is read-only. Six AEO Toolkit tools act on your account and are annotated
+`readOnlyHint: false`: three visibility tools save to your dashboard, `submit_indexnow` and
+`submit_to_bing` submit URLs, and `install_ai_crawler_collector` creates a collector key if you have none.
 
 ## The servers
 
 | Registry name | Endpoint | Tools | Sign-in |
 |---|---|---|---|
 | `dev.advancelabs/aeo-research` | `https://aeo.advancelabs.dev/api/mcp/research/mcp` | 12 | None |
-| `dev.advancelabs/aeo-search` (title "AEO Toolkit") | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 37 | OAuth 2.1 with the AEO Toolkit account |
+| `dev.advancelabs/aeo-search` (title "AEO Toolkit") | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 40 | OAuth 2.1 with the AEO Toolkit account |
 
 **aeo-research** has the five visibility tools (`analyze_website_aeo`, `check_ai_visibility`,
 `discover_ranking_prompts`, `get_visibility_report`, `compare_competitor_visibility`) and the seven
