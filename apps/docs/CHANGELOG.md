@@ -1,5 +1,12 @@
 # @advance-labs/docs
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [78c4101]
+  - @advance-labs/scoring@0.6.1
+
 ## 0.1.2
 
 ### Patch Changes
