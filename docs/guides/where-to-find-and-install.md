@@ -9,11 +9,11 @@ AEO Toolkit runs two public MCP servers. Both are hosted, so nothing installs lo
 | Server | Registry entry | Endpoint | Tools | Access |
 |---|---|---|---|---|
 | aeo-research | `dev.advancelabs/aeo-research` 1.0.0 | `https://aeo.advancelabs.dev/api/mcp/research/mcp` | 12 | No sign-in. 5 visibility tools and 7 backlink tools. |
-| aeo-toolkit | `dev.advancelabs/aeo-search` 1.0.3, titled "AEO Toolkit" | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 37 | Sign in with an AEO Toolkit account. Google and Bing come from the account's project connections. |
+| aeo-toolkit | `dev.advancelabs/aeo-search` 1.0.3, titled "AEO Toolkit" | `https://aeo.advancelabs.dev/api/mcp/search/mcp` | 40 | Sign in with an AEO Toolkit account. Google and Bing come from the account's project connections. |
 
 The trailing `/mcp` is required. The registry entry for aeo-toolkit keeps the name `aeo-search` because it kept the original URL.
 
-![The two MCP servers: aeo-research with 12 tools and no sign-in, and aeo-toolkit with 37 tools and an AEO Toolkit account sign-in, with what each reaches.](../assets/diagram-mcp-servers.svg)
+![The two MCP servers: aeo-research with 12 tools and no sign-in, and aeo-toolkit with 40 tools and an AEO Toolkit account sign-in, with what each reaches.](../assets/diagram-mcp-servers.svg)
 
 ## Where it is listed
 

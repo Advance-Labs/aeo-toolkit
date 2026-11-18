@@ -32,6 +32,9 @@ Read this before quoting any number. Per the tool definitions:
   `check_ai_visibility`, `get_visibility_report` and `discover_ranking_prompts` run on the
   engines configured for the user's workspace, need no Perplexity key, save results to the
   dashboard and use plan quota. Name the engines the result actually lists, and never more.
+- Citation checks are not traffic. On `aeo-toolkit`, `get_ai_demand` reports measured AI-assistant
+  fetches of the site once the free crawler collector is installed (`install_ai_crawler_collector`).
+  It counts requests to the site, not citations in answers.
 - "Cited" means a URL on the **same host** appears in Sonar's returned citation list. Any page
   on the host counts, so a homepage citation and a deep-link citation both read as cited.
   `citationRank` is the position in the citation list, not prominence in the answer text.

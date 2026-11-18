@@ -35,7 +35,7 @@ Want the data underneath? **[DataForAEO](https://dataforaeo.dev)** is data for A
 
 The hosted side is **six browser tools** (technical audit, E-E-A-T scan, llms.txt generator,
 GA4 + GSC chat, backlink graph, authority) and **two MCP servers** (`research`, `toolkit`)
-exposing 38 distinct tools to Claude or any MCP client. They are proprietary and run on
+exposing 41 distinct tools to Claude or any MCP client. They are proprietary and run on
 advancelabs.dev. This repo is the open core: the audit engine packages, the
 [Chrome extension](apps/chrome-extension) and the [skills](skills). See
 [`docs/reference/tools.md`](docs/reference/tools.md) for the full map.
@@ -227,7 +227,7 @@ Drop `--scope user` to register them in the current project only. Check the resu
 | Server | Tools | Credentials |
 |---|---|---|
 | `aeo-research` | 12 | None to connect. AEO audits and backlink research need nothing; citation checks take a Perplexity key per request. |
-| `aeo-toolkit` | 37 | Sign in with your AEO Toolkit account: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Google, Bing and AI provider keys come from the account. Search Console, GA4, Bing, saved visibility checks, keyword volumes and backlink research. Legacy BYOK (a Google token as `Authorization: Bearer`, an optional `x-bing-api-key`) still works for the Search Console, GA4 and Bing tools. |
+| `aeo-toolkit` | 40 | Sign in with your AEO Toolkit account: the client opens a browser on first use (in Claude Code, `/mcp` → Authenticate). Google, Bing and AI provider keys come from the account. Search Console, GA4, Bing, saved visibility checks, keyword volumes, AI-assistant crawler demand (the counter is free on every plan) and backlink research. Legacy BYOK (a Google token as `Authorization: Bearer`, an optional `x-bing-api-key`) still works for the Search Console, GA4 and Bing tools. |
 
 Three things that trip people up:
 
