@@ -1,0 +1,59 @@
+{
+  "name": "@advance-labs/audit",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "One-command AEO and SEO site audit for the terminal: npx @advance-labs/audit example.com",
+  "keywords": [
+    "aeo",
+    "seo",
+    "audit",
+    "cli",
+    "answer-engine-optimization",
+    "llms-txt",
+    "structured-data"
+  ],
+  "license": "Apache-2.0",
+  "author": "Lucas Krawczak <lucas@advancelabs.dev> (https://advancelabs.dev/lucas)",
+  "bin": {
+    "aeo-audit": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "@advance-labs/crawler": "workspace:*",
+    "@advance-labs/html-parser": "workspace:*",
+    "@advance-labs/net-guard": "workspace:*",
+    "@advance-labs/schema-validator": "workspace:*",
+    "@advance-labs/scoring": "workspace:*",
+    "@advance-labs/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@advance-labs/config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Advance-Labs/aeo-toolkit.git",
+    "directory": "packages/audit"
+  },
+  "homepage": "https://advancelabs.dev/tools/audit"
+}
