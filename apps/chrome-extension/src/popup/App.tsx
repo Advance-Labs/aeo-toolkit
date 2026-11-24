@@ -7,7 +7,7 @@ import { CheckList } from './CheckList.js';
 import { SiteFiles } from './SiteFiles.js';
 import { exportAuditPdf } from './pdf.js';
 import { useAudit } from './useAudit.js';
-import { TOOLS_URL } from './links.js';
+import { TOOLS_URL, TRACK_URL } from './links.js';
 import markUrl from './mark.svg';
 
 /** Root popup view: runs the audit on mount and renders score + checks + export. */
@@ -78,6 +78,11 @@ export function App(): JSX.Element {
             </button>
             {exportedAs !== null && <span className="exported">Saved {exportedAs}</span>}
           </footer>
+          <p className="tools-link">
+            <a href={TRACK_URL} target="_blank" rel="noreferrer">
+              Track this score over time in the AEO Toolkit
+            </a>
+          </p>
         </>
       )}
 
