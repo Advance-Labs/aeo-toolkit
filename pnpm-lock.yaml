@@ -118,6 +118,46 @@ importers:
 
   apps/wordpress-collector: {}
 
+  packages/audit:
+    dependencies:
+      '@advance-labs/crawler':
+        specifier: workspace:*
+        version: link:../crawler
+      '@advance-labs/html-parser':
+        specifier: workspace:*
+        version: link:../html-parser
+      '@advance-labs/net-guard':
+        specifier: workspace:*
+        version: link:../net-guard
+      '@advance-labs/schema-validator':
+        specifier: workspace:*
+        version: link:../schema-validator
+      '@advance-labs/scoring':
+        specifier: workspace:*
+        version: link:../scoring
+      '@advance-labs/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@advance-labs/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.19
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      tsup:
+        specifier: ^8.3.5
+        version: 8.5.1(jiti@1.21.7)(postcss@8.5.15)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.6
+        version: 3.2.6(@types/debug@4.1.13)(@types/node@22.19.19)(jiti@1.21.7)(jsdom@25.0.1)
+
   packages/config:
     dependencies:
       '@eslint/js':

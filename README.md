@@ -100,6 +100,7 @@ pnpm --filter @advance-labs/chrome-extension package
 
 | Package | Description |
 |---------|-------------|
+| [`@advance-labs/audit`](packages/audit) | One-command site audit CLI: `npx @advance-labs/audit example.com` |
 | [`@advance-labs/crawler`](packages/crawler) | Multi-threaded web crawler with robots.txt compliance, sitemap parsing, and per-host rate limiting |
 | [`@advance-labs/html-parser`](packages/html-parser) | Extracts meta tags, Open Graph, Twitter Cards, headings, images, links, and JSON-LD from HTML |
 | [`@advance-labs/schema-validator`](packages/schema-validator) | Validates Schema.org JSON-LD structured data against known types |
