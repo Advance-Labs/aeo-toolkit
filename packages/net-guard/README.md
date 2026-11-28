@@ -32,6 +32,17 @@ if (!res.ok) {
 3. **Per-hop redirect re-validation** — redirects are manual; the full check re-runs on every target,
    so a public host can't 302 you to an internal one.
 4. **Body + time caps** — `maxBodyBytes` (default 2 MB) and `timeoutMs` (default 10 s, aborts the request).
+5. **Connect-time pinning (DNS rebinding)** — `createLiveSafeFetchDeps()` sends the request through
+   `node:http(s)` with `guardedLookup`, which re-checks the answer inside the connection's own DNS
+   lookup. The socket can only open to an address that passed the check, so a TTL-0 record that
+   flips from public to `127.0.0.1` between lookups is refused (`private-address`).
+
+### Bringing your own `fetchImpl`
+
+The pre-flight `resolve` check alone does **not** stop DNS rebinding: your HTTP client resolves the
+host again when it connects. If you replace `fetchImpl`, pass `guardedLookup` as the connection's
+`lookup` (Node `http.request`, `https.request`, `net.connect`, or undici's `connect.lookup`).
+Versions before 0.3.0 did not do this in `createLiveSafeFetchDeps`; upgrade.
 
 All logic is pure and injected (`resolve`, `fetchImpl`) — unit-tested with zero network. See
 [`docs/CONVENTIONS.md`](../../docs/CONVENTIONS.md) security invariant #1.
