@@ -1,5 +1,12 @@
 # @advance-labs/audit
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [60bbfd8]
+  - @advance-labs/net-guard@0.3.0
+
 ## 0.1.0
 
 ### Minor Changes
