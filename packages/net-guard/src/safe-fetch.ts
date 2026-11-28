@@ -2,8 +2,11 @@
  * SSRF-guarded fetch. All network/DNS I/O is injected so the guard logic is unit-tested offline.
  *
  * Order of checks (each closes a known SSRF bypass):
- *   scheme allowlist → DNS resolve → reject if ANY resolved IP is private (rebind defense) →
+ *   scheme allowlist → DNS resolve → reject if ANY resolved IP is private →
  *   fetch with manual redirects → re-run the whole check on every redirect target → body/time caps.
+ *
+ * The pre-flight resolve alone does NOT stop DNS rebinding: the connection does its own lookup. The
+ * live `fetchImpl` (createLiveSafeFetchDeps) closes that by validating inside the connect lookup.
  */
 import type { SafeFetchResult, SafeFetchBlockReason } from '@advance-labs/types';
 import { isBlockedAddress } from './address.js';
@@ -39,6 +42,19 @@ const DEFAULTS: Required<SafeFetchOptions> = {
 
 const TIMEOUT = Symbol('timeout');
 
+/**
+ * Error `code` a `fetchImpl` throws when its connect-time check refuses the address (see
+ * `guardedLookup`). `safeFetch` maps it to `private-address` instead of throwing.
+ */
+export const GUARD_BLOCKED = 'ENETGUARD';
+
+function isGuardBlocked(e: unknown): boolean {
+  for (let err = e; err instanceof Error; err = err.cause) {
+    if ((err as NodeJS.ErrnoException).code === GUARD_BLOCKED) return true;
+  }
+  return false;
+}
+
 function blocked(url: string, reason: SafeFetchBlockReason): SafeFetchResult {
   return { ok: false, status: 0, url, body: '', blockedReason: reason };
 }
@@ -71,7 +87,13 @@ export async function safeFetch(
       if (!ips || ips.length === 0) return blocked(url, 'dns-resolution-failed');
       if (ips.some(isBlockedAddress)) return blocked(url, 'private-address');
 
-      const res = await race(deps.fetchImpl(url, controller.signal), controller.signal);
+      let res: GuardResponse | typeof TIMEOUT;
+      try {
+        res = await race(deps.fetchImpl(url, controller.signal), controller.signal);
+      } catch (e) {
+        if (isGuardBlocked(e)) return blocked(url, 'private-address');
+        throw e;
+      }
       if (res === TIMEOUT) return blocked(url, 'timeout');
 
       if (res.status >= 300 && res.status < 400 && res.location) {

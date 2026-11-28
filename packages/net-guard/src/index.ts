@@ -8,35 +8,82 @@
  * The guard logic is pure and injected; {@link createLiveSafeFetchDeps} wires it to Node's DNS and
  * the global `fetch` for production use.
  */
-import { promises as dns } from 'node:dns';
+import { lookup as dnsLookup, type LookupAddress, type LookupOptions } from 'node:dns';
+import { request as httpRequest, type IncomingMessage } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import type { SafeFetchDeps, GuardResponse } from './safe-fetch.js';
+import { isBlockedAddress } from './address.js';
+import { GUARD_BLOCKED } from './safe-fetch.js';
 
-export { safeFetch } from './safe-fetch.js';
+export { safeFetch, GUARD_BLOCKED } from './safe-fetch.js';
 export type { SafeFetchDeps, GuardResponse, SafeFetchOptions } from './safe-fetch.js';
 export { isBlockedAddress } from './address.js';
 export type { SafeFetchResult, SafeFetchBlockReason } from '@advance-labs/types';
 
+type LookupCallback = (
+  err: NodeJS.ErrnoException | null,
+  address: string | LookupAddress[],
+  family?: number,
+) => void;
+
 /**
- * Live deps for {@link safeFetch} using Node DNS + global `fetch` (manual redirects).
+ * `lookup` hook for `http(s).request` / `net.connect`: resolves the host, refuses the connection if
+ * ANY answer is a blocked address, and hands the socket only the addresses it just checked.
  *
- * NOTE: this resolves the hostname for validation, then lets `fetch` connect by hostname — so a
- * narrow TOCTOU rebind window remains. The multi-address check in `safeFetch` mitigates the common
- * case; for hard pinning, supply a `fetchImpl` that connects to the already-validated IP.
+ * This is the DNS-rebinding defense. The socket connects to exactly the IP validated here, in the
+ * same lookup, so a TTL-0 record that flips between a guard lookup and a connect lookup can't slip
+ * past. (IP-literal hosts skip `lookup`; `safeFetch` validates those before connecting.)
+ */
+export function guardedLookup(hostname: string, options: LookupOptions, callback: LookupCallback): void {
+  dnsLookup(hostname, { ...options, all: true }, (err, records) => {
+    if (err) return callback(err, []);
+    if (records.length === 0 || records.some((r) => isBlockedAddress(r.address))) {
+      const blocked: NodeJS.ErrnoException = new Error(`net-guard: ${hostname} resolves to a blocked address`);
+      blocked.code = GUARD_BLOCKED;
+      return callback(blocked, []);
+    }
+    if (options.all) return callback(null, records);
+    const first = records[0]!;
+    callback(null, first.address, first.family);
+  });
+}
+
+function readBody(res: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    res.on('data', (c: Buffer) => chunks.push(c));
+    res.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+    res.on('error', reject);
+  });
+}
+
+/**
+ * Live deps for {@link safeFetch}: Node DNS for the pre-flight check, and `node:http(s)` with
+ * {@link guardedLookup} for the request, so the connection is pinned to a validated address.
+ * Redirects are returned to `safeFetch` (never followed here) so every hop is re-validated.
  */
 export function createLiveSafeFetchDeps(): SafeFetchDeps {
   return {
-    resolve: async (hostname: string): Promise<string[]> => {
-      const records = await dns.lookup(hostname, { all: true });
-      return records.map((r) => r.address);
-    },
-    fetchImpl: async (url: string, signal: AbortSignal): Promise<GuardResponse> => {
-      const res = await fetch(url, { redirect: 'manual', signal });
-      const isRedirect = res.status >= 300 && res.status < 400;
-      return {
-        status: res.status,
-        location: res.headers.get('location'),
-        body: isRedirect ? '' : await res.text(),
-      };
-    },
+    resolve: (hostname: string): Promise<string[]> =>
+      new Promise((resolve, reject) => {
+        dnsLookup(hostname, { all: true }, (err, records) =>
+          err ? reject(err) : resolve(records.map((r) => r.address)),
+        );
+      }),
+    fetchImpl: (url: string, signal: AbortSignal): Promise<GuardResponse> =>
+      new Promise((resolve, reject) => {
+        const request = new URL(url).protocol === 'https:' ? httpsRequest : httpRequest;
+        const req = request(url, { method: 'GET', lookup: guardedLookup, signal }, (res) => {
+          const status = res.statusCode ?? 0;
+          if (status >= 300 && status < 400) {
+            res.resume();
+            resolve({ status, location: res.headers.location ?? null, body: '' });
+            return;
+          }
+          readBody(res).then((body) => resolve({ status, body }), reject);
+        });
+        req.on('error', reject);
+        req.end();
+      }),
   };
 }
